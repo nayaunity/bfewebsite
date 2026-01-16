@@ -56,7 +56,7 @@ export default function Footer() {
               <li><a href="mailto:hello@theblackfemaleengineer.com" className="text-gray-600 hover:text-[#ef562a] transition-colors">Contact Us</a></li>
               <li><Link href="#" className="text-gray-600 hover:text-[#ef562a] transition-colors">Partner With Us</Link></li>
               <li><Link href="#" className="text-gray-600 hover:text-[#ef562a] transition-colors">Submit a Resource</Link></li>
-              <li><Link href="/jobs/submit" className="text-gray-600 hover:text-[#ef562a] transition-colors">Post a Job</Link></li>
+              {/* Hidden: Team uses /jobs/submit directly */}
             </ul>
           </div>
         </div>

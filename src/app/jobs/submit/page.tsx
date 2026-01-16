@@ -16,19 +16,35 @@ export default function SubmitJobPage() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    // Convert FormData to JSON object
+    const data: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+
     try {
-      const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+      // Submit directly to our API to add to jobs.json
+      const response = await fetch("/api/jobs", {
         method: "POST",
-        body: formData,
         headers: {
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
         setIsSubmitted(true);
         form.reset();
       }
+
+      // Commented out: Formspree integration for email-based submissions
+      // const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+      //   method: "POST",
+      //   body: formData,
+      //   headers: {
+      //     Accept: "application/json",
+      //   },
+      // });
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -47,9 +63,9 @@ export default function SubmitJobPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="font-serif text-4xl md:text-5xl mb-4">Thank you!</h1>
+            <h1 className="font-serif text-4xl md:text-5xl mb-4">Job Added!</h1>
             <p className="text-gray-600 text-lg mb-8">
-              Your job submission has been received. We&apos;ll review it and add it to our board if it&apos;s a good fit for our community.
+              The job has been added to the board and is now live.
             </p>
             <Link
               href="/jobs"
@@ -276,11 +292,10 @@ export default function SubmitJobPage() {
 
           {/* Note */}
           <div className="mt-12 p-6 bg-gray-50 rounded-2xl">
-            <h3 className="font-medium mb-2">What happens next?</h3>
+            <h3 className="font-medium mb-2">Team Note</h3>
             <p className="text-sm text-gray-600">
-              We review every submission to ensure it&apos;s a good fit for our community.
-              If approved, your job will appear on our board within 24-48 hours.
-              We prioritize roles at companies committed to diversity and inclusion.
+              Jobs submitted here are added directly to the job board and will appear immediately.
+              Make sure all information is accurate before submitting.
             </p>
           </div>
         </div>

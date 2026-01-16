@@ -123,8 +123,8 @@ export default function JobsPage() {
           </div>
         </section>
 
-        {/* For Employers */}
-        <section className="bg-white py-16 md:py-24">
+        {/* For Employers - Hidden for now, team uses /jobs/submit directly */}
+        {/* <section className="bg-white py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
@@ -183,7 +183,7 @@ export default function JobsPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Newsletter CTA */}
         <section className="bg-[#1a1a1a] py-16 md:py-24">
