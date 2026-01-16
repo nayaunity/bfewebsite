@@ -2,6 +2,41 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
+// Companies that have maintained their commitment to DEI
+const dei_companies = [
+  "Apple",
+  "Microsoft",
+  "Cisco",
+  "Salesforce",
+  "Pinterest",
+  "Google",
+  "Unisys",
+  "Boston Scientific",
+  "Delta Air Lines",
+  "American Airlines",
+  "United Airlines",
+  "Southwest Airlines",
+  "JPMorgan Chase",
+  "Goldman Sachs",
+  "Fidelity Investments",
+  "Principal Financial Group",
+  "Costco Wholesale",
+  "Ben & Jerry's",
+  "Levi Strauss & Co.",
+  "Progressive Insurance",
+  "Novartis",
+  "Highspot",
+  "DreamBox Learning",
+  "Trupanion",
+  "Identity Digital",
+  "Logic20/20",
+  "Dell Technologies",
+  "Nvidia",
+  "Oracle",
+  "Medium",
+  "Accenture",
+];
+
 export const metadata = {
   title: "Job Board | The Black Female Engineer",
   description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
