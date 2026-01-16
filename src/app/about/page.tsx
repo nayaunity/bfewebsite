@@ -152,12 +152,12 @@ export default function AboutPage() {
             <div className="text-center mb-12">
               <p className="text-sm tracking-widest mb-8">WE&apos;VE PARTNERED WITH</p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-gray-300">
+                <span>AMAZON</span>
+                <span className="text-[#ef562a]">MICROSOFT</span>
                 <span>ADOBE</span>
-                <span className="text-[#ef562a]">GOOGLE</span>
-                <span>MICROSOFT</span>
-                <span>META</span>
-                <span className="text-[#ef562a]">AMAZON</span>
-                <span>NETFLIX</span>
+                <span className="text-[#ef562a]">LINKEDIN</span>
+                <span>HP</span>
+                <span className="text-[#ef562a]">ANTHROPIC</span>
               </div>
             </div>
             <p className="text-center text-sm">

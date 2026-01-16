@@ -65,7 +65,7 @@ export default function Hero() {
               />
             </div>
             {/* Decorative curved text - simplified */}
-            <div className="absolute -right-4 top-1/4 text-xs tracking-[0.3em] text-gray-300 transform rotate-90 origin-right whitespace-nowrap">
+            <div className="absolute -right-4 top-2/4 text-xs tracking-[0.3em] text-gray-300 transform rotate-90 origin-right whitespace-nowrap">
               THE BLACK FEMALE ENGINEER
             </div>
           </div>

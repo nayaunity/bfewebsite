@@ -67,26 +67,26 @@ export default function About() {
 
           {/* Partner Logos as Text - Row 1 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
+            <span className="text-[#ef562a]">MICROSOFT</span>
             <span>ADOBE</span>
-            <span className="text-[#ef562a]">GOOGLE</span>
-            <span>MICROSOFT</span>
-            <span>META</span>
+            <span>AMAZON</span>
+            <span>HP</span>
           </div>
 
           {/* Partner Logos as Text - Row 2 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
-            <span>AMAZON</span>
-            <span className="text-[#ef562a]">NETFLIX</span>
-            <span>STRIPE</span>
-            <span>APPLE</span>
+            <span>TIKTOK</span>
+            <span className="text-[#ef562a]">LINKEDIN</span>
+            <span>SAS</span>
+            <span>CANVA</span>
           </div>
 
           {/* Partner Logos as Text - Row 3 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl">
-            <span>SPOTIFY</span>
-            <span>SALESFORCE</span>
-            <span className="text-[#ef562a]">IBM</span>
-            <span>NVIDIA</span>
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
+            <span>JETBRAINS</span>
+            <span>SERVICENOW</span>
+            <span className="text-[#ef562a]">ANTHROPIC</span>
+            {/* <span>AFROTECH</span> */}
           </div>
 
           <p className="text-center mt-12 text-sm">
