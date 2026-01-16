@@ -1,0 +1,101 @@
+[
+  {
+    "company": "Google",
+    "title": "Senior Software Engineer",
+    "location": "Mountain View, CA",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$180K - $250K",
+    "posted": "2 days ago",
+    "tags": ["Python", "Machine Learning", "Cloud"],
+    "href": "google.com"
+  },
+  {
+    "company": "Microsoft",
+    "title": "Cloud Solutions Architect",
+    "location": "Seattle, WA",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$160K - $220K",
+    "posted": "3 days ago",
+    "tags": ["Azure", "DevOps", "Architecture"],
+    "href": ""
+  },
+  {
+    "company": "Stripe",
+    "title": "Backend Engineer",
+    "location": "San Francisco, CA",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$150K - $200K",
+    "posted": "1 day ago",
+    "tags": ["Ruby", "APIs", "Payments"],
+    "href": ""
+  },
+  {
+    "company": "Netflix",
+    "title": "Data Engineer",
+    "location": "Los Gatos, CA",
+    "type": "Full-time",
+    "remote": false,
+    "salary": "$165K - $230K",
+    "posted": "4 days ago",
+    "tags": ["Spark", "Python", "AWS"],
+    "href": ""
+  },
+  {
+    "company": "Apple",
+    "title": "iOS Developer",
+    "location": "Cupertino, CA",
+    "type": "Full-time",
+    "remote": false,
+    "salary": "$170K - $240K",
+    "posted": "1 week ago",
+    "tags": ["Swift", "iOS", "UIKit"],
+    "href": ""
+  },
+  {
+    "company": "Meta",
+    "title": "Product Manager, Infrastructure",
+    "location": "Menlo Park, CA",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$175K - $235K",
+    "posted": "5 days ago",
+    "tags": ["Product", "Infrastructure", "Strategy"],
+    "href": ""
+  },
+  {
+    "company": "Airbnb",
+    "title": "Full Stack Engineer",
+    "location": "San Francisco, CA",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$155K - $210K",
+    "posted": "3 days ago",
+    "tags": ["React", "Node.js", "GraphQL"],
+    "href": ""
+  },
+  {
+    "company": "Spotify",
+    "title": "Machine Learning Engineer",
+    "location": "New York, NY",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$160K - $220K",
+    "posted": "2 days ago",
+    "tags": ["Python", "TensorFlow", "Recommendations"],
+    "href": ""
+  },
+  {
+    "company": "Shopify",
+    "title": "Senior Frontend Engineer",
+    "location": "Toronto, Canada",
+    "type": "Full-time",
+    "remote": true,
+    "salary": "$140K - $190K",
+    "posted": "1 week ago",
+    "tags": ["React", "TypeScript", "GraphQL"],
+    "href": ""
+  }
+]
