@@ -26,13 +26,16 @@ export default function LessonContent({
   const [hasAccess, setHasAccess] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { isLoading: isSubmitting, error: subscribeError, subscribe } = useSubscribe();
   const { isCompleted, markComplete, isSignedIn } = useProgress(course.id);
 
   useEffect(() => {
+    // Wait for session to load before checking access
+    if (status === "loading") return;
+
     // Check if user has unlocked premium content (via auth or localStorage)
-    if (session?.user) {
+    if (status === "authenticated") {
       setHasAccess(true);
       setIsLoading(false);
     } else {
@@ -40,7 +43,7 @@ export default function LessonContent({
       setHasAccess(unlocked === "true");
       setIsLoading(false);
     }
-  }, [session]);
+  }, [status]);
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();

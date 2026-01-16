@@ -14,18 +14,20 @@ interface LessonSidebarProps {
 export default function LessonSidebar({ course, currentSlug }: LessonSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
-  const { data: session } = useSession();
+  const { status } = useSession();
   const { isCompleted } = useProgress(course.id);
 
   // Check if user has unlocked premium content (via auth or localStorage)
   useEffect(() => {
-    if (session?.user) {
+    if (status === "loading") return;
+
+    if (status === "authenticated") {
       setHasAccess(true);
     } else {
       const unlocked = localStorage.getItem("bfe-course-access");
       setHasAccess(unlocked === "true");
     }
-  }, [session]);
+  }, [status]);
 
   // Find the module that contains the current lesson
   const currentModuleId = currentSlug
