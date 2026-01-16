@@ -13,12 +13,12 @@ export default function ResourcesPage() {
       title: "Tech & Coding",
       description: "Hands-on projects and practical tech applications for everyday life.",
       items: [
-        { name: "Coding Tutorials", description: "Step-by-step guides for building real projects", tag: "Popular" },
         { name: "System Design Guide", description: "Learn to design scalable systems from scratch", tag: "Advanced", href: "/resources/system-design" },
         { name: "Web Development", description: "HTML, CSS, JavaScript, and modern frameworks", tag: "Beginner", href: "/resources/web-development" },
-        { name: "App Development", description: "Build your next big app from idea to launch", tag: "Trending" },
-        { name: "Cloud & DevOps", description: "Get hands-on with AWS, GCP, and deployment", tag: "In-Demand" },
-        { name: "AI & Machine Learning", description: "Practical ML tools and applications", tag: "Hot" },
+        // { name: "Coding Tutorials", description: "Step-by-step guides for building real projects", tag: "Popular" },
+        // { name: "App Development", description: "Build your next big app from idea to launch", tag: "Trending" },
+        // { name: "Cloud & DevOps", description: "Get hands-on with AWS, GCP, and deployment", tag: "In-Demand" },
+        // { name: "AI & Machine Learning", description: "Practical ML tools and applications", tag: "Hot" },
       ],
     },
     {
