@@ -14,7 +14,7 @@ export default function ResourcesPage() {
       description: "Hands-on projects and practical tech applications for everyday life.",
       items: [
         { name: "Coding Tutorials", description: "Step-by-step guides for building real projects", tag: "Popular" },
-        { name: "System Design Guide", description: "Learn to design scalable systems from scratch", tag: "Advanced" },
+        { name: "System Design Guide", description: "Learn to design scalable systems from scratch", tag: "Advanced", href: "/resources/system-design" },
         { name: "Web Development", description: "HTML, CSS, JavaScript, and modern frameworks", tag: "Beginner" },
         { name: "App Development", description: "Build your next big app from idea to launch", tag: "Trending" },
         { name: "Cloud & DevOps", description: "Get hands-on with AWS, GCP, and deployment", tag: "In-Demand" },
@@ -101,7 +101,7 @@ export default function ResourcesPage() {
                 {category.items.map((item, itemIndex) => (
                   <Link
                     key={itemIndex}
-                    href="#"
+                    href={item.href || "#"}
                     className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#ffe500] hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-start justify-between mb-3">
