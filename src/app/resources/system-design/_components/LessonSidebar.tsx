@@ -23,7 +23,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
 
   return (
     <aside className={`${sidebarOpen ? "w-80" : "w-12"} flex-shrink-0 transition-all hidden lg:block`}>
-      <div className="sticky top-28">
+      <div className="sticky top-36">
         <div className="flex items-center justify-between mb-4">
           {sidebarOpen && <h3 className="font-medium">Course Content</h3>}
           <button

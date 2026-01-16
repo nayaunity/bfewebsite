@@ -57,7 +57,7 @@ export default async function LessonPage({ params }: PageProps) {
   return (
     <>
       <Navigation />
-      <main className="pt-20 md:pt-24">
+      <main className="pt-28 md:pt-32">
         {/* Breadcrumb */}
         <div className="bg-gray-50 border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

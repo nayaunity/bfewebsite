@@ -20,7 +20,7 @@ export default function SystemDesignGuidePage() {
   return (
     <>
       <Navigation />
-      <main className="pt-20 md:pt-24">
+      <main className="pt-28 md:pt-32">
         {/* Hero */}
         <section className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
