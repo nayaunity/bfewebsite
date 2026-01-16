@@ -56,6 +56,8 @@ import systemDesignCourse from "@/data/courses/system-design.json";
 import systemDesignLessons from "@/data/courses/system-design-lessons.json";
 import webDevelopmentCourse from "@/data/courses/web-development.json";
 import webDevelopmentLessons from "@/data/courses/web-development-lessons.json";
+import claudeCodeCourse from "@/data/courses/claude-code.json";
+import claudeCodeLessons from "@/data/courses/claude-code-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
@@ -64,6 +66,8 @@ export function getCourse(courseId: string): Course | null {
       return systemDesignCourse as Course;
     case "web-development":
       return webDevelopmentCourse as Course;
+    case "claude-code":
+      return claudeCodeCourse as Course;
     default:
       return null;
   }
@@ -81,6 +85,9 @@ export function getLessonContent(
       break;
     case "web-development":
       lessons = webDevelopmentLessons as Record<string, LessonContent>;
+      break;
+    case "claude-code":
+      lessons = claudeCodeLessons as Record<string, LessonContent>;
       break;
     default:
       return null;

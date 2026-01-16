@@ -1,0 +1,744 @@
+{
+  "what-is-claude-code": {
+    "intro": "Claude Code is an agentic coding tool that lives in your terminal. It understands your codebase, can edit files, run commands, and help you build software faster than ever before.",
+    "sections": [
+      {
+        "heading": "What Makes Claude Code Different",
+        "content": "Unlike traditional code completion tools, Claude Code is a full coding agent. It can:\n\n- **Read and understand** your entire codebase\n- **Edit multiple files** across your project\n- **Run terminal commands** like tests, builds, and git operations\n- **Search the web** for documentation and solutions\n- **Plan and execute** multi-step tasks\n\nThink of it as having a senior developer sitting next to you, ready to help with any coding task."
+      },
+      {
+        "heading": "When to Use Claude Code",
+        "content": "Claude Code excels at:\n\n- **Building new features** from a description\n- **Debugging complex issues** by analyzing code and error messages\n- **Refactoring** large amounts of code consistently\n- **Writing tests** for existing functionality\n- **Understanding unfamiliar codebases** quickly\n- **Automating repetitive tasks** like migrations or updates\n\nIt's particularly powerful for tasks that would take you significant time to do manually."
+      },
+      {
+        "heading": "How It Works",
+        "content": "When you give Claude Code a task, it:\n\n1. **Analyzes** your request and the relevant code\n2. **Plans** the steps needed to complete the task\n3. **Executes** each step, reading files, making edits, and running commands\n4. **Iterates** based on results (like test failures or errors)\n5. **Completes** the task and summarizes what was done\n\nYou stay in control throughout - Claude asks for permission before making changes and you can guide the process at any point."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Documentation",
+        "url": "https://docs.anthropic.com/en/docs/claude-code",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Official documentation for Claude Code features and capabilities."
+      },
+      {
+        "title": "Claude Code GitHub",
+        "url": "https://github.com/anthropics/claude-code",
+        "type": "Repository",
+        "source": "GitHub",
+        "description": "Source code and issue tracking for Claude Code."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude Code is an AI coding agent that works in your terminal",
+      "It can read, edit, and execute code across your entire project",
+      "You stay in control while Claude handles the heavy lifting"
+    ]
+  },
+  "installation-setup": {
+    "intro": "Getting started with Claude Code takes just a few minutes. Let's walk through the installation process and initial configuration.",
+    "sections": [
+      {
+        "heading": "Prerequisites",
+        "content": "Before installing Claude Code, make sure you have:\n\n- **Node.js 18+** installed on your system\n- A **terminal** application (Terminal on Mac, Windows Terminal, or any Linux terminal)\n- An **Anthropic account** for API access\n\nYou can check your Node version by running:\n\n```bash\nnode --version\n```\n\nIf you need to install Node.js, visit [nodejs.org](https://nodejs.org) and download the LTS version."
+      },
+      {
+        "heading": "Installation",
+        "content": "Install Claude Code globally using npm:\n\n```bash\nnpm install -g @anthropic-ai/claude-code\n```\n\nOnce installed, verify the installation:\n\n```bash\nclaude --version\n```\n\nYou should see the version number printed to your terminal."
+      },
+      {
+        "heading": "Authentication",
+        "content": "The first time you run Claude Code, you'll need to authenticate:\n\n```bash\nclaude\n```\n\nThis will open a browser window where you can sign in with your Anthropic account. Once authenticated, Claude Code will remember your credentials.\n\nAlternatively, you can set your API key directly:\n\n```bash\nexport ANTHROPIC_API_KEY=your-api-key\n```"
+      },
+      {
+        "heading": "Configuration (Optional)",
+        "content": "Claude Code works great out of the box, but you can customize its behavior:\n\n**Set your preferred model:**\n```bash\nclaude config set model claude-sonnet-4-20250514\n```\n\n**Enable auto-accept for certain operations:**\n```bash\nclaude config set autoAccept.edit true\n```\n\nView all settings with:\n```bash\nclaude config list\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Node.js Download",
+        "url": "https://nodejs.org",
+        "type": "Tool",
+        "source": "Node.js",
+        "description": "Download and install the latest Node.js runtime."
+      },
+      {
+        "title": "Anthropic Console",
+        "url": "https://console.anthropic.com",
+        "type": "Tool",
+        "source": "Anthropic",
+        "description": "Manage your Anthropic account and API keys."
+      }
+    ],
+    "keyTakeaways": [
+      "Install Claude Code with npm install -g @anthropic-ai/claude-code",
+      "Authentication happens automatically through browser sign-in",
+      "Configuration is optional but allows customization"
+    ]
+  },
+  "your-first-prompt": {
+    "intro": "Now that Claude Code is installed, let's write your first prompt and see the magic happen. We'll start with something simple and build from there.",
+    "sections": [
+      {
+        "heading": "Starting Claude Code",
+        "content": "Navigate to any project directory and start Claude Code:\n\n```bash\ncd your-project\nclaude\n```\n\nClaude will analyze your project structure and be ready to help. You'll see a prompt where you can type your requests."
+      },
+      {
+        "heading": "Your First Request",
+        "content": "Let's start with something simple. Try asking Claude to explain your project:\n\n```\nWhat does this project do? Give me a brief overview.\n```\n\nClaude will read through your files and provide a summary. This is a great way to:\n- Understand a new codebase\n- Get oriented in a project you haven't touched in a while\n- Verify Claude understands your project correctly"
+      },
+      {
+        "heading": "Making Your First Edit",
+        "content": "Now let's make an actual change. Try something like:\n\n```\nAdd a comment at the top of the main file explaining what it does.\n```\n\nClaude will:\n1. Find the main file in your project\n2. Show you the proposed change\n3. Ask for your approval before making the edit\n\nReview the change and type `y` to accept or `n` to reject."
+      },
+      {
+        "heading": "Running Commands",
+        "content": "Claude can also run terminal commands for you:\n\n```\nRun the tests and tell me if anything fails.\n```\n\nOr:\n\n```\nInstall lodash as a dependency.\n```\n\nClaude will show you the command it plans to run and ask for permission before executing."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Quick Start",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/quickstart",
+        "type": "Tutorial",
+        "source": "Anthropic",
+        "description": "Official quick start guide for Claude Code."
+      }
+    ],
+    "keyTakeaways": [
+      "Start Claude Code by running 'claude' in your project directory",
+      "Begin with exploratory prompts to understand your codebase",
+      "Claude asks permission before making edits or running commands"
+    ]
+  },
+  "understanding-the-interface": {
+    "intro": "Claude Code's terminal interface is designed to keep you informed and in control. Let's explore its key elements and how to navigate effectively.",
+    "sections": [
+      {
+        "heading": "The Prompt Area",
+        "content": "At the bottom of your terminal, you'll see the input area where you type your requests. Key features:\n\n- **Multi-line input**: Press `Shift+Enter` for new lines\n- **History**: Use `Up/Down` arrows to navigate previous prompts\n- **Clear**: Type `/clear` to start a fresh conversation\n- **Exit**: Type `/exit` or press `Ctrl+C` to quit"
+      },
+      {
+        "heading": "Understanding Claude's Responses",
+        "content": "When Claude responds, you'll see different types of output:\n\n- **Thinking**: Claude's reasoning process (can be collapsed)\n- **Tool calls**: Actions Claude wants to take (read file, edit, run command)\n- **Results**: Output from executed commands or file contents\n- **Summary**: Claude's explanation of what was done\n\nPay attention to tool calls - these show exactly what Claude plans to do."
+      },
+      {
+        "heading": "Permission Prompts",
+        "content": "Before making changes, Claude asks for permission:\n\n```\nClaude wants to edit src/index.js\n[y]es / [n]o / [e]dit / [v]iew\n```\n\n- **y**: Accept the change\n- **n**: Reject and try a different approach\n- **e**: Edit the proposed change before accepting\n- **v**: View the full diff\n\nTake time to review changes, especially when you're learning."
+      },
+      {
+        "heading": "Slash Commands",
+        "content": "Claude Code has built-in commands for common operations:\n\n- `/help` - Show available commands\n- `/clear` - Clear conversation history\n- `/compact` - Summarize conversation to save context\n- `/cost` - Show token usage and costs\n- `/model` - Switch between Claude models\n- `/exit` - Quit Claude Code\n\nThese commands help you manage your session efficiently."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Commands Reference",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/commands",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Complete list of slash commands and keyboard shortcuts."
+      }
+    ],
+    "keyTakeaways": [
+      "Review tool calls to understand what Claude plans to do",
+      "Use permission prompts to stay in control of changes",
+      "Slash commands help manage your session efficiently"
+    ]
+  },
+  "anatomy-of-a-good-prompt": {
+    "intro": "The quality of your prompts directly affects the quality of Claude's output. Learn the components of effective prompts that get you better results faster.",
+    "sections": [
+      {
+        "heading": "The Three C's: Clear, Concise, Complete",
+        "content": "Great prompts share three qualities:\n\n**Clear**: State exactly what you want\n- Bad: \"Fix the bug\"\n- Good: \"Fix the null pointer exception in the login function\"\n\n**Concise**: Don't add unnecessary information\n- Bad: \"I've been working on this for hours and I'm frustrated and I need you to...\"\n- Good: \"Add input validation to the signup form\"\n\n**Complete**: Include all necessary context\n- Bad: \"Make it work like the other one\"\n- Good: \"Make the delete button work like the edit button - show a confirmation modal first\""
+      },
+      {
+        "heading": "Structure Your Requests",
+        "content": "For complex tasks, structure your prompt:\n\n```\nI need to add user authentication to this Express app.\n\nRequirements:\n- Use JWT tokens\n- Store users in the existing PostgreSQL database\n- Add login and signup endpoints\n- Protect the /api/dashboard route\n\nThe user model should have: email, password (hashed), name, created_at\n```\n\nThis gives Claude a clear roadmap to follow."
+      },
+      {
+        "heading": "Specify Constraints",
+        "content": "Tell Claude what to avoid or what boundaries to respect:\n\n```\nRefactor the data fetching to use React Query.\n\nConstraints:\n- Don't change the API endpoints\n- Keep the existing error handling behavior\n- Don't modify any test files\n```\n\nConstraints prevent unwanted changes and keep Claude focused."
+      },
+      {
+        "heading": "Ask for What You Actually Need",
+        "content": "Be specific about the output format:\n\n- \"Explain this code\" vs \"Explain this code in 2-3 sentences\"\n- \"Write tests\" vs \"Write unit tests using Jest with at least 80% coverage\"\n- \"Fix the bug\" vs \"Fix the bug and add a regression test\"\n\nThe more specific you are, the better Claude can serve you."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Prompt Engineering Guide",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Comprehensive guide to writing effective prompts for Claude."
+      }
+    ],
+    "keyTakeaways": [
+      "Good prompts are clear, concise, and complete",
+      "Structure complex requests with requirements and constraints",
+      "Be specific about the output format you need"
+    ]
+  },
+  "context-is-everything": {
+    "intro": "Claude Code can read your entire codebase, but it still benefits from context you provide. Learn how to give Claude the right context for better results.",
+    "sections": [
+      {
+        "heading": "What Claude Already Knows",
+        "content": "When you start Claude Code in a directory, it can:\n\n- Read any file in your project\n- Understand your project structure\n- See your dependencies (package.json, requirements.txt, etc.)\n- Access git history and status\n\nYou don't need to paste code into your prompts - just reference files by name."
+      },
+      {
+        "heading": "Providing Additional Context",
+        "content": "Sometimes Claude needs context that isn't in your code:\n\n**Business context:**\n```\nThis is an e-commerce site. The 'premium' users get free shipping on orders over $50.\n```\n\n**Technical decisions:**\n```\nWe're using Redux for state management because the team is familiar with it.\n```\n\n**External dependencies:**\n```\nThe /api/users endpoint returns data in this format: { users: [...], total: number }\n```"
+      },
+      {
+        "heading": "Pointing to Relevant Files",
+        "content": "Help Claude find the right context quickly:\n\n```\nLook at how we handle errors in src/utils/api.js and apply the same pattern to the new endpoint.\n```\n\nOr:\n\n```\nThe component should work like the one in src/components/UserCard.tsx\n```\n\nThis saves time and ensures consistency with your existing code."
+      },
+      {
+        "heading": "Using CLAUDE.md",
+        "content": "Create a `CLAUDE.md` file in your project root to provide persistent context:\n\n```markdown\n# Project Context\n\nThis is a Next.js 14 app using the App Router.\n\n## Coding Standards\n- Use TypeScript for all new files\n- Follow the existing ESLint configuration\n- Write tests for new functionality\n\n## Key Directories\n- src/app - Next.js routes\n- src/components - Reusable components\n- src/lib - Utility functions\n```\n\nClaude reads this file automatically and applies it to every session."
+      }
+    ],
+    "resources": [
+      {
+        "title": "CLAUDE.md Best Practices",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/memory",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "How to use CLAUDE.md for persistent project context."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude can read your entire codebase - reference files by name",
+      "Provide business and technical context Claude can't infer",
+      "Use CLAUDE.md for persistent project-wide context"
+    ]
+  },
+  "iterative-refinement": {
+    "intro": "Complex tasks rarely come out perfect on the first try. Learn how to iterate with Claude to refine results and achieve exactly what you need.",
+    "sections": [
+      {
+        "heading": "The Iteration Mindset",
+        "content": "Think of working with Claude as a conversation, not a one-shot request:\n\n1. **Start broad**: Get a working solution\n2. **Review**: Check if it meets your needs\n3. **Refine**: Ask for specific adjustments\n4. **Repeat**: Until you're satisfied\n\nThis approach often gets better results than trying to specify everything upfront."
+      },
+      {
+        "heading": "Giving Feedback",
+        "content": "After Claude makes changes, give specific feedback:\n\n**Too vague:**\n- \"That's not quite right\"\n- \"Try again\"\n\n**Better:**\n- \"The function works but it's too slow for large arrays. Can you optimize it?\"\n- \"Good, but add error handling for when the API returns 404\"\n- \"This is close - move the validation logic into a separate function\"\n\nSpecific feedback leads to specific improvements."
+      },
+      {
+        "heading": "Building Up Complexity",
+        "content": "For complex features, build up step by step:\n\n```\n1. \"Create a basic form with name and email fields\"\n2. \"Add client-side validation\"\n3. \"Connect it to the API endpoint\"\n4. \"Add loading and error states\"\n5. \"Style it to match the rest of the app\"\n```\n\nEach step is easier to verify and correct than doing everything at once."
+      },
+      {
+        "heading": "When to Start Over",
+        "content": "Sometimes iteration isn't working. Signs you should start fresh:\n\n- Claude is making the same mistakes repeatedly\n- The solution has drifted far from what you need\n- You've realized your initial approach was wrong\n\nDon't hesitate to say:\n```\nLet's take a different approach. Instead of X, let's try Y.\n```\n\nOr use `/clear` to reset the conversation entirely."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Effective AI Pair Programming",
+        "url": "https://www.youtube.com/watch?v=example",
+        "type": "Video",
+        "source": "YouTube",
+        "description": "Tips for iterating effectively with AI coding assistants."
+      }
+    ],
+    "keyTakeaways": [
+      "Treat complex tasks as conversations, not one-shot requests",
+      "Give specific feedback to get specific improvements",
+      "Build complex features step by step for better results"
+    ]
+  },
+  "common-prompting-mistakes": {
+    "intro": "Even experienced developers make prompting mistakes. Learn the most common pitfalls and how to avoid them for smoother Claude Code sessions.",
+    "sections": [
+      {
+        "heading": "Being Too Vague",
+        "content": "**The mistake:**\n```\nMake the code better.\n```\n\n**The problem:** \"Better\" could mean faster, more readable, more maintainable, or many other things.\n\n**The fix:**\n```\nRefactor this function to:\n- Use early returns instead of nested if statements\n- Add JSDoc comments for the parameters\n- Extract the validation logic into a separate helper\n```"
+      },
+      {
+        "heading": "Overloading a Single Prompt",
+        "content": "**The mistake:**\n```\nAdd authentication, create a dashboard page, set up the database, write tests, and deploy to production.\n```\n\n**The problem:** Too many tasks at once leads to confusion and mistakes.\n\n**The fix:** Break it into focused requests:\n```\nLet's start with authentication. Add JWT-based auth with login and signup endpoints.\n```\n\nThen move to the next task after the first is complete."
+      },
+      {
+        "heading": "Not Reviewing Changes",
+        "content": "**The mistake:** Accepting every change without looking at the diff.\n\n**The problem:** Claude might:\n- Change more than you expected\n- Introduce subtle bugs\n- Remove code you wanted to keep\n\n**The fix:** Always review diffs, especially for:\n- Large changes\n- Security-sensitive code\n- Complex business logic\n\nUse `v` to view full diffs and `e` to make adjustments."
+      },
+      {
+        "heading": "Fighting Instead of Guiding",
+        "content": "**The mistake:**\n```\nNo, that's wrong. You're not listening. Just do what I said.\n```\n\n**The problem:** Frustration doesn't help Claude understand better.\n\n**The fix:** Guide with specifics:\n```\nThis isn't what I need. Let me clarify:\n- The function should return a Promise, not use callbacks\n- Use the existing logger from src/utils/logger.js\n- Don't modify the User model\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Common Prompting Antipatterns",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering#common-mistakes",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Official guide to avoiding common prompting mistakes."
+      }
+    ],
+    "keyTakeaways": [
+      "Be specific about what 'better' means to you",
+      "Break large tasks into focused, sequential requests",
+      "Always review changes before accepting them"
+    ]
+  },
+  "generating-code-from-scratch": {
+    "intro": "One of Claude Code's superpowers is generating entire features from descriptions. Learn how to get high-quality code generation that fits your project.",
+    "sections": [
+      {
+        "heading": "Describing What You Need",
+        "content": "Start with a clear description of the feature:\n\n```\nCreate a React component for a user profile card that displays:\n- User avatar (with fallback to initials)\n- Name and username\n- Bio (truncated to 100 characters with 'show more')\n- Follow/unfollow button\n- Follower and following counts\n\nUse Tailwind CSS for styling. The component should accept a user object as props.\n```\n\nInclude both functional requirements and technical constraints."
+      },
+      {
+        "heading": "Specifying Patterns to Follow",
+        "content": "Point Claude to existing code patterns:\n\n```\nCreate an API route for updating user settings.\n\nFollow the pattern in src/app/api/users/route.ts:\n- Use the same error handling approach\n- Validate with zod schemas\n- Return consistent response format\n```\n\nThis ensures consistency across your codebase."
+      },
+      {
+        "heading": "Handling Multiple Files",
+        "content": "For features that span multiple files, be explicit:\n\n```\nCreate a complete CRUD feature for blog posts:\n\n1. Database model in prisma/schema.prisma\n2. API routes in src/app/api/posts/\n3. React components in src/components/posts/\n4. Type definitions in src/types/\n\nInclude proper TypeScript types throughout.\n```\n\nClaude will create all the necessary files with proper imports."
+      },
+      {
+        "heading": "Reviewing Generated Code",
+        "content": "Always review generated code for:\n\n- **Security**: Input validation, SQL injection, XSS prevention\n- **Error handling**: Edge cases, error messages\n- **Performance**: Unnecessary re-renders, inefficient queries\n- **Consistency**: Naming conventions, code style\n\nAsk Claude to fix any issues you spot:\n```\nThis looks good, but add input sanitization to prevent XSS attacks.\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Code Generation Best Practices",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/code-generation",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Tips for getting high-quality generated code."
+      }
+    ],
+    "keyTakeaways": [
+      "Describe features with both functional and technical requirements",
+      "Point to existing patterns for consistency",
+      "Always review generated code for security and quality"
+    ]
+  },
+  "editing-existing-code": {
+    "intro": "Most of your time with Claude Code will be spent editing existing code rather than writing from scratch. Learn techniques for precise, safe modifications.",
+    "sections": [
+      {
+        "heading": "Targeted Edits",
+        "content": "Be specific about what to change:\n\n**Too broad:**\n```\nUpdate the user service.\n```\n\n**Better:**\n```\nIn src/services/userService.ts, update the getUserById function to:\n- Add caching using Redis (we have a client at src/lib/redis.ts)\n- Cache for 5 minutes\n- Invalidate cache when user is updated\n```\n\nSpecific requests lead to specific changes."
+      },
+      {
+        "heading": "Preserving What Works",
+        "content": "Tell Claude what NOT to change:\n\n```\nRefactor the authentication middleware to use async/await.\n\nKeep:\n- The existing error response format\n- All the current permission checks\n- The logging calls\n\nOnly change the Promise handling syntax.\n```\n\nThis prevents unintended modifications."
+      },
+      {
+        "heading": "Making Bulk Edits",
+        "content": "Claude excels at repetitive changes across files:\n\n```\nUpdate all API routes to use the new error handling wrapper.\n\nChange this pattern:\ntry { ... } catch (e) { return Response.json({ error: e.message }, { status: 500 }) }\n\nTo this:\nreturn withErrorHandling(async () => { ... })\n\nApply this to all files in src/app/api/\n```\n\nReview each change, but Claude saves you from tedious manual edits."
+      },
+      {
+        "heading": "Using the Edit Command",
+        "content": "When Claude shows a proposed edit, you have options:\n\n- `y` - Accept as shown\n- `n` - Reject and explain why\n- `e` - Modify the edit before applying\n- `v` - View the full diff with context\n\nThe `e` option is powerful - you can adjust Claude's changes before they're applied:\n\n```\n[After pressing 'e']\nKeep the refactoring but don't remove the console.log statements - we still need those for debugging.\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Safe Code Modification Patterns",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/editing",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Best practices for editing code safely with Claude."
+      }
+    ],
+    "keyTakeaways": [
+      "Be specific about exactly what to change and what to preserve",
+      "Claude can make bulk edits across multiple files efficiently",
+      "Use the 'e' option to modify proposed edits before applying"
+    ]
+  },
+  "refactoring-with-ai": {
+    "intro": "Refactoring is where Claude Code truly shines. It can analyze patterns, suggest improvements, and execute large-scale refactors that would take hours manually.",
+    "sections": [
+      {
+        "heading": "Identifying Refactoring Opportunities",
+        "content": "Ask Claude to analyze your code:\n\n```\nReview src/components/ and identify:\n- Duplicated code that could be extracted into shared components\n- Components that are too large and should be split\n- Inconsistent patterns that should be standardized\n```\n\nClaude will provide a prioritized list of improvements."
+      },
+      {
+        "heading": "Safe Refactoring Process",
+        "content": "Follow this process for safe refactoring:\n\n1. **Make sure tests pass first**\n```\nRun the tests and confirm everything passes.\n```\n\n2. **Refactor in small steps**\n```\nExtract the form validation logic into a custom hook.\n```\n\n3. **Verify after each change**\n```\nRun the tests again to make sure nothing broke.\n```\n\n4. **Commit frequently**\n```\nCommit these changes with message: 'Extract useFormValidation hook'\n```"
+      },
+      {
+        "heading": "Common Refactoring Tasks",
+        "content": "Claude handles these refactoring patterns well:\n\n**Extract component:**\n```\nExtract the header section of UserProfile into a separate UserProfileHeader component.\n```\n\n**Convert patterns:**\n```\nConvert all class components in src/components/ to functional components with hooks.\n```\n\n**Rename across codebase:**\n```\nRename the 'data' prop to 'userData' across all components that use it.\n```\n\n**Modernize syntax:**\n```\nUpdate all files using CommonJS requires to use ES6 imports.\n```"
+      },
+      {
+        "heading": "Handling Breaking Changes",
+        "content": "When refactoring might break things:\n\n```\nI want to change the API response format for /api/users.\n\nCurrent: { data: [...users] }\nNew: { users: [...], meta: { total, page } }\n\nFind all places that consume this endpoint and update them to handle the new format.\n```\n\nClaude will track down all usages and update them consistently."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Refactoring Guru",
+        "url": "https://refactoring.guru/refactoring",
+        "type": "Guide",
+        "source": "Refactoring Guru",
+        "description": "Comprehensive catalog of refactoring patterns and techniques."
+      }
+    ],
+    "keyTakeaways": [
+      "Ask Claude to identify refactoring opportunities in your code",
+      "Refactor in small, testable steps with frequent commits",
+      "Claude can track down all usages when making breaking changes"
+    ]
+  },
+  "writing-tests": {
+    "intro": "Claude Code can write tests that actually catch bugs. Learn how to generate meaningful test coverage for your code.",
+    "sections": [
+      {
+        "heading": "Generating Tests for Existing Code",
+        "content": "Point Claude to code that needs tests:\n\n```\nWrite unit tests for src/utils/validation.ts using Jest.\n\nCover:\n- All exported functions\n- Edge cases (empty strings, null values, etc.)\n- Error conditions\n\nAim for high coverage but focus on meaningful tests.\n```"
+      },
+      {
+        "heading": "Specifying Test Patterns",
+        "content": "Tell Claude your testing conventions:\n\n```\nFollow our existing test patterns:\n- Use describe/it blocks\n- Use our custom render helper from test/utils\n- Mock API calls using msw\n- Test user interactions, not implementation details\n\nLook at src/components/__tests__/Button.test.tsx for reference.\n```"
+      },
+      {
+        "heading": "Test-Driven Development",
+        "content": "Use Claude for TDD:\n\n```\nI want to build a function that validates credit card numbers.\n\nFirst, write the tests for:\n- Valid Visa, Mastercard, and Amex numbers\n- Invalid numbers (wrong length, failed Luhn check)\n- Non-numeric input\n\nThen implement the function to make the tests pass.\n```\n\nClaude will write tests first, then implement the solution."
+      },
+      {
+        "heading": "Improving Test Quality",
+        "content": "Ask Claude to review and improve existing tests:\n\n```\nReview the tests in src/__tests__/ and:\n- Identify tests that don't actually test anything meaningful\n- Find missing edge cases\n- Suggest additional test scenarios\n- Fix any flaky tests\n```\n\nQuality tests are more valuable than quantity."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Testing Best Practices",
+        "url": "https://kentcdodds.com/blog/common-mistakes-with-react-testing-library",
+        "type": "Article",
+        "source": "Kent C. Dodds",
+        "description": "Common testing mistakes and how to avoid them."
+      },
+      {
+        "title": "Jest Documentation",
+        "url": "https://jestjs.io/docs/getting-started",
+        "type": "Documentation",
+        "source": "Jest",
+        "description": "Official Jest testing framework documentation."
+      }
+    ],
+    "keyTakeaways": [
+      "Specify testing frameworks and patterns for consistent tests",
+      "Use Claude for test-driven development workflows",
+      "Focus on meaningful tests over high coverage numbers"
+    ]
+  },
+  "debugging-with-claude": {
+    "intro": "Debugging is one of Claude Code's strongest capabilities. It can analyze errors, trace through code, and suggest fixes faster than traditional debugging.",
+    "sections": [
+      {
+        "heading": "Sharing Error Context",
+        "content": "When you encounter an error, share the full context:\n\n```\nI'm getting this error when I try to save a user:\n\n[paste error message and stack trace]\n\nIt happens when I click the save button on the profile page.\nThe user data being sent is: { name: \"Test\", email: \"test@example.com\" }\n```\n\nThe more context you provide, the faster Claude can identify the issue."
+      },
+      {
+        "heading": "Analyzing Stack Traces",
+        "content": "Let Claude analyze complex stack traces:\n\n```\nExplain this error and identify the root cause:\n\n[paste stack trace]\n\nThen suggest a fix.\n```\n\nClaude will trace through the call stack and explain where things went wrong."
+      },
+      {
+        "heading": "Reproducing Issues",
+        "content": "If the bug is intermittent:\n\n```\nThis error happens randomly, maybe 1 in 10 times:\n\n[error details]\n\nHelp me understand what could cause this to be intermittent.\nCheck for:\n- Race conditions\n- Timing issues\n- Unhandled promises\n- State management problems\n```"
+      },
+      {
+        "heading": "Adding Debug Logging",
+        "content": "Use Claude to add strategic logging:\n\n```\nI can't figure out why the order total is wrong.\n\nAdd console.log statements to src/utils/calculateTotal.ts\nto help me trace:\n- Input values at each step\n- Intermediate calculations\n- The final result\n```\n\nAfter debugging, ask Claude to remove the logging."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Debugging JavaScript",
+        "url": "https://developer.chrome.com/docs/devtools/javascript/",
+        "type": "Documentation",
+        "source": "Chrome DevTools",
+        "description": "Guide to debugging JavaScript with Chrome DevTools."
+      }
+    ],
+    "keyTakeaways": [
+      "Share full error context including stack traces and input data",
+      "Let Claude analyze stack traces to find root causes",
+      "Use Claude to add strategic debug logging"
+    ]
+  },
+  "understanding-error-messages": {
+    "intro": "Error messages often contain the key to fixing bugs, but they can be cryptic. Learn how to use Claude to decode and resolve errors quickly.",
+    "sections": [
+      {
+        "heading": "Common Error Patterns",
+        "content": "Claude recognizes common error patterns instantly:\n\n```\nWhat does this error mean and how do I fix it?\n\nTypeError: Cannot read properties of undefined (reading 'map')\n    at UserList (src/components/UserList.tsx:15:23)\n```\n\nClaude will explain that you're trying to call `.map()` on an undefined value and suggest adding a null check or default value."
+      },
+      {
+        "heading": "Framework-Specific Errors",
+        "content": "Claude understands framework-specific errors:\n\n**React:**\n```\nWarning: Each child in a list should have a unique \"key\" prop.\n```\n\n**Next.js:**\n```\nError: Hydration failed because the initial UI does not match what was rendered on the server.\n```\n\n**TypeScript:**\n```\nTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\n```\n\nJust paste the error and Claude will explain and fix it."
+      },
+      {
+        "heading": "Build and Compilation Errors",
+        "content": "Build errors can be particularly confusing:\n\n```\nMy build is failing with this error:\n\n[paste webpack/vite/esbuild error]\n\nWhat's wrong and how do I fix it?\n```\n\nClaude can interpret complex bundler errors and suggest configuration changes."
+      },
+      {
+        "heading": "Learning from Errors",
+        "content": "Use errors as learning opportunities:\n\n```\nExplain this error in detail:\n\n[error message]\n\nI want to understand:\n- Why this error occurs\n- How to fix it\n- How to prevent it in the future\n```\n\nUnderstanding errors deeply helps you avoid them in the future."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Common JavaScript Errors",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors",
+        "type": "Documentation",
+        "source": "MDN",
+        "description": "Reference guide to JavaScript error messages."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude recognizes and can explain common error patterns",
+      "Paste error messages directly for quick explanations",
+      "Use errors as learning opportunities to prevent future issues"
+    ]
+  },
+  "code-review-assistance": {
+    "intro": "Claude can act as a code reviewer, catching bugs, suggesting improvements, and ensuring consistency. Learn how to get valuable code review feedback.",
+    "sections": [
+      {
+        "heading": "Requesting a Review",
+        "content": "Ask Claude to review your changes:\n\n```\nReview the changes I made to src/services/orderService.ts\n\nLook for:\n- Bugs or logic errors\n- Security vulnerabilities\n- Performance issues\n- Code style inconsistencies\n- Missing error handling\n```"
+      },
+      {
+        "heading": "Focused Reviews",
+        "content": "For specific concerns, narrow the focus:\n\n**Security review:**\n```\nReview this authentication code for security vulnerabilities.\nFocus on: input validation, token handling, and session management.\n```\n\n**Performance review:**\n```\nReview this database query code for performance issues.\nLook for N+1 queries, missing indexes, and inefficient patterns.\n```"
+      },
+      {
+        "heading": "Pre-PR Review",
+        "content": "Before opening a pull request:\n\n```\nI'm about to open a PR for this feature. Review all my changes:\n\ngit diff main...HEAD\n\nLet me know if there's anything I should fix before requesting review.\n```\n\nClaude will catch issues before your teammates see them."
+      },
+      {
+        "heading": "Implementing Review Feedback",
+        "content": "When you have feedback from human reviewers:\n\n```\nI got this feedback on my PR:\n\n\"The error handling here is inconsistent with the rest of the codebase.\nWe should use the ErrorBoundary pattern.\"\n\nUpdate my code to address this feedback.\n```\n\nClaude can implement review feedback quickly."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Code Review Best Practices",
+        "url": "https://google.github.io/eng-practices/review/",
+        "type": "Guide",
+        "source": "Google",
+        "description": "Google's engineering practices for code review."
+      }
+    ],
+    "keyTakeaways": [
+      "Use Claude for pre-PR reviews to catch issues early",
+      "Focus reviews on specific concerns like security or performance",
+      "Claude can quickly implement review feedback"
+    ]
+  },
+  "performance-optimization": {
+    "intro": "Claude can identify performance bottlenecks and suggest optimizations. Learn how to use it to make your code faster.",
+    "sections": [
+      {
+        "heading": "Identifying Performance Issues",
+        "content": "Ask Claude to analyze performance:\n\n```\nThis component is rendering slowly. Analyze UserDashboard.tsx and identify:\n- Unnecessary re-renders\n- Expensive calculations that could be memoized\n- Data fetching issues\n- Large component trees that could be split\n```"
+      },
+      {
+        "heading": "Optimizing React Components",
+        "content": "Common React optimizations Claude can apply:\n\n```\nOptimize this component:\n- Add useMemo for the filtered data\n- Use useCallback for event handlers passed to children\n- Split the heavy list into a virtualized component\n- Add React.memo where appropriate\n```"
+      },
+      {
+        "heading": "Database Query Optimization",
+        "content": "For backend performance:\n\n```\nThis API endpoint is slow. Review the database queries in\nsrc/app/api/products/route.ts and:\n- Identify N+1 query problems\n- Suggest indexes that would help\n- Optimize the Prisma queries\n- Add appropriate caching\n```"
+      },
+      {
+        "heading": "Bundle Size Optimization",
+        "content": "For frontend bundle size:\n\n```\nAnalyze our bundle and suggest ways to reduce size:\n- Find large dependencies that could be replaced\n- Identify code that could be lazy loaded\n- Check for duplicate dependencies\n- Suggest tree-shaking improvements\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "React Performance",
+        "url": "https://react.dev/learn/render-and-commit",
+        "type": "Documentation",
+        "source": "React",
+        "description": "Understanding React's rendering behavior for optimization."
+      },
+      {
+        "title": "Web Vitals",
+        "url": "https://web.dev/vitals/",
+        "type": "Guide",
+        "source": "web.dev",
+        "description": "Essential metrics for web performance."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude can identify performance bottlenecks in your code",
+      "Be specific about the type of performance issue you're experiencing",
+      "Address both frontend rendering and backend query performance"
+    ]
+  },
+  "project-planning-with-ai": {
+    "intro": "Claude Code can help you plan projects before writing any code. Learn how to use it for architecture decisions and feature planning.",
+    "sections": [
+      {
+        "heading": "Describing Your Project",
+        "content": "Start with a clear project description:\n\n```\nI want to build a task management app with:\n- User authentication\n- Create, edit, delete tasks\n- Organize tasks into projects\n- Due dates and reminders\n- Collaboration (share projects with others)\n\nWhat architecture would you recommend for this?\nConsider: tech stack, database schema, API design.\n```"
+      },
+      {
+        "heading": "Breaking Down Features",
+        "content": "Have Claude break down complex features:\n\n```\nBreak down the 'collaboration' feature into implementable tasks.\n\nFor each task, specify:\n- What needs to be built\n- Dependencies on other tasks\n- Estimated complexity (simple/medium/complex)\n- Files that will need to be created or modified\n```"
+      },
+      {
+        "heading": "Evaluating Trade-offs",
+        "content": "Use Claude to evaluate technical decisions:\n\n```\nFor the real-time collaboration feature, compare:\n1. WebSockets with Socket.io\n2. Server-Sent Events\n3. Polling\n\nConsider: complexity, scalability, browser support, and our\ncurrent Next.js stack.\n```"
+      },
+      {
+        "heading": "Creating Implementation Plans",
+        "content": "Get detailed implementation plans:\n\n```\nCreate a step-by-step implementation plan for adding\nStripe payments to our SaaS app.\n\nInclude:\n- Required Stripe products/features\n- Database schema changes\n- API endpoints needed\n- Frontend components\n- Testing strategy\n- Security considerations\n```\n\nClaude will create a comprehensive plan you can follow."
+      }
+    ],
+    "resources": [
+      {
+        "title": "System Design Primer",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "type": "Repository",
+        "source": "GitHub",
+        "description": "Learn how to design large-scale systems."
+      }
+    ],
+    "keyTakeaways": [
+      "Use Claude to plan architecture before writing code",
+      "Break complex features into implementable tasks",
+      "Evaluate technical trade-offs with Claude's help"
+    ]
+  },
+  "documentation-generation": {
+    "intro": "Good documentation is essential but time-consuming. Claude can generate and maintain documentation that stays accurate and helpful.",
+    "sections": [
+      {
+        "heading": "API Documentation",
+        "content": "Generate API docs from your code:\n\n```\nGenerate API documentation for all routes in src/app/api/\n\nFor each endpoint include:\n- HTTP method and path\n- Description of what it does\n- Request body schema (if applicable)\n- Response format with examples\n- Error responses\n- Authentication requirements\n```"
+      },
+      {
+        "heading": "Code Comments and JSDoc",
+        "content": "Add documentation to existing code:\n\n```\nAdd JSDoc comments to all exported functions in src/utils/\n\nInclude:\n- Brief description\n- @param tags with types and descriptions\n- @returns tag\n- @example with usage\n- @throws for error conditions\n```"
+      },
+      {
+        "heading": "README Generation",
+        "content": "Create or update project README:\n\n```\nGenerate a comprehensive README.md for this project.\n\nInclude:\n- Project description\n- Features list\n- Installation instructions\n- Environment variables needed\n- Development setup\n- Available scripts\n- Project structure overview\n- Contributing guidelines\n```"
+      },
+      {
+        "heading": "Keeping Docs Updated",
+        "content": "After making changes:\n\n```\nI just added a new API endpoint for password reset.\nUpdate the API documentation to include it.\n\nAlso check if any existing documentation is now outdated.\n```\n\nClaude tracks changes and keeps docs in sync."
+      }
+    ],
+    "resources": [
+      {
+        "title": "JSDoc Reference",
+        "url": "https://jsdoc.app/",
+        "type": "Documentation",
+        "source": "JSDoc",
+        "description": "Official JSDoc documentation and tag reference."
+      },
+      {
+        "title": "README Best Practices",
+        "url": "https://www.makeareadme.com/",
+        "type": "Guide",
+        "source": "Make a README",
+        "description": "Guide to writing great README files."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude can generate comprehensive API documentation",
+      "Add JSDoc comments to improve code maintainability",
+      "Keep documentation updated as your code changes"
+    ]
+  },
+  "git-workflows": {
+    "intro": "Claude Code integrates seamlessly with git, helping you manage commits, branches, and pull requests more efficiently.",
+    "sections": [
+      {
+        "heading": "Smart Commits",
+        "content": "Let Claude write meaningful commit messages:\n\n```\nCommit these changes with a descriptive message.\n```\n\nClaude analyzes your changes and writes a commit message that:\n- Summarizes what changed\n- Explains why (if apparent from context)\n- Follows conventional commit format if your project uses it"
+      },
+      {
+        "heading": "Branch Management",
+        "content": "Claude can help with branch operations:\n\n```\nCreate a new branch for adding the payment feature.\nUse our naming convention: feature/description\n```\n\nOr:\n\n```\nI need to merge main into my branch and resolve any conflicts.\nHelp me through it.\n```"
+      },
+      {
+        "heading": "Pull Request Creation",
+        "content": "Generate complete PR descriptions:\n\n```\nCreate a pull request for my changes.\n\nGenerate a description that includes:\n- Summary of changes\n- Why these changes were made\n- How to test\n- Screenshots if there are UI changes\n- Any migration steps needed\n```"
+      },
+      {
+        "heading": "Reviewing Git History",
+        "content": "Use Claude to understand what happened:\n\n```\nWhat changes were made to the auth system in the last month?\nSummarize the commits that touched src/auth/\n```\n\nOr:\n\n```\nWho last modified this function and why?\ngit blame this section and explain the changes.\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Conventional Commits",
+        "url": "https://www.conventionalcommits.org/",
+        "type": "Specification",
+        "source": "Conventional Commits",
+        "description": "A specification for adding human and machine readable meaning to commit messages."
+      },
+      {
+        "title": "GitHub CLI",
+        "url": "https://cli.github.com/",
+        "type": "Tool",
+        "source": "GitHub",
+        "description": "GitHub's official command line tool for PR and issue management."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude writes descriptive commit messages automatically",
+      "Get help with complex git operations like conflict resolution",
+      "Generate comprehensive PR descriptions from your changes"
+    ]
+  },
+  "building-full-features": {
+    "intro": "Put it all together: use Claude Code to build complete features from start to finish. This lesson walks through a real-world example.",
+    "sections": [
+      {
+        "heading": "Feature: User Notifications",
+        "content": "Let's build a complete notification system:\n\n```\nI want to add a notification system to my app.\n\nRequirements:\n- Users can receive notifications (in-app and email)\n- Notification types: mentions, comments, system alerts\n- Users can mark notifications as read\n- Users can configure notification preferences\n- Show unread count in the header\n\nLet's plan this out first, then implement step by step.\n```"
+      },
+      {
+        "heading": "Step 1: Database Schema",
+        "content": "Start with the data model:\n\n```\nCreate the database schema for notifications.\n\nWe need:\n- Notifications table\n- User notification preferences table\n- Proper indexes for common queries\n\nUpdate prisma/schema.prisma and run the migration.\n```\n\nReview the schema before proceeding."
+      },
+      {
+        "heading": "Step 2: API Endpoints",
+        "content": "Build the API layer:\n\n```\nCreate API routes for notifications:\n\nGET /api/notifications - List user's notifications (paginated)\nPOST /api/notifications/:id/read - Mark as read\nPOST /api/notifications/read-all - Mark all as read\nGET /api/notifications/preferences - Get preferences\nPUT /api/notifications/preferences - Update preferences\n\nFollow our existing API patterns.\n```"
+      },
+      {
+        "heading": "Step 3: Frontend Components",
+        "content": "Create the UI:\n\n```\nCreate the notification UI components:\n\n1. NotificationBell - Shows in header with unread count\n2. NotificationDropdown - List of recent notifications\n3. NotificationItem - Individual notification display\n4. NotificationPreferences - Settings page component\n\nUse our existing component patterns and Tailwind styles.\n```"
+      },
+      {
+        "heading": "Step 4: Integration & Testing",
+        "content": "Connect everything and verify:\n\n```\nNow let's:\n1. Add the NotificationBell to the header\n2. Create a test notification when a user comments\n3. Write tests for the API endpoints\n4. Write component tests for the UI\n\nRun all tests to make sure everything works.\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Feature Development Workflow",
+        "url": "https://www.atlassian.com/agile/project-management/user-stories",
+        "type": "Guide",
+        "source": "Atlassian",
+        "description": "Best practices for planning and implementing features."
+      }
+    ],
+    "keyTakeaways": [
+      "Plan features before implementing them",
+      "Build in layers: database, API, frontend",
+      "Test each layer before moving to the next"
+    ]
+  }
+}
