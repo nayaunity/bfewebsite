@@ -30,14 +30,14 @@ export default function ResourcesPage() {
         { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth" },
         { name: "Leadership Skills", description: "Advance from IC to management roles", tag: "Advanced" },
-        { name: "Entrepreneurship", description: "Start and scale your own tech venture", tag: "New" },
+        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },
       ],
     },
     {
       title: "Finance",
       description: "Financial strategies for building wealth in tech.",
       items: [
-        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },
+        { name: "Entrepreneurship", description: "Start and scale your own tech venture", tag: "New" },
         { name: "Tech Stock Options", description: "Understanding equity and RSUs", tag: "Essential" },
         { name: "Investing Basics", description: "Build wealth with smart investing", tag: "Beginner" },
         { name: "Side Income in Tech", description: "Monetize your skills outside your 9-5", tag: "Trending" },
