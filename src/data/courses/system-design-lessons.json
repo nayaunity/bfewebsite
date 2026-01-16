@@ -1,0 +1,285 @@
+{
+  "what-is-system-design": {
+    "title": "What is System Design?",
+    "intro": "System design is the process of defining the architecture, components, modules, interfaces, and data flow of a system to satisfy specified requirements. It's how engineers plan and build software that can handle millions of users, process massive amounts of data, and remain reliable under pressure.",
+    "sections": [
+      {
+        "heading": "Why Should You Learn System Design?",
+        "content": "Whether you're preparing for technical interviews at top tech companies or building real products, system design skills are essential. Here's why:\n\n• **Interviews**: FAANG and most tech companies include system design rounds for mid-level and senior positions\n• **Real-world impact**: Understanding how to design scalable systems makes you a more effective engineer\n• **Career growth**: System design knowledge is often what separates senior engineers from juniors"
+      },
+      {
+        "heading": "What You'll Learn in This Guide",
+        "content": "This comprehensive guide will take you from fundamentals to designing complex distributed systems. By the end, you'll be able to:\n\n• Understand the building blocks of scalable systems\n• Apply key concepts like caching, load balancing, and database sharding\n• Design systems like Twitter, Netflix, and Uber from scratch\n• Communicate your designs effectively in interviews"
+      }
+    ],
+    "resources": [
+      {
+        "title": "System Design Primer",
+        "source": "GitHub",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "type": "Reading",
+        "description": "The most comprehensive open-source system design resource"
+      },
+      {
+        "title": "System Design Fundamentals",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=Y-Gl4HEyeUQ",
+        "type": "Video",
+        "description": "Visual introduction to system design concepts"
+      },
+      {
+        "title": "Designing Data-Intensive Applications",
+        "source": "Book",
+        "url": "https://dataintensive.net/",
+        "type": "Book",
+        "description": "The definitive book on distributed systems (highly recommended)"
+      }
+    ],
+    "keyTakeaways": [
+      "System design is about making trade-offs between competing requirements",
+      "There's rarely a 'perfect' solution—context matters",
+      "Start simple, then iterate based on requirements",
+      "Communication is as important as technical knowledge"
+    ]
+  },
+  "why-system-design-matters": {
+    "title": "Why System Design Matters",
+    "intro": "Understanding system design isn't just about passing interviews—it's about becoming an engineer who can build products that scale. In this lesson, we'll explore why system design is one of the most valuable skills you can develop.",
+    "sections": [
+      {
+        "heading": "The Interview Perspective",
+        "content": "At companies like Google, Meta, Amazon, and most well-funded startups, system design interviews are a critical part of the hiring process for mid-level and senior engineers.\n\n• **What they're testing**: Your ability to think through complex problems, make trade-offs, and communicate technical decisions\n• **Why it matters**: It's one of the few interview types that directly mirrors what you'll do on the job\n• **The bar**: You don't need to know everything—you need to demonstrate structured thinking"
+      },
+      {
+        "heading": "The Real-World Perspective",
+        "content": "Beyond interviews, system design knowledge directly impacts your effectiveness as an engineer:\n\n• **Better architecture decisions**: You'll recognize patterns and anti-patterns before they become problems\n• **Faster debugging**: Understanding how systems fail helps you diagnose issues quickly\n• **Stronger collaboration**: You can meaningfully contribute to technical discussions and planning\n• **Career acceleration**: Engineers who understand the big picture get promoted faster"
+      },
+      {
+        "heading": "What Makes System Design Hard",
+        "content": "System design is challenging because:\n\n• **No single right answer**: Every design is a series of trade-offs\n• **Requires breadth**: You need to understand databases, networking, caching, and more\n• **Context-dependent**: What works for Netflix won't work for a startup\n• **Communication matters**: A great design poorly explained will fail in an interview"
+      }
+    ],
+    "resources": [
+      {
+        "title": "How to Approach System Design",
+        "source": "Gaurav Sen",
+        "url": "https://www.youtube.com/watch?v=0163cssUxLA",
+        "type": "Video",
+        "description": "Great overview of how to think about system design problems"
+      },
+      {
+        "title": "System Design Interview Guide",
+        "source": "interviewing.io",
+        "url": "https://interviewing.io/guides/system-design-interview",
+        "type": "Reading",
+        "description": "Comprehensive guide from engineers who've conducted hundreds of interviews"
+      }
+    ],
+    "keyTakeaways": [
+      "System design interviews test real engineering skills, not trivia",
+      "The same skills make you more effective in your day-to-day work",
+      "Focus on structured thinking and clear communication",
+      "You don't need to memorize—you need to understand trade-offs"
+    ]
+  },
+  "thinking-at-scale": {
+    "title": "Thinking at Scale",
+    "intro": "What works for 100 users breaks at 100,000. What works for 100,000 breaks at 100 million. Learning to think at scale means understanding how systems behave as they grow—and designing for that growth from the start.",
+    "sections": [
+      {
+        "heading": "The Numbers That Matter",
+        "content": "Before designing any system, you need to understand the scale you're designing for:\n\n• **Users**: How many daily/monthly active users?\n• **Requests**: How many requests per second (RPS)?\n• **Data**: How much data stored? How fast is it growing?\n• **Latency**: What response times are acceptable?\n\nThese numbers drive every architectural decision."
+      },
+      {
+        "heading": "Back-of-the-Envelope Calculations",
+        "content": "Quick math helps you understand scale:\n\n• **1 million requests/day** = ~12 requests/second\n• **1 billion requests/day** = ~12,000 requests/second\n• **1 KB per record × 1 million records** = 1 GB\n• **1 MB per image × 1 million images** = 1 TB\n\nThese rough calculations help you choose the right tools and architectures."
+      },
+      {
+        "heading": "Scaling Strategies",
+        "content": "There are two fundamental ways to scale:\n\n• **Vertical scaling (Scale up)**: Bigger machines—more CPU, RAM, storage. Simple but has limits.\n• **Horizontal scaling (Scale out)**: More machines working together. Complex but nearly unlimited.\n\nMost modern systems use a combination, starting vertical and moving horizontal as they grow."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Back-of-the-Envelope Calculations",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=UC5xf8FbdJc",
+        "type": "Video",
+        "description": "How to quickly estimate system requirements"
+      },
+      {
+        "title": "Latency Numbers Every Programmer Should Know",
+        "source": "GitHub",
+        "url": "https://gist.github.com/jboner/2841832",
+        "type": "Reference",
+        "description": "Essential reference for understanding performance at scale"
+      },
+      {
+        "title": "Numbers Everyone Should Know",
+        "source": "High Scalability",
+        "url": "http://highscalability.com/numbers-everyone-should-know",
+        "type": "Reading",
+        "description": "Classic reference for back-of-envelope calculations"
+      }
+    ],
+    "keyTakeaways": [
+      "Always start by understanding the scale requirements",
+      "Back-of-the-envelope math helps you make informed decisions",
+      "Vertical scaling is simple but limited; horizontal scaling is complex but powerful",
+      "Design for 10x your current scale, not 1000x"
+    ]
+  },
+  "key-metrics": {
+    "title": "Key Metrics: Latency, Throughput, Availability",
+    "intro": "Every system design involves trade-offs between core metrics. Understanding latency, throughput, and availability—and how they interact—is fundamental to making good architectural decisions.",
+    "sections": [
+      {
+        "heading": "Latency",
+        "content": "Latency is the time it takes for a request to receive a response.\n\n• **p50 latency**: The median—50% of requests are faster than this\n• **p99 latency**: 99% of requests are faster—this catches the slow outliers\n• **Why it matters**: Users perceive slowness. Amazon found that every 100ms of latency cost them 1% in sales.\n\nCommon latency targets:\n• Web pages: < 200ms\n• APIs: < 100ms\n• Real-time: < 50ms"
+      },
+      {
+        "heading": "Throughput",
+        "content": "Throughput is how many requests your system can handle per unit of time.\n\n• **Requests per second (RPS)**: Common measure for APIs\n• **Queries per second (QPS)**: Common measure for databases\n• **Transactions per second (TPS)**: Common for payment systems\n\nThroughput and latency are often in tension—optimizing for one can hurt the other."
+      },
+      {
+        "heading": "Availability",
+        "content": "Availability is the percentage of time your system is operational.\n\n• **99% (two nines)**: 3.65 days of downtime/year\n• **99.9% (three nines)**: 8.76 hours of downtime/year\n• **99.99% (four nines)**: 52.6 minutes of downtime/year\n• **99.999% (five nines)**: 5.26 minutes of downtime/year\n\nHigher availability requires redundancy, which adds complexity and cost."
+      },
+      {
+        "heading": "The Trade-offs",
+        "content": "You can rarely optimize all three simultaneously:\n\n• **Lower latency** often requires caching, which can reduce consistency\n• **Higher throughput** might mean batching, which increases latency\n• **Higher availability** requires redundancy, which adds complexity\n\nThe right balance depends on your specific use case."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Latency vs Throughput",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=m64SWl9bfvk",
+        "type": "Video",
+        "description": "Clear explanation of the relationship between latency and throughput"
+      },
+      {
+        "title": "Availability in System Design",
+        "source": "Gaurav Sen",
+        "url": "https://www.youtube.com/watch?v=bPs89XLzfmI",
+        "type": "Video",
+        "description": "How to design for high availability"
+      },
+      {
+        "title": "SLA, SLO, SLI Explained",
+        "source": "Google Cloud",
+        "url": "https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos",
+        "type": "Reading",
+        "description": "Understanding service level agreements and objectives"
+      }
+    ],
+    "keyTakeaways": [
+      "Latency measures speed; throughput measures capacity; availability measures reliability",
+      "p99 latency is more important than average latency for user experience",
+      "Each additional 'nine' of availability is exponentially harder to achieve",
+      "Understand the trade-offs—you can't optimize everything at once"
+    ]
+  },
+  "load-balancers": {
+    "title": "Load Balancers",
+    "intro": "Load balancers are the traffic cops of distributed systems. They distribute incoming requests across multiple servers, improving both performance and reliability. Understanding how they work is essential for designing scalable architectures.",
+    "sections": [
+      {
+        "heading": "What Load Balancers Do",
+        "content": "A load balancer sits between clients and servers, distributing traffic:\n\n• **Distributes load**: Spreads requests across multiple servers\n• **Health checks**: Detects and routes around failed servers\n• **SSL termination**: Handles encryption/decryption\n• **Session persistence**: Can route users to the same server when needed"
+      },
+      {
+        "heading": "Load Balancing Algorithms",
+        "content": "Different algorithms for different needs:\n\n• **Round Robin**: Simple rotation through servers. Good for uniform requests.\n• **Least Connections**: Routes to the server with fewest active connections. Good for varying request times.\n• **Weighted**: Assigns more traffic to more powerful servers.\n• **IP Hash**: Routes based on client IP. Ensures same client hits same server.\n• **Least Response Time**: Routes to fastest responding server."
+      },
+      {
+        "heading": "Layer 4 vs Layer 7",
+        "content": "Load balancers operate at different network layers:\n\n• **Layer 4 (Transport)**: Routes based on IP and port. Fast but limited visibility.\n• **Layer 7 (Application)**: Routes based on HTTP headers, URLs, cookies. Slower but smarter.\n\nLayer 7 enables advanced features like routing /api to backend servers and /static to CDN."
+      },
+      {
+        "heading": "Common Solutions",
+        "content": "Popular load balancing solutions:\n\n• **HAProxy**: Open source, very fast, widely used\n• **NGINX**: Web server that also does load balancing\n• **AWS ALB/NLB**: Managed load balancers on AWS\n• **Google Cloud Load Balancing**: Global load balancing\n• **Cloudflare**: Edge load balancing with DDoS protection"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Load Balancing Explained",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=sCR3SAVdyCc",
+        "type": "Video",
+        "description": "Visual explanation of how load balancers work"
+      },
+      {
+        "title": "NGINX Load Balancing Guide",
+        "source": "NGINX",
+        "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+        "type": "Documentation",
+        "description": "Practical guide to implementing load balancing with NGINX"
+      },
+      {
+        "title": "L4 vs L7 Load Balancing",
+        "source": "Hussein Nasser",
+        "url": "https://www.youtube.com/watch?v=aKMLgFVxZYk",
+        "type": "Video",
+        "description": "Deep dive into the differences between Layer 4 and Layer 7"
+      }
+    ],
+    "keyTakeaways": [
+      "Load balancers distribute traffic and improve reliability through redundancy",
+      "Choose the algorithm based on your traffic patterns and server capabilities",
+      "Layer 7 load balancers offer more control but add latency",
+      "Health checks are critical—they detect and route around failures"
+    ]
+  },
+  "caching-strategies": {
+    "title": "Caching Strategies",
+    "intro": "Caching is one of the most powerful tools for improving performance. By storing frequently accessed data closer to where it's needed, you can dramatically reduce latency and database load. But caching introduces complexity—let's understand when and how to use it effectively.",
+    "sections": [
+      {
+        "heading": "Why Cache?",
+        "content": "Caching improves performance by:\n\n• **Reducing latency**: Memory access is ~100x faster than disk, ~1000x faster than network\n• **Reducing load**: Fewer requests hit your database\n• **Improving availability**: Cached data can be served even if the source is down\n\nThe trade-off: cached data can become stale, and cache management adds complexity."
+      },
+      {
+        "heading": "Where to Cache",
+        "content": "Caching can happen at multiple levels:\n\n• **Browser cache**: Static assets cached in the user's browser\n• **CDN**: Content cached at edge locations worldwide\n• **Application cache**: In-memory cache like Redis or Memcached\n• **Database cache**: Query result caching within the database\n\nEach level has different trade-offs in terms of speed, freshness, and complexity."
+      },
+      {
+        "heading": "Caching Patterns",
+        "content": "Common patterns for cache population:\n\n• **Cache-Aside (Lazy Loading)**: App checks cache, fetches from DB on miss, updates cache. Simple but can have cache stampedes.\n• **Write-Through**: Writes go to cache and DB together. Consistent but slower writes.\n• **Write-Behind**: Writes go to cache, asynchronously synced to DB. Fast but risks data loss.\n• **Read-Through**: Cache automatically fetches from DB on miss. Simplifies app code."
+      },
+      {
+        "heading": "Cache Invalidation",
+        "content": "The hardest problem in caching:\n\n• **TTL (Time-To-Live)**: Data expires after a set time. Simple but may serve stale data.\n• **Event-driven**: Invalidate when data changes. Fresh but complex.\n• **Version keys**: Include version in cache key. Change version to invalidate.\n\n\"There are only two hard things in Computer Science: cache invalidation and naming things.\" — Phil Karlton"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Caching Strategies Explained",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=U3RkDLtS7uY",
+        "type": "Video",
+        "description": "Visual overview of common caching patterns"
+      },
+      {
+        "title": "Redis Documentation",
+        "source": "Redis",
+        "url": "https://redis.io/docs/",
+        "type": "Documentation",
+        "description": "Learn the most popular caching solution"
+      },
+      {
+        "title": "Caching at Scale",
+        "source": "Meta Engineering",
+        "url": "https://engineering.fb.com/2013/06/25/core-infra/scaling-memcache-at-facebook/",
+        "type": "Reading",
+        "description": "How Facebook scales their caching infrastructure"
+      }
+    ],
+    "keyTakeaways": [
+      "Cache data that's read often and changes infrequently",
+      "Choose your caching pattern based on consistency requirements",
+      "Cache invalidation is hard—prefer TTL for simplicity when possible",
+      "Monitor cache hit rates—low hit rates mean your cache isn't helping"
+    ]
+  }
+}
