@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function About() {
   return (
@@ -7,13 +8,12 @@ export default function About() {
       <div className="grid grid-cols-1 md:grid-cols-4">
         {/* Image Block */}
         <div className="aspect-square md:aspect-auto bg-gray-200 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-100 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-white/50 flex items-center justify-center">
-              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          </div>
+          <Image
+            src="/images/bfeimage2.png"
+            alt="Person working at computer with headphones"
+            fill
+            className="object-cover"
+          />
         </div>
 
         {/* Yellow Block */}
