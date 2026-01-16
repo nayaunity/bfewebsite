@@ -137,16 +137,16 @@ export default function JobsPage() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
-                    href="/contact"
+                    href="/jobs/submit"
                     className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
                   >
                     Post a Job
                   </Link>
                   <Link
-                    href="/contact"
+                    href="/jobs/submit"
                     className="border-2 border-gray-200 text-black px-8 py-4 rounded-full font-medium hover:border-gray-300 transition-colors"
                   >
-                    Learn More
+                    Submit a Job You Found
                   </Link>
                 </div>
               </div>
