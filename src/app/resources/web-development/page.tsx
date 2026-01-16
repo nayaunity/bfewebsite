@@ -124,7 +124,8 @@ export default function WebDevelopmentGuidePage() {
                   {course.modules.map((module) => (
                     <div
                       key={module.id}
-                      className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-shadow"
+                      id={`module-${module.id}`}
+                      className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-shadow scroll-mt-40"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div>
@@ -195,12 +196,16 @@ function WebDevSidebar({ course }: { course: ReturnType<typeof getCourse> }) {
         <h3 className="font-medium mb-4">Course Content</h3>
         <div className="space-y-2">
           {course.modules.map((module) => (
-            <div key={module.id} className="border border-gray-100 rounded-xl overflow-hidden">
-              <div className="p-4 bg-gray-50">
+            <a
+              key={module.id}
+              href={`#module-${module.id}`}
+              className="block border border-gray-100 rounded-xl overflow-hidden hover:border-[#ffe500] transition-colors"
+            >
+              <div className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                 <span className="text-xs text-gray-500">Module {module.id}</span>
                 <h4 className="font-medium text-sm">{module.title}</h4>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

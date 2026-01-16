@@ -61,10 +61,19 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
         {sidebarOpen && (
           <div className="space-y-2">
             {course.modules.map((module) => (
-              <div key={module.id} className="border border-gray-100 rounded-xl overflow-hidden">
+              <div key={module.id} className="border border-gray-100 rounded-xl overflow-hidden hover:border-[#ffe500] transition-colors">
                 <button
-                  onClick={() => setActiveModule(activeModule === module.id ? 0 : module.id)}
-                  className={`w-full text-left p-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${
+                  onClick={() => {
+                    setActiveModule(activeModule === module.id ? 0 : module.id);
+                    // Scroll to module section if on overview page
+                    if (!currentSlug) {
+                      const element = document.getElementById(`module-${module.id}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }
+                  }}
+                  className={`w-full text-left p-4 flex items-center justify-between hover:bg-gray-100 transition-colors ${
                     activeModule === module.id ? "bg-gray-50" : ""
                   }`}
                 >

@@ -125,7 +125,8 @@ export default function SystemDesignGuidePage() {
                   {course.modules.map((module) => (
                     <div
                       key={module.id}
-                      className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-shadow"
+                      id={`module-${module.id}`}
+                      className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-shadow scroll-mt-40"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div>
