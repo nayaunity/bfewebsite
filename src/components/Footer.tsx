@@ -37,10 +37,10 @@ export default function Footer() {
           <div>
             <h4 className="text-sm tracking-widest mb-6">EXPLORE</h4>
             <ul className="space-y-3">
-              <li><Link href="#resources" className="text-gray-600 hover:text-[#ef562a] transition-colors">Resources</Link></li>
-              <li><Link href="#jobs" className="text-gray-600 hover:text-[#ef562a] transition-colors">Job Board</Link></li>
-              <li><Link href="#community" className="text-gray-600 hover:text-[#ef562a] transition-colors">Community</Link></li>
-              <li><Link href="#about" className="text-gray-600 hover:text-[#ef562a] transition-colors">About</Link></li>
+              <li><Link href="/resources" className="text-gray-600 hover:text-[#ef562a] transition-colors">Resources</Link></li>
+              <li><Link href="/jobs" className="text-gray-600 hover:text-[#ef562a] transition-colors">Job Board</Link></li>
+              <li><Link href="/community" className="text-gray-600 hover:text-[#ef562a] transition-colors">Community</Link></li>
+              <li><Link href="/about" className="text-gray-600 hover:text-[#ef562a] transition-colors">About</Link></li>
             </ul>
           </div>
 

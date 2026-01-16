@@ -7,10 +7,10 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "#resources", label: "RESOURCES" },
-    { href: "#jobs", label: "JOB BOARD" },
-    { href: "#community", label: "COMMUNITY" },
-    { href: "#about", label: "ABOUT" },
+    { href: "/resources", label: "RESOURCES" },
+    { href: "/jobs", label: "JOB BOARD" },
+    { href: "/community", label: "COMMUNITY" },
+    { href: "/about", label: "ABOUT" },
   ];
 
   return (

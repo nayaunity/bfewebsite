@@ -1,0 +1,201 @@
+import Link from "next/link";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+
+export const metadata = {
+  title: "About | The Black Female Engineer",
+  description: "Learn about our mission to empower Black women in engineering.",
+};
+
+export default function AboutPage() {
+  const values = [
+    {
+      title: "Community",
+      description: "We believe in the power of connection. Together, we're stronger.",
+    },
+    {
+      title: "Empowerment",
+      description: "We provide the tools and support for every member to succeed.",
+    },
+    {
+      title: "Representation",
+      description: "We celebrate and amplify Black women in engineering.",
+    },
+    {
+      title: "Excellence",
+      description: "We strive for excellence in everything we do.",
+    },
+  ];
+
+  const timeline = [
+    { year: "2020", event: "Founded during the pandemic to connect Black women in tech" },
+    { year: "2021", event: "Reached 1,000 community members" },
+    { year: "2022", event: "Launched mentorship program and job board" },
+    { year: "2023", event: "Expanded to 10 city chapters across the US" },
+    { year: "2024", event: "Partnered with 100+ companies for job opportunities" },
+    { year: "2025", event: "Reached 10,000+ community members worldwide" },
+  ];
+
+  return (
+    <>
+      <Navigation />
+      <main className="pt-32 md:pt-40">
+        {/* Hero */}
+        <section className="bg-white pb-16 md:pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
+                Building the <span className="italic text-[#ef562a]">future</span>
+                <br />
+                of engineering
+              </h1>
+              <p className="mt-6 text-xl text-gray-600">
+                The Black Female Engineer is more than a platform—it&apos;s a movement dedicated to empowering, connecting, and uplifting Black women in STEM.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Mission */}
+        <section className="bg-[#1a1a1a] py-16 md:py-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white">
+              Our Mission
+            </h2>
+            <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+            <p className="text-xl md:text-2xl text-white/80 font-serif italic">
+              To create an inclusive space where Black female engineers can access the tools, knowledge, and connections needed to excel in their careers.
+            </p>
+          </div>
+        </section>
+
+        {/* What We Believe */}
+        <section className="bg-white py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+              <div>
+                <h2 className="font-serif text-3xl md:text-4xl">
+                  <span className="italic">what we</span> BELIEVE IN
+                </h2>
+                <p className="mt-6 text-gray-600 text-lg leading-relaxed">
+                  Black women in engineering are a powerful group of digital natives, driven by what is right and have a passion for making change happen. However, the traditional world of tech often overlooks and underestimates this cohort and their potential.
+                </p>
+                <p className="mt-4 text-gray-600 text-lg leading-relaxed">
+                  We believe that representation matters. We believe that every engineer deserves access to the resources and support they need to thrive. We believe in the power of community.
+                </p>
+              </div>
+              <div className="bg-gray-100 rounded-3xl aspect-square flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[#ffe500] flex items-center justify-center">
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 text-sm">Add team photo here</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Values */}
+        <section className="bg-gray-50 py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-3xl md:text-4xl">
+                <span className="italic">our</span> VALUES
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {values.map((value, index) => (
+                <div key={index} className="bg-white p-8 rounded-2xl">
+                  <div className="w-12 h-12 rounded-full bg-[#ffe500] flex items-center justify-center mb-6">
+                    <span className="font-serif font-bold text-lg">{index + 1}</span>
+                  </div>
+                  <h3 className="font-serif text-xl mb-3">{value.title}</h3>
+                  <p className="text-gray-600">{value.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Timeline */}
+        <section className="bg-white py-16 md:py-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-3xl md:text-4xl">
+                <span className="italic">our</span> JOURNEY
+              </h2>
+            </div>
+
+            <div className="space-y-8">
+              {timeline.map((item, index) => (
+                <div key={index} className="flex gap-6 items-start">
+                  <div className="w-20 flex-shrink-0">
+                    <span className="font-serif text-2xl text-[#ef562a]">{item.year}</span>
+                  </div>
+                  <div className="flex-1 pb-8 border-l-2 border-gray-200 pl-6 relative">
+                    <div className="absolute left-[-5px] top-2 w-2 h-2 rounded-full bg-[#ffe500]"></div>
+                    <p className="text-gray-700">{item.event}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Partners */}
+        <section className="bg-gray-50 py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <p className="text-sm tracking-widest mb-8">WE&apos;VE PARTNERED WITH</p>
+              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-gray-300">
+                <span>ADOBE</span>
+                <span className="text-[#ef562a]">GOOGLE</span>
+                <span>MICROSOFT</span>
+                <span>META</span>
+                <span className="text-[#ef562a]">AMAZON</span>
+                <span>NETFLIX</span>
+              </div>
+            </div>
+            <p className="text-center text-sm">
+              WANT TO PARTNER WITH US?{" "}
+              <Link href="/contact" className="underline hover:text-[#ef562a]">
+                LET US KNOW
+              </Link>
+            </p>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="bg-[#ffe500] py-16 md:py-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4">
+              Join the movement
+            </h2>
+            <p className="text-black/70 mb-8 text-lg">
+              Be part of a community that&apos;s changing the face of engineering.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href="/community"
+                className="bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
+              >
+                Join the Community
+              </Link>
+              <Link
+                href="/resources"
+                className="bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-gray-100 transition-colors"
+              >
+                Explore Resources
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}
