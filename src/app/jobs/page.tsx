@@ -52,6 +52,7 @@ export default function JobsPage() {
       salary: "$180K - $250K",
       posted: "2 days ago",
       tags: ["Python", "Machine Learning", "Cloud"],
+      href: "google.com",
     },
     {
       company: "Microsoft",
@@ -62,6 +63,7 @@ export default function JobsPage() {
       salary: "$160K - $220K",
       posted: "3 days ago",
       tags: ["Azure", "DevOps", "Architecture"],
+      href: "",
     },
     {
       company: "Stripe",
@@ -72,6 +74,7 @@ export default function JobsPage() {
       salary: "$150K - $200K",
       posted: "1 day ago",
       tags: ["Ruby", "APIs", "Payments"],
+      href: "",
     },
     {
       company: "Netflix",
@@ -82,6 +85,7 @@ export default function JobsPage() {
       salary: "$165K - $230K",
       posted: "4 days ago",
       tags: ["Spark", "Python", "AWS"],
+      href: "",
     },
     {
       company: "Apple",
@@ -92,6 +96,7 @@ export default function JobsPage() {
       salary: "$170K - $240K",
       posted: "1 week ago",
       tags: ["Swift", "iOS", "UIKit"],
+      href: "",
     },
     {
       company: "Meta",
@@ -102,6 +107,7 @@ export default function JobsPage() {
       salary: "$175K - $235K",
       posted: "5 days ago",
       tags: ["Product", "Infrastructure", "Strategy"],
+      href: "",
     },
     {
       company: "Airbnb",
@@ -112,6 +118,7 @@ export default function JobsPage() {
       salary: "$155K - $210K",
       posted: "3 days ago",
       tags: ["React", "Node.js", "GraphQL"],
+      href: "",
     },
     {
       company: "Spotify",
@@ -122,6 +129,7 @@ export default function JobsPage() {
       salary: "$160K - $220K",
       posted: "2 days ago",
       tags: ["Python", "TensorFlow", "Recommendations"],
+      href: "",
     },
     {
       company: "Shopify",
@@ -132,6 +140,7 @@ export default function JobsPage() {
       salary: "$140K - $190K",
       posted: "1 week ago",
       tags: ["React", "TypeScript", "GraphQL"],
+      href: "",
     },
   ];
 
@@ -187,7 +196,9 @@ export default function JobsPage() {
               {jobs.map((job, index) => (
                 <Link
                   key={index}
-                  href="#"
+                  href={job.href || "#"}
+                  target={job.href ? "_blank" : undefined}
+                  rel={job.href ? "noopener noreferrer" : undefined}
                   className="block bg-white p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
