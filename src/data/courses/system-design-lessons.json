@@ -281,5 +281,91 @@
       "Cache invalidation is hard—prefer TTL for simplicity when possible",
       "Monitor cache hit rates—low hit rates mean your cache isn't helping"
     ]
+  },
+  "databases-sql-vs-nosql": {
+    "title": "Databases: SQL vs NoSQL",
+    "intro": "Choosing the right database is one of the most consequential decisions in system design. SQL and NoSQL databases each have distinct strengths, and understanding when to use each—or both—is critical for building systems that scale. This lesson breaks down the differences, trade-offs, and real-world use cases.",
+    "sections": [
+      {
+        "heading": "SQL Databases: The Relational Model",
+        "content": "SQL (Structured Query Language) databases store data in tables with predefined schemas and relationships.\n\n**Core characteristics:**\n• **ACID compliance**: Atomicity, Consistency, Isolation, Durability—guarantees data integrity\n• **Structured schema**: Tables, rows, columns with defined data types\n• **Relationships**: Foreign keys link tables together (one-to-many, many-to-many)\n• **Powerful queries**: JOINs, aggregations, complex filtering\n\n**Popular SQL databases:**\n• **PostgreSQL**: Feature-rich, great for complex queries, strong community\n• **MySQL**: Fast reads, widely deployed, powers much of the web\n• **SQLite**: Embedded, serverless, great for mobile/desktop apps\n• **SQL Server**: Enterprise-grade, Microsoft ecosystem"
+      },
+      {
+        "heading": "NoSQL Databases: Flexibility at Scale",
+        "content": "NoSQL databases sacrifice some SQL guarantees for flexibility and horizontal scalability.\n\n**Types of NoSQL databases:**\n\n• **Document stores** (MongoDB, CouchDB): Store JSON-like documents. Great for varied data structures.\n• **Key-value stores** (Redis, DynamoDB): Simple get/set operations. Extremely fast.\n• **Wide-column stores** (Cassandra, HBase): Store data in columns. Great for time-series, analytics.\n• **Graph databases** (Neo4j, Amazon Neptune): Store relationships as first-class citizens. Great for social networks, recommendations.\n\n**Common characteristics:**\n• **Schema flexibility**: No fixed schema, fields can vary between records\n• **Horizontal scaling**: Designed to distribute across many servers\n• **BASE model**: Basically Available, Soft state, Eventually consistent"
+      },
+      {
+        "heading": "ACID vs BASE: The Consistency Trade-off",
+        "content": "The fundamental difference comes down to consistency guarantees:\n\n**ACID (SQL)**\n• **Atomicity**: Transactions are all-or-nothing\n• **Consistency**: Data always moves from one valid state to another\n• **Isolation**: Concurrent transactions don't interfere\n• **Durability**: Committed data survives crashes\n\n**BASE (NoSQL)**\n• **Basically Available**: System guarantees availability\n• **Soft state**: State may change over time without input\n• **Eventually consistent**: System will become consistent given time\n\n**When ACID matters:** Banking, inventory, bookings—anywhere losing or duplicating data is catastrophic.\n**When BASE is acceptable:** Social feeds, analytics, caching—where eventual consistency is fine."
+      },
+      {
+        "heading": "When to Use SQL",
+        "content": "Choose SQL databases when:\n\n• **Complex relationships**: Your data has many interconnected entities\n• **ACID is required**: Financial transactions, inventory management\n• **Complex queries**: You need JOINs, aggregations, reporting\n• **Data integrity**: You can't afford inconsistencies\n• **Schema is stable**: Your data structure won't change frequently\n\n**Real-world examples:**\n• E-commerce orders and inventory\n• Banking and financial systems\n• HR and payroll systems\n• CRM with complex customer relationships"
+      },
+      {
+        "heading": "When to Use NoSQL",
+        "content": "Choose NoSQL databases when:\n\n• **Massive scale**: You need to handle millions of operations per second\n• **Flexible schema**: Your data structure varies or evolves rapidly\n• **Simple access patterns**: Mostly key-based lookups, not complex queries\n• **High availability**: Downtime is more costly than occasional inconsistency\n• **Geographic distribution**: Data needs to be close to users worldwide\n\n**Real-world examples:**\n• User sessions and shopping carts (Redis)\n• Product catalogs with varying attributes (MongoDB)\n• IoT sensor data and time-series (Cassandra)\n• Social graphs and recommendations (Neo4j)"
+      },
+      {
+        "heading": "The Polyglot Persistence Pattern",
+        "content": "Modern systems often use multiple databases, each for what it does best:\n\n**Example: E-commerce platform**\n• **PostgreSQL**: Orders, customers, payments (ACID needed)\n• **MongoDB**: Product catalog (flexible schema)\n• **Redis**: Sessions, cart, caching (speed)\n• **Elasticsearch**: Product search (full-text search)\n\n**Benefits:**\n• Each database used for its strengths\n• Better performance for specific use cases\n• Can scale components independently\n\n**Challenges:**\n• Increased operational complexity\n• Data synchronization between systems\n• Team needs broader expertise"
+      },
+      {
+        "heading": "Scaling Considerations",
+        "content": "**SQL scaling:**\n• **Vertical scaling**: Add more CPU/RAM to single server (limited)\n• **Read replicas**: Distribute read load across copies\n• **Sharding**: Split data across servers (complex to implement)\n• Scaling writes is hard—usually becomes the bottleneck\n\n**NoSQL scaling:**\n• **Built for horizontal scaling**: Add servers to increase capacity\n• **Automatic sharding**: Most NoSQL databases handle distribution\n• **Replication**: Data copied across nodes for availability\n• Easier to scale, but you give up strong consistency"
+      }
+    ],
+    "resources": [
+      {
+        "title": "SQL vs NoSQL Explained",
+        "source": "ByteByteGo",
+        "url": "https://www.youtube.com/watch?v=Q_9cFgzZr8Q",
+        "type": "Video",
+        "description": "Visual comparison of SQL and NoSQL databases with use cases"
+      },
+      {
+        "title": "Which Database Should You Use?",
+        "source": "Fireship",
+        "url": "https://www.youtube.com/watch?v=W2Z7fbCLSTw",
+        "type": "Video",
+        "description": "Fast-paced overview of 7 database paradigms and when to use each"
+      },
+      {
+        "title": "Designing Data-Intensive Applications - Chapter 2",
+        "source": "Martin Kleppmann",
+        "url": "https://dataintensive.net/",
+        "type": "Book",
+        "description": "Deep dive into data models and query languages (essential reading)"
+      },
+      {
+        "title": "How Discord Stores Billions of Messages",
+        "source": "Discord Engineering",
+        "url": "https://discord.com/blog/how-discord-stores-billions-of-messages",
+        "type": "Case Study",
+        "description": "Real-world example of migrating from MongoDB to Cassandra"
+      },
+      {
+        "title": "PostgreSQL Documentation",
+        "source": "PostgreSQL",
+        "url": "https://www.postgresql.org/docs/",
+        "type": "Documentation",
+        "description": "Comprehensive docs for the most advanced open-source SQL database"
+      },
+      {
+        "title": "MongoDB University",
+        "source": "MongoDB",
+        "url": "https://learn.mongodb.com/",
+        "type": "Course",
+        "description": "Free courses on MongoDB from beginner to advanced"
+      }
+    ],
+    "keyTakeaways": [
+      "SQL excels at complex relationships and ACID transactions; NoSQL excels at scale and flexibility",
+      "Choose based on your data access patterns, not popularity or trends",
+      "ACID vs BASE is about consistency trade-offs—neither is universally better",
+      "Most large systems use multiple databases (polyglot persistence)",
+      "Scaling SQL writes is hard; that's often when teams consider NoSQL",
+      "Start with what you know, optimize when you have real scaling problems"
+    ]
   }
 }
