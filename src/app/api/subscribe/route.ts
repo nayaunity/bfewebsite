@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     if (response.ok) {
       // Add tags after successful subscription
       await addTagsToSubscriber(email, tags, apiKey, listId, server);
-      return NextResponse.json({ success: true, message: "Subscribed successfully" });
+      return NextResponse.json({ success: true, message: "Subscribed successfully!" });
     }
 
     const errorData = (await response.json()) as MailchimpError;
