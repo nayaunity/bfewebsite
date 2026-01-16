@@ -62,9 +62,9 @@ export default function SystemDesignGuidePage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                     </svg>
-                    <span>{course.stats.freeLessons} Free Lessons</span>
+                    <span>{course.stats.freeLessons} Unlocked</span>
                   </div>
                 </div>
               </div>
@@ -97,7 +97,7 @@ export default function SystemDesignGuidePage() {
                   </Link>
                 )}
                 <p className="text-xs text-gray-500 text-center mt-3">
-                  No signup required for free lessons
+                  No signup required for unlocked lessons
                 </p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function SystemDesignGuidePage() {
                             </div>
                             {lesson.free && (
                               <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">
-                                Free
+                                Unlocked
                               </span>
                             )}
                           </Link>

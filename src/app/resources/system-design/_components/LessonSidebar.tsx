@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { Course } from "@/lib/courses";
 
@@ -11,6 +11,13 @@ interface LessonSidebarProps {
 
 export default function LessonSidebar({ course, currentSlug }: LessonSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
+
+  // Check if user has unlocked premium content
+  useEffect(() => {
+    const unlocked = localStorage.getItem("bfe-course-access");
+    setHasAccess(unlocked === "true");
+  }, []);
 
   // Find the module that contains the current lesson
   const currentModuleId = currentSlug
@@ -77,7 +84,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                           currentSlug === lesson.slug ? "bg-[#ffe500]/20" : ""
                         }`}
                       >
-                        {lesson.free ? (
+                        {lesson.free || hasAccess ? (
                           <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
                             {currentSlug === lesson.slug && (
                               <div className="w-2 h-2 rounded-full bg-[#ef562a]"></div>
