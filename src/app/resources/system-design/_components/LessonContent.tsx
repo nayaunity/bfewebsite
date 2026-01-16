@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { LessonContent as LessonContentType, Lesson, Course } from "@/lib/courses";
 import { useSubscribe } from "@/hooks/useSubscribe";
+import { useProgress } from "@/hooks/useProgress";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -23,14 +25,21 @@ export default function LessonContent({
   const [hasAccess, setHasAccess] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
   const { isLoading: isSubmitting, error: subscribeError, subscribe } = useSubscribe();
+  const { isCompleted, markComplete, isSignedIn } = useProgress(course.id);
 
   useEffect(() => {
-    // Check if user has unlocked premium content
-    const unlocked = localStorage.getItem("bfe-course-access");
-    setHasAccess(unlocked === "true");
-    setIsLoading(false);
-  }, []);
+    // Check if user has unlocked premium content (via auth or localStorage)
+    if (session?.user) {
+      setHasAccess(true);
+      setIsLoading(false);
+    } else {
+      const unlocked = localStorage.getItem("bfe-course-access");
+      setHasAccess(unlocked === "true");
+      setIsLoading(false);
+    }
+  }, [session]);
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,6 +298,56 @@ export default function LessonContent({
               </ul>
             </div>
           )}
+
+          {/* Mark Complete / Sign In Section */}
+          <div className="mt-8 p-6 bg-gray-50 rounded-2xl">
+            {isSignedIn ? (
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-lg">
+                    {isCompleted(lesson.slug) ? "Lesson Completed!" : "Mark this lesson as complete"}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {isCompleted(lesson.slug)
+                      ? "Great job! Your progress has been saved."
+                      : "Track your progress and pick up where you left off."}
+                  </p>
+                </div>
+                <button
+                  onClick={() => markComplete(lesson.slug, !isCompleted(lesson.slug))}
+                  className={`px-6 py-3 rounded-full font-medium transition-colors ${
+                    isCompleted(lesson.slug)
+                      ? "bg-green-100 text-green-700 hover:bg-green-200"
+                      : "bg-black text-white hover:bg-gray-800"
+                  }`}
+                >
+                  {isCompleted(lesson.slug) ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Completed
+                    </span>
+                  ) : (
+                    "Mark Complete"
+                  )}
+                </button>
+              </div>
+            ) : (
+              <div className="text-center">
+                <h3 className="font-medium text-lg mb-2">Sign in to track your progress</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Save your progress and pick up where you left off on any device.
+                </p>
+                <Link
+                  href={`/auth/signin?callbackUrl=/resources/system-design/${lesson.slug}`}
+                  className="inline-block bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors"
+                >
+                  Sign in to track progress
+                </Link>
+              </div>
+            )}
+          </div>
         </>
       ) : (
         /* Coming Soon State */

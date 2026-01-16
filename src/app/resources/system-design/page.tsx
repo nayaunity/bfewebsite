@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { getCourse } from "@/lib/courses";
 import { notFound } from "next/navigation";
 import LessonSidebar from "./_components/LessonSidebar";
+import CourseProgress from "./_components/CourseProgress";
 
 export const metadata = {
   title: "System Design Guide | The Black Female Engineer",
@@ -114,6 +115,9 @@ export default function SystemDesignGuidePage() {
               {/* Main Content - Course Overview */}
               <div className="flex-1 min-w-0">
                 <h2 className="font-serif text-2xl md:text-3xl mb-8">Course Overview</h2>
+
+                {/* Progress Bar */}
+                <CourseProgress course={course} />
 
                 {/* Module Cards */}
                 <div className="space-y-6">

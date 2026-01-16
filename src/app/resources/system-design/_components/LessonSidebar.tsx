@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { Course } from "@/lib/courses";
+import { useProgress } from "@/hooks/useProgress";
 
 interface LessonSidebarProps {
   course: Course;
@@ -12,12 +14,18 @@ interface LessonSidebarProps {
 export default function LessonSidebar({ course, currentSlug }: LessonSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
+  const { data: session } = useSession();
+  const { isCompleted } = useProgress(course.id);
 
-  // Check if user has unlocked premium content
+  // Check if user has unlocked premium content (via auth or localStorage)
   useEffect(() => {
-    const unlocked = localStorage.getItem("bfe-course-access");
-    setHasAccess(unlocked === "true");
-  }, []);
+    if (session?.user) {
+      setHasAccess(true);
+    } else {
+      const unlocked = localStorage.getItem("bfe-course-access");
+      setHasAccess(unlocked === "true");
+    }
+  }, [session]);
 
   // Find the module that contains the current lesson
   const currentModuleId = currentSlug
@@ -85,12 +93,33 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                         }`}
                       >
                         {lesson.free || hasAccess ? (
-                          <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
-                            {currentSlug === lesson.slug && (
-                              <div className="w-2 h-2 rounded-full bg-[#ef562a]"></div>
-                            )}
-                          </div>
+                          isCompleted(lesson.slug) ? (
+                            // Completed checkmark
+                            <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                          ) : (
+                            // Not completed circle
+                            <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
+                              {currentSlug === lesson.slug && (
+                                <div className="w-2 h-2 rounded-full bg-[#ef562a]"></div>
+                              )}
+                            </div>
+                          )
                         ) : (
+                          // Locked lesson
                           <svg
                             className="w-6 h-6 text-gray-300 flex-shrink-0"
                             fill="none"
@@ -106,7 +135,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                           </svg>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#ef562a] font-medium" : ""}`}>
+                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#ef562a] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-green-700" : ""}`}>
                             {lesson.title}
                           </p>
                           <p className="text-xs text-gray-400">{lesson.duration}</p>

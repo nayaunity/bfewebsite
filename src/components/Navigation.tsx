@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AuthButton } from "./AuthButton";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function Navigation() {
             </a>
           </div>
 
-          {/* Subscribe CTA */}
+          {/* Subscribe CTA and Auth */}
           <div className="flex items-center gap-4">
             <span className="hidden sm:block text-sm text-gray-600">tech, career, and finance in your inbox</span>
             <Link
@@ -51,6 +52,9 @@ export default function Navigation() {
             >
               SUBSCRIBE
             </Link>
+            <div className="hidden sm:block border-l border-gray-200 pl-4">
+              <AuthButton />
+            </div>
           </div>
         </div>
       </div>
@@ -112,6 +116,9 @@ export default function Navigation() {
                   {link.label}
                 </Link>
               ))}
+              <div className="pt-4 border-t border-gray-100 sm:hidden">
+                <AuthButton />
+              </div>
             </div>
           </div>
         )}
