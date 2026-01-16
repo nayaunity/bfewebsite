@@ -4,16 +4,19 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import type { Module } from "@/lib/courses";
+import { useProgress } from "@/hooks/useProgress";
 
 interface ModuleLessonsProps {
   module: Module;
   coursePath: string;
+  courseId: string;
 }
 
-export default function ModuleLessons({ module, coursePath }: ModuleLessonsProps) {
+export default function ModuleLessons({ module, coursePath, courseId }: ModuleLessonsProps) {
   const { status } = useSession();
   const [hasAccess, setHasAccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { isCompleted } = useProgress(courseId);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -38,9 +41,15 @@ export default function ModuleLessons({ module, coursePath }: ModuleLessonsProps
             href={`${coursePath}/${lesson.slug}`}
             className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
           >
-            {/* Icon - show lock only if not accessible and not loading */}
+            {/* Icon - show checkmark if completed, lock if not accessible, lesson type otherwise */}
             {isLoading ? (
               <div className="w-8 h-8 rounded-full bg-gray-100 animate-pulse flex-shrink-0" />
+            ) : isCompleted(lesson.slug) ? (
+              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
             ) : isAccessible ? (
               <div className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center flex-shrink-0 group-hover:border-[#ef562a]">
                 {lesson.type === "video" ? (
@@ -67,7 +76,7 @@ export default function ModuleLessons({ module, coursePath }: ModuleLessonsProps
 
             {/* Lesson info */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate group-hover:text-[#ef562a]">
+              <p className={`text-sm font-medium truncate group-hover:text-[#ef562a] ${isCompleted(lesson.slug) ? "text-green-700" : ""}`}>
                 {lesson.title}
               </p>
               <p className="text-xs text-gray-400">

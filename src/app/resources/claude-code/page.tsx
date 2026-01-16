@@ -137,7 +137,7 @@ export default function WebDevelopmentGuidePage() {
                         </span>
                       </div>
 
-                      <ModuleLessons module={module} coursePath="/resources/claude-code" />
+                      <ModuleLessons module={module} coursePath="/resources/claude-code" courseId="claude-code" />
                     </div>
                   ))}
                 </div>

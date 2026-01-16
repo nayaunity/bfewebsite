@@ -138,7 +138,7 @@ export default function SystemDesignGuidePage() {
                         </span>
                       </div>
 
-                      <ModuleLessons module={module} coursePath="/resources/system-design" />
+                      <ModuleLessons module={module} coursePath="/resources/system-design" courseId="system-design" />
                     </div>
                   ))}
                 </div>
