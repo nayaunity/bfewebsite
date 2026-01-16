@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function Community() {
   const [email, setEmail] = useState("");
+  const { isLoading, isSuccess, error, message, subscribe } = useSubscribe();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
-    setEmail("");
-    alert("Thanks for joining!");
+    await subscribe(email, {
+      tags: ["newsletter", "community-section"],
+      onSuccess: () => setEmail(""),
+    });
   };
 
   return (
@@ -27,22 +30,35 @@ export default function Community() {
           </p>
 
           {/* Email Signup */}
-          <form onSubmit={handleSubmit} id="newsletter" className="mt-12 flex max-w-md mx-auto">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-              className="flex-1 px-5 py-4 bg-white/10 border border-white/20 text-white placeholder-white/50 rounded-l-full focus:outline-none focus:border-white/40"
-            />
-            <button
-              type="submit"
-              className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors"
-            >
-              Join Us
-            </button>
-          </form>
+          {isSuccess ? (
+            <div className="mt-12 p-4 bg-green-500/20 text-green-300 rounded-full max-w-md mx-auto text-center">
+              {message}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} id="newsletter" className="mt-12 max-w-md mx-auto">
+              <div className="flex">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={isLoading}
+                  className="flex-1 px-5 py-4 bg-white/10 border border-white/20 text-white placeholder-white/50 rounded-l-full focus:outline-none focus:border-white/40 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? "..." : "Join Us"}
+                </button>
+              </div>
+              {error && (
+                <p className="mt-2 text-sm text-red-400">{error}</p>
+              )}
+            </form>
+          )}
         </div>
       </div>
 

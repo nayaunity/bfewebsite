@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { LessonContent as LessonContentType, Lesson, Course } from "@/lib/courses";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -21,8 +22,8 @@ export default function LessonContent({
 }: LessonContentProps) {
   const [hasAccess, setHasAccess] = useState(false);
   const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { isLoading: isSubmitting, error: subscribeError, subscribe } = useSubscribe();
 
   useEffect(() => {
     // Check if user has unlocked premium content
@@ -35,16 +36,15 @@ export default function LessonContent({
     e.preventDefault();
     if (!email) return;
 
-    setIsSubmitting(true);
-
-    // Simulate a brief delay for UX
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Store access in localStorage
-    localStorage.setItem("bfe-course-access", "true");
-    localStorage.setItem("bfe-user-email", email);
-    setHasAccess(true);
-    setIsSubmitting(false);
+    await subscribe(email, {
+      tags: ["course-signup", "system-design-guide"],
+      onSuccess: () => {
+        // Store access in localStorage
+        localStorage.setItem("bfe-course-access", "true");
+        localStorage.setItem("bfe-user-email", email);
+        setHasAccess(true);
+      },
+    });
   };
 
   const hasContent = content !== null;
@@ -111,7 +111,8 @@ export default function LessonContent({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="w-full px-5 py-4 border border-gray-300 rounded-full focus:outline-none focus:border-[#ef562a] bg-white"
+                disabled={isSubmitting}
+                className="w-full px-5 py-4 border border-gray-300 rounded-full focus:outline-none focus:border-[#ef562a] bg-white disabled:opacity-50"
               />
               <button
                 type="submit"
@@ -120,6 +121,9 @@ export default function LessonContent({
               >
                 {isSubmitting ? "Unlocking..." : "Get Free Access"}
               </button>
+              {subscribeError && (
+                <p className="text-sm text-red-600 text-center">{subscribeError}</p>
+              )}
             </form>
             <p className="text-xs text-gray-500 mt-4">
               No spam, ever. Unsubscribe anytime.

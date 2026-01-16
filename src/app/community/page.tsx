@@ -4,15 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function CommunityPage() {
   const [email, setEmail] = useState("");
+  const { isLoading, isSuccess, error, message, subscribe } = useSubscribe();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
-    setEmail("");
-    alert("Thanks for joining!");
+    await subscribe(email, {
+      tags: ["newsletter", "community-page"],
+      onSuccess: () => setEmail(""),
+    });
   };
 
   const communityMembers = [
@@ -240,22 +243,35 @@ export default function CommunityPage() {
             <p className="text-black/70 mb-8 text-lg">
               Get actionable tech, career, and finance content delivered to your inbox.
             </p>
-            <form onSubmit={handleSubmit} className="flex max-w-md mx-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                className="flex-1 px-5 py-4 bg-white border-2 border-black/10 rounded-l-full focus:outline-none focus:border-black/20"
-              />
-              <button
-                type="submit"
-                className="bg-black text-white px-6 py-4 rounded-r-full font-medium hover:bg-gray-800 transition-colors"
-              >
-                Join Us
-              </button>
-            </form>
+            {isSuccess ? (
+              <div className="p-4 bg-black/10 text-black rounded-full max-w-md mx-auto text-center">
+                {message}
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+                <div className="flex">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    disabled={isLoading}
+                    className="flex-1 px-5 py-4 bg-white border-2 border-black/10 rounded-l-full focus:outline-none focus:border-black/20 disabled:opacity-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="bg-black text-white px-6 py-4 rounded-r-full font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  >
+                    {isLoading ? "..." : "Join Us"}
+                  </button>
+                </div>
+                {error && (
+                  <p className="mt-2 text-sm text-red-700">{error}</p>
+                )}
+              </form>
+            )}
           </div>
         </section>
       </main>

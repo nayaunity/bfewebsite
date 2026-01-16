@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JobsNewsletter from "./JobsNewsletter";
 import jobs from "@/data/jobs.json";
 import deiCompanies from "@/data/dei-companies.json";
 
@@ -186,29 +187,7 @@ export default function JobsPage() {
         </section> */}
 
         {/* Newsletter CTA */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
-              Opportunities in your inbox
-            </h2>
-            <p className="text-white/60 mb-8">
-              Get curated job opportunities and career advice delivered weekly.
-            </p>
-            <form className="flex max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-5 py-4 bg-white/10 border border-white/20 text-white placeholder-white/50 rounded-l-full focus:outline-none focus:border-white/40"
-              />
-              <button
-                type="submit"
-                className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </section>
+        <JobsNewsletter />
       </main>
       <Footer />
     </>
