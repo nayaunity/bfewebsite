@@ -19,33 +19,31 @@ export default function About() {
         {/* Yellow Block */}
         <div className="bg-[#ffe500] p-8 md:p-12 flex flex-col justify-center">
           <p className="text-sm tracking-wide">
-            THE BLACK FEMALE ENGINEER IS
+            BRIDGING THE GAP
             <br />
-            THE <span className="font-semibold">COMMUNITY</span>.
+            BETWEEN <span className="font-semibold">INNOVATION</span>
           </p>
           <p className="mt-6 text-sm tracking-wide">
-            OUR RESOURCES ARE
-            <br />
-            <span className="font-semibold">FREE</span>.
+            AND <span className="font-semibold">EVERYDAY LIFE</span>.
           </p>
         </div>
 
         {/* Beige/Cream Block */}
         <div className="bg-[#f5f0e8] p-8 md:p-12 flex flex-col justify-center">
           <p className="text-sm tracking-wide leading-relaxed">
-            TOGETHER WE&apos;RE
+            EQUIPPING YOU WITH
             <br />
-            <span className="font-semibold">BUILDING CAREERS</span>
+            <span className="font-semibold">TOOLS</span> AND
             <br />
-            THAT ELEVATE
+            <span className="font-semibold">INSPIRATION</span>
             <br />
-            BLACK WOMEN
+            TO MAKE AN
             <br />
-            ACROSS <span className="font-semibold">TECH</span>,
+            <span className="font-semibold">IMPACT</span> IN
             <br />
-            <span className="font-semibold">ENGINEERING</span>, AND
+            <span className="font-semibold">TECH</span>, <span className="font-semibold">CODING</span>,
             <br />
-            <span className="font-semibold">STEM</span>.
+            <span className="font-semibold">CAREER</span> &amp; <span className="font-semibold">FINANCE</span>.
           </p>
         </div>
 

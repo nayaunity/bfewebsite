@@ -4,36 +4,36 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "About | The Black Female Engineer",
-  description: "Learn about our mission to empower Black women in engineering.",
+  description: "Making technology accessible and actionable for young professionals and tech-minded creatives.",
 };
 
 export default function AboutPage() {
   const values = [
     {
-      title: "Community",
-      description: "We believe in the power of connection. Together, we're stronger.",
+      title: "Accessibility",
+      description: "Making technology understandable and actionable for everyone.",
+    },
+    {
+      title: "Authenticity",
+      description: "Blending genuine storytelling with strategic, valuable insights.",
     },
     {
       title: "Empowerment",
-      description: "We provide the tools and support for every member to succeed.",
+      description: "Equipping audiences with tools and inspiration to make an impact.",
     },
     {
-      title: "Representation",
-      description: "We celebrate and amplify Black women in engineering.",
-    },
-    {
-      title: "Excellence",
-      description: "We strive for excellence in everything we do.",
+      title: "Innovation",
+      description: "Bridging the gap between cutting-edge tech and everyday life.",
     },
   ];
 
   const timeline = [
-    { year: "2020", event: "Founded during the pandemic to connect Black women in tech" },
-    { year: "2021", event: "Reached 1,000 community members" },
-    { year: "2022", event: "Launched mentorship program and job board" },
-    { year: "2023", event: "Expanded to 10 city chapters across the US" },
-    { year: "2024", event: "Partnered with 100+ companies for job opportunities" },
-    { year: "2025", event: "Reached 10,000+ community members worldwide" },
+    { year: "2020", event: "Started creating content to make tech accessible during the pandemic" },
+    { year: "2021", event: "Reached 10,000 followers across social platforms" },
+    { year: "2022", event: "Expanded to TikTok and YouTube with career and coding content" },
+    { year: "2023", event: "Grew community to 100K+ tech enthusiasts" },
+    { year: "2024", event: "Partnered with major tech companies and brands" },
+    { year: "2025", event: "Reached 200K+ followers empowering the next generation of innovators" },
   ];
 
   return (
@@ -45,12 +45,12 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                Building the <span className="italic text-[#ef562a]">future</span>
+                Bridging <span className="italic text-[#ef562a]">innovation</span>
                 <br />
-                of engineering
+                and everyday life
               </h1>
               <p className="mt-6 text-xl text-gray-600">
-                The Black Female Engineer is more than a platform—it&apos;s a movement dedicated to empowering, connecting, and uplifting Black women in STEM.
+                The Black Female Engineer is dedicated to making technology accessible and actionable, particularly for young professionals and tech-minded creatives.
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
             </h2>
             <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
             <p className="text-xl md:text-2xl text-white/80 font-serif italic">
-              To create an inclusive space where Black female engineers can access the tools, knowledge, and connections needed to excel in their careers.
+              To equip audiences with the tools and inspiration needed to make an impact—whether they&apos;re developing the next big app or breaking into their dream career.
             </p>
           </div>
         </section>
@@ -78,10 +78,10 @@ export default function AboutPage() {
                   <span className="italic">what we</span> BELIEVE IN
                 </h2>
                 <p className="mt-6 text-gray-600 text-lg leading-relaxed">
-                  Black women in engineering are a powerful group of digital natives, driven by what is right and have a passion for making change happen. However, the traditional world of tech often overlooks and underestimates this cohort and their potential.
+                  Young professionals and tech enthusiasts are eager to make their mark in tech and corporate. These driven individuals are looking for actionable advice on career growth, hands-on projects, and practical tech applications within everyday life.
                 </p>
                 <p className="mt-4 text-gray-600 text-lg leading-relaxed">
-                  We believe that representation matters. We believe that every engineer deserves access to the resources and support they need to thrive. We believe in the power of community.
+                  We believe in inspiring, educating, and entertaining through relatable storytelling, valuable resources, and thought-provoking discussions. We believe in empowering underrepresented communities in tech and inspiring the next generation of innovators.
                 </p>
               </div>
               <div className="bg-gray-100 rounded-3xl aspect-square flex items-center justify-center">
@@ -173,10 +173,10 @@ export default function AboutPage() {
         <section className="bg-[#ffe500] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4">
-              Join the movement
+              Join the community
             </h2>
             <p className="text-black/70 mb-8 text-lg">
-              Be part of a community that&apos;s changing the face of engineering.
+              Get the tools and inspiration to make your impact in tech.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link

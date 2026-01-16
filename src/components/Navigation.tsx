@@ -44,7 +44,7 @@ export default function Navigation() {
 
           {/* Subscribe CTA */}
           <div className="flex items-center gap-4">
-            <span className="hidden sm:block text-sm text-gray-600">resources, jobs, and community in your inbox</span>
+            <span className="hidden sm:block text-sm text-gray-600">tech, career, and finance in your inbox</span>
             <Link
               href="#newsletter"
               className="bg-[#ffe500] text-black px-5 py-2 rounded-full text-sm font-medium hover:bg-[#f5dc00] transition-colors"

@@ -4,45 +4,45 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Resources | The Black Female Engineer",
-  description: "Free resources for Black women in engineering - technical interview prep, career development, and more.",
+  description: "Free resources on tech, coding, career growth, and finance for young professionals making their mark.",
 };
 
 export default function ResourcesPage() {
   const resourceCategories = [
     {
-      title: "Technical Skills",
-      description: "Build your technical foundation with curated learning materials.",
+      title: "Tech & Coding",
+      description: "Hands-on projects and practical tech applications for everyday life.",
       items: [
-        { name: "Technical Interview Prep", description: "Ace your coding interviews with practice problems and strategies", tag: "Popular" },
+        { name: "Coding Tutorials", description: "Step-by-step guides for building real projects", tag: "Popular" },
         { name: "System Design Guide", description: "Learn to design scalable systems from scratch", tag: "Advanced" },
-        { name: "Data Structures & Algorithms", description: "Master the fundamentals of computer science", tag: "Essential" },
-        { name: "Web Development Fundamentals", description: "HTML, CSS, JavaScript, and modern frameworks", tag: "Beginner" },
-        { name: "Cloud Computing (AWS/GCP)", description: "Get certified in cloud platforms", tag: "In-Demand" },
-        { name: "Machine Learning Basics", description: "Introduction to ML concepts and tools", tag: "Trending" },
+        { name: "Web Development", description: "HTML, CSS, JavaScript, and modern frameworks", tag: "Beginner" },
+        { name: "App Development", description: "Build your next big app from idea to launch", tag: "Trending" },
+        { name: "Cloud & DevOps", description: "Get hands-on with AWS, GCP, and deployment", tag: "In-Demand" },
+        { name: "AI & Machine Learning", description: "Practical ML tools and applications", tag: "Hot" },
       ],
     },
     {
-      title: "Career Development",
-      description: "Tools and guides to advance your engineering career.",
+      title: "Career Growth",
+      description: "Actionable advice for breaking into tech and leveling up.",
       items: [
-        { name: "Resume Templates", description: "ATS-friendly templates designed for engineers", tag: "Free" },
-        { name: "Salary Negotiation Guide", description: "Learn to negotiate offers confidently", tag: "Popular" },
-        { name: "LinkedIn Optimization", description: "Make your profile stand out to recruiters", tag: "Essential" },
-        { name: "Personal Branding", description: "Build your reputation in tech", tag: "Growth" },
-        { name: "Leadership Development", description: "Skills for engineering managers", tag: "Advanced" },
-        { name: "Public Speaking for Engineers", description: "Present your ideas with confidence", tag: "Skill" },
+        { name: "Breaking Into Tech", description: "Strategies for landing your first tech role", tag: "Featured" },
+        { name: "Interview Prep", description: "Ace technical and behavioral interviews", tag: "Popular" },
+        { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential" },
+        { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth" },
+        { name: "Leadership Skills", description: "Advance from IC to management roles", tag: "Advanced" },
+        { name: "Entrepreneurship", description: "Start and scale your own tech venture", tag: "New" },
       ],
     },
     {
-      title: "Community & Networking",
-      description: "Connect with other Black women in engineering.",
+      title: "Finance",
+      description: "Financial strategies for building wealth in tech.",
       items: [
-        { name: "Mentorship Programs", description: "Get matched with experienced engineers", tag: "Featured" },
-        { name: "Networking Events Calendar", description: "Upcoming conferences and meetups", tag: "Updated" },
-        { name: "Slack Community", description: "Join 10,000+ members in our Slack workspace", tag: "Free" },
-        { name: "Local Chapters", description: "Find a BFE chapter near you", tag: "Community" },
-        { name: "Book Club", description: "Monthly reads for engineers", tag: "New" },
-        { name: "Study Groups", description: "Prepare for interviews together", tag: "Active" },
+        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },
+        { name: "Tech Stock Options", description: "Understanding equity and RSUs", tag: "Essential" },
+        { name: "Investing Basics", description: "Build wealth with smart investing", tag: "Beginner" },
+        { name: "Side Income in Tech", description: "Monetize your skills outside your 9-5", tag: "Trending" },
+        { name: "Tax Strategies", description: "Maximize your take-home pay", tag: "Advanced" },
+        { name: "Financial Independence", description: "Roadmap to FIRE in tech", tag: "Goal" },
       ],
     },
   ];
@@ -57,12 +57,10 @@ export default function ResourcesPage() {
       "In-Demand": "bg-[#ef562a]/10 text-[#ef562a]",
       "Trending": "bg-pink-100 text-pink-800",
       "Growth": "bg-teal-100 text-teal-800",
-      "Skill": "bg-indigo-100 text-indigo-800",
+      "Hot": "bg-red-100 text-red-800",
       "Featured": "bg-[#ffe500] text-black",
-      "Updated": "bg-orange-100 text-orange-800",
-      "Community": "bg-amber-100 text-amber-800",
       "New": "bg-emerald-100 text-emerald-800",
-      "Active": "bg-cyan-100 text-cyan-800",
+      "Goal": "bg-indigo-100 text-indigo-800",
     };
     return colors[tag] || "bg-gray-100 text-gray-800";
   };
@@ -78,10 +76,10 @@ export default function ResourcesPage() {
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                 Free <span className="italic text-[#ef562a]">resources</span>
                 <br />
-                for your journey
+                to make an impact
               </h1>
               <p className="mt-6 text-xl text-gray-600">
-                Everything you need to grow your skills, advance your career, and connect with the community.
+                Actionable tools and guides on tech, coding, career growth, and finance for young professionals.
               </p>
             </div>
           </div>
@@ -134,10 +132,10 @@ export default function ResourcesPage() {
         <section className="bg-[#1a1a1a] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
-              Have a resource to share?
+              Have something to share?
             </h2>
             <p className="text-white/60 mb-8">
-              Help grow our community by contributing valuable resources.
+              Help inspire the next generation of innovators with your knowledge.
             </p>
             <Link
               href="/contact"

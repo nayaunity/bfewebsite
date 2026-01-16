@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Job Board | The Black Female Engineer",
-  description: "Find engineering jobs at companies committed to diversity and inclusion.",
+  description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
 };
 
 export default function JobsPage() {
@@ -219,10 +219,10 @@ export default function JobsPage() {
               <div>
                 <span className="text-sm tracking-widest text-gray-500">FOR EMPLOYERS</span>
                 <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mt-4">
-                  Hire <span className="italic text-[#ef562a]">diverse</span> talent
+                  Reach <span className="italic text-[#ef562a]">top</span> talent
                 </h2>
                 <p className="mt-4 text-gray-600 text-lg">
-                  Post your openings and reach thousands of qualified Black female engineers ready to make an impact at your company.
+                  Post your openings and connect with 200K+ driven tech professionals ready to make an impact at your company.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
@@ -256,7 +256,7 @@ export default function JobsPage() {
                     </div>
                     <div>
                       <h4 className="font-medium">Reach qualified candidates</h4>
-                      <p className="text-sm text-gray-600 mt-1">Connect with 10,000+ engineers</p>
+                      <p className="text-sm text-gray-600 mt-1">Connect with 200K+ tech professionals</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -278,10 +278,10 @@ export default function JobsPage() {
         <section className="bg-[#1a1a1a] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
-              Get jobs in your inbox
+              Opportunities in your inbox
             </h2>
             <p className="text-white/60 mb-8">
-              Subscribe to receive curated job opportunities every week.
+              Get curated job opportunities and career advice delivered weekly.
             </p>
             <form className="flex max-w-md mx-auto">
               <input

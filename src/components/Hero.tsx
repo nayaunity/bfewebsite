@@ -19,17 +19,17 @@ export default function Hero() {
           {/* Left Content */}
           <div>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Your career
+              Make tech
               <br />
-              is <span className="italic text-[#ef562a]">bold</span>.
+              <span className="italic text-[#ef562a]">accessible</span>.
               <br />
-              Our resources
+              Make it
               <br />
-              are <span className="italic text-[#ef562a]">free</span>.
+              <span className="italic text-[#ef562a]">actionable</span>.
             </h1>
 
             <p className="mt-8 text-lg text-gray-600 max-w-md">
-              Join 10,000+ Black women in tech, engineering, and STEM striving for the top.
+              Join 200K+ young professionals and tech-minded creatives getting the tools and inspiration to make an impact.
             </p>
 
             {/* Email Signup */}

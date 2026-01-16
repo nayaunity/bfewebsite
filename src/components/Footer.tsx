@@ -11,7 +11,7 @@ export default function Footer() {
               the<span className="text-[#ef562a]">BFE</span>
             </Link>
             <p className="mt-4 text-gray-600 max-w-sm">
-              Empowering Black women in engineering with resources, opportunities, and community.
+              Making technology accessible and actionable for young professionals and tech-minded creatives.
             </p>
             {/* Social Icons */}
             <div className="flex gap-3 mt-6">

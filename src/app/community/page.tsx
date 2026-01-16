@@ -16,12 +16,12 @@ export default function CommunityPage() {
   };
 
   const communityMembers = [
-    { name: "Jasmine Williams", role: "Senior Software Engineer", company: "Meta" },
-    { name: "Aisha Johnson", role: "Frontend Developer", company: "Shopify" },
-    { name: "Destiny Brown", role: "DevOps Engineer", company: "AWS" },
-    { name: "Keisha Thomas", role: "Data Scientist", company: "Netflix" },
-    { name: "Maya Davis", role: "Product Manager", company: "Google" },
-    { name: "Zara Mitchell", role: "ML Engineer", company: "OpenAI" },
+    { name: "Software Engineers", role: "Building the future", company: "Big Tech" },
+    { name: "Recent Graduates", role: "Breaking into tech", company: "Career Starters" },
+    { name: "Tech Creatives", role: "Innovating daily", company: "Startups" },
+    { name: "Data Scientists", role: "Driving insights", company: "Analytics" },
+    { name: "Product Managers", role: "Leading products", company: "Tech Leaders" },
+    { name: "Entrepreneurs", role: "Building businesses", company: "Founders" },
   ];
 
   const events = [
@@ -31,9 +31,9 @@ export default function CommunityPage() {
     { title: "Interview Prep Session", date: "Feb 15, 2026", type: "Virtual" },
   ];
 
-  const chapters = [
-    "New York", "San Francisco", "Los Angeles", "Seattle", "Atlanta", "Chicago",
-    "Austin", "Boston", "Washington DC", "Denver", "Toronto", "London"
+  const contentThemes = [
+    "Tech-Driven Innovation", "Career Strategies", "Entrepreneurship", "Financial Growth",
+    "Practical Tools", "Sustainable Tech", "Work-Life Balance", "Personal Branding"
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function CommunityPage() {
                 community
               </h1>
               <p className="mt-6 text-xl text-gray-600">
-                Connect with 10,000+ Black women in engineering who support, inspire, and uplift each other.
+                Connect with 200K+ young professionals and tech enthusiasts who inspire, educate, and support each other.
               </p>
               <div className="mt-8">
                 <Link
@@ -69,20 +69,20 @@ export default function CommunityPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
               <div>
-                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">10K+</div>
-                <div className="mt-2 text-gray-600">Members</div>
+                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200K+</div>
+                <div className="mt-2 text-gray-600">Followers</div>
               </div>
               <div>
-                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">12</div>
-                <div className="mt-2 text-gray-600">City Chapters</div>
+                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">63%</div>
+                <div className="mt-2 text-gray-600">Women</div>
               </div>
               <div>
-                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
-                <div className="mt-2 text-gray-600">Events/Year</div>
+                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">67%</div>
+                <div className="mt-2 text-gray-600">Ages 18-34</div>
               </div>
               <div>
-                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">95%</div>
-                <div className="mt-2 text-gray-600">Satisfaction</div>
+                <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">7.8%</div>
+                <div className="mt-2 text-gray-600">Engagement</div>
               </div>
             </div>
           </div>
@@ -101,34 +101,34 @@ export default function CommunityPage() {
               <div className="text-center p-8">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl mb-3">Slack Community</h3>
+                <h3 className="font-serif text-xl mb-3">Tech &amp; Coding</h3>
                 <p className="text-gray-600">
-                  Join our active Slack workspace with channels for job hunting, technical help, career advice, and more.
+                  Hands-on projects, coding tutorials, and practical tech applications to level up your skills.
                 </p>
               </div>
               <div className="text-center p-8">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl mb-3">Mentorship</h3>
+                <h3 className="font-serif text-xl mb-3">Career Growth</h3>
                 <p className="text-gray-600">
-                  Get matched with experienced engineers who can guide you through your career journey.
+                  Actionable advice on career strategies, personal branding, and breaking into your dream role.
                 </p>
               </div>
               <div className="text-center p-8">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl mb-3">Events</h3>
+                <h3 className="font-serif text-xl mb-3">Finance</h3>
                 <p className="text-gray-600">
-                  Attend virtual and in-person events including workshops, networking nights, and tech talks.
+                  Financial growth strategies, salary negotiation tips, and building wealth in tech.
                 </p>
               </div>
             </div>
@@ -140,11 +140,11 @@ export default function CommunityPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
-                Meet our members
+                Who&apos;s in our community
               </h2>
               <div className="w-px h-8 bg-[#ffe500] mx-auto my-6"></div>
               <p className="text-white/60">
-                Engineers, creators, leaders, and innovators
+                Young professionals, tech enthusiasts, and the next generation of innovators
               </p>
             </div>
 
@@ -212,21 +212,20 @@ export default function CommunityPage() {
           </div>
         </section>
 
-        {/* Chapters */}
+        {/* Content Themes */}
         <section className="bg-gray-50 py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-serif text-3xl md:text-4xl mb-4">Find a chapter near you</h2>
-            <p className="text-gray-600 mb-12">Connect with members in your city</p>
+            <h2 className="font-serif text-3xl md:text-4xl mb-4">Content that matters</h2>
+            <p className="text-gray-600 mb-12">Topics we cover to help you make an impact</p>
 
             <div className="flex flex-wrap justify-center gap-3">
-              {chapters.map((chapter, index) => (
-                <Link
+              {contentThemes.map((theme, index) => (
+                <span
                   key={index}
-                  href="#"
-                  className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors"
+                  className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors cursor-default"
                 >
-                  {chapter}
-                </Link>
+                  {theme}
+                </span>
               ))}
             </div>
           </div>
@@ -236,10 +235,10 @@ export default function CommunityPage() {
         <section id="join" className="bg-[#ffe500] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4">
-              Ready to join?
+              Ready to level up?
             </h2>
             <p className="text-black/70 mb-8 text-lg">
-              Sign up for our newsletter and get access to the Slack community.
+              Get actionable tech, career, and finance content delivered to your inbox.
             </p>
             <form onSubmit={handleSubmit} className="flex max-w-md mx-auto">
               <input
