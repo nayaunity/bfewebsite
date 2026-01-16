@@ -33,18 +33,18 @@ export default function ResourcesPage() {
         { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },
       ],
     },
-    {
-      title: "Finance",
-      description: "Financial strategies for building wealth in tech.",
-      items: [
-        { name: "Entrepreneurship", description: "Start and scale your own tech venture", tag: "New" },
-        { name: "Tech Stock Options", description: "Understanding equity and RSUs", tag: "Essential" },
-        { name: "Investing Basics", description: "Build wealth with smart investing", tag: "Beginner" },
-        { name: "Side Income in Tech", description: "Monetize your skills outside your 9-5", tag: "Trending" },
-        { name: "Tax Strategies", description: "Maximize your take-home pay", tag: "Advanced" },
-        { name: "Financial Independence", description: "Roadmap to FIRE in tech", tag: "Goal" },
-      ],
-    },
+    // {
+    //   title: "Finance",
+    //   description: "Financial strategies for building wealth in tech.",
+    //   items: [
+    //     { name: "Entrepreneurship", description: "Start and scale your own tech venture", tag: "New" },
+    //     { name: "Tech Stock Options", description: "Understanding equity and RSUs", tag: "Essential" },
+    //     { name: "Investing Basics", description: "Build wealth with smart investing", tag: "Beginner" },
+    //     { name: "Side Income in Tech", description: "Monetize your skills outside your 9-5", tag: "Trending" },
+    //     { name: "Tax Strategies", description: "Maximize your take-home pay", tag: "Advanced" },
+    //     { name: "Financial Independence", description: "Roadmap to FIRE in tech", tag: "Goal" },
+    //   ],
+    // },
   ];
 
   const getTagColor = (tag: string) => {
