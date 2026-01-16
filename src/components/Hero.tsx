@@ -11,7 +11,7 @@ export default function Hero() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await subscribe(email, {
-      tags: ["newsletter", "homepage"],
+      tags: ["bfewebsite", "newsletter", "homepage"],
       onSuccess: () => setEmail(""),
     });
   };

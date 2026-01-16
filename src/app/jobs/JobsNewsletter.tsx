@@ -10,7 +10,7 @@ export default function JobsNewsletter() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await subscribe(email, {
-      tags: ["jobs-newsletter"],
+      tags: ["bfewebsite", "jobs-newsletter"],
       onSuccess: () => setEmail(""),
     });
   };

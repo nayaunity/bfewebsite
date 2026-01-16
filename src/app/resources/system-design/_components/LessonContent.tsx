@@ -37,7 +37,7 @@ export default function LessonContent({
     if (!email) return;
 
     await subscribe(email, {
-      tags: ["course-signup", "system-design-guide"],
+      tags: ["bfewebsite", "course-signup", "system-design-guide"],
       onSuccess: () => {
         // Store access in localStorage
         localStorage.setItem("bfe-course-access", "true");

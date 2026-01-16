@@ -10,7 +10,7 @@ export default function Community() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await subscribe(email, {
-      tags: ["newsletter", "community-section"],
+      tags: ["bfewebsite", "newsletter", "community-section"],
       onSuccess: () => setEmail(""),
     });
   };
