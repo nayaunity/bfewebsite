@@ -1,0 +1,290 @@
+{
+  "id": "web-development",
+  "title": "Web Development Fundamentals",
+  "subtitle": "Build your first websites from scratch",
+  "description": "A beginner-friendly guide to HTML, CSS, and JavaScript with hands-on projects to build your portfolio.",
+  "tag": "Beginner",
+  "tagColor": "blue",
+  "stats": {
+    "modules": 6,
+    "lessons": 24,
+    "freeLessons": 8
+  },
+  "features": [
+    "No prior experience needed",
+    "Hands-on projects to build",
+    "Curated external resources"
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "Getting Started",
+      "description": "Your journey into web development begins here",
+      "lessons": [
+        {
+          "id": "1-1",
+          "slug": "what-is-web-development",
+          "title": "What is Web Development?",
+          "duration": "8 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1-2",
+          "slug": "how-the-web-works",
+          "title": "How the Web Works",
+          "duration": "10 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1-3",
+          "slug": "setting-up-your-environment",
+          "title": "Setting Up Your Development Environment",
+          "duration": "15 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1-4",
+          "slug": "your-first-webpage",
+          "title": "Creating Your First Webpage",
+          "duration": "12 min",
+          "type": "workshop",
+          "free": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "HTML Essentials",
+      "description": "The building blocks of every webpage",
+      "lessons": [
+        {
+          "id": "2-1",
+          "slug": "html-structure-syntax",
+          "title": "HTML Structure & Syntax",
+          "duration": "15 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2-2",
+          "slug": "text-and-headings",
+          "title": "Text, Headings & Paragraphs",
+          "duration": "10 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2-3",
+          "slug": "links-and-images",
+          "title": "Links, Images & Media",
+          "duration": "12 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2-4",
+          "slug": "lists-and-tables",
+          "title": "Lists & Tables",
+          "duration": "10 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2-5",
+          "slug": "forms-and-inputs",
+          "title": "Forms & User Input",
+          "duration": "15 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "2-6",
+          "slug": "semantic-html",
+          "title": "Semantic HTML & Accessibility",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "CSS Styling",
+      "description": "Make your websites beautiful",
+      "lessons": [
+        {
+          "id": "3-1",
+          "slug": "intro-to-css",
+          "title": "Introduction to CSS",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3-2",
+          "slug": "colors-and-typography",
+          "title": "Colors & Typography",
+          "duration": "15 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3-3",
+          "slug": "box-model-layout",
+          "title": "The Box Model & Layout",
+          "duration": "18 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3-4",
+          "slug": "flexbox",
+          "title": "Flexbox for Modern Layouts",
+          "duration": "20 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3-5",
+          "slug": "css-grid",
+          "title": "CSS Grid Basics",
+          "duration": "18 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3-6",
+          "slug": "responsive-design",
+          "title": "Responsive Design & Media Queries",
+          "duration": "20 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "JavaScript Basics",
+      "description": "Bring your websites to life",
+      "lessons": [
+        {
+          "id": "4-1",
+          "slug": "intro-to-javascript",
+          "title": "Introduction to JavaScript",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4-2",
+          "slug": "variables-and-data-types",
+          "title": "Variables & Data Types",
+          "duration": "15 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4-3",
+          "slug": "functions-and-logic",
+          "title": "Functions & Logic",
+          "duration": "18 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4-4",
+          "slug": "dom-manipulation",
+          "title": "DOM Manipulation",
+          "duration": "20 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4-5",
+          "slug": "events-and-interactivity",
+          "title": "Events & Interactivity",
+          "duration": "18 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Hands-On Projects",
+      "description": "Build real projects for your portfolio",
+      "lessons": [
+        {
+          "id": "5-1",
+          "slug": "project-personal-portfolio",
+          "title": "Project: Personal Portfolio Site",
+          "duration": "45 min",
+          "type": "workshop",
+          "free": false,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "5-2",
+          "slug": "project-landing-page",
+          "title": "Project: Product Landing Page",
+          "duration": "40 min",
+          "type": "workshop",
+          "free": false,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "5-3",
+          "slug": "project-calculator",
+          "title": "Project: Interactive Calculator",
+          "duration": "50 min",
+          "type": "workshop",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "5-4",
+          "slug": "project-todo-app",
+          "title": "Project: To-Do List App",
+          "duration": "60 min",
+          "type": "workshop",
+          "free": false,
+          "difficulty": "Intermediate"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Next Steps",
+      "description": "Continue your web development journey",
+      "lessons": [
+        {
+          "id": "6-1",
+          "slug": "version-control-git",
+          "title": "Version Control with Git",
+          "duration": "15 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "6-2",
+          "slug": "deploying-your-site",
+          "title": "Deploying Your Website",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "6-3",
+          "slug": "learning-path-forward",
+          "title": "Your Learning Path Forward",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    }
+  ]
+}

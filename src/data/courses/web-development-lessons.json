@@ -1,0 +1,1378 @@
+{
+  "what-is-web-development": {
+    "title": "What is Web Development?",
+    "intro": "Web development is the work involved in building and maintaining websites. It's one of the most in-demand skills in tech, and the best part? You can start learning today with just a computer and an internet connection.",
+    "sections": [
+      {
+        "heading": "Frontend vs Backend vs Full Stack",
+        "content": "Web development is typically divided into three areas:\n\n**Frontend Development** (what users see)\n- HTML, CSS, JavaScript\n- React, Vue, Angular frameworks\n- User interfaces and interactions\n\n**Backend Development** (behind the scenes)\n- Server-side programming (Node.js, Python, etc.)\n- Databases and data storage\n- APIs and server logic\n\n**Full Stack Development**\n- Combines both frontend and backend\n- Can build complete applications\n- Highly versatile and in-demand"
+      },
+      {
+        "heading": "Why Learn Web Development?",
+        "content": "Web development offers incredible opportunities:\n\n- **High demand**: Every company needs web developers\n- **Remote-friendly**: Work from anywhere in the world\n- **Creative expression**: Build your ideas into reality\n- **Low barrier to entry**: No degree required to get started\n- **Great salary**: Average US salary is $80,000+ for entry-level\n\nWhether you want to build your own startup, freelance, or work at a tech company, web development skills open doors."
+      },
+      {
+        "heading": "What You'll Learn in This Course",
+        "content": "This course will take you from zero to building real websites:\n\n1. **HTML**: Structure your content\n2. **CSS**: Style and design your pages\n3. **JavaScript**: Add interactivity\n4. **Projects**: Build a portfolio to showcase your skills\n\nBy the end, you'll have multiple projects to show employers and the confidence to keep learning."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Web Development Roadmap",
+        "source": "roadmap.sh",
+        "url": "https://roadmap.sh/frontend",
+        "type": "Roadmap",
+        "description": "Visual guide to everything you'll eventually learn"
+      },
+      {
+        "title": "How the Internet Works in 5 Minutes",
+        "source": "YouTube",
+        "url": "https://www.youtube.com/watch?v=7_LPdttKXPc",
+        "type": "Video",
+        "description": "Quick visual explanation of how websites reach your browser"
+      },
+      {
+        "title": "freeCodeCamp",
+        "source": "freeCodeCamp.org",
+        "url": "https://www.freecodecamp.org/",
+        "type": "Course",
+        "description": "Excellent free resource to practice alongside this course"
+      }
+    ],
+    "keyTakeaways": [
+      "Web development is divided into frontend, backend, and full stack",
+      "You don't need a degree to become a web developer",
+      "HTML, CSS, and JavaScript are the core technologies",
+      "Building projects is the best way to learn"
+    ]
+  },
+  "how-the-web-works": {
+    "title": "How the Web Works",
+    "intro": "Before you build websites, it helps to understand how they actually work. When you type a URL into your browser and hit enter, a fascinating series of events happens in milliseconds.",
+    "sections": [
+      {
+        "heading": "The Request-Response Cycle",
+        "content": "Every website interaction follows this pattern:\n\n1. **You type a URL** (like www.google.com)\n2. **DNS lookup**: Your computer asks \"What's the IP address for this domain?\"\n3. **Request sent**: Your browser sends a request to that server\n4. **Server responds**: The server sends back HTML, CSS, and JavaScript files\n5. **Browser renders**: Your browser turns those files into a visual webpage\n\nThis all happens in under a second!"
+      },
+      {
+        "heading": "Understanding URLs",
+        "content": "A URL (Uniform Resource Locator) has several parts:\n\n`https://www.example.com/products/shoes?color=red`\n\n- **https**: The protocol (secure connection)\n- **www.example.com**: The domain name\n- **/products/shoes**: The path to a specific page\n- **?color=red**: Query parameters (extra information)\n\nUnderstanding URLs helps you build better navigation and links."
+      },
+      {
+        "heading": "Clients and Servers",
+        "content": "**Client**: Your browser (Chrome, Firefox, Safari)\n- Requests information\n- Displays the website\n- Runs JavaScript code\n\n**Server**: A computer that hosts websites\n- Stores website files\n- Processes requests\n- Sends responses\n\nAs a frontend developer, you'll mainly write code that runs on the client (browser)."
+      }
+    ],
+    "resources": [
+      {
+        "title": "How the Web Works",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works",
+        "type": "Reading",
+        "description": "Mozilla's comprehensive guide to web fundamentals"
+      },
+      {
+        "title": "DNS Explained",
+        "source": "YouTube",
+        "url": "https://www.youtube.com/watch?v=72snZctFFtA",
+        "type": "Video",
+        "description": "Visual explanation of how DNS works"
+      },
+      {
+        "title": "Chrome DevTools",
+        "source": "Google",
+        "url": "https://developer.chrome.com/docs/devtools/network/",
+        "type": "Tool",
+        "description": "See requests happening in real-time in your browser"
+      }
+    ],
+    "keyTakeaways": [
+      "Websites work through a request-response cycle",
+      "DNS translates domain names to IP addresses",
+      "Browsers are clients that display websites",
+      "Servers store and send website files"
+    ]
+  },
+  "setting-up-your-environment": {
+    "title": "Setting Up Your Development Environment",
+    "intro": "Before you write your first line of code, you need the right tools. The good news? Everything you need is free, and setup takes just a few minutes.",
+    "sections": [
+      {
+        "heading": "Choosing a Code Editor",
+        "content": "A code editor is where you'll write your code. We recommend **Visual Studio Code (VS Code)**:\n\n- **Free** and open source\n- **Huge ecosystem** of extensions\n- **Built-in terminal** and Git support\n- **Used by most developers** (great for learning)\n\nDownload it at: https://code.visualstudio.com/\n\nOther good options: Sublime Text, Atom, or even Notepad++ for simplicity."
+      },
+      {
+        "heading": "Essential VS Code Extensions",
+        "content": "Install these extensions to supercharge your workflow:\n\n1. **Live Server**: Preview your website as you code\n2. **Prettier**: Automatically format your code\n3. **Auto Rename Tag**: Rename HTML tags easily\n4. **HTML CSS Support**: Better autocomplete for CSS\n\nTo install: Click the Extensions icon (four squares) in VS Code and search for each one."
+      },
+      {
+        "heading": "Your Browser's Developer Tools",
+        "content": "Every modern browser has built-in developer tools:\n\n**How to open them:**\n- Right-click on any webpage → \"Inspect\"\n- Or press F12 (Windows) / Cmd+Option+I (Mac)\n\n**Key tabs:**\n- **Elements**: See and edit HTML/CSS\n- **Console**: See JavaScript errors and logs\n- **Network**: Watch files load\n\nChrome DevTools is the most popular, but Firefox's tools are also excellent."
+      },
+      {
+        "heading": "Creating Your Project Folder",
+        "content": "Organization matters from day one:\n\n1. Create a folder called `web-projects` on your computer\n2. Inside, create a folder called `my-first-site`\n3. Open VS Code and drag this folder into it\n4. Create a new file called `index.html`\n\nYou're now ready to write your first webpage!"
+      }
+    ],
+    "resources": [
+      {
+        "title": "VS Code Download",
+        "source": "Microsoft",
+        "url": "https://code.visualstudio.com/",
+        "type": "Tool",
+        "description": "Download Visual Studio Code for free"
+      },
+      {
+        "title": "VS Code Tutorial for Beginners",
+        "source": "YouTube - Traversy Media",
+        "url": "https://www.youtube.com/watch?v=WPqXP_kLzpo",
+        "type": "Video",
+        "description": "Complete walkthrough of VS Code features"
+      },
+      {
+        "title": "Chrome DevTools Guide",
+        "source": "Google",
+        "url": "https://developer.chrome.com/docs/devtools/overview/",
+        "type": "Reading",
+        "description": "Official guide to Chrome's developer tools"
+      }
+    ],
+    "keyTakeaways": [
+      "VS Code is the most popular free code editor",
+      "Extensions like Live Server make development faster",
+      "Browser DevTools are essential for debugging",
+      "Organize your projects in folders from the start"
+    ]
+  },
+  "your-first-webpage": {
+    "title": "Creating Your First Webpage",
+    "intro": "It's time to write real code! In this lesson, you'll create your very first webpage and see it in your browser. By the end, you'll understand the basic structure every webpage needs.",
+    "sections": [
+      {
+        "heading": "The Basic HTML Template",
+        "content": "Every webpage starts with this structure:\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>My First Webpage</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n    <p>This is my first webpage.</p>\n</body>\n</html>\n```\n\nType this into your `index.html` file (or copy-paste to start)."
+      },
+      {
+        "heading": "Understanding Each Part",
+        "content": "Let's break down what each part does:\n\n- `<!DOCTYPE html>`: Tells the browser this is HTML5\n- `<html>`: The root element containing everything\n- `<head>`: Metadata (not visible on the page)\n- `<title>`: The text in the browser tab\n- `<body>`: Everything visible on the page\n- `<h1>`: A main heading\n- `<p>`: A paragraph of text\n\nNotice how tags come in pairs: `<body>` opens, `</body>` closes."
+      },
+      {
+        "heading": "Viewing Your Webpage",
+        "content": "Two ways to see your page:\n\n**Method 1: Open the file directly**\n- Find your `index.html` file\n- Double-click to open in browser\n- Refresh manually after changes\n\n**Method 2: Use Live Server (recommended)**\n- Right-click in VS Code\n- Select \"Open with Live Server\"\n- Page auto-refreshes when you save!\n\nTry changing the text in `<h1>` and watch it update."
+      },
+      {
+        "heading": "Mini Project: About Me Page",
+        "content": "Practice what you've learned! Create a simple \"About Me\" page with:\n\n1. A main heading with your name\n2. A paragraph about yourself\n3. What you want to learn in web development\n\nDon't worry about making it pretty yet - that's what CSS is for. Focus on getting the structure right.\n\nExample:\n```html\n<h1>Hi, I'm Sarah!</h1>\n<p>I'm learning web development to build my own apps.</p>\n<p>I'm excited to learn HTML, CSS, and JavaScript!</p>\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "HTML Basics",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics",
+        "type": "Reading",
+        "description": "Mozilla's beginner guide to HTML"
+      },
+      {
+        "title": "HTML Crash Course",
+        "source": "YouTube - Traversy Media",
+        "url": "https://www.youtube.com/watch?v=UB1O30fR-EE",
+        "type": "Video",
+        "description": "One-hour comprehensive HTML tutorial"
+      },
+      {
+        "title": "CodePen",
+        "source": "CodePen.io",
+        "url": "https://codepen.io/",
+        "type": "Tool",
+        "description": "Practice HTML/CSS/JS in your browser without setup"
+      }
+    ],
+    "keyTakeaways": [
+      "Every webpage needs the basic HTML template structure",
+      "The <head> contains metadata, <body> contains visible content",
+      "Tags usually come in pairs (opening and closing)",
+      "Live Server makes development faster with auto-refresh"
+    ]
+  },
+  "html-structure-syntax": {
+    "title": "HTML Structure & Syntax",
+    "intro": "Now that you've created your first webpage, let's dive deeper into how HTML actually works. Understanding the rules of HTML will help you write cleaner code and debug problems faster.",
+    "sections": [
+      {
+        "heading": "Elements, Tags, and Attributes",
+        "content": "**Element**: A complete piece of HTML\n```html\n<p class=\"intro\">Hello world</p>\n```\n\n**Tag**: The opening `<p>` and closing `</p>` parts\n\n**Attribute**: Extra information like `class=\"intro\"`\n- Attributes go in the opening tag\n- Format: `name=\"value\"`\n- Common attributes: `id`, `class`, `href`, `src`\n\n**Content**: The text \"Hello world\" between tags"
+      },
+      {
+        "heading": "Nesting and Indentation",
+        "content": "Elements can contain other elements (nesting):\n\n```html\n<div>\n    <h1>Welcome</h1>\n    <p>This paragraph is inside the div.</p>\n</div>\n```\n\n**Rules for nesting:**\n- Close inner elements before outer ones\n- Indent nested elements for readability\n- Use 2 or 4 spaces (be consistent)\n\n**Wrong:**\n```html\n<div><p>Text</div></p>  <!-- Tags crossed! -->\n```\n\n**Right:**\n```html\n<div><p>Text</p></div>  <!-- Properly nested -->\n```"
+      },
+      {
+        "heading": "Self-Closing Tags",
+        "content": "Some elements don't have content and don't need closing tags:\n\n```html\n<img src=\"photo.jpg\" alt=\"A photo\">\n<br>\n<hr>\n<input type=\"text\">\n<meta charset=\"UTF-8\">\n```\n\nThese are called **void elements** or self-closing tags. You might see them written with a slash (`<br />`) in older code, but it's not required in HTML5."
+      },
+      {
+        "heading": "Comments",
+        "content": "Comments let you leave notes in your code that don't appear on the page:\n\n```html\n<!-- This is a comment -->\n<h1>Visible Heading</h1>\n\n<!-- \n    Multi-line comments\n    work like this\n-->\n```\n\nUse comments to:\n- Explain complex sections\n- Temporarily hide code while testing\n- Leave notes for yourself or teammates"
+      }
+    ],
+    "resources": [
+      {
+        "title": "HTML Elements Reference",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element",
+        "type": "Reference",
+        "description": "Complete list of all HTML elements"
+      },
+      {
+        "title": "HTML Validation",
+        "source": "W3C",
+        "url": "https://validator.w3.org/",
+        "type": "Tool",
+        "description": "Check if your HTML is valid and well-formed"
+      },
+      {
+        "title": "HTML Best Practices",
+        "source": "freeCodeCamp",
+        "url": "https://www.freecodecamp.org/news/html-best-practices/",
+        "type": "Reading",
+        "description": "Writing clean, maintainable HTML"
+      }
+    ],
+    "keyTakeaways": [
+      "Elements consist of tags, attributes, and content",
+      "Always close tags in the correct order (proper nesting)",
+      "Use consistent indentation for readable code",
+      "Some tags are self-closing and don't need a closing tag"
+    ]
+  },
+  "text-and-headings": {
+    "title": "Text, Headings & Paragraphs",
+    "intro": "Text is the foundation of most websites. HTML provides specific elements for different types of text content, from main headlines to small print. Using the right elements helps both users and search engines understand your content.",
+    "sections": [
+      {
+        "heading": "Heading Levels (h1-h6)",
+        "content": "HTML has six heading levels:\n\n```html\n<h1>Main Page Title</h1>\n<h2>Major Section</h2>\n<h3>Subsection</h3>\n<h4>Sub-subsection</h4>\n<h5>Minor heading</h5>\n<h6>Smallest heading</h6>\n```\n\n**Best practices:**\n- Use only ONE `<h1>` per page (your main title)\n- Don't skip levels (h1 → h3 is bad)\n- Headings create document outline for accessibility\n- Search engines use headings to understand content"
+      },
+      {
+        "heading": "Paragraphs and Line Breaks",
+        "content": "**Paragraphs** (`<p>`) are blocks of text:\n```html\n<p>This is a paragraph. It has automatic spacing above and below.</p>\n<p>This is another paragraph.</p>\n```\n\n**Line breaks** (`<br>`) force a new line without starting a new paragraph:\n```html\n<p>Line one<br>Line two<br>Line three</p>\n```\n\n**Horizontal rules** (`<hr>`) create a thematic break:\n```html\n<p>First section content</p>\n<hr>\n<p>Second section content</p>\n```"
+      },
+      {
+        "heading": "Text Formatting",
+        "content": "Common text formatting elements:\n\n```html\n<strong>Bold/important text</strong>\n<em>Italic/emphasized text</em>\n<mark>Highlighted text</mark>\n<small>Smaller text (fine print)</small>\n<del>Deleted/strikethrough text</del>\n<sub>Subscript (H<sub>2</sub>O)</sub>\n<sup>Superscript (x<sup>2</sup>)</sup>\n```\n\n**Note:** `<strong>` and `<em>` have semantic meaning (importance/emphasis). `<b>` and `<i>` are just visual styling. Prefer the semantic versions."
+      },
+      {
+        "heading": "Block vs Inline Elements",
+        "content": "**Block elements** start on a new line and take full width:\n- `<h1>` - `<h6>`, `<p>`, `<div>`, `<ul>`, `<ol>`\n\n**Inline elements** flow within text:\n- `<strong>`, `<em>`, `<a>`, `<span>`, `<img>`\n\nExample:\n```html\n<p>This paragraph contains <strong>bold</strong> and <em>italic</em> text.</p>\n```\n\nUnderstanding this distinction helps when styling with CSS."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Text Fundamentals",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals",
+        "type": "Reading",
+        "description": "Complete guide to HTML text elements"
+      },
+      {
+        "title": "HTML Headings for SEO",
+        "source": "Moz",
+        "url": "https://moz.com/learn/seo/headings",
+        "type": "Reading",
+        "description": "How search engines use heading structure"
+      }
+    ],
+    "keyTakeaways": [
+      "Use only one h1 per page, and don't skip heading levels",
+      "Paragraphs create blocks of text with spacing",
+      "Use semantic elements (strong, em) over visual ones (b, i)",
+      "Block elements take full width; inline elements flow with text"
+    ]
+  },
+  "links-and-images": {
+    "title": "Links, Images & Media",
+    "intro": "The web is built on connections. Links let users navigate between pages, and images make content visually engaging. These are two of the most important HTML elements you'll use.",
+    "sections": [
+      {
+        "heading": "Creating Links",
+        "content": "The anchor tag `<a>` creates links:\n\n```html\n<!-- External link -->\n<a href=\"https://google.com\">Go to Google</a>\n\n<!-- Internal link (same site) -->\n<a href=\"/about.html\">About Us</a>\n\n<!-- Link to section on same page -->\n<a href=\"#contact\">Jump to Contact</a>\n\n<!-- Open in new tab -->\n<a href=\"https://google.com\" target=\"_blank\" rel=\"noopener\">Google (new tab)</a>\n\n<!-- Email link -->\n<a href=\"mailto:hello@example.com\">Email Us</a>\n```\n\nThe `href` attribute specifies the destination."
+      },
+      {
+        "heading": "Adding Images",
+        "content": "The `<img>` tag embeds images:\n\n```html\n<img src=\"photo.jpg\" alt=\"A beautiful sunset\">\n\n<!-- With width/height -->\n<img src=\"logo.png\" alt=\"Company logo\" width=\"200\" height=\"100\">\n\n<!-- External image -->\n<img src=\"https://example.com/image.jpg\" alt=\"Description\">\n```\n\n**Important:** Always include `alt` text!\n- Describes the image for screen readers\n- Shows if image fails to load\n- Helps with SEO\n\n**Image formats:**\n- JPG: Photos\n- PNG: Graphics with transparency\n- SVG: Icons and logos (scalable)\n- WebP: Modern, smaller file sizes"
+      },
+      {
+        "heading": "Image as a Link",
+        "content": "Wrap an image in an anchor tag to make it clickable:\n\n```html\n<a href=\"https://example.com\">\n    <img src=\"banner.jpg\" alt=\"Click for more info\">\n</a>\n```\n\nThis is common for:\n- Logo links back to homepage\n- Thumbnail galleries\n- Call-to-action banners"
+      },
+      {
+        "heading": "Embedding Video and Audio",
+        "content": "HTML5 introduced native media elements:\n\n```html\n<!-- Video -->\n<video src=\"movie.mp4\" controls width=\"640\">\n    Your browser doesn't support video.\n</video>\n\n<!-- Audio -->\n<audio src=\"song.mp3\" controls>\n    Your browser doesn't support audio.\n</audio>\n\n<!-- YouTube embed (iframe) -->\n<iframe \n    width=\"560\" \n    height=\"315\" \n    src=\"https://www.youtube.com/embed/VIDEO_ID\"\n    allowfullscreen>\n</iframe>\n```\n\nThe `controls` attribute shows play/pause buttons."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Creating Hyperlinks",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks",
+        "type": "Reading",
+        "description": "Everything about HTML links"
+      },
+      {
+        "title": "Image Optimization",
+        "source": "web.dev",
+        "url": "https://web.dev/fast/#optimize-your-images",
+        "type": "Reading",
+        "description": "Make images load fast"
+      },
+      {
+        "title": "Unsplash",
+        "source": "Unsplash.com",
+        "url": "https://unsplash.com/",
+        "type": "Resource",
+        "description": "Free high-quality images for your projects"
+      }
+    ],
+    "keyTakeaways": [
+      "Use href for link destinations, src for image/media sources",
+      "Always include alt text for images (accessibility & SEO)",
+      "Use target=\"_blank\" with rel=\"noopener\" for external links",
+      "HTML5 supports native video and audio elements"
+    ]
+  },
+  "lists-and-tables": {
+    "title": "Lists & Tables",
+    "intro": "Lists organize related items, and tables display data in rows and columns. Both are essential for presenting information clearly on your websites.",
+    "sections": [
+      {
+        "heading": "Unordered Lists",
+        "content": "Use `<ul>` for lists where order doesn't matter (bullets):\n\n```html\n<h2>Shopping List</h2>\n<ul>\n    <li>Milk</li>\n    <li>Bread</li>\n    <li>Eggs</li>\n</ul>\n```\n\nCommon uses:\n- Navigation menus\n- Feature lists\n- Any collection of items"
+      },
+      {
+        "heading": "Ordered Lists",
+        "content": "Use `<ol>` for lists where order matters (numbered):\n\n```html\n<h2>Recipe Instructions</h2>\n<ol>\n    <li>Preheat oven to 350°F</li>\n    <li>Mix ingredients</li>\n    <li>Bake for 30 minutes</li>\n</ol>\n```\n\nYou can customize the numbering:\n```html\n<ol type=\"A\">  <!-- A, B, C -->\n<ol type=\"i\">  <!-- i, ii, iii -->\n<ol start=\"5\"> <!-- Start at 5 -->\n```"
+      },
+      {
+        "heading": "Nested Lists",
+        "content": "Lists can contain other lists:\n\n```html\n<ul>\n    <li>Frontend\n        <ul>\n            <li>HTML</li>\n            <li>CSS</li>\n            <li>JavaScript</li>\n        </ul>\n    </li>\n    <li>Backend\n        <ul>\n            <li>Node.js</li>\n            <li>Python</li>\n        </ul>\n    </li>\n</ul>\n```\n\nThis creates a hierarchical structure, great for navigation menus or outlines."
+      },
+      {
+        "heading": "Creating Tables",
+        "content": "Tables organize data in rows and columns:\n\n```html\n<table>\n    <thead>\n        <tr>\n            <th>Name</th>\n            <th>Age</th>\n            <th>City</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>Sarah</td>\n            <td>28</td>\n            <td>New York</td>\n        </tr>\n        <tr>\n            <td>James</td>\n            <td>32</td>\n            <td>Chicago</td>\n        </tr>\n    </tbody>\n</table>\n```\n\n- `<thead>`: Table header\n- `<tbody>`: Table body\n- `<tr>`: Table row\n- `<th>`: Header cell (bold, centered)\n- `<td>`: Data cell"
+      }
+    ],
+    "resources": [
+      {
+        "title": "HTML Lists",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul",
+        "type": "Reference",
+        "description": "Complete guide to HTML list elements"
+      },
+      {
+        "title": "HTML Tables Guide",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML/Tables/Basics",
+        "type": "Reading",
+        "description": "When and how to use tables properly"
+      }
+    ],
+    "keyTakeaways": [
+      "Use <ul> for unordered (bulleted) lists, <ol> for ordered (numbered) lists",
+      "Each list item uses the <li> tag",
+      "Lists can be nested inside each other",
+      "Tables are for tabular data, not for page layout"
+    ]
+  },
+  "forms-and-inputs": {
+    "title": "Forms & User Input",
+    "intro": "Forms are how users interact with your website - signing up, logging in, searching, submitting feedback. Understanding form elements is essential for building interactive websites.",
+    "sections": [
+      {
+        "heading": "Basic Form Structure",
+        "content": "Every form needs these elements:\n\n```html\n<form action=\"/submit\" method=\"POST\">\n    <label for=\"email\">Email:</label>\n    <input type=\"email\" id=\"email\" name=\"email\" required>\n    \n    <button type=\"submit\">Submit</button>\n</form>\n```\n\n- `action`: Where to send the data\n- `method`: GET (in URL) or POST (hidden)\n- `label`: Describes the input (clickable!)\n- `for`/`id`: Connect label to input\n- `name`: Identifier for the data"
+      },
+      {
+        "heading": "Input Types",
+        "content": "HTML5 provides many input types:\n\n```html\n<input type=\"text\" placeholder=\"Your name\">\n<input type=\"email\" placeholder=\"email@example.com\">\n<input type=\"password\">\n<input type=\"number\" min=\"0\" max=\"100\">\n<input type=\"tel\" placeholder=\"Phone number\">\n<input type=\"date\">\n<input type=\"color\">\n<input type=\"range\" min=\"0\" max=\"100\">\n<input type=\"file\" accept=\"image/*\">\n<input type=\"checkbox\"> Remember me\n<input type=\"radio\" name=\"choice\"> Option 1\n```\n\nUsing the right type improves:\n- Mobile keyboards (email shows @)\n- Built-in validation\n- Accessibility"
+      },
+      {
+        "heading": "Text Areas and Select Menus",
+        "content": "For longer text or multiple choices:\n\n```html\n<!-- Multi-line text -->\n<textarea name=\"message\" rows=\"4\" cols=\"50\">\nDefault text here\n</textarea>\n\n<!-- Dropdown menu -->\n<select name=\"country\">\n    <option value=\"\">Select a country</option>\n    <option value=\"us\">United States</option>\n    <option value=\"uk\">United Kingdom</option>\n    <option value=\"ca\">Canada</option>\n</select>\n```"
+      },
+      {
+        "heading": "Form Validation",
+        "content": "HTML5 provides built-in validation:\n\n```html\n<!-- Required field -->\n<input type=\"text\" required>\n\n<!-- Minimum/maximum length -->\n<input type=\"text\" minlength=\"3\" maxlength=\"20\">\n\n<!-- Pattern matching -->\n<input type=\"text\" pattern=\"[A-Za-z]{3}\" \n       title=\"Three letters only\">\n\n<!-- Number range -->\n<input type=\"number\" min=\"18\" max=\"120\">\n```\n\nThe browser shows error messages automatically when validation fails."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Web Forms Guide",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Forms",
+        "type": "Reading",
+        "description": "Comprehensive guide to HTML forms"
+      },
+      {
+        "title": "Form Validation",
+        "source": "web.dev",
+        "url": "https://web.dev/learn/forms/validation/",
+        "type": "Reading",
+        "description": "Best practices for validating user input"
+      },
+      {
+        "title": "Formspree",
+        "source": "Formspree.io",
+        "url": "https://formspree.io/",
+        "type": "Tool",
+        "description": "Add form handling without a backend"
+      }
+    ],
+    "keyTakeaways": [
+      "Always use labels with inputs for accessibility",
+      "Use the appropriate input type for better UX",
+      "HTML5 validation reduces the need for JavaScript",
+      "Connect labels to inputs using for/id attributes"
+    ]
+  },
+  "semantic-html": {
+    "title": "Semantic HTML & Accessibility",
+    "intro": "Semantic HTML means using elements that describe their content's meaning, not just its appearance. This makes your sites more accessible, better for SEO, and easier to maintain.",
+    "sections": [
+      {
+        "heading": "What is Semantic HTML?",
+        "content": "Compare these two approaches:\n\n**Non-semantic (bad):**\n```html\n<div class=\"header\">\n    <div class=\"nav\">...</div>\n</div>\n<div class=\"main-content\">...</div>\n<div class=\"footer\">...</div>\n```\n\n**Semantic (good):**\n```html\n<header>\n    <nav>...</nav>\n</header>\n<main>...</main>\n<footer>...</footer>\n```\n\nBoth look the same, but semantic HTML tells browsers and screen readers what each section IS, not just how it looks."
+      },
+      {
+        "heading": "Key Semantic Elements",
+        "content": "**Page structure:**\n- `<header>`: Introductory content, usually contains logo/nav\n- `<nav>`: Navigation links\n- `<main>`: The main content (only one per page)\n- `<article>`: Self-contained content (blog post, news article)\n- `<section>`: Thematic grouping of content\n- `<aside>`: Sidebar, related content\n- `<footer>`: Footer information\n\n**Text semantics:**\n- `<figure>` / `<figcaption>`: Images with captions\n- `<time>`: Dates and times\n- `<address>`: Contact information\n- `<blockquote>`: Quoted content"
+      },
+      {
+        "heading": "Why Accessibility Matters",
+        "content": "Accessibility (a11y) ensures everyone can use your website:\n\n- **15% of people** have some form of disability\n- **Screen readers** rely on semantic HTML\n- **Keyboard navigation** needs proper focus states\n- **It's often legally required** (ADA, WCAG)\n\nPlus, accessible sites are often better for everyone - clear navigation, readable text, and logical structure benefit all users."
+      },
+      {
+        "heading": "Quick Accessibility Wins",
+        "content": "Easy improvements you can make today:\n\n1. **Alt text for images**: Describe what's in the image\n2. **Semantic elements**: Use `<nav>`, `<main>`, `<button>` etc.\n3. **Heading hierarchy**: Don't skip levels (h1 → h2 → h3)\n4. **Link text**: \"Read more about pricing\" not \"Click here\"\n5. **Color contrast**: Text should be readable\n6. **Form labels**: Every input needs a label\n7. **Focus states**: Visible when tabbing through page\n\n```html\n<!-- Good link text -->\n<a href=\"/pricing\">View our pricing plans</a>\n\n<!-- Bad link text -->\n<a href=\"/pricing\">Click here</a>\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "HTML5 Semantic Elements",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantics_in_html",
+        "type": "Reading",
+        "description": "Understanding semantic HTML"
+      },
+      {
+        "title": "Web Accessibility Guidelines (WCAG)",
+        "source": "W3C",
+        "url": "https://www.w3.org/WAI/standards-guidelines/wcag/",
+        "type": "Reference",
+        "description": "Official accessibility standards"
+      },
+      {
+        "title": "WAVE Accessibility Checker",
+        "source": "WebAIM",
+        "url": "https://wave.webaim.org/",
+        "type": "Tool",
+        "description": "Test your site for accessibility issues"
+      },
+      {
+        "title": "A11y Project Checklist",
+        "source": "The A11Y Project",
+        "url": "https://www.a11yproject.com/checklist/",
+        "type": "Checklist",
+        "description": "Practical accessibility checklist"
+      }
+    ],
+    "keyTakeaways": [
+      "Semantic HTML describes meaning, not just appearance",
+      "Use header, nav, main, article, section, footer appropriately",
+      "Accessibility benefits everyone and is often legally required",
+      "Simple changes like alt text and proper headings make a big difference"
+    ]
+  },
+  "intro-to-css": {
+    "title": "Introduction to CSS",
+    "intro": "CSS (Cascading Style Sheets) transforms plain HTML into beautiful, visually engaging websites. While HTML provides structure, CSS controls colors, fonts, spacing, layout, and animations.",
+    "sections": [
+      {
+        "heading": "What CSS Does",
+        "content": "CSS controls every visual aspect of your website:\n\n- **Colors**: Text, backgrounds, borders\n- **Typography**: Fonts, sizes, spacing\n- **Layout**: Where elements appear on the page\n- **Spacing**: Margins, padding, gaps\n- **Effects**: Shadows, rounded corners, animations\n- **Responsive design**: Different styles for different screen sizes\n\nWithout CSS, every website would look like a plain text document from the 90s."
+      },
+      {
+        "heading": "CSS Syntax",
+        "content": "CSS uses a simple pattern:\n\n```css\nselector {\n    property: value;\n    property: value;\n}\n```\n\nExample:\n```css\nh1 {\n    color: blue;\n    font-size: 32px;\n    text-align: center;\n}\n```\n\n- **Selector**: What to style (`h1`, `.class`, `#id`)\n- **Property**: What to change (`color`, `font-size`)\n- **Value**: The new setting (`blue`, `32px`)"
+      },
+      {
+        "heading": "Three Ways to Add CSS",
+        "content": "**1. External stylesheet (recommended):**\n```html\n<head>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n```\n\n**2. Internal styles (in the HTML file):**\n```html\n<head>\n    <style>\n        h1 { color: blue; }\n    </style>\n</head>\n```\n\n**3. Inline styles (on the element):**\n```html\n<h1 style=\"color: blue;\">Hello</h1>\n```\n\nExternal stylesheets are best - they keep HTML clean and styles reusable."
+      },
+      {
+        "heading": "Your First Stylesheet",
+        "content": "Create a file called `styles.css`:\n\n```css\n/* Reset some defaults */\n* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nbody {\n    font-family: Arial, sans-serif;\n    line-height: 1.6;\n    padding: 20px;\n}\n\nh1 {\n    color: #333;\n    margin-bottom: 20px;\n}\n\np {\n    color: #666;\n    margin-bottom: 15px;\n}\n```\n\nLink it to your HTML and watch your page transform!"
+      }
+    ],
+    "resources": [
+      {
+        "title": "CSS Basics",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps",
+        "type": "Reading",
+        "description": "Mozilla's comprehensive CSS introduction"
+      },
+      {
+        "title": "CSS Crash Course",
+        "source": "YouTube - Traversy Media",
+        "url": "https://www.youtube.com/watch?v=yfoY53QXEnI",
+        "type": "Video",
+        "description": "One-hour CSS tutorial covering the essentials"
+      },
+      {
+        "title": "CSS Reference",
+        "source": "CSS-Tricks",
+        "url": "https://css-tricks.com/almanac/",
+        "type": "Reference",
+        "description": "Searchable guide to every CSS property"
+      }
+    ],
+    "keyTakeaways": [
+      "CSS controls colors, fonts, layout, and visual effects",
+      "Use selector { property: value; } syntax",
+      "External stylesheets are the best practice",
+      "Start with a simple reset to normalize browser defaults"
+    ]
+  },
+  "colors-and-typography": {
+    "title": "Colors & Typography",
+    "intro": "Color and typography are the foundation of visual design. The right choices create mood, establish hierarchy, and make your content readable and engaging.",
+    "sections": [
+      {
+        "heading": "Working with Colors",
+        "content": "CSS supports multiple color formats:\n\n```css\n/* Named colors */\ncolor: red;\ncolor: tomato;\ncolor: darkslategray;\n\n/* Hex codes (most common) */\ncolor: #ff0000;     /* Red */\ncolor: #333;        /* Short for #333333 */\n\n/* RGB and RGBA */\ncolor: rgb(255, 0, 0);\ncolor: rgba(255, 0, 0, 0.5);  /* 50% transparent */\n\n/* HSL (Hue, Saturation, Lightness) */\ncolor: hsl(0, 100%, 50%);     /* Red */\n```\n\n**Common color properties:**\n- `color`: Text color\n- `background-color`: Background\n- `border-color`: Border color"
+      },
+      {
+        "heading": "Choosing a Color Palette",
+        "content": "Good color palettes typically include:\n\n- **Primary color**: Your brand/main color\n- **Secondary color**: Complementary accent\n- **Neutral colors**: Grays for text and backgrounds\n- **Success/Error**: Green and red for feedback\n\n**Tips:**\n- Use 2-3 main colors, not 10\n- Ensure sufficient contrast for readability\n- Use tools like Coolors.co to generate palettes\n\n```css\n:root {\n    --primary: #2563eb;\n    --secondary: #f59e0b;\n    --dark: #1f2937;\n    --light: #f3f4f6;\n}\n```"
+      },
+      {
+        "heading": "Font Properties",
+        "content": "Control how text looks:\n\n```css\nbody {\n    /* Font family with fallbacks */\n    font-family: 'Helvetica Neue', Arial, sans-serif;\n    \n    /* Size */\n    font-size: 16px;\n    \n    /* Weight (boldness) */\n    font-weight: 400;  /* normal */\n    font-weight: 700;  /* bold */\n    \n    /* Line spacing */\n    line-height: 1.6;\n    \n    /* Letter spacing */\n    letter-spacing: 0.5px;\n}\n\nh1 {\n    font-size: 2.5rem;  /* Relative to root size */\n    font-weight: bold;\n}\n```"
+      },
+      {
+        "heading": "Using Web Fonts",
+        "content": "Google Fonts offers hundreds of free fonts:\n\n**1. Add to your HTML head:**\n```html\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n```\n\n**2. Use in CSS:**\n```css\nbody {\n    font-family: 'Inter', sans-serif;\n}\n```\n\n**Popular font pairings:**\n- Headings: Playfair Display, Poppins, Montserrat\n- Body: Inter, Open Sans, Roboto\n\nLimit yourself to 2-3 fonts per site for consistency."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Google Fonts",
+        "source": "Google",
+        "url": "https://fonts.google.com/",
+        "type": "Tool",
+        "description": "Free fonts for your websites"
+      },
+      {
+        "title": "Coolors",
+        "source": "Coolors.co",
+        "url": "https://coolors.co/",
+        "type": "Tool",
+        "description": "Generate beautiful color palettes"
+      },
+      {
+        "title": "Contrast Checker",
+        "source": "WebAIM",
+        "url": "https://webaim.org/resources/contrastchecker/",
+        "type": "Tool",
+        "description": "Ensure your colors are accessible"
+      },
+      {
+        "title": "Type Scale",
+        "source": "Type-Scale.com",
+        "url": "https://type-scale.com/",
+        "type": "Tool",
+        "description": "Generate harmonious font sizes"
+      }
+    ],
+    "keyTakeaways": [
+      "Use hex codes (#333) for most color work",
+      "Limit your palette to 2-3 main colors plus neutrals",
+      "Always ensure sufficient color contrast for readability",
+      "Use Google Fonts for free, professional typography"
+    ]
+  },
+  "box-model-layout": {
+    "title": "The Box Model & Layout",
+    "intro": "Every element in CSS is a box. Understanding the box model is essential for controlling spacing and layout. Once you master this concept, you can position anything on a page.",
+    "sections": [
+      {
+        "heading": "Understanding the Box Model",
+        "content": "Every element has four layers (from inside out):\n\n1. **Content**: The actual text/image\n2. **Padding**: Space inside the border\n3. **Border**: The edge of the element\n4. **Margin**: Space outside the border\n\n```css\n.box {\n    width: 200px;\n    padding: 20px;      /* Inside spacing */\n    border: 2px solid black;\n    margin: 10px;       /* Outside spacing */\n}\n```\n\nBy default, width/height only set the content size. Padding and border add to the total size!"
+      },
+      {
+        "heading": "Box-Sizing: Border-Box",
+        "content": "The default behavior is confusing. Fix it with:\n\n```css\n* {\n    box-sizing: border-box;\n}\n```\n\nNow `width: 200px` means the TOTAL width is 200px, including padding and border. This makes layouts much more predictable.\n\n**Always add this to your stylesheets!**"
+      },
+      {
+        "heading": "Margin and Padding Shortcuts",
+        "content": "Shorthand properties save typing:\n\n```css\n/* All four sides */\nmargin: 10px;\n\n/* Vertical | Horizontal */\nmargin: 10px 20px;\n\n/* Top | Horizontal | Bottom */\nmargin: 10px 20px 30px;\n\n/* Top | Right | Bottom | Left (clockwise) */\nmargin: 10px 20px 30px 40px;\n\n/* Individual sides */\nmargin-top: 10px;\nmargin-left: 20px;\n```\n\nSame shortcuts work for `padding`."
+      },
+      {
+        "heading": "Display Property",
+        "content": "The `display` property controls how elements flow:\n\n```css\n/* Block: Takes full width, stacks vertically */\ndisplay: block;\n\n/* Inline: Flows with text, no width/height */\ndisplay: inline;\n\n/* Inline-block: Flows inline but accepts width/height */\ndisplay: inline-block;\n\n/* None: Completely hidden */\ndisplay: none;\n\n/* Flex: Modern layout (next lesson!) */\ndisplay: flex;\n```\n\nUnderstanding display is key to controlling layout."
+      }
+    ],
+    "resources": [
+      {
+        "title": "The Box Model",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model",
+        "type": "Reading",
+        "description": "Complete explanation of the box model"
+      },
+      {
+        "title": "Box Model Interactive",
+        "source": "Chrome DevTools",
+        "url": "https://developer.chrome.com/docs/devtools/css/",
+        "type": "Tool",
+        "description": "See the box model visually in DevTools"
+      }
+    ],
+    "keyTakeaways": [
+      "Every element is a box with content, padding, border, and margin",
+      "Always use box-sizing: border-box for predictable sizing",
+      "Margin creates space outside; padding creates space inside",
+      "The display property controls how elements flow on the page"
+    ]
+  },
+  "flexbox": {
+    "title": "Flexbox for Modern Layouts",
+    "intro": "Flexbox revolutionized CSS layout. It makes centering, spacing, and responsive design incredibly easy. Once you learn Flexbox, you'll use it everywhere.",
+    "sections": [
+      {
+        "heading": "Flexbox Basics",
+        "content": "Enable Flexbox on a container:\n\n```css\n.container {\n    display: flex;\n}\n```\n\nNow all direct children become \"flex items\" that you can control.\n\n```html\n<div class=\"container\">\n    <div>Item 1</div>\n    <div>Item 2</div>\n    <div>Item 3</div>\n</div>\n```\n\nBy default, items line up in a row and shrink/grow to fit."
+      },
+      {
+        "heading": "Main Axis Alignment",
+        "content": "Control horizontal alignment with `justify-content`:\n\n```css\n.container {\n    display: flex;\n    justify-content: flex-start;    /* Left (default) */\n    justify-content: center;        /* Center */\n    justify-content: flex-end;      /* Right */\n    justify-content: space-between; /* Spread out */\n    justify-content: space-around;  /* Even spacing */\n    justify-content: space-evenly;  /* Equal gaps */\n}\n```\n\n`space-between` is perfect for navbars and card layouts!"
+      },
+      {
+        "heading": "Cross Axis Alignment",
+        "content": "Control vertical alignment with `align-items`:\n\n```css\n.container {\n    display: flex;\n    height: 200px;\n    align-items: flex-start;  /* Top */\n    align-items: center;      /* Middle */\n    align-items: flex-end;    /* Bottom */\n    align-items: stretch;     /* Fill height (default) */\n}\n```\n\n**Perfect centering in 3 lines:**\n```css\n.container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n```"
+      },
+      {
+        "heading": "Flex Direction and Wrapping",
+        "content": "Change the main axis direction:\n\n```css\n.container {\n    display: flex;\n    flex-direction: row;            /* Horizontal (default) */\n    flex-direction: column;         /* Vertical */\n    flex-direction: row-reverse;    /* Right to left */\n}\n```\n\nAllow items to wrap to new lines:\n```css\n.container {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 20px;  /* Space between items */\n}\n```\n\n`gap` is much cleaner than adding margins to each item!"
+      },
+      {
+        "heading": "Flex Item Properties",
+        "content": "Control individual items:\n\n```css\n.item {\n    flex-grow: 1;    /* Grow to fill space */\n    flex-shrink: 0;  /* Don't shrink */\n    flex-basis: 200px; /* Starting size */\n}\n\n/* Shorthand */\n.item {\n    flex: 1;  /* Grow equally */\n}\n\n/* Override alignment for one item */\n.special-item {\n    align-self: flex-end;\n}\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "A Complete Guide to Flexbox",
+        "source": "CSS-Tricks",
+        "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+        "type": "Reference",
+        "description": "The ultimate Flexbox reference (bookmark this!)"
+      },
+      {
+        "title": "Flexbox Froggy",
+        "source": "Flexbox Froggy",
+        "url": "https://flexboxfroggy.com/",
+        "type": "Game",
+        "description": "Learn Flexbox by playing a game"
+      },
+      {
+        "title": "Flexbox in 100 Seconds",
+        "source": "YouTube - Fireship",
+        "url": "https://www.youtube.com/watch?v=K74l26pE4YA",
+        "type": "Video",
+        "description": "Quick visual overview of Flexbox"
+      }
+    ],
+    "keyTakeaways": [
+      "display: flex on a container enables Flexbox",
+      "justify-content aligns items along the main axis",
+      "align-items aligns items along the cross axis",
+      "gap property creates consistent spacing between items"
+    ]
+  },
+  "css-grid": {
+    "title": "CSS Grid Basics",
+    "intro": "CSS Grid is the most powerful layout system in CSS. While Flexbox is great for one-dimensional layouts (rows OR columns), Grid excels at two-dimensional layouts (rows AND columns).",
+    "sections": [
+      {
+        "heading": "Grid Basics",
+        "content": "Enable Grid on a container:\n\n```css\n.container {\n    display: grid;\n    grid-template-columns: 200px 200px 200px;\n    gap: 20px;\n}\n```\n\nThis creates a 3-column grid with 200px columns and 20px gaps.\n\n```html\n<div class=\"container\">\n    <div>1</div>\n    <div>2</div>\n    <div>3</div>\n    <div>4</div>\n    <div>5</div>\n    <div>6</div>\n</div>\n```\n\nItems automatically flow into the grid cells."
+      },
+      {
+        "heading": "Flexible Columns with fr",
+        "content": "The `fr` unit divides available space:\n\n```css\n.container {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;  /* Equal thirds */\n    grid-template-columns: 1fr 2fr 1fr;  /* Middle is wider */\n    grid-template-columns: 200px 1fr;    /* Fixed + flexible */\n}\n```\n\n**Repeat shorthand:**\n```css\ngrid-template-columns: repeat(3, 1fr);  /* Three equal columns */\ngrid-template-columns: repeat(4, 200px); /* Four 200px columns */\n```"
+      },
+      {
+        "heading": "Responsive Grids with auto-fit",
+        "content": "Create responsive grids without media queries:\n\n```css\n.container {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n    gap: 20px;\n}\n```\n\nThis creates as many 250px+ columns as will fit, automatically adjusting for screen size. Perfect for card layouts!\n\n- `auto-fit`: Creates columns to fill the space\n- `minmax(250px, 1fr)`: Each column is at least 250px"
+      },
+      {
+        "heading": "Spanning Columns and Rows",
+        "content": "Make items span multiple cells:\n\n```css\n.wide-item {\n    grid-column: span 2;  /* Span 2 columns */\n}\n\n.tall-item {\n    grid-row: span 2;     /* Span 2 rows */\n}\n\n.big-item {\n    grid-column: span 2;\n    grid-row: span 2;     /* 2x2 block */\n}\n```\n\nOr specify exact positions:\n```css\n.item {\n    grid-column: 1 / 3;   /* From line 1 to line 3 */\n    grid-row: 2 / 4;      /* From line 2 to line 4 */\n}\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "A Complete Guide to CSS Grid",
+        "source": "CSS-Tricks",
+        "url": "https://css-tricks.com/snippets/css/complete-guide-grid/",
+        "type": "Reference",
+        "description": "The ultimate CSS Grid reference"
+      },
+      {
+        "title": "Grid Garden",
+        "source": "CSS Grid Garden",
+        "url": "https://cssgridgarden.com/",
+        "type": "Game",
+        "description": "Learn CSS Grid by playing a game"
+      },
+      {
+        "title": "Grid vs Flexbox",
+        "source": "YouTube - Kevin Powell",
+        "url": "https://www.youtube.com/watch?v=3elGSZSWTbM",
+        "type": "Video",
+        "description": "When to use Grid vs Flexbox"
+      }
+    ],
+    "keyTakeaways": [
+      "Grid is for two-dimensional layouts (rows AND columns)",
+      "fr units divide available space proportionally",
+      "auto-fit with minmax() creates responsive grids automatically",
+      "Items can span multiple columns and rows"
+    ]
+  },
+  "responsive-design": {
+    "title": "Responsive Design & Media Queries",
+    "intro": "Responsive design ensures your website looks great on any device - from phones to desktops. With over 50% of web traffic coming from mobile, this skill is essential.",
+    "sections": [
+      {
+        "heading": "The Viewport Meta Tag",
+        "content": "First, ensure proper mobile rendering:\n\n```html\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n```\n\nThis tells mobile browsers to:\n- Set width to the device width\n- Don't zoom out to fit desktop sites\n\n**Always include this in your HTML head!**"
+      },
+      {
+        "heading": "Media Queries",
+        "content": "Apply styles based on screen size:\n\n```css\n/* Base styles (mobile first) */\n.container {\n    padding: 10px;\n}\n\n/* Tablets (768px and up) */\n@media (min-width: 768px) {\n    .container {\n        padding: 20px;\n    }\n}\n\n/* Desktops (1024px and up) */\n@media (min-width: 1024px) {\n    .container {\n        padding: 40px;\n        max-width: 1200px;\n        margin: 0 auto;\n    }\n}\n```\n\n**Mobile-first**: Start with mobile styles, add complexity for larger screens."
+      },
+      {
+        "heading": "Common Breakpoints",
+        "content": "Standard screen size breakpoints:\n\n```css\n/* Mobile: 0 - 767px (base styles) */\n\n/* Tablet */\n@media (min-width: 768px) { }\n\n/* Desktop */\n@media (min-width: 1024px) { }\n\n/* Large desktop */\n@media (min-width: 1280px) { }\n```\n\nDon't obsess over exact numbers - test on real devices and adjust as needed."
+      },
+      {
+        "heading": "Responsive Patterns",
+        "content": "Common responsive layout patterns:\n\n**Stack on mobile, side-by-side on desktop:**\n```css\n.card-grid {\n    display: grid;\n    grid-template-columns: 1fr;\n    gap: 20px;\n}\n\n@media (min-width: 768px) {\n    .card-grid {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n@media (min-width: 1024px) {\n    .card-grid {\n        grid-template-columns: repeat(3, 1fr);\n    }\n}\n```\n\n**Or use auto-fit for automatic responsiveness:**\n```css\n.card-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    gap: 20px;\n}\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Responsive Design",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design",
+        "type": "Reading",
+        "description": "Complete guide to responsive design"
+      },
+      {
+        "title": "Responsive Design Mode",
+        "source": "Chrome DevTools",
+        "url": "https://developer.chrome.com/docs/devtools/device-mode/",
+        "type": "Tool",
+        "description": "Test different screen sizes in your browser"
+      },
+      {
+        "title": "Am I Responsive",
+        "source": "ami.responsivedesign.is",
+        "url": "https://ui.dev/amiresponsive",
+        "type": "Tool",
+        "description": "Preview your site on multiple devices at once"
+      }
+    ],
+    "keyTakeaways": [
+      "Always include the viewport meta tag for mobile",
+      "Use mobile-first design: base styles for mobile, media queries for larger screens",
+      "Common breakpoints: 768px (tablet), 1024px (desktop)",
+      "CSS Grid's auto-fit with minmax() can replace many media queries"
+    ]
+  },
+  "intro-to-javascript": {
+    "title": "Introduction to JavaScript",
+    "intro": "JavaScript brings websites to life. It handles user interactions, updates content dynamically, and powers everything from simple form validation to complex web applications.",
+    "sections": [
+      {
+        "heading": "What JavaScript Does",
+        "content": "JavaScript can:\n\n- **Respond to user actions**: Clicks, scrolls, keyboard input\n- **Update content**: Change text, show/hide elements\n- **Validate forms**: Check input before submitting\n- **Fetch data**: Load content without refreshing the page\n- **Create animations**: Smooth transitions and effects\n- **Build full applications**: React, Vue, and Angular are all JavaScript\n\nIt's the only programming language that runs natively in browsers."
+      },
+      {
+        "heading": "Adding JavaScript to Your Page",
+        "content": "Three ways to add JavaScript:\n\n**1. External file (recommended):**\n```html\n<script src=\"script.js\"></script>\n```\n\n**2. Internal script:**\n```html\n<script>\n    console.log('Hello!');\n</script>\n```\n\n**3. Inline (avoid this):**\n```html\n<button onclick=\"alert('Hi!')\">Click</button>\n```\n\n**Pro tip:** Place scripts at the end of `<body>` or use `defer`:\n```html\n<script src=\"script.js\" defer></script>\n```"
+      },
+      {
+        "heading": "Your First JavaScript",
+        "content": "Create a file called `script.js`:\n\n```javascript\n// This is a comment\nconsole.log('Hello, JavaScript!');\n\n// Variables\nlet name = 'Sarah';\nconst age = 25;\n\n// String template\nconsole.log(`Hi, I'm ${name} and I'm ${age} years old.`);\n\n// Alert (popup)\nalert('Welcome to my website!');\n```\n\nOpen your browser's console (F12 → Console) to see the output."
+      },
+      {
+        "heading": "The Browser Console",
+        "content": "The console is your JavaScript playground:\n\n- **Open it**: F12 or Cmd+Option+I → Console tab\n- **Try commands**: Type JavaScript directly and press Enter\n- **See errors**: JavaScript errors appear here in red\n- **Debug**: Use `console.log()` to inspect values\n\nTry typing these in the console:\n```javascript\n2 + 2\n'Hello'.toUpperCase()\ndocument.title\n```\n\nThe console is invaluable for learning and debugging."
+      }
+    ],
+    "resources": [
+      {
+        "title": "JavaScript Basics",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics",
+        "type": "Reading",
+        "description": "Mozilla's beginner JavaScript guide"
+      },
+      {
+        "title": "JavaScript Crash Course",
+        "source": "YouTube - Traversy Media",
+        "url": "https://www.youtube.com/watch?v=hdI2bqOjy3c",
+        "type": "Video",
+        "description": "Comprehensive JavaScript tutorial"
+      },
+      {
+        "title": "JavaScript.info",
+        "source": "javascript.info",
+        "url": "https://javascript.info/",
+        "type": "Tutorial",
+        "description": "Excellent in-depth JavaScript tutorial"
+      }
+    ],
+    "keyTakeaways": [
+      "JavaScript makes websites interactive and dynamic",
+      "Use external script files with the defer attribute",
+      "console.log() is your best friend for debugging",
+      "The browser console lets you experiment in real-time"
+    ]
+  },
+  "variables-and-data-types": {
+    "title": "Variables & Data Types",
+    "intro": "Variables store data that your program can use and manipulate. Understanding data types helps you work with text, numbers, and more complex information.",
+    "sections": [
+      {
+        "heading": "Declaring Variables",
+        "content": "Three ways to declare variables:\n\n```javascript\n// let - can be reassigned\nlet score = 0;\nscore = 10;  // OK\n\n// const - cannot be reassigned\nconst name = 'Sarah';\nname = 'John';  // ERROR!\n\n// var - old way, avoid using\nvar oldWay = 'outdated';\n```\n\n**Best practice:**\n- Use `const` by default\n- Use `let` only when you need to reassign\n- Never use `var`"
+      },
+      {
+        "heading": "Data Types",
+        "content": "JavaScript has several data types:\n\n```javascript\n// String (text)\nconst name = 'Sarah';\nconst greeting = \"Hello!\";\nconst message = `Hi, ${name}`; // Template literal\n\n// Number (integers and decimals)\nconst age = 25;\nconst price = 19.99;\n\n// Boolean (true/false)\nconst isLoggedIn = true;\nconst hasAccess = false;\n\n// Null (intentionally empty)\nconst data = null;\n\n// Undefined (not yet assigned)\nlet result;\nconsole.log(result);  // undefined\n\n// Array (list of items)\nconst colors = ['red', 'green', 'blue'];\n\n// Object (key-value pairs)\nconst person = {\n    name: 'Sarah',\n    age: 25\n};\n```"
+      },
+      {
+        "heading": "Working with Strings",
+        "content": "Common string operations:\n\n```javascript\nconst text = 'Hello, World!';\n\n// Length\ntext.length;  // 13\n\n// Case\ntext.toUpperCase();  // 'HELLO, WORLD!'\ntext.toLowerCase();  // 'hello, world!'\n\n// Finding text\ntext.includes('World');  // true\ntext.indexOf('World');   // 7\n\n// Extracting parts\ntext.slice(0, 5);   // 'Hello'\ntext.split(', ');   // ['Hello', 'World!']\n\n// Template literals (best for combining)\nconst name = 'Sarah';\nconst greeting = `Hello, ${name}!`;  // 'Hello, Sarah!'\n```"
+      },
+      {
+        "heading": "Working with Numbers",
+        "content": "Common number operations:\n\n```javascript\nconst a = 10;\nconst b = 3;\n\n// Basic math\na + b;   // 13\na - b;   // 7\na * b;   // 30\na / b;   // 3.333...\na % b;   // 1 (remainder)\na ** b;  // 1000 (power)\n\n// Useful methods\nMath.round(3.7);   // 4\nMath.floor(3.7);   // 3 (round down)\nMath.ceil(3.2);    // 4 (round up)\nMath.random();     // Random 0-1\nMath.max(1, 5, 3); // 5\nMath.min(1, 5, 3); // 1\n\n// Convert string to number\nNumber('42');      // 42\nparseInt('42px');  // 42\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "JavaScript Data Types",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures",
+        "type": "Reference",
+        "description": "Complete guide to JavaScript data types"
+      },
+      {
+        "title": "String Methods",
+        "source": "W3Schools",
+        "url": "https://www.w3schools.com/js/js_string_methods.asp",
+        "type": "Reference",
+        "description": "All JavaScript string methods with examples"
+      }
+    ],
+    "keyTakeaways": [
+      "Use const by default, let when you need to reassign",
+      "Main types: string, number, boolean, null, undefined, array, object",
+      "Template literals (`${var}`) are best for string concatenation",
+      "JavaScript has many built-in methods for strings and numbers"
+    ]
+  },
+  "functions-and-logic": {
+    "title": "Functions & Logic",
+    "intro": "Functions are reusable blocks of code, and logic (conditionals and loops) lets your code make decisions and repeat actions. These are fundamental to programming.",
+    "sections": [
+      {
+        "heading": "Creating Functions",
+        "content": "Functions bundle code for reuse:\n\n```javascript\n// Function declaration\nfunction greet(name) {\n    return `Hello, ${name}!`;\n}\n\n// Call the function\ngreet('Sarah');  // 'Hello, Sarah!'\n\n// Arrow function (modern syntax)\nconst greet = (name) => {\n    return `Hello, ${name}!`;\n};\n\n// Short arrow function\nconst greet = (name) => `Hello, ${name}!`;\n\n// Multiple parameters\nconst add = (a, b) => a + b;\nadd(5, 3);  // 8\n```"
+      },
+      {
+        "heading": "Conditional Statements",
+        "content": "Make decisions with if/else:\n\n```javascript\nconst age = 18;\n\nif (age >= 21) {\n    console.log('Can drink alcohol');\n} else if (age >= 18) {\n    console.log('Can vote');\n} else {\n    console.log('Still a minor');\n}\n\n// Comparison operators\n===  // Equal (use this, not ==)\n!==  // Not equal\n>    // Greater than\n<    // Less than\n>=   // Greater or equal\n<=   // Less or equal\n\n// Logical operators\n&&   // AND\n||   // OR\n!    // NOT\n```"
+      },
+      {
+        "heading": "Ternary Operator",
+        "content": "Shorthand for simple if/else:\n\n```javascript\n// Instead of:\nlet message;\nif (isLoggedIn) {\n    message = 'Welcome back!';\n} else {\n    message = 'Please log in';\n}\n\n// Use ternary:\nconst message = isLoggedIn ? 'Welcome back!' : 'Please log in';\n\n// Great for JSX/React\nconst button = isLoading ? 'Loading...' : 'Submit';\n```"
+      },
+      {
+        "heading": "Loops",
+        "content": "Repeat code with loops:\n\n```javascript\n// For loop\nfor (let i = 0; i < 5; i++) {\n    console.log(i);  // 0, 1, 2, 3, 4\n}\n\n// For...of (arrays)\nconst colors = ['red', 'green', 'blue'];\nfor (const color of colors) {\n    console.log(color);\n}\n\n// forEach (arrays)\ncolors.forEach((color) => {\n    console.log(color);\n});\n\n// While loop\nlet count = 0;\nwhile (count < 3) {\n    console.log(count);\n    count++;\n}\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Functions",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+        "type": "Reading",
+        "description": "Complete guide to JavaScript functions"
+      },
+      {
+        "title": "Conditionals",
+        "source": "javascript.info",
+        "url": "https://javascript.info/ifelse",
+        "type": "Tutorial",
+        "description": "In-depth look at conditional statements"
+      }
+    ],
+    "keyTakeaways": [
+      "Functions make code reusable - use arrow functions for cleaner syntax",
+      "Use === for comparison (not ==) to avoid type coercion bugs",
+      "Ternary operator is great for simple conditional assignments",
+      "for...of and forEach are cleaner than traditional for loops"
+    ]
+  },
+  "dom-manipulation": {
+    "title": "DOM Manipulation",
+    "intro": "The DOM (Document Object Model) is how JavaScript sees your HTML. By manipulating the DOM, you can change content, styles, and structure of your page dynamically.",
+    "sections": [
+      {
+        "heading": "Selecting Elements",
+        "content": "First, select elements to work with:\n\n```javascript\n// By ID (returns one element)\nconst header = document.getElementById('header');\n\n// By CSS selector (returns first match)\nconst btn = document.querySelector('.btn');\nconst nav = document.querySelector('nav');\n\n// Multiple elements (returns NodeList)\nconst items = document.querySelectorAll('.item');\nconst links = document.querySelectorAll('a');\n\n// Loop through multiple\nitems.forEach(item => {\n    console.log(item.textContent);\n});\n```\n\n`querySelector` and `querySelectorAll` are the most versatile."
+      },
+      {
+        "heading": "Changing Content",
+        "content": "Modify text and HTML:\n\n```javascript\nconst title = document.querySelector('h1');\n\n// Change text content\ntitle.textContent = 'New Title';\n\n// Change HTML content\ntitle.innerHTML = 'Hello <strong>World</strong>';\n\n// Change attributes\nconst link = document.querySelector('a');\nlink.href = 'https://google.com';\nlink.setAttribute('target', '_blank');\n\n// Get attribute\nconst src = document.querySelector('img').getAttribute('src');\n```"
+      },
+      {
+        "heading": "Changing Styles",
+        "content": "Modify CSS dynamically:\n\n```javascript\nconst box = document.querySelector('.box');\n\n// Individual styles\nbox.style.backgroundColor = 'blue';\nbox.style.padding = '20px';\nbox.style.borderRadius = '10px';\n\n// Add/remove CSS classes (better approach)\nbox.classList.add('active');\nbox.classList.remove('hidden');\nbox.classList.toggle('open');  // Add if missing, remove if present\nbox.classList.contains('active');  // true/false\n\n// Replace class\nbox.classList.replace('old-class', 'new-class');\n```\n\n**Best practice:** Use `classList` methods instead of inline styles."
+      },
+      {
+        "heading": "Creating and Removing Elements",
+        "content": "Add and remove elements dynamically:\n\n```javascript\n// Create new element\nconst newItem = document.createElement('li');\nnewItem.textContent = 'New Item';\nnewItem.classList.add('list-item');\n\n// Add to page\nconst list = document.querySelector('ul');\nlist.appendChild(newItem);        // Add at end\nlist.prepend(newItem);            // Add at start\nlist.insertBefore(newItem, list.children[1]); // Add at position\n\n// Remove element\nconst oldItem = document.querySelector('.delete-me');\noldItem.remove();\n\n// Remove all children\nlist.innerHTML = '';\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Introduction to the DOM",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction",
+        "type": "Reading",
+        "description": "Understanding the Document Object Model"
+      },
+      {
+        "title": "DOM Manipulation Crash Course",
+        "source": "YouTube - Traversy Media",
+        "url": "https://www.youtube.com/watch?v=0ik6X4DJKCc",
+        "type": "Video",
+        "description": "Practical DOM manipulation tutorial"
+      }
+    ],
+    "keyTakeaways": [
+      "Use querySelector and querySelectorAll to select elements",
+      "textContent for plain text, innerHTML for HTML content",
+      "classList methods are cleaner than inline styles",
+      "createElement and appendChild for dynamic content"
+    ]
+  },
+  "events-and-interactivity": {
+    "title": "Events & Interactivity",
+    "intro": "Events are how JavaScript responds to user actions - clicks, typing, scrolling, and more. This is what makes websites truly interactive.",
+    "sections": [
+      {
+        "heading": "Adding Event Listeners",
+        "content": "Listen for user actions:\n\n```javascript\nconst button = document.querySelector('button');\n\n// Click event\nbutton.addEventListener('click', () => {\n    console.log('Button clicked!');\n});\n\n// With function reference\nfunction handleClick() {\n    console.log('Clicked!');\n}\nbutton.addEventListener('click', handleClick);\n\n// Remove listener\nbutton.removeEventListener('click', handleClick);\n```"
+      },
+      {
+        "heading": "Common Events",
+        "content": "Events you'll use often:\n\n```javascript\n// Mouse events\n'click'       // Single click\n'dblclick'    // Double click\n'mouseenter'  // Mouse enters element\n'mouseleave'  // Mouse leaves element\n\n// Keyboard events\n'keydown'     // Key pressed\n'keyup'       // Key released\n\n// Form events\n'submit'      // Form submitted\n'change'      // Input value changed\n'input'       // Input value changing (real-time)\n'focus'       // Input focused\n'blur'        // Input loses focus\n\n// Window events\n'load'        // Page fully loaded\n'scroll'      // User scrolls\n'resize'      // Window resized\n```"
+      },
+      {
+        "heading": "The Event Object",
+        "content": "Event listeners receive an event object:\n\n```javascript\nbutton.addEventListener('click', (event) => {\n    event.target;           // Element that was clicked\n    event.preventDefault(); // Stop default behavior\n});\n\n// Useful for forms\nconst form = document.querySelector('form');\nform.addEventListener('submit', (e) => {\n    e.preventDefault(); // Stop form from refreshing page\n    // Handle form data...\n});\n\n// Useful for keyboard\ndocument.addEventListener('keydown', (e) => {\n    console.log(e.key);  // Which key was pressed\n    if (e.key === 'Escape') {\n        closeModal();\n    }\n});\n```"
+      },
+      {
+        "heading": "Practical Example: Toggle Menu",
+        "content": "A common interactive pattern:\n\n```html\n<button class=\"menu-btn\">Menu</button>\n<nav class=\"menu hidden\">...</nav>\n```\n\n```css\n.hidden { display: none; }\n```\n\n```javascript\nconst menuBtn = document.querySelector('.menu-btn');\nconst menu = document.querySelector('.menu');\n\nmenuBtn.addEventListener('click', () => {\n    menu.classList.toggle('hidden');\n    \n    // Update button text\n    const isOpen = !menu.classList.contains('hidden');\n    menuBtn.textContent = isOpen ? 'Close' : 'Menu';\n});\n\n// Close menu when clicking outside\ndocument.addEventListener('click', (e) => {\n    if (!menu.contains(e.target) && e.target !== menuBtn) {\n        menu.classList.add('hidden');\n    }\n});\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Event Reference",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Events",
+        "type": "Reference",
+        "description": "Complete list of all DOM events"
+      },
+      {
+        "title": "JavaScript Events Tutorial",
+        "source": "javascript.info",
+        "url": "https://javascript.info/events",
+        "type": "Tutorial",
+        "description": "In-depth guide to browser events"
+      }
+    ],
+    "keyTakeaways": [
+      "addEventListener is the standard way to handle events",
+      "event.preventDefault() stops default browser behavior",
+      "event.target gives you the element that triggered the event",
+      "Use classList.toggle() for show/hide functionality"
+    ]
+  },
+  "project-personal-portfolio": {
+    "title": "Project: Personal Portfolio Site",
+    "intro": "Build a portfolio website to showcase your work and skills. This project combines everything you've learned: HTML structure, CSS styling, and JavaScript interactivity.",
+    "sections": [
+      {
+        "heading": "Project Overview",
+        "content": "Your portfolio will include:\n\n- **Hero section**: Your name and tagline\n- **About section**: Who you are\n- **Skills section**: Technologies you know\n- **Projects section**: Work you've done\n- **Contact section**: How to reach you\n- **Responsive design**: Works on all devices\n- **Smooth scrolling**: Navigation to sections\n\nThis is a real project you can use in job applications!"
+      },
+      {
+        "heading": "HTML Structure",
+        "content": "Start with this structure:\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Name - Portfolio</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <nav>...</nav>\n    </header>\n    \n    <main>\n        <section id=\"hero\">...</section>\n        <section id=\"about\">...</section>\n        <section id=\"skills\">...</section>\n        <section id=\"projects\">...</section>\n        <section id=\"contact\">...</section>\n    </main>\n    \n    <footer>...</footer>\n    \n    <script src=\"script.js\"></script>\n</body>\n</html>\n```"
+      },
+      {
+        "heading": "Key CSS Techniques",
+        "content": "Apply what you've learned:\n\n```css\n/* Navigation */\nnav {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n/* Hero section */\n#hero {\n    min-height: 100vh;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n}\n\n/* Skills grid */\n.skills-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));\n    gap: 20px;\n}\n\n/* Project cards */\n.project-card {\n    border-radius: 12px;\n    overflow: hidden;\n    transition: transform 0.3s;\n}\n\n.project-card:hover {\n    transform: translateY(-5px);\n}\n```"
+      },
+      {
+        "heading": "JavaScript Enhancements",
+        "content": "Add interactivity:\n\n```javascript\n// Smooth scrolling\ndocument.querySelectorAll('nav a').forEach(link => {\n    link.addEventListener('click', (e) => {\n        e.preventDefault();\n        const target = document.querySelector(link.getAttribute('href'));\n        target.scrollIntoView({ behavior: 'smooth' });\n    });\n});\n\n// Mobile menu toggle\nconst menuBtn = document.querySelector('.menu-btn');\nconst nav = document.querySelector('nav ul');\n\nmenuBtn.addEventListener('click', () => {\n    nav.classList.toggle('active');\n});\n\n// Form handling (basic)\nconst form = document.querySelector('#contact form');\nform.addEventListener('submit', (e) => {\n    e.preventDefault();\n    alert('Thanks for your message!');\n});\n```"
+      },
+      {
+        "heading": "Stretch Goals",
+        "content": "Take it further:\n\n- Add a dark/light mode toggle\n- Animate elements on scroll\n- Add a typing effect to the hero\n- Integrate with Formspree for real email\n- Add a blog section\n- Deploy to Netlify or Vercel"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Portfolio Inspiration",
+        "source": "Awwwards",
+        "url": "https://www.awwwards.com/websites/portfolio/",
+        "type": "Inspiration",
+        "description": "Beautiful portfolio designs for inspiration"
+      },
+      {
+        "title": "Free Images",
+        "source": "Unsplash",
+        "url": "https://unsplash.com/",
+        "type": "Resource",
+        "description": "High-quality free images for your projects"
+      },
+      {
+        "title": "Deploy to Netlify",
+        "source": "Netlify",
+        "url": "https://www.netlify.com/",
+        "type": "Tool",
+        "description": "Free hosting for your portfolio"
+      }
+    ],
+    "keyTakeaways": [
+      "A portfolio showcases your skills to potential employers",
+      "Combine semantic HTML, modern CSS, and JavaScript",
+      "Make it responsive - recruiters view on all devices",
+      "Deploy it live and add the link to your resume"
+    ]
+  },
+  "project-landing-page": {
+    "title": "Project: Product Landing Page",
+    "intro": "Landing pages are single-page websites designed to convert visitors into customers. Building one teaches you persuasive design, clear CTAs, and professional layouts.",
+    "sections": [
+      {
+        "heading": "Project Overview",
+        "content": "Create a landing page for a fictional product with:\n\n- **Hero section**: Product name, tagline, CTA button\n- **Features section**: 3-4 key benefits\n- **How it works**: Step-by-step explanation\n- **Testimonials**: Customer quotes\n- **Pricing**: Plan options\n- **FAQ**: Common questions\n- **Email signup**: Newsletter form\n\nPick any product you like - an app, a course, a service, etc."
+      },
+      {
+        "heading": "Design Principles",
+        "content": "Effective landing pages follow these rules:\n\n**1. Clear hierarchy**\n- One main headline\n- Supporting subheadline\n- Single clear CTA\n\n**2. Visual flow**\n- Guide the eye down the page\n- Use whitespace generously\n- Consistent color scheme\n\n**3. Social proof**\n- Testimonials with photos\n- Numbers (10,000+ users)\n- Trust badges\n\n**4. Urgency**\n- Limited time offers\n- Scarcity (only X left)\n- Clear benefits"
+      },
+      {
+        "heading": "Building the Hero",
+        "content": "The hero sets the tone:\n\n```html\n<section class=\"hero\">\n    <div class=\"hero-content\">\n        <h1>The Simplest Way to <span>Track Your Habits</span></h1>\n        <p>Build better routines in just 5 minutes a day.</p>\n        <a href=\"#signup\" class=\"cta-btn\">Start Free Trial</a>\n    </div>\n    <div class=\"hero-image\">\n        <img src=\"app-screenshot.png\" alt=\"App screenshot\">\n    </div>\n</section>\n```\n\n```css\n.hero {\n    display: flex;\n    align-items: center;\n    min-height: 90vh;\n    gap: 40px;\n}\n\n.cta-btn {\n    display: inline-block;\n    background: #3b82f6;\n    color: white;\n    padding: 16px 32px;\n    border-radius: 8px;\n    font-weight: 600;\n    text-decoration: none;\n    transition: background 0.3s;\n}\n\n.cta-btn:hover {\n    background: #2563eb;\n}\n```"
+      },
+      {
+        "heading": "Pricing Cards",
+        "content": "A common landing page pattern:\n\n```html\n<div class=\"pricing-grid\">\n    <div class=\"price-card\">\n        <h3>Starter</h3>\n        <p class=\"price\">$9<span>/month</span></p>\n        <ul>\n            <li>5 projects</li>\n            <li>Basic analytics</li>\n            <li>Email support</li>\n        </ul>\n        <button>Get Started</button>\n    </div>\n    <div class=\"price-card featured\">\n        <span class=\"badge\">Most Popular</span>\n        <h3>Pro</h3>\n        <!-- ... -->\n    </div>\n</div>\n```\n\nUse CSS Grid for the layout and highlight one card as \"featured\"."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Landing Page Examples",
+        "source": "Landingfolio",
+        "url": "https://www.landingfolio.com/",
+        "type": "Inspiration",
+        "description": "Curated landing page designs"
+      },
+      {
+        "title": "Tailwind UI",
+        "source": "Tailwind CSS",
+        "url": "https://tailwindui.com/components/marketing",
+        "type": "Inspiration",
+        "description": "Professional component examples"
+      }
+    ],
+    "keyTakeaways": [
+      "Landing pages focus on a single goal (conversion)",
+      "Use clear hierarchy: one headline, one CTA",
+      "Social proof builds trust (testimonials, numbers)",
+      "Every section should guide toward the call-to-action"
+    ]
+  },
+  "project-calculator": {
+    "title": "Project: Interactive Calculator",
+    "intro": "Building a calculator is a classic JavaScript project that teaches DOM manipulation, event handling, and logic. You'll create a fully functional calculator that handles basic operations.",
+    "sections": [
+      {
+        "heading": "Project Overview",
+        "content": "Build a calculator with:\n\n- **Display**: Shows current input and result\n- **Number buttons**: 0-9 and decimal point\n- **Operations**: +, -, *, /\n- **Functions**: Clear, delete, equals\n- **Keyboard support**: Type to calculate\n\nThis project combines CSS Grid for layout with JavaScript logic for calculations."
+      },
+      {
+        "heading": "HTML Structure",
+        "content": "```html\n<div class=\"calculator\">\n    <div class=\"display\">\n        <div class=\"previous\">12 +</div>\n        <div class=\"current\">8</div>\n    </div>\n    <div class=\"buttons\">\n        <button class=\"span-2\" data-action=\"clear\">AC</button>\n        <button data-action=\"delete\">DEL</button>\n        <button data-action=\"divide\">/</button>\n        <button data-number>7</button>\n        <button data-number>8</button>\n        <button data-number>9</button>\n        <button data-action=\"multiply\">*</button>\n        <button data-number>4</button>\n        <button data-number>5</button>\n        <button data-number>6</button>\n        <button data-action=\"subtract\">-</button>\n        <button data-number>1</button>\n        <button data-number>2</button>\n        <button data-number>3</button>\n        <button data-action=\"add\">+</button>\n        <button data-number class=\"span-2\">0</button>\n        <button data-number>.</button>\n        <button data-action=\"equals\">=</button>\n    </div>\n</div>\n```"
+      },
+      {
+        "heading": "CSS Grid Layout",
+        "content": "```css\n.calculator {\n    width: 320px;\n    background: #1a1a1a;\n    border-radius: 16px;\n    padding: 20px;\n}\n\n.display {\n    background: #333;\n    padding: 20px;\n    border-radius: 8px;\n    text-align: right;\n    margin-bottom: 20px;\n}\n\n.current {\n    font-size: 2.5rem;\n    color: white;\n}\n\n.previous {\n    font-size: 1rem;\n    color: #888;\n}\n\n.buttons {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n}\n\n.span-2 {\n    grid-column: span 2;\n}\n\nbutton {\n    padding: 20px;\n    font-size: 1.25rem;\n    border: none;\n    border-radius: 8px;\n    cursor: pointer;\n    background: #333;\n    color: white;\n}\n\nbutton:hover {\n    background: #444;\n}\n```"
+      },
+      {
+        "heading": "JavaScript Logic",
+        "content": "```javascript\nlet currentValue = '0';\nlet previousValue = '';\nlet operation = null;\n\nconst currentDisplay = document.querySelector('.current');\nconst previousDisplay = document.querySelector('.previous');\n\nfunction updateDisplay() {\n    currentDisplay.textContent = currentValue;\n    previousDisplay.textContent = operation \n        ? `${previousValue} ${operation}` \n        : '';\n}\n\nfunction appendNumber(num) {\n    if (currentValue === '0' && num !== '.') {\n        currentValue = num;\n    } else {\n        currentValue += num;\n    }\n    updateDisplay();\n}\n\nfunction setOperation(op) {\n    if (operation) calculate();\n    previousValue = currentValue;\n    operation = op;\n    currentValue = '0';\n    updateDisplay();\n}\n\nfunction calculate() {\n    const prev = parseFloat(previousValue);\n    const curr = parseFloat(currentValue);\n    let result;\n    \n    switch (operation) {\n        case '+': result = prev + curr; break;\n        case '-': result = prev - curr; break;\n        case '*': result = prev * curr; break;\n        case '/': result = prev / curr; break;\n    }\n    \n    currentValue = result.toString();\n    operation = null;\n    previousValue = '';\n    updateDisplay();\n}\n\n// Add event listeners...\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Calculator Tutorial",
+        "source": "YouTube - Web Dev Simplified",
+        "url": "https://www.youtube.com/watch?v=j59qQ7YWLxw",
+        "type": "Video",
+        "description": "Step-by-step calculator build"
+      }
+    ],
+    "keyTakeaways": [
+      "CSS Grid is perfect for calculator button layouts",
+      "Data attributes (data-number, data-action) organize button types",
+      "State management (currentValue, operation) tracks calculator state",
+      "Handle edge cases: division by zero, multiple decimals, etc."
+    ]
+  },
+  "project-todo-app": {
+    "title": "Project: To-Do List App",
+    "intro": "A to-do app is the quintessential JavaScript project. It involves creating, reading, updating, and deleting items (CRUD operations) - skills essential for any web application.",
+    "sections": [
+      {
+        "heading": "Project Overview",
+        "content": "Build a to-do app with:\n\n- **Add tasks**: Input field and add button\n- **Display tasks**: List of current tasks\n- **Mark complete**: Toggle task completion\n- **Delete tasks**: Remove unwanted tasks\n- **Filter tasks**: All, Active, Completed\n- **Local storage**: Tasks persist on refresh\n- **Task count**: \"3 items left\"\n\nThis mirrors functionality in real apps like Todoist."
+      },
+      {
+        "heading": "HTML Structure",
+        "content": "```html\n<div class=\"todo-app\">\n    <h1>Today's Tasks</h1>\n    \n    <form class=\"todo-form\">\n        <input type=\"text\" placeholder=\"Add a new task...\" required>\n        <button type=\"submit\">Add</button>\n    </form>\n    \n    <ul class=\"todo-list\">\n        <!-- Tasks rendered by JavaScript -->\n    </ul>\n    \n    <footer class=\"todo-footer\">\n        <span class=\"task-count\">3 items left</span>\n        <div class=\"filters\">\n            <button class=\"active\" data-filter=\"all\">All</button>\n            <button data-filter=\"active\">Active</button>\n            <button data-filter=\"completed\">Completed</button>\n        </div>\n        <button class=\"clear-completed\">Clear Completed</button>\n    </footer>\n</div>\n```"
+      },
+      {
+        "heading": "JavaScript: Managing Tasks",
+        "content": "```javascript\n// State\nlet todos = JSON.parse(localStorage.getItem('todos')) || [];\nlet filter = 'all';\n\n// Save to localStorage\nfunction saveTodos() {\n    localStorage.setItem('todos', JSON.stringify(todos));\n}\n\n// Add task\nfunction addTodo(text) {\n    const todo = {\n        id: Date.now(),\n        text: text,\n        completed: false\n    };\n    todos.push(todo);\n    saveTodos();\n    renderTodos();\n}\n\n// Toggle complete\nfunction toggleTodo(id) {\n    todos = todos.map(todo => \n        todo.id === id \n            ? { ...todo, completed: !todo.completed }\n            : todo\n    );\n    saveTodos();\n    renderTodos();\n}\n\n// Delete task\nfunction deleteTodo(id) {\n    todos = todos.filter(todo => todo.id !== id);\n    saveTodos();\n    renderTodos();\n}\n```"
+      },
+      {
+        "heading": "JavaScript: Rendering",
+        "content": "```javascript\nfunction renderTodos() {\n    const list = document.querySelector('.todo-list');\n    \n    // Filter based on current filter\n    const filtered = todos.filter(todo => {\n        if (filter === 'active') return !todo.completed;\n        if (filter === 'completed') return todo.completed;\n        return true;\n    });\n    \n    list.innerHTML = filtered.map(todo => `\n        <li class=\"${todo.completed ? 'completed' : ''}\">\n            <input type=\"checkbox\" \n                   ${todo.completed ? 'checked' : ''}\n                   onchange=\"toggleTodo(${todo.id})\">\n            <span>${todo.text}</span>\n            <button onclick=\"deleteTodo(${todo.id})\">X</button>\n        </li>\n    `).join('');\n    \n    // Update count\n    const active = todos.filter(t => !t.completed).length;\n    document.querySelector('.task-count').textContent = \n        `${active} item${active !== 1 ? 's' : ''} left`;\n}\n\n// Initial render\nrenderTodos();\n```"
+      },
+      {
+        "heading": "Stretch Goals",
+        "content": "Enhance your app:\n\n- **Edit tasks**: Double-click to edit text\n- **Drag and drop**: Reorder tasks\n- **Due dates**: Add deadlines\n- **Categories**: Group tasks by project\n- **Dark mode**: Theme toggle\n- **Animations**: Smooth add/remove"
+      }
+    ],
+    "resources": [
+      {
+        "title": "TodoMVC",
+        "source": "todomvc.com",
+        "url": "https://todomvc.com/",
+        "type": "Inspiration",
+        "description": "To-do apps in every JavaScript framework"
+      },
+      {
+        "title": "Local Storage Guide",
+        "source": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage",
+        "type": "Reference",
+        "description": "How to persist data in the browser"
+      }
+    ],
+    "keyTakeaways": [
+      "CRUD operations are the foundation of most apps",
+      "localStorage persists data between sessions",
+      "Render functions keep UI in sync with state",
+      "Filter functions let users view subsets of data"
+    ]
+  },
+  "version-control-git": {
+    "title": "Version Control with Git",
+    "intro": "Git tracks changes to your code and lets you collaborate with others. Every professional developer uses Git daily. Learning it is essential for any tech career.",
+    "sections": [
+      {
+        "heading": "What is Git?",
+        "content": "Git is a **version control system** that:\n\n- **Tracks changes**: See what changed, when, and why\n- **Enables collaboration**: Multiple people can work on the same code\n- **Provides backup**: Your code history is saved\n- **Allows branching**: Experiment without breaking things\n\n**GitHub** is a website that hosts Git repositories online. It's where most open-source code lives."
+      },
+      {
+        "heading": "Essential Git Commands",
+        "content": "```bash\n# Setup (one time)\ngit config --global user.name \"Your Name\"\ngit config --global user.email \"you@example.com\"\n\n# Start a new repo\ngit init\n\n# Check status\ngit status\n\n# Stage changes\ngit add filename.html    # Specific file\ngit add .               # All files\n\n# Commit changes\ngit commit -m \"Add homepage layout\"\n\n# View history\ngit log --oneline\n\n# Connect to GitHub\ngit remote add origin https://github.com/you/repo.git\ngit push -u origin main\n```"
+      },
+      {
+        "heading": "The Git Workflow",
+        "content": "Daily workflow:\n\n1. **Pull** latest changes: `git pull`\n2. **Write** code\n3. **Stage** changes: `git add .`\n4. **Commit** with message: `git commit -m \"message\"`\n5. **Push** to remote: `git push`\n\n**Good commit messages:**\n- \"Add contact form validation\"\n- \"Fix navigation bug on mobile\"\n- \"Update homepage hero image\"\n\n**Bad commit messages:**\n- \"fixed stuff\"\n- \"asdf\"\n- \"changes\""
+      },
+      {
+        "heading": "Branching Basics",
+        "content": "Branches let you work on features separately:\n\n```bash\n# Create and switch to new branch\ngit checkout -b feature/contact-form\n\n# Make changes and commit...\n\n# Switch back to main\ngit checkout main\n\n# Merge feature branch\ngit merge feature/contact-form\n\n# Delete branch after merge\ngit branch -d feature/contact-form\n```\n\nThis keeps your main branch stable while you experiment."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Git Tutorial",
+        "source": "GitHub",
+        "url": "https://docs.github.com/en/get-started/quickstart/hello-world",
+        "type": "Tutorial",
+        "description": "Official GitHub getting started guide"
+      },
+      {
+        "title": "Learn Git Branching",
+        "source": "learngitbranching.js.org",
+        "url": "https://learngitbranching.js.org/",
+        "type": "Interactive",
+        "description": "Visual, interactive Git tutorial"
+      },
+      {
+        "title": "Git Cheat Sheet",
+        "source": "GitHub",
+        "url": "https://education.github.com/git-cheat-sheet-education.pdf",
+        "type": "Reference",
+        "description": "Printable Git command reference"
+      }
+    ],
+    "keyTakeaways": [
+      "Git tracks changes and enables collaboration",
+      "Commit often with clear, descriptive messages",
+      "Use branches to work on features safely",
+      "GitHub hosts your code online for sharing and backup"
+    ]
+  },
+  "deploying-your-site": {
+    "title": "Deploying Your Website",
+    "intro": "Your website isn't complete until it's live on the internet! Deployment used to be complex, but modern platforms make it incredibly easy and free.",
+    "sections": [
+      {
+        "heading": "Deployment Options",
+        "content": "Best free hosting platforms for beginners:\n\n**Netlify** (recommended)\n- Drag and drop deployment\n- Auto-deploys from GitHub\n- Free SSL certificates\n- Form handling included\n\n**Vercel**\n- Great for React/Next.js\n- Automatic previews\n- Edge network (fast globally)\n\n**GitHub Pages**\n- Free for public repos\n- Simple static hosting\n- Good for portfolios\n\nAll three are free for personal projects!"
+      },
+      {
+        "heading": "Deploying to Netlify",
+        "content": "**Method 1: Drag and Drop**\n1. Go to netlify.com and sign up\n2. Drag your project folder to the deploy area\n3. Done! You get a URL like random-name.netlify.app\n\n**Method 2: Connect GitHub (better)**\n1. Push your code to GitHub\n2. In Netlify, click \"New site from Git\"\n3. Select your repository\n4. Netlify deploys automatically on every push!\n\n**Custom domain:**\n1. Go to Site settings → Domain management\n2. Add your domain\n3. Update DNS at your registrar"
+      },
+      {
+        "heading": "Pre-Deployment Checklist",
+        "content": "Before going live:\n\n- [ ] Test on multiple browsers (Chrome, Firefox, Safari)\n- [ ] Test on mobile devices\n- [ ] Check all links work\n- [ ] Optimize images (compress them)\n- [ ] Add meta tags for SEO\n- [ ] Add favicon\n- [ ] Test forms if any\n- [ ] Check page load speed\n\n```html\n<!-- Essential meta tags -->\n<meta name=\"description\" content=\"Your site description\">\n<meta property=\"og:title\" content=\"Page Title\">\n<meta property=\"og:description\" content=\"Description\">\n<meta property=\"og:image\" content=\"preview-image.jpg\">\n<link rel=\"icon\" href=\"favicon.ico\">\n```"
+      },
+      {
+        "heading": "After Deployment",
+        "content": "Your site is live! Now:\n\n1. **Test the live URL** - Make sure everything works\n2. **Share it** - Add to LinkedIn, resume, portfolio\n3. **Submit to Google** - Use Google Search Console\n4. **Monitor** - Check analytics if interested\n5. **Keep improving** - Deploy updates as you learn more\n\n**Celebrate!** You've built and deployed a real website!"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Netlify",
+        "source": "Netlify.com",
+        "url": "https://www.netlify.com/",
+        "type": "Tool",
+        "description": "Free, easy hosting for web projects"
+      },
+      {
+        "title": "Vercel",
+        "source": "Vercel.com",
+        "url": "https://vercel.com/",
+        "type": "Tool",
+        "description": "Free hosting with great developer experience"
+      },
+      {
+        "title": "GitHub Pages",
+        "source": "GitHub",
+        "url": "https://pages.github.com/",
+        "type": "Tool",
+        "description": "Free hosting directly from your GitHub repo"
+      }
+    ],
+    "keyTakeaways": [
+      "Netlify, Vercel, and GitHub Pages offer free hosting",
+      "Connect to GitHub for automatic deployments",
+      "Always test your site before and after deployment",
+      "Add your live projects to your resume and LinkedIn"
+    ]
+  },
+  "learning-path-forward": {
+    "title": "Your Learning Path Forward",
+    "intro": "Congratulations on completing this course! You now have a solid foundation in web development. Here's how to continue growing your skills and land your first role.",
+    "sections": [
+      {
+        "heading": "What You've Learned",
+        "content": "You now understand:\n\n**HTML**\n- Document structure\n- Semantic elements\n- Forms and inputs\n- Accessibility basics\n\n**CSS**\n- Styling and layout\n- Flexbox and Grid\n- Responsive design\n- Modern techniques\n\n**JavaScript**\n- Variables and data types\n- Functions and logic\n- DOM manipulation\n- Event handling\n\n**Tools**\n- VS Code\n- Browser DevTools\n- Git version control\n- Deployment"
+      },
+      {
+        "heading": "Next Steps to Learn",
+        "content": "Continue with these topics:\n\n**Immediate next steps:**\n- React (most popular frontend framework)\n- Tailwind CSS (utility-first CSS)\n- TypeScript (typed JavaScript)\n\n**Backend development:**\n- Node.js (JavaScript on the server)\n- Databases (PostgreSQL, MongoDB)\n- APIs (REST, GraphQL)\n\n**Career skills:**\n- Data structures & algorithms\n- System design basics\n- Technical interviewing\n\nDon't try to learn everything at once. Pick one thing and go deep."
+      },
+      {
+        "heading": "Building Your Portfolio",
+        "content": "Stand out with projects:\n\n**Beginner projects** (you can build now):\n- Personal portfolio site\n- Landing page clone\n- Calculator or to-do app\n- Weather app (using API)\n\n**Intermediate projects** (after React):\n- Full-stack blog\n- E-commerce store\n- Social media clone\n- Real-time chat app\n\n**Tips:**\n- Quality over quantity (3-5 good projects)\n- Include a README explaining the project\n- Deploy everything live\n- Show the source code on GitHub"
+      },
+      {
+        "heading": "Getting Your First Job",
+        "content": "Landing your first role:\n\n**Build your presence:**\n- Portfolio website (required!)\n- GitHub with regular commits\n- LinkedIn profile\n- Twitter for networking\n\n**Apply strategically:**\n- Start with smaller companies\n- Apply to 10+ jobs per week\n- Customize each application\n- Follow up after applying\n\n**Interview prep:**\n- Practice coding challenges (LeetCode, Codewars)\n- Review your own projects deeply\n- Prepare questions for interviewers\n- Do mock interviews\n\nYour first job is the hardest to get. After that, it gets easier!"
+      }
+    ],
+    "resources": [
+      {
+        "title": "React Documentation",
+        "source": "React.dev",
+        "url": "https://react.dev/",
+        "type": "Course",
+        "description": "Official React tutorial - your next framework"
+      },
+      {
+        "title": "The Odin Project",
+        "source": "theodinproject.com",
+        "url": "https://www.theodinproject.com/",
+        "type": "Course",
+        "description": "Free full-stack curriculum"
+      },
+      {
+        "title": "Frontend Mentor",
+        "source": "frontendmentor.io",
+        "url": "https://www.frontendmentor.io/",
+        "type": "Practice",
+        "description": "Real-world project challenges"
+      },
+      {
+        "title": "JavaScript30",
+        "source": "Wes Bos",
+        "url": "https://javascript30.com/",
+        "type": "Course",
+        "description": "30 vanilla JavaScript projects"
+      }
+    ],
+    "keyTakeaways": [
+      "You have a solid foundation - keep building on it",
+      "Learn React next for modern frontend development",
+      "Build projects and deploy them to showcase skills",
+      "Your first job is hardest - persistence pays off"
+    ]
+  }
+}

@@ -145,7 +145,7 @@ export default function LessonContent({
         <div className="mt-12 flex items-center justify-between pt-8 border-t border-gray-100">
           {prevLesson ? (
             <Link
-              href={`/resources/system-design/${prevLesson.slug}`}
+              href={`/resources/web-development/${prevLesson.slug}`}
               className="flex items-center gap-2 text-gray-600 hover:text-[#ef562a] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +161,7 @@ export default function LessonContent({
           )}
           {nextLesson ? (
             <Link
-              href={`/resources/system-design/${nextLesson.slug}`}
+              href={`/resources/web-development/${nextLesson.slug}`}
               className="flex items-center gap-2 text-gray-600 hover:text-[#ef562a] transition-colors"
             >
               <div className="text-right">
@@ -341,7 +341,7 @@ export default function LessonContent({
                   Save your progress and pick up where you left off on any device.
                 </p>
                 <Link
-                  href={`/auth/signin?callbackUrl=/resources/system-design/${lesson.slug}`}
+                  href={`/auth/signin?callbackUrl=/resources/web-development/${lesson.slug}`}
                   className="inline-block bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors"
                 >
                   Sign in to track progress
@@ -375,7 +375,7 @@ export default function LessonContent({
       <div className="mt-12 flex items-center justify-between pt-8 border-t border-gray-100">
         {prevLesson ? (
           <Link
-            href={`/resources/system-design/${prevLesson.slug}`}
+            href={`/resources/web-development/${prevLesson.slug}`}
             className="flex items-center gap-2 text-gray-600 hover:text-[#ef562a] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,7 +391,7 @@ export default function LessonContent({
         )}
         {nextLesson ? (
           <Link
-            href={`/resources/system-design/${nextLesson.slug}`}
+            href={`/resources/web-development/${nextLesson.slug}`}
             className="flex items-center gap-2 text-gray-600 hover:text-[#ef562a] transition-colors"
           >
             <div className="text-right">

@@ -54,24 +54,39 @@ export interface LessonContent {
 // Import course data
 import systemDesignCourse from "@/data/courses/system-design.json";
 import systemDesignLessons from "@/data/courses/system-design-lessons.json";
+import webDevelopmentCourse from "@/data/courses/web-development.json";
+import webDevelopmentLessons from "@/data/courses/web-development-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
-  if (courseId === "system-design") {
-    return systemDesignCourse as Course;
+  switch (courseId) {
+    case "system-design":
+      return systemDesignCourse as Course;
+    case "web-development":
+      return webDevelopmentCourse as Course;
+    default:
+      return null;
   }
-  return null;
 }
 
 export function getLessonContent(
   courseId: string,
   lessonSlug: string
 ): LessonContent | null {
-  if (courseId === "system-design") {
-    const lessons = systemDesignLessons as Record<string, LessonContent>;
-    return lessons[lessonSlug] || null;
+  let lessons: Record<string, LessonContent>;
+
+  switch (courseId) {
+    case "system-design":
+      lessons = systemDesignLessons as Record<string, LessonContent>;
+      break;
+    case "web-development":
+      lessons = webDevelopmentLessons as Record<string, LessonContent>;
+      break;
+    default:
+      return null;
   }
-  return null;
+
+  return lessons[lessonSlug] || null;
 }
 
 export function getLessonBySlug(
