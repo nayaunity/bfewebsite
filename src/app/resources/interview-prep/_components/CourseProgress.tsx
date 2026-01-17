@@ -28,17 +28,17 @@ export default function CourseProgress({ course }: CourseProgressProps) {
   // Not signed in - show prompt
   if (!session?.user) {
     return (
-      <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 rounded-2xl p-6 text-white mb-8">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 rounded-2xl p-5 sm:p-6 text-white mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h3 className="font-medium text-lg mb-1">Track your progress</h3>
-            <p className="text-[var(--gray-600)] text-sm">
+            <p className="text-neutral-400 text-sm">
               Sign in to save your progress and pick up where you left off.
             </p>
           </div>
           <Link
             href="/auth/signin?callbackUrl=/resources/interview-prep"
-            className="px-5 py-2.5 bg-[var(--card-bg)] text-[var(--foreground)] rounded-full font-medium hover:bg-neutral-100 transition-colors text-sm"
+            className="px-5 py-2.5 bg-white text-neutral-900 rounded-full font-medium hover:bg-neutral-100 transition-colors text-sm text-center shrink-0"
           >
             Sign In
           </Link>
@@ -53,7 +53,7 @@ export default function CourseProgress({ course }: CourseProgressProps) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-medium text-lg">Your Progress</h3>
-          <p className="text-[var(--gray-600)] text-sm">
+          <p className="text-neutral-400 text-sm">
             {completedCount} of {totalLessons} lessons completed
           </p>
         </div>
@@ -72,12 +72,12 @@ export default function CourseProgress({ course }: CourseProgressProps) {
 
       {/* Motivational message */}
       {completedCount === 0 && (
-        <p className="text-sm text-[var(--gray-600)] mt-4">
+        <p className="text-sm text-neutral-400 mt-4">
           Ready to start? Begin your first lesson!
         </p>
       )}
       {completedCount > 0 && completedCount < totalLessons && (
-        <p className="text-sm text-[var(--gray-600)] mt-4">
+        <p className="text-sm text-neutral-400 mt-4">
           Keep going! You&apos;re making great progress.
         </p>
       )}
