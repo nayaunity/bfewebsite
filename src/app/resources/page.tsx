@@ -27,7 +27,7 @@ export default function ResourcesPage() {
       description: "Actionable advice for breaking into tech and leveling up.",
       items: [
         { name: "Breaking Into Tech", description: "Strategies for landing your first tech role", tag: "Featured", href: "/resources/break-into-tech" },
-        { name: "Interview Prep", description: "Ace technical and behavioral interviews", tag: "Popular" },
+        { name: "Interview Prep", description: "Ace technical and behavioral interviews", tag: "Popular", href: "/resources/interview-prep" },
         { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential", href: "/resources/resume-linkedin" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth", href: "/resources/personal-branding" },
         { name: "Leadership Skills", description: "Advance from IC to management roles", tag: "Advanced" },
@@ -52,7 +52,7 @@ export default function ResourcesPage() {
     const colors: Record<string, string> = {
       "Popular": "bg-[#ffe500] text-black",
       "Free": "bg-green-100 text-green-800",
-      "Essential": "bg-gray-100 text-gray-800",
+      "Essential": "bg-[var(--gray-100)] text-[var(--foreground)]",
       "Advanced": "bg-purple-100 text-purple-800",
       "Beginner": "bg-blue-100 text-blue-800",
       "In-Demand": "bg-[#ef562a]/10 text-[#ef562a]",
@@ -63,7 +63,7 @@ export default function ResourcesPage() {
       "New": "bg-emerald-100 text-emerald-800",
       "Goal": "bg-indigo-100 text-indigo-800",
     };
-    return colors[tag] || "bg-gray-100 text-gray-800";
+    return colors[tag] || "bg-[var(--gray-100)] text-[var(--foreground)]";
   };
 
   return (

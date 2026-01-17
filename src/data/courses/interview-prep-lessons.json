@@ -1,0 +1,915 @@
+{
+  "anatomy-of-tech-hiring": {
+    "title": "Anatomy of Tech Hiring",
+    "intro": "Before you can succeed in tech interviews, you need to understand how the hiring machine actually works. Most candidates focus entirely on technical preparation while ignoring the human and systemic factors that determine who gets hired.",
+    "sections": [
+      {
+        "heading": "The Hiring Pipeline",
+        "content": "Every tech company follows a similar hiring pipeline, though the specifics vary:\n\n1. **Application Review** - A recruiter or ATS scans your resume (typically 6-30 seconds per resume)\n2. **Recruiter Screen** - 15-30 minute call to assess basic qualifications and interest\n3. **Technical Screen** - Phone/video coding interview or take-home assignment\n4. **Onsite/Virtual Onsite** - Multiple rounds testing technical skills, system design, and behavioral fit\n5. **Hiring Committee Review** - Team debriefs and makes hiring decision\n6. **Offer & Negotiation** - Compensation discussion and final details\n\nUnderstanding this pipeline helps you optimize for each stage rather than treating interviews as a single monolithic challenge."
+      },
+      {
+        "heading": "Who Makes Hiring Decisions",
+        "content": "Multiple stakeholders influence whether you get hired:\n\n**Recruiters** control pipeline access. They're measured on time-to-fill and quality of hire. Make their job easier by being responsive, organized, and clear about your requirements.\n\n**Hiring Managers** have the most influence. They're looking for someone who can solve their team's problems. Research the team's challenges and position yourself as the solution.\n\n**Interview Panel** provides signal on specific competencies. Each interviewer typically assesses one area (coding, system design, behavioral). They submit independent feedback to reduce bias.\n\n**Hiring Committee** (at larger companies) reviews all feedback and makes final decisions. They look for consistent positive signals across interviewers."
+      },
+      {
+        "heading": "The Hidden Job Market",
+        "content": "Up to 70% of jobs are filled through referrals and networking before they're ever posted publicly. This means:\n\n- **Referrals get priority** - Referred candidates are 4x more likely to be hired\n- **Internal mobility happens first** - Companies often fill roles internally before external posting\n- **Networking is not optional** - Building relationships before you need a job is essential\n\nYour strategy should include both direct applications and relationship-building. Don't rely solely on job boards."
+      },
+      {
+        "heading": "Timing Matters",
+        "content": "Tech hiring follows predictable patterns:\n\n- **January-March**: Companies have fresh budgets and aggressive hiring goals\n- **September-October**: Second major hiring push before year-end\n- **November-December**: Hiring slows significantly during holidays\n- **Summer**: Mixed—some companies slow down, others push to fill Q3 headcount\n\nStartups hire continuously based on funding. Large companies follow fiscal year budgets. Time your job search accordingly."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Levels.fyi",
+        "source": "Levels.fyi",
+        "url": "https://www.levels.fyi/",
+        "type": "Tool",
+        "description": "Research compensation data and company leveling to understand where you fit"
+      },
+      {
+        "title": "Glassdoor Interview Reviews",
+        "source": "Glassdoor",
+        "url": "https://www.glassdoor.com/Interview/",
+        "type": "Research",
+        "description": "Read actual interview experiences from candidates at your target companies"
+      }
+    ],
+    "keyTakeaways": [
+      "Tech hiring follows a predictable 6-stage pipeline—optimize for each stage separately",
+      "Multiple stakeholders influence hiring decisions, not just the interviewers you meet",
+      "Up to 70% of jobs are filled through referrals before public posting",
+      "Timing your job search around hiring cycles can significantly improve your odds"
+    ]
+  },
+  "what-recruiters-look-for": {
+    "title": "What Recruiters Actually Look For",
+    "intro": "Recruiters are the gatekeepers of tech hiring. Understanding their perspective, incentives, and evaluation criteria gives you a massive advantage over candidates who treat recruiting as a black box.",
+    "sections": [
+      {
+        "heading": "The Recruiter's Job",
+        "content": "Recruiters are measured on:\n\n- **Time-to-fill**: How quickly they close open positions\n- **Quality of hire**: How well new hires perform and retain\n- **Pipeline metrics**: Number of candidates at each stage\n- **Candidate experience**: Feedback scores from interviewees\n\nThis means recruiters want candidates who are qualified, responsive, and easy to work with. Being a \"difficult\" candidate—slow to respond, unclear about requirements, or high-maintenance—will hurt you even if you're technically strong."
+      },
+      {
+        "heading": "The 6-Second Resume Scan",
+        "content": "Studies show recruiters spend an average of 6-7 seconds on initial resume review. In that time, they look for:\n\n1. **Current/recent company names** - Brand recognition matters\n2. **Job titles** - Do they match the role?\n3. **Keywords** - Technologies, skills, and domain expertise\n4. **Education** - Degree and school (matters more for new grads)\n5. **Career progression** - Logical growth over time\n\nYour resume must communicate your value in seconds. Bury the important stuff and you'll never get past this stage."
+      },
+      {
+        "heading": "Red Flags Recruiters Watch For",
+        "content": "These patterns trigger immediate concern:\n\n- **Job hopping** - Multiple roles under 1 year without explanation\n- **Gaps** - Unexplained periods of unemployment\n- **Overqualification** - Senior candidates applying for junior roles\n- **Vague descriptions** - \"Worked on various projects\" tells them nothing\n- **Title inflation** - \"CEO\" of a one-person company raises eyebrows\n- **Missing basics** - No contact info, broken links, typos\n\nEvery red flag requires extra effort to investigate. Most recruiters won't bother—they'll move to the next candidate."
+      },
+      {
+        "heading": "What Actually Gets You Callbacks",
+        "content": "Beyond avoiding red flags, here's what makes recruiters excited:\n\n**Relevant experience** - Direct experience with the problems they're trying to solve\n\n**Quantified impact** - \"Reduced load time by 40%\" beats \"improved performance\"\n\n**Growth trajectory** - Clear progression showing increasing responsibility\n\n**Technical match** - Skills that align with their tech stack\n\n**Culture signals** - Open source contributions, blog posts, speaking—evidence you're engaged in the field\n\nThe best candidates make the recruiter's job easy by clearly demonstrating fit."
+      },
+      {
+        "heading": "The Phone Screen",
+        "content": "If your resume passes, expect a 15-30 minute recruiter call covering:\n\n- **Role fit**: Why this role? Why this company?\n- **Experience walkthrough**: High-level career narrative\n- **Logistics**: Timeline, compensation expectations, location/remote preferences\n- **Red flag probing**: Questions about gaps, short tenures, or concerns\n\nThis isn't a technical interview—it's a qualification and fit check. Be enthusiastic, concise, and prepared with your own questions about the role and process."
+      }
+    ],
+    "resources": [
+      {
+        "title": "LinkedIn Recruiter Insights",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/talent/blog",
+        "type": "Blog",
+        "description": "Understand how recruiters use LinkedIn to find and evaluate candidates"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters spend 6-7 seconds on initial resume review—front-load your value",
+      "Red flags like job hopping and gaps require proactive explanation",
+      "Quantified achievements and relevant keywords get callbacks",
+      "The recruiter screen is about fit and logistics, not technical depth"
+    ]
+  },
+  "types-of-tech-interviews": {
+    "title": "Types of Tech Interviews",
+    "intro": "Tech companies use various interview formats to assess different competencies. Knowing what each format tests—and how to prepare for it—lets you allocate your preparation time strategically.",
+    "sections": [
+      {
+        "heading": "Coding Interviews",
+        "content": "The most common format. You'll solve algorithmic problems in real-time, either on a whiteboard, shared editor, or your own IDE.\n\n**What they test:**\n- Problem-solving approach\n- Data structure and algorithm knowledge\n- Code quality and communication\n- Ability to handle pressure\n\n**Formats:**\n- **Live coding** - 45-60 minutes, 1-2 problems, with an interviewer watching\n- **Online assessment** - Automated test, usually 60-90 minutes, 2-4 problems\n- **Pair programming** - Collaborative coding on a realistic problem\n\n**Preparation focus:** Practice on LeetCode, HackerRank, or similar platforms. Focus on medium difficulty problems and explaining your thought process out loud."
+      },
+      {
+        "heading": "System Design Interviews",
+        "content": "You'll design a large-scale system (like Twitter, Uber, or a URL shortener) on a whiteboard or virtual canvas.\n\n**What they test:**\n- Architectural thinking\n- Tradeoff analysis\n- Scalability knowledge\n- Communication and collaboration\n\n**Typical structure:**\n1. Requirements clarification (5 min)\n2. High-level design (10 min)\n3. Deep dive into components (20 min)\n4. Scaling and optimization (10 min)\n\n**Preparation focus:** Study common system design patterns, practice drawing diagrams, and learn to ask clarifying questions before diving in."
+      },
+      {
+        "heading": "Behavioral Interviews",
+        "content": "You'll discuss past experiences to demonstrate soft skills and cultural fit.\n\n**What they test:**\n- Leadership and influence\n- Conflict resolution\n- Communication skills\n- Cultural alignment\n- Self-awareness\n\n**Common formats:**\n- **STAR-based** - Tell me about a time when...\n- **Hypothetical** - What would you do if...\n- **Values-based** - Why do you want to work here?\n\n**Preparation focus:** Build a bank of 8-10 stories covering common themes. Practice telling them concisely using the STAR method."
+      },
+      {
+        "heading": "Take-Home Assignments",
+        "content": "You'll complete a project on your own time, typically 2-8 hours of work.\n\n**What they test:**\n- Code quality in realistic conditions\n- Project organization\n- Technical decision-making\n- Attention to detail\n\n**Common types:**\n- Build a small feature or application\n- Debug and extend existing code\n- API design and implementation\n\n**Preparation focus:** Practice building complete, polished small projects. Focus on clean code, good documentation, and going slightly beyond requirements."
+      },
+      {
+        "heading": "Technical Deep Dives",
+        "content": "You'll discuss a project from your experience in detail, with interviewers probing your technical decisions.\n\n**What they test:**\n- Depth of understanding\n- Technical communication\n- Ownership and impact\n- Learning from mistakes\n\n**How to prepare:**\n- Select 2-3 projects you know deeply\n- Prepare to discuss architecture decisions and tradeoffs\n- Be ready to explain what you'd do differently\n- Quantify your impact where possible"
+      }
+    ],
+    "resources": [
+      {
+        "title": "LeetCode",
+        "source": "LeetCode",
+        "url": "https://leetcode.com/",
+        "type": "Practice Platform",
+        "description": "The most popular platform for coding interview practice"
+      },
+      {
+        "title": "System Design Primer",
+        "source": "GitHub",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "type": "Study Guide",
+        "description": "Comprehensive open-source guide to system design interviews"
+      }
+    ],
+    "keyTakeaways": [
+      "Different interview formats test different skills—prepare for each type separately",
+      "Coding interviews focus on problem-solving approach as much as getting the right answer",
+      "System design interviews require you to drive the conversation and make tradeoffs explicit",
+      "Behavioral interviews need prepared stories, not improvisation"
+    ]
+  },
+  "interview-timeline-expectations": {
+    "title": "Interview Timeline & Expectations",
+    "intro": "Understanding typical interview timelines helps you manage multiple processes, set expectations, and avoid common pitfalls that derail otherwise strong candidates.",
+    "sections": [
+      {
+        "heading": "Typical Timeline by Company Size",
+        "content": "**Startups (< 50 employees)**\n- Total process: 1-3 weeks\n- Decision speed: Fast, often within days\n- Rounds: 3-5 total interviews\n- Flexibility: High—process often adapts to candidate\n\n**Mid-size companies (50-1000)**\n- Total process: 2-4 weeks\n- Decision speed: Moderate\n- Rounds: 4-6 interviews\n- Flexibility: Medium—some process variation possible\n\n**Large tech companies (1000+)**\n- Total process: 4-8 weeks\n- Decision speed: Slow, multiple approval layers\n- Rounds: 5-8 interviews\n- Flexibility: Low—standardized process"
+      },
+      {
+        "heading": "Stage-by-Stage Breakdown",
+        "content": "**Application to Recruiter Screen:** 1-14 days\n- Silence often means rejection\n- Follow up after 1 week if no response\n\n**Recruiter Screen to Technical Screen:** 3-7 days\n- Recruiter schedules based on interviewer availability\n- Delays often mean back-of-queue priority\n\n**Technical Screen to Onsite:** 1-2 weeks\n- Time for feedback review and scheduling\n- You may need to accommodate multiple interviewer calendars\n\n**Onsite to Decision:** 2-7 days\n- Hiring committee review (at larger companies)\n- Reference checks may happen in parallel\n\n**Offer to Start Date:** 2-4 weeks typical\n- Notice period at current job\n- Background check completion"
+      },
+      {
+        "heading": "Managing Multiple Processes",
+        "content": "The best outcomes come from running multiple processes in parallel:\n\n**Align timelines:** When you get an offer deadline, communicate to other companies. Most will accelerate for strong candidates.\n\n**Be transparent:** \"I'm in final rounds with another company and expect an offer next week\" is appropriate and helpful.\n\n**Don't bluff:** Claiming fake competing offers will backfire. Recruiters talk to each other.\n\n**Batch applications:** Apply to similar-stage companies in waves so interviews cluster together.\n\n**Track everything:** Use a spreadsheet to monitor status, contacts, and next steps for each company."
+      },
+      {
+        "heading": "When Silence Means No",
+        "content": "Unfortunately, many companies \"ghost\" rejected candidates. General rules:\n\n- **No response to application after 2 weeks:** Likely rejected\n- **No follow-up after recruiter screen within 1 week:** Probably not moving forward\n- **No feedback after technical interview within 5 days:** Usually a soft no\n\nOne polite follow-up is appropriate. After that, move on mentally while remaining open to delayed responses."
+      },
+      {
+        "heading": "Extending Deadlines",
+        "content": "You can often extend offer deadlines if you need more time:\n\n**Valid reasons:**\n- Waiting on other final-round interviews\n- Need to discuss with family/partner\n- Evaluating relocation logistics\n\n**How to ask:**\n\"I'm very excited about this offer. I have another process concluding next week and want to make a fully informed decision. Would it be possible to extend the deadline to [specific date]?\"\n\nMost companies will grant 3-7 day extensions for serious candidates. Asking for more than 2 weeks is a yellow flag."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Huntr",
+        "source": "Huntr",
+        "url": "https://huntr.co/",
+        "type": "Tool",
+        "description": "Job application tracking tool to manage multiple processes"
+      }
+    ],
+    "keyTakeaways": [
+      "Interview timelines vary dramatically by company size—startups move in weeks, big tech in months",
+      "Running multiple processes in parallel gives you leverage and reduces risk",
+      "Silence usually means rejection—follow up once, then move on",
+      "Offer deadlines are often negotiable with valid reasons"
+    ]
+  },
+  "resume-that-gets-interviews": {
+    "title": "Build a Resume That Gets Interviews",
+    "intro": "Your resume is a marketing document, not a comprehensive career history. Its only job is to get you interviews. Every word should serve that purpose.",
+    "sections": [
+      {
+        "heading": "The One-Page Rule",
+        "content": "Unless you have 15+ years of experience, keep your resume to one page. This forces you to:\n\n- Include only relevant information\n- Write concisely\n- Prioritize your strongest selling points\n\nRecruiters prefer one-page resumes. They spend 6 seconds scanning—a second page often goes unread.\n\n**Exception:** Academic CVs, federal resumes, and some international formats expect multiple pages."
+      },
+      {
+        "heading": "Structure That Works",
+        "content": "Use this proven structure:\n\n**Header**\n- Name (large, prominent)\n- Contact: email, phone, LinkedIn, GitHub/portfolio\n- Location (city/state is sufficient)\n\n**Experience** (most important—put first unless you're a new grad)\n- Reverse chronological order\n- Company, title, dates, location\n- 3-5 bullet points per role\n\n**Skills**\n- Languages, frameworks, tools\n- Group by category\n- Only include skills you can discuss confidently\n\n**Education**\n- Degree, school, graduation year\n- New grads: include GPA if > 3.5, relevant coursework\n- Experienced: minimal detail needed\n\n**Projects** (optional, great for new grads)\n- Personal or open source work\n- Include tech stack and links"
+      },
+      {
+        "heading": "Writing Bullet Points That Work",
+        "content": "Use the **XYZ formula**: Accomplished [X] as measured by [Y], by doing [Z].\n\n**Weak:** \"Worked on the checkout system\"\n\n**Strong:** \"Reduced checkout abandonment by 23% by redesigning the payment flow and implementing one-click purchasing\"\n\n**Key principles:**\n- Start with strong action verbs: Built, Led, Designed, Reduced, Increased\n- Quantify impact whenever possible\n- Focus on outcomes, not responsibilities\n- Be specific about technologies used\n- Show scope: team size, user count, transaction volume"
+      },
+      {
+        "heading": "Tailoring for Each Application",
+        "content": "One generic resume won't maximize your callback rate. For each application:\n\n1. **Read the job description carefully** - Identify key requirements and keywords\n2. **Reorder bullet points** - Put most relevant experience first\n3. **Mirror language** - Use their terminology (\"microservices\" vs \"distributed systems\")\n4. **Adjust skills section** - Prioritize technologies mentioned in the posting\n5. **Remove irrelevant content** - Cut anything that doesn't strengthen your case\n\nThis takes 10-15 minutes per application but dramatically improves results."
+      },
+      {
+        "heading": "Common Mistakes to Avoid",
+        "content": "**Objective statements** - Remove them. They're outdated and waste space.\n\n**Duties-focused bullets** - \"Responsible for...\" tells me nothing about your impact.\n\n**Soft skill claims** - \"Team player\" and \"hard worker\" are meaningless without evidence.\n\n**Inconsistent formatting** - Mixed fonts, uneven spacing, and alignment issues look careless.\n\n**Lies or exaggeration** - Background checks and technical interviews will expose them.\n\n**Personal info** - No photo, age, marital status, or personal interests (in the US).\n\n**Outdated content** - Remove jobs from 10+ years ago unless highly relevant."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Resume Worded",
+        "source": "Resume Worded",
+        "url": "https://resumeworded.com/",
+        "type": "Tool",
+        "description": "AI-powered resume feedback and optimization suggestions"
+      },
+      {
+        "title": "Google's Resume Tips",
+        "source": "Google Careers",
+        "url": "https://www.google.com/about/careers/applications/",
+        "type": "Guide",
+        "description": "Resume advice directly from Google's recruiting team"
+      }
+    ],
+    "keyTakeaways": [
+      "Your resume's only job is to get interviews—cut everything that doesn't serve that goal",
+      "One page is enough for most candidates; recruiters won't read page two",
+      "Use the XYZ formula: Accomplished X measured by Y by doing Z",
+      "Tailor your resume for each application—10 minutes of customization pays off"
+    ]
+  },
+  "beating-ats-systems": {
+    "title": "Beating ATS Systems",
+    "intro": "Applicant Tracking Systems (ATS) filter resumes before human eyes ever see them. Understanding how these systems work lets you optimize your resume to pass automated screening.",
+    "sections": [
+      {
+        "heading": "How ATS Works",
+        "content": "ATS software parses your resume into structured data:\n\n1. **Text extraction** - Converts your document to plain text\n2. **Section identification** - Detects experience, education, skills sections\n3. **Keyword matching** - Compares content against job requirements\n4. **Scoring/ranking** - Assigns a match score for recruiter review\n\nPopular systems include Greenhouse, Lever, Workday, Taleo, and iCIMS. Each parses slightly differently, but core principles apply to all."
+      },
+      {
+        "heading": "Formatting for ATS",
+        "content": "**Do:**\n- Use standard section headings (Experience, Education, Skills)\n- Stick to common fonts (Arial, Calibri, Times New Roman)\n- Use .docx or .pdf formats (check which the company prefers)\n- Include dates in standard formats (Jan 2023 - Present)\n- Use simple bullet points (•, -, or standard list formatting)\n\n**Don't:**\n- Use tables, columns, or text boxes\n- Put critical info in headers/footers\n- Use images, graphics, or icons\n- Rely on fancy formatting that might not parse\n- Use abbreviations without spelling them out"
+      },
+      {
+        "heading": "Keyword Optimization",
+        "content": "ATS matches your resume against job description keywords. To optimize:\n\n**Extract keywords from the job posting:**\n- Required skills and technologies\n- Soft skills mentioned multiple times\n- Industry-specific terminology\n- Job title variations\n\n**Incorporate naturally:**\n- Include exact phrases from the posting\n- Use both acronyms and spelled-out versions (\"AWS\" and \"Amazon Web Services\")\n- Place keywords in context, not as keyword stuffing\n- Match the seniority language (\"senior,\" \"lead,\" \"staff\")\n\n**Example:**\nJob posting says: \"Experience with React, Node.js, and PostgreSQL\"\nYour resume should include these exact terms, not just \"JavaScript frameworks\" or \"SQL databases.\""
+      },
+      {
+        "heading": "The Human Element",
+        "content": "Remember: ATS is just the first filter. Your resume still needs to impress the human who reviews it.\n\n**Balance optimization with readability:**\n- Don't sacrifice clarity for keywords\n- Maintain natural language flow\n- Keep your authentic voice and achievements\n\n**After passing ATS:**\n- Recruiters scan for 6 seconds\n- Strong formatting still matters\n- Your top achievements must stand out\n\nThe goal is a resume that satisfies both algorithms and humans."
+      },
+      {
+        "heading": "Testing Your Resume",
+        "content": "Before submitting, test your resume:\n\n1. **Copy-paste test** - Paste into plain text. If it's unreadable, ATS will struggle too.\n\n2. **Keyword check** - Compare your resume against the job posting. Are key terms included?\n\n3. **ATS simulators** - Tools like Jobscan compare your resume against specific job postings.\n\n4. **Multiple formats** - Test both .docx and .pdf versions to ensure proper parsing.\n\nSpend 5 minutes testing before each application. It's worth the effort."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Jobscan",
+        "source": "Jobscan",
+        "url": "https://www.jobscan.co/",
+        "type": "Tool",
+        "description": "ATS resume scanner that compares your resume against job descriptions"
+      }
+    ],
+    "keyTakeaways": [
+      "ATS parses your resume into structured data and matches keywords against job requirements",
+      "Use simple formatting—avoid tables, graphics, and fancy layouts",
+      "Include exact keywords from the job posting, both acronyms and spelled-out versions",
+      "Test your resume by pasting into plain text before submitting"
+    ]
+  },
+  "tailoring-applications": {
+    "title": "Tailoring Your Application",
+    "intro": "Generic applications get generic results. The most successful candidates customize every application to demonstrate specific fit for each role and company.",
+    "sections": [
+      {
+        "heading": "Research Before Applying",
+        "content": "Spend 15-30 minutes researching before each application:\n\n**Company research:**\n- Recent news and announcements\n- Product launches and strategic direction\n- Company culture and values\n- Glassdoor reviews and interview experiences\n\n**Role research:**\n- Team blog posts or engineering talks\n- LinkedIn profiles of team members\n- Similar roles at competitors\n- Required vs. nice-to-have qualifications\n\n**This research pays off in:**\n- Resume customization\n- Cover letter specificity\n- Interview preparation\n- Intelligent questions to ask"
+      },
+      {
+        "heading": "Customizing Your Resume",
+        "content": "For each application, adjust:\n\n**Bullet point order** - Lead with experience most relevant to this specific role\n\n**Skills section** - Reorder to match job posting priorities\n\n**Keywords** - Include terminology from their job description\n\n**Project emphasis** - Highlight work similar to what you'd do in this role\n\n**Example:**\nApplying to a frontend-heavy role? Lead with React projects and UI achievements.\nSame resume for a full-stack role? Balance frontend and backend equally."
+      },
+      {
+        "heading": "Cover Letters That Add Value",
+        "content": "Most cover letters waste the reader's time. Make yours count:\n\n**Don't:** Repeat your resume in paragraph form\n\n**Do:** Add context your resume can't convey:\n- Why this company specifically (with evidence of research)\n- How your unique background fits their needs\n- A brief story that demonstrates relevant skills\n- Enthusiasm that feels genuine, not generic\n\n**Structure:**\n1. Opening hook (why you + why them)\n2. Relevant experience connection (1-2 paragraphs)\n3. Clear call to action\n\nKeep it under 300 words. If a cover letter is optional, include one anyway—it differentiates you."
+      },
+      {
+        "heading": "Leveraging Referrals",
+        "content": "Referrals are the most effective application channel:\n\n**Finding referrers:**\n- LinkedIn connections at target companies\n- Alumni networks\n- Professional communities and meetups\n- Former colleagues who've moved on\n\n**Asking for referrals:**\n- Be specific about the role\n- Make it easy—provide your resume and the job link\n- Explain why you're a good fit\n- Don't pressure—accept gracefully if they decline\n\n**Sample message:**\n\"Hi [Name], I noticed [Company] is hiring for [Role]. Given my experience with [relevant skill], I think I'd be a strong fit. Would you be comfortable referring me? I can send over my resume and a brief summary if helpful.\""
+      },
+      {
+        "heading": "Quality Over Quantity",
+        "content": "The spray-and-pray approach doesn't work. Instead:\n\n**10 tailored applications > 100 generic ones**\n\nEach quality application should include:\n- Customized resume (15 min)\n- Tailored cover letter (15 min)\n- Referral outreach if possible (10 min)\n- Application tracking entry (2 min)\n\nAt ~45 minutes per application, you can submit 2-3 high-quality applications daily while still preparing for interviews."
+      }
+    ],
+    "resources": [
+      {
+        "title": "LinkedIn Alumni Tool",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/school/alumni/",
+        "type": "Networking",
+        "description": "Find alumni from your school working at target companies"
+      }
+    ],
+    "keyTakeaways": [
+      "Spend 15-30 minutes researching each company before applying",
+      "Customize resume bullet order, skills, and keywords for each role",
+      "Cover letters should add new information, not repeat your resume",
+      "10 tailored applications outperform 100 generic ones"
+    ]
+  },
+  "portfolio-and-github": {
+    "title": "Portfolio & GitHub Presence",
+    "intro": "Your online presence serves as a 24/7 supplement to your resume. A strong portfolio and GitHub profile can be the difference between getting interviews and getting ignored.",
+    "sections": [
+      {
+        "heading": "GitHub as Your Technical Resume",
+        "content": "Recruiters and hiring managers check GitHub. Make it count:\n\n**Profile optimization:**\n- Professional profile photo\n- Bio with your focus areas and current role\n- Pinned repositories showcasing best work\n- Contribution graph showing consistent activity\n\n**Repository quality:**\n- Clear README files explaining what each project does\n- Clean code with consistent style\n- Meaningful commit messages\n- Documentation and setup instructions\n\n**What to pin:**\n- Your most impressive technical projects\n- Open source contributions\n- Work demonstrating skills relevant to your target roles"
+      },
+      {
+        "heading": "Building a Portfolio Site",
+        "content": "A portfolio site gives you control over your narrative:\n\n**Must-haves:**\n- About section with your background and interests\n- Projects with descriptions, tech stack, and links\n- Contact information\n- Mobile-responsive design\n\n**Nice-to-haves:**\n- Blog with technical writing\n- Case studies with problem/solution/impact format\n- Testimonials from colleagues or managers\n\n**Keep it simple:**\n- Use a clean template or build something minimal\n- Prioritize content over fancy animations\n- Ensure fast load times\n- Keep it updated"
+      },
+      {
+        "heading": "Project Selection Strategy",
+        "content": "Choose projects that demonstrate:\n\n**Technical depth:**\n- Full-stack applications showing end-to-end skills\n- Projects using technologies in your target job descriptions\n- Work that solves real problems (not just tutorials)\n\n**Diversity:**\n- Different technologies and problem domains\n- Solo work and collaborative contributions\n- Various project sizes and complexities\n\n**Impact:**\n- User-facing applications with actual users\n- Open source contributions to notable projects\n- Tools that solve problems you or others actually have\n\n**Avoid:**\n- Half-finished projects\n- Tutorial follow-alongs without modification\n- Outdated technology unless historically significant"
+      },
+      {
+        "heading": "Open Source Contributions",
+        "content": "Contributing to open source demonstrates real-world collaboration skills:\n\n**Getting started:**\n- Look for \"good first issue\" labels\n- Start with documentation improvements\n- Fix bugs in tools you actually use\n- Join projects with active, welcoming communities\n\n**What contributions show:**\n- You can read and understand existing codebases\n- You follow contribution guidelines and code review processes\n- You communicate effectively with other developers\n- You're engaged in the broader tech community\n\nEven small contributions matter. A history of meaningful contributions stands out."
+      },
+      {
+        "heading": "Maintaining Your Presence",
+        "content": "An outdated portfolio hurts more than no portfolio:\n\n**Regular maintenance:**\n- Remove or archive old/broken projects\n- Update descriptions to reflect current skills\n- Keep dependencies updated in live projects\n- Refresh your bio and about section quarterly\n\n**Consistency signals:**\n- Regular GitHub commits (even small ones)\n- Periodic blog posts or project updates\n- Active LinkedIn engagement\n\nSet a calendar reminder to review your online presence monthly."
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Profile README",
+        "source": "GitHub",
+        "url": "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme",
+        "type": "Guide",
+        "description": "Create a compelling GitHub profile README"
+      },
+      {
+        "title": "First Contributions",
+        "source": "GitHub",
+        "url": "https://github.com/firstcontributions/first-contributions",
+        "type": "Tutorial",
+        "description": "Learn how to make your first open source contribution"
+      }
+    ],
+    "keyTakeaways": [
+      "GitHub serves as your technical resume—pin your best work and write clear READMEs",
+      "Portfolio sites should prioritize content and clarity over flashy design",
+      "Select projects that demonstrate depth, diversity, and real-world impact",
+      "Regular maintenance is essential—outdated portfolios hurt more than help"
+    ]
+  },
+  "coding-interview-fundamentals": {
+    "title": "Coding Interview Fundamentals",
+    "intro": "Coding interviews test more than your ability to write code. They assess how you think, communicate, and handle problems under pressure. Understanding what interviewers actually evaluate helps you prepare effectively.",
+    "sections": [
+      {
+        "heading": "What Interviewers Actually Evaluate",
+        "content": "Interviewers look for signals in several areas:\n\n**Problem-solving approach:**\n- Do you clarify requirements before diving in?\n- Can you break complex problems into manageable pieces?\n- Do you consider multiple approaches before committing?\n\n**Technical knowledge:**\n- Appropriate data structure and algorithm choices\n- Understanding of time and space complexity\n- Awareness of edge cases and error handling\n\n**Communication:**\n- Clear explanation of your thought process\n- Receptiveness to hints and feedback\n- Professional collaboration style\n\n**Code quality:**\n- Clean, readable code\n- Good variable and function naming\n- Logical organization\n\nGetting the optimal solution matters less than demonstrating strong signal in these areas."
+      },
+      {
+        "heading": "The Interview Framework",
+        "content": "Use this framework for every problem:\n\n**1. Understand (3-5 min)**\n- Restate the problem in your own words\n- Ask clarifying questions\n- Confirm input/output format and constraints\n- Walk through examples\n\n**2. Plan (5-10 min)**\n- Brainstorm approaches\n- Analyze time/space tradeoffs\n- Choose an approach and explain why\n- Outline your solution before coding\n\n**3. Implement (15-25 min)**\n- Write clean, working code\n- Talk through what you're doing\n- Handle edge cases\n- Use meaningful names\n\n**4. Verify (5 min)**\n- Trace through with examples\n- Check edge cases\n- Discuss testing strategy\n- Analyze complexity"
+      },
+      {
+        "heading": "Communication Is Key",
+        "content": "The biggest differentiator between candidates is communication:\n\n**Think out loud:**\n- \"I'm thinking this looks like a sliding window problem because...\"\n- \"My instinct is to use a hash map here to get O(1) lookups\"\n- \"Let me consider the edge cases: empty input, single element, duplicates...\"\n\n**Verbalize your process:**\n- State your assumptions\n- Explain tradeoffs between approaches\n- Acknowledge when you're stuck and what you're trying\n\n**Respond to feedback:**\n- \"Good point, let me reconsider that approach\"\n- \"You're right, I should handle that edge case\"\n- Ask clarifying questions about hints\n\nSilent coding is a red flag. Interviewers can't give partial credit for thoughts they don't hear."
+      },
+      {
+        "heading": "Handling Being Stuck",
+        "content": "Everyone gets stuck. How you handle it matters:\n\n**Acknowledge it:**\n\"I'm stuck on how to efficiently find the overlapping intervals. Let me think about what data structure would help here.\"\n\n**Try something:**\n- Work through a small example by hand\n- Consider simpler versions of the problem\n- Think about similar problems you've solved\n\n**Ask for help appropriately:**\n\"I have a few ideas but I'm not sure which direction to pursue. Could you give me a hint about whether I should be thinking about sorting or a different approach?\"\n\n**Don't:**\n- Sit in silence for more than 60 seconds\n- Pretend you understand when you don't\n- Give up or get visibly frustrated"
+      },
+      {
+        "heading": "Practice Effectively",
+        "content": "Practice should simulate real interview conditions:\n\n**Quality over quantity:**\n- Deeply understand 100-150 problems instead of skimming 500\n- Review solutions you struggle with multiple times\n- Learn the patterns, not just the answers\n\n**Simulate real conditions:**\n- Use a timer (45 minutes per problem)\n- Practice on a whiteboard or shared editor\n- Talk out loud, even when practicing alone\n- Don't look at solutions until you've struggled\n\n**Track patterns:**\n- Group problems by technique (two pointers, BFS, dynamic programming)\n- Identify your weak areas\n- Revisit problem types you find difficult\n\nConsistent practice over weeks beats cramming over days."
+      }
+    ],
+    "resources": [
+      {
+        "title": "LeetCode",
+        "source": "LeetCode",
+        "url": "https://leetcode.com/",
+        "type": "Practice Platform",
+        "description": "Industry-standard platform for coding interview practice"
+      },
+      {
+        "title": "NeetCode",
+        "source": "NeetCode",
+        "url": "https://neetcode.io/",
+        "type": "Study Guide",
+        "description": "Curated problem lists organized by pattern with video explanations"
+      }
+    ],
+    "keyTakeaways": [
+      "Interviewers evaluate problem-solving approach and communication, not just correct answers",
+      "Use a consistent framework: Understand, Plan, Implement, Verify",
+      "Think out loud throughout—silent coding prevents interviewers from giving credit",
+      "When stuck, acknowledge it, try something, and ask for hints appropriately"
+    ]
+  },
+  "data-structures-to-know": {
+    "title": "Data Structures You Must Know",
+    "intro": "A solid grasp of fundamental data structures is non-negotiable for coding interviews. You need to understand when to use each structure and analyze the tradeoffs.",
+    "sections": [
+      {
+        "heading": "Arrays and Strings",
+        "content": "The most common interview topics. Master these operations:\n\n**Key operations:**\n- Access by index: O(1)\n- Search: O(n) unsorted, O(log n) sorted with binary search\n- Insert/delete at end: O(1) amortized\n- Insert/delete at arbitrary position: O(n)\n\n**Common patterns:**\n- Two pointers (start/end, fast/slow)\n- Sliding window\n- Prefix sums\n- In-place modification\n\n**Typical problems:**\n- Reverse, rotate, find duplicates\n- Subarray with target sum\n- String matching and manipulation\n- Anagram detection"
+      },
+      {
+        "heading": "Hash Maps and Sets",
+        "content": "Your go-to for O(1) lookups. Extremely common in interviews.\n\n**Key operations:**\n- Insert: O(1) average\n- Lookup: O(1) average\n- Delete: O(1) average\n\n**When to use:**\n- Counting frequencies\n- Finding duplicates\n- Caching computed values\n- Two-sum style problems\n- Grouping by key\n\n**Watch out for:**\n- O(n) worst case with bad hash functions\n- Memory overhead\n- Key ordering not guaranteed (use TreeMap/OrderedDict if needed)"
+      },
+      {
+        "heading": "Linked Lists",
+        "content": "Classic interview topic testing pointer manipulation:\n\n**Key operations:**\n- Access by index: O(n)\n- Insert/delete at known position: O(1)\n- Search: O(n)\n\n**Essential techniques:**\n- Fast/slow pointers (cycle detection, finding middle)\n- Dummy head nodes\n- Reversing in place\n- Merging sorted lists\n\n**Common problems:**\n- Detect cycle\n- Find nth node from end\n- Reverse linked list\n- Merge two sorted lists\n- Remove duplicates"
+      },
+      {
+        "heading": "Stacks and Queues",
+        "content": "Simple but powerful. Know when each applies.\n\n**Stack (LIFO):**\n- Push/pop: O(1)\n- Use cases: Matching parentheses, undo operations, DFS, expression evaluation\n- Monotonic stack for next greater/smaller element problems\n\n**Queue (FIFO):**\n- Enqueue/dequeue: O(1)\n- Use cases: BFS, level-order traversal, scheduling\n- Deque for sliding window maximum problems\n\n**Common problems:**\n- Valid parentheses\n- Implement queue using stacks\n- Daily temperatures (monotonic stack)\n- Sliding window maximum"
+      },
+      {
+        "heading": "Trees and Graphs",
+        "content": "Frequent in interviews. Require comfort with recursion.\n\n**Binary Trees:**\n- Traversals: inorder, preorder, postorder (O(n))\n- Height, depth, diameter calculations\n- BST operations: search, insert, delete (O(log n) average)\n\n**Graphs:**\n- Representations: adjacency list vs matrix\n- BFS: shortest path in unweighted graphs\n- DFS: path finding, cycle detection, topological sort\n- Union-Find: connected components\n\n**Common problems:**\n- Validate BST\n- Lowest common ancestor\n- Number of islands\n- Course schedule (topological sort)\n- Clone graph"
+      },
+      {
+        "heading": "Heaps",
+        "content": "Essential for problems involving \"k largest\" or \"k smallest\":\n\n**Key operations:**\n- Insert: O(log n)\n- Extract min/max: O(log n)\n- Peek: O(1)\n\n**When to use:**\n- K largest/smallest elements\n- Merge K sorted lists\n- Median of data stream\n- Task scheduling by priority\n\n**Implementation note:**\nMost languages have built-in heap/priority queue. Know how to use your language's implementation and whether it's min-heap or max-heap by default."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Visualgo",
+        "source": "Visualgo",
+        "url": "https://visualgo.net/",
+        "type": "Visualization Tool",
+        "description": "Interactive visualizations of data structures and algorithms"
+      },
+      {
+        "title": "Big-O Cheat Sheet",
+        "source": "Big-O Cheat Sheet",
+        "url": "https://www.bigocheatsheet.com/",
+        "type": "Reference",
+        "description": "Quick reference for time and space complexity of common operations"
+      }
+    ],
+    "keyTakeaways": [
+      "Hash maps are your best friend for O(1) lookups—use them liberally",
+      "Know the time complexity of every operation for each data structure",
+      "Linked lists test pointer manipulation—practice reversal and cycle detection",
+      "Trees and graphs require comfort with recursion and BFS/DFS traversals"
+    ]
+  },
+  "algorithm-patterns": {
+    "title": "Common Algorithm Patterns",
+    "intro": "Most coding interview problems follow recognizable patterns. Learning to identify these patterns lets you apply proven techniques instead of solving each problem from scratch.",
+    "sections": [
+      {
+        "heading": "Two Pointers",
+        "content": "Use two pointers moving through a data structure, often an array or linked list.\n\n**Variations:**\n- **Opposite ends:** Start at both ends, move inward (palindrome, two-sum in sorted array)\n- **Same direction:** Both start at beginning, move at different speeds (remove duplicates, partition)\n- **Fast/slow:** One moves faster to detect cycles or find middle\n\n**Recognition signals:**\n- Sorted array\n- Looking for pairs with certain sum/difference\n- In-place modification needed\n- Linked list cycle or intersection\n\n**Example:** Find two numbers in sorted array that sum to target → start/end pointers, move based on current sum."
+      },
+      {
+        "heading": "Sliding Window",
+        "content": "Maintain a window over a sequence, expanding and contracting as needed.\n\n**Types:**\n- **Fixed size:** Window size is given (max sum of k consecutive elements)\n- **Variable size:** Find minimum/maximum window meeting a condition\n\n**Template:**\n```\nleft = 0\nfor right in range(len(array)):\n    # expand window by including array[right]\n    while window is invalid:\n        # shrink window by excluding array[left]\n        left += 1\n    # update answer\n```\n\n**Recognition signals:**\n- Substring/subarray problems\n- Contiguous sequence requirement\n- Minimum/maximum length meeting condition"
+      },
+      {
+        "heading": "Binary Search",
+        "content": "Eliminate half the search space each iteration. Applies beyond sorted arrays.\n\n**Classic application:** Find element in sorted array in O(log n)\n\n**Advanced applications:**\n- Find first/last occurrence of element\n- Search in rotated sorted array\n- Find minimum in rotated array\n- Binary search on answer space (minimize maximum, maximize minimum)\n\n**Template:**\n```\nleft, right = 0, len(array) - 1\nwhile left < right:\n    mid = (left + right) // 2\n    if condition(mid):\n        right = mid  # or left = mid + 1\n    else:\n        left = mid + 1  # or right = mid\nreturn left\n```\n\n**Recognition signals:**\n- Sorted data\n- Searching for boundary condition\n- Optimization problems with monotonic property"
+      },
+      {
+        "heading": "BFS and DFS",
+        "content": "Tree and graph traversal patterns.\n\n**BFS (Breadth-First Search):**\n- Uses queue\n- Explores level by level\n- Finds shortest path in unweighted graphs\n- Use for: level-order traversal, shortest path, nearest neighbor\n\n**DFS (Depth-First Search):**\n- Uses stack (or recursion)\n- Explores as deep as possible first\n- Use for: path finding, cycle detection, topological sort, backtracking\n\n**Graph problems require:**\n- Tracking visited nodes\n- Building adjacency list from edges\n- Handling disconnected components"
+      },
+      {
+        "heading": "Dynamic Programming",
+        "content": "Break problems into overlapping subproblems and cache results.\n\n**Recognition signals:**\n- Counting ways to do something\n- Optimization (min/max cost, length, etc.)\n- \"Can you reach...\" or \"Is it possible...\" questions\n- Overlapping subproblems (same calculation needed multiple times)\n\n**Approach:**\n1. Define state (what variables define a subproblem)\n2. Define recurrence relation (how to compute state from smaller states)\n3. Identify base cases\n4. Determine iteration order\n5. Optimize space if possible\n\n**Common patterns:**\n- Linear DP (climbing stairs, house robber)\n- 2D DP (unique paths, edit distance)\n- Interval DP (matrix chain, palindrome partitioning)\n- Knapsack variations"
+      },
+      {
+        "heading": "Backtracking",
+        "content": "Systematically explore all possibilities by building candidates and abandoning (backtracking) when a candidate cannot lead to a valid solution.\n\n**Template:**\n```\ndef backtrack(current_state):\n    if is_solution(current_state):\n        add to results\n        return\n    for choice in available_choices:\n        make choice\n        backtrack(current_state)\n        undo choice  # backtrack\n```\n\n**Recognition signals:**\n- Generate all combinations/permutations\n- Constraint satisfaction problems\n- \"Find all ways to...\" problems\n- Puzzles (N-queens, sudoku)\n\n**Optimization:** Prune early when you know a path cannot lead to a valid solution."
+      }
+    ],
+    "resources": [
+      {
+        "title": "14 Patterns",
+        "source": "Hacker Noon",
+        "url": "https://hackernoon.com/14-patterns-to-ace-any-coding-interview-question-c5bb3357f6ed",
+        "type": "Article",
+        "description": "Overview of common coding interview patterns"
+      },
+      {
+        "title": "Grokking the Coding Interview",
+        "source": "Design Gurus",
+        "url": "https://www.designgurus.io/course/grokking-the-coding-interview",
+        "type": "Course",
+        "description": "Pattern-based approach to coding interview preparation"
+      }
+    ],
+    "keyTakeaways": [
+      "Most problems follow recognizable patterns—learn to identify them quickly",
+      "Two pointers and sliding window are common for array/string problems",
+      "Binary search applies beyond sorted arrays to any problem with monotonic property",
+      "Dynamic programming requires identifying overlapping subproblems and optimal substructure"
+    ]
+  },
+  "system-design-interviews": {
+    "title": "System Design Interview Basics",
+    "intro": "System design interviews assess your ability to architect large-scale systems. They're more open-ended than coding interviews and test your engineering judgment, communication, and breadth of knowledge.",
+    "sections": [
+      {
+        "heading": "What System Design Tests",
+        "content": "Unlike coding interviews with clear right answers, system design evaluates:\n\n**Technical breadth:**\n- Knowledge of distributed system components\n- Understanding of tradeoffs between approaches\n- Awareness of scalability challenges\n\n**Engineering judgment:**\n- Appropriate technology choices\n- Reasonable assumptions and estimates\n- Prioritization under constraints\n\n**Communication:**\n- Clear explanation of complex systems\n- Ability to drive the conversation\n- Responsiveness to interviewer guidance\n\nThere's no single correct answer. Interviewers want to see your thought process and decision-making."
+      },
+      {
+        "heading": "The Framework",
+        "content": "Use this structure for every system design interview:\n\n**1. Requirements (5 min)**\n- Clarify functional requirements (what the system does)\n- Establish non-functional requirements (scale, latency, availability)\n- Define scope and constraints\n\n**2. Estimation (5 min)**\n- Users, requests per second, data size\n- Storage and bandwidth needs\n- Back-of-envelope calculations\n\n**3. High-Level Design (10 min)**\n- Core components and their interactions\n- API design\n- Data flow\n\n**4. Deep Dive (15 min)**\n- Database schema and choices\n- Specific component design\n- Handling scale and failure\n\n**5. Wrap-up (5 min)**\n- Discuss tradeoffs made\n- Address potential bottlenecks\n- Consider extensions and improvements"
+      },
+      {
+        "heading": "Core Concepts to Know",
+        "content": "**Scaling:**\n- Vertical vs horizontal scaling\n- Load balancing strategies\n- Database sharding and replication\n\n**Storage:**\n- SQL vs NoSQL tradeoffs\n- Caching strategies (Redis, Memcached)\n- CDNs for static content\n\n**Communication:**\n- REST vs GraphQL vs gRPC\n- Synchronous vs asynchronous processing\n- Message queues (Kafka, RabbitMQ)\n\n**Reliability:**\n- Redundancy and failover\n- Consistency vs availability (CAP theorem)\n- Rate limiting and circuit breakers\n\nYou don't need to be an expert in everything, but you should understand when to use each approach."
+      },
+      {
+        "heading": "Common Problems",
+        "content": "Prepare approaches for these classic problems:\n\n**URL Shortener (beginner):**\n- Key generation, database design, analytics\n\n**Twitter/Feed (intermediate):**\n- Fan-out strategies, timeline generation, caching\n\n**Chat System (intermediate):**\n- WebSockets, message delivery, presence\n\n**Distributed Cache (advanced):**\n- Consistent hashing, eviction policies, replication\n\n**Search System (advanced):**\n- Inverted index, ranking, query optimization\n\nStudying these builds intuition for design decisions that apply broadly."
+      },
+      {
+        "heading": "Common Mistakes",
+        "content": "**Diving into details too early:**\nSpend time on requirements and high-level design before database schemas.\n\n**Not driving the conversation:**\nThe interviewer wants you to lead. Ask questions, propose directions, check in.\n\n**Over-engineering:**\nStart simple. Add complexity only when justified by requirements.\n\n**Ignoring tradeoffs:**\nEvery choice has pros and cons. Explicitly discuss them.\n\n**Forgetting about failure modes:**\nWhat happens when components fail? How do you handle network partitions?\n\n**Not doing back-of-envelope math:**\nEstimations ground your design in reality and catch unrealistic assumptions."
+      }
+    ],
+    "resources": [
+      {
+        "title": "System Design Primer",
+        "source": "GitHub",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "type": "Study Guide",
+        "description": "Comprehensive open-source guide with examples and solutions"
+      },
+      {
+        "title": "Designing Data-Intensive Applications",
+        "source": "O'Reilly",
+        "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
+        "type": "Book",
+        "description": "The definitive book on distributed systems fundamentals"
+      }
+    ],
+    "keyTakeaways": [
+      "System design tests engineering judgment and communication, not just knowledge",
+      "Always start with requirements clarification and estimation before designing",
+      "Explicitly discuss tradeoffs—there's no single correct answer",
+      "Practice classic problems to build pattern recognition for design decisions"
+    ]
+  },
+  "take-home-assignments": {
+    "title": "Crushing Take-Home Assignments",
+    "intro": "Take-home assignments let you showcase your skills without time pressure. They're your chance to demonstrate how you write code in realistic conditions—don't waste it.",
+    "sections": [
+      {
+        "heading": "What Evaluators Look For",
+        "content": "Take-homes assess different skills than live coding:\n\n**Code quality:**\n- Clean, readable, well-organized code\n- Consistent style and formatting\n- Appropriate abstraction and modularity\n\n**Technical decisions:**\n- Reasonable architecture choices\n- Appropriate use of libraries and tools\n- Understanding of best practices\n\n**Completeness:**\n- All requirements addressed\n- Edge cases handled\n- Error handling and validation\n\n**Documentation:**\n- Clear README with setup instructions\n- Code comments where helpful\n- Explanation of key decisions\n\nEvaluators will read your code. Make it pleasant to read."
+      },
+      {
+        "heading": "Time Management",
+        "content": "Most take-homes suggest 2-4 hours but allow more time. Strategy:\n\n**Respect the spirit of time limits:**\n- Don't spend 20 hours on a \"4-hour\" assignment\n- Companies want to see what you produce in reasonable time\n- Excessive polish wastes your time and sets unrealistic expectations\n\n**Budget your time:**\n- 10% planning and setup\n- 60% core implementation\n- 20% polish and testing\n- 10% documentation\n\n**Know when to stop:**\n- Hit all requirements first\n- Add nice-to-haves if time permits\n- Note potential improvements you'd make with more time"
+      },
+      {
+        "heading": "Standing Out",
+        "content": "Most candidates do the minimum. Stand out by:\n\n**Excellent README:**\n- Clear setup instructions (assume reader knows nothing)\n- Architecture overview\n- Key decisions and tradeoffs\n- What you'd improve with more time\n\n**Tests:**\n- Even basic tests show professionalism\n- Cover happy path and important edge cases\n- Don't need 100% coverage\n\n**Clean Git history:**\n- Meaningful commit messages\n- Logical progression of changes\n- Shows your development process\n\n**Small touches:**\n- Linting and formatting configured\n- Error messages that are helpful\n- Loading states and edge case handling"
+      },
+      {
+        "heading": "Common Mistakes",
+        "content": "**Over-engineering:**\n- Don't build for hypothetical scale\n- Skip the Kubernetes config for a CRUD app\n- Simple is better than clever\n\n**Under-engineering:**\n- No error handling\n- Missing validation\n- Hard-coded values everywhere\n\n**Ignoring instructions:**\n- Read requirements carefully\n- Follow specified tech stack if given\n- Submit in requested format\n\n**Poor organization:**\n- Files dumped in root directory\n- No separation of concerns\n- Inconsistent naming\n\n**No instructions:**\n- Assuming evaluator knows your setup\n- Missing environment variables\n- Broken dependencies"
+      },
+      {
+        "heading": "The Follow-Up Discussion",
+        "content": "Many companies follow up with a discussion of your submission:\n\n**Prepare to explain:**\n- Why you made specific technical choices\n- Tradeoffs you considered\n- How you'd extend the solution\n- What you'd change with different constraints\n\n**Common questions:**\n- \"Walk me through your architecture\"\n- \"Why did you choose X over Y?\"\n- \"How would this scale to 10x users?\"\n- \"What would you add with more time?\"\n\nReview your code before the discussion. Be ready to defend your decisions or acknowledge areas for improvement."
+      }
+    ],
+    "resources": [
+      {
+        "title": "The Art of README",
+        "source": "GitHub",
+        "url": "https://github.com/hackergrrl/art-of-readme",
+        "type": "Guide",
+        "description": "Best practices for writing excellent README files"
+      }
+    ],
+    "keyTakeaways": [
+      "Take-homes evaluate code quality and decisions, not just correctness",
+      "Respect time limits—20 hours on a 4-hour assignment isn't impressive",
+      "An excellent README and basic tests differentiate you from most candidates",
+      "Prepare to discuss and defend your technical choices in follow-up interviews"
+    ]
+  },
+  "live-coding-strategies": {
+    "title": "Live Coding Strategies",
+    "intro": "Live coding interviews are stressful by design. The right strategies help you perform at your best despite the pressure of someone watching your every keystroke.",
+    "sections": [
+      {
+        "heading": "Managing Nerves",
+        "content": "Interview anxiety is normal. Manage it with:\n\n**Before the interview:**\n- Get enough sleep the night before\n- Eat a light meal—not too full, not hungry\n- Arrive early or log in 5 minutes ahead\n- Have water nearby\n\n**During the interview:**\n- Take deep breaths when you feel stuck\n- It's okay to pause and think\n- Remember: interviewers want you to succeed\n- Focus on the problem, not on being evaluated\n\n**Reframe the situation:**\n- This is a conversation, not an interrogation\n- You're showing how you work, not proving you're perfect\n- Mistakes are recoverable; handling them well is a positive signal"
+      },
+      {
+        "heading": "Environment Setup",
+        "content": "Reduce friction with proper setup:\n\n**Technical preparation:**\n- Test your IDE, camera, and microphone beforehand\n- Know common shortcuts in your editor\n- Have a backup plan if technology fails\n\n**Choose your language wisely:**\n- Use your strongest language\n- Avoid languages with verbose syntax for timed interviews\n- Know standard library functions (sorting, data structures)\n\n**Physical setup:**\n- Quiet environment with good lighting\n- Second monitor if available (problem statement on one, code on other)\n- Mute notifications and close distracting apps"
+      },
+      {
+        "heading": "Pacing Yourself",
+        "content": "Time management separates strong candidates from struggling ones:\n\n**For a 45-minute interview:**\n- 5 minutes: understand problem, ask questions\n- 5 minutes: plan approach, discuss with interviewer\n- 25 minutes: implement solution\n- 5 minutes: test and debug\n- 5 minutes: discuss improvements, complexity\n\n**If you're running behind:**\n- Acknowledge it: \"I want to make sure I have time to test. Let me simplify this part.\"\n- Prioritize working code over optimal code\n- Skip edge cases initially if needed (note them verbally)\n\n**If you finish early:**\n- Don't rush to end the interview\n- Discuss alternative approaches\n- Add optimizations or handle more edge cases"
+      },
+      {
+        "heading": "Writing Code Under Pressure",
+        "content": "Strategies for coding while being watched:\n\n**Start with structure:**\n- Write function signature and return statement first\n- Add comments as pseudocode before real code\n- Build skeleton, then fill in details\n\n**Prioritize correctness:**\n- Get a working solution before optimizing\n- Use helper functions to manage complexity\n- Test incrementally as you go\n\n**When you make mistakes:**\n- Stay calm—everyone makes mistakes\n- Fix them methodically, don't panic\n- Explain what went wrong and how you're fixing it\n\n**If you need to debug:**\n- Walk through code line by line with a simple example\n- Check off-by-one errors, boundary conditions\n- Print or trace variable values mentally"
+      },
+      {
+        "heading": "Working With the Interviewer",
+        "content": "The interviewer is your collaborator, not your adversary:\n\n**Engage them:**\n- \"Does this approach seem reasonable before I start coding?\"\n- \"I'm going to use a hash map here—does that make sense?\"\n- Check in periodically: \"Am I on the right track?\"\n\n**Handle hints gracefully:**\n- Listen carefully to what they're suggesting\n- Don't be defensive about changing direction\n- \"That's a good point, let me reconsider...\"\n\n**If you don't understand something:**\n- Ask for clarification immediately\n- Repeat back what you understood\n- It's better to ask than to solve the wrong problem\n\nInterviewers remember candidates who are pleasant to work with. Technical skills being equal, collaboration skills break ties."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Pramp",
+        "source": "Pramp",
+        "url": "https://www.pramp.com/",
+        "type": "Practice Platform",
+        "description": "Free peer-to-peer mock interviews to practice live coding"
+      },
+      {
+        "title": "Interviewing.io",
+        "source": "Interviewing.io",
+        "url": "https://interviewing.io/",
+        "type": "Practice Platform",
+        "description": "Anonymous mock interviews with engineers from top companies"
+      }
+    ],
+    "keyTakeaways": [
+      "Manage nerves through preparation, breathing, and reframing the interview as collaboration",
+      "Set up your environment beforehand—test audio, video, and IDE",
+      "Budget time carefully: understand, plan, implement, test, discuss",
+      "Engage the interviewer as a collaborator, not an evaluator to impress"
+    ]
+  },
+  "star-method-deep-dive": {
+    "title": "The STAR Method Deep Dive",
+    "intro": "Behavioral interviews require structured storytelling. The STAR method provides a framework for answering any behavioral question with clarity and impact.",
+    "sections": [
+      {
+        "heading": "What STAR Stands For",
+        "content": "**S - Situation:** Set the context\n- Where were you working?\n- What was the project or challenge?\n- What were the stakes?\n\n**T - Task:** Explain your responsibility\n- What was your specific role?\n- What were you trying to accomplish?\n- What constraints did you face?\n\n**A - Action:** Describe what you did\n- What specific steps did you take?\n- Why did you choose that approach?\n- How did you handle challenges?\n\n**R - Result:** Share the outcome\n- What happened as a result of your actions?\n- What did you learn?\n- Quantify impact when possible\n\nKeep the ratio roughly: Situation (10%), Task (15%), Action (50%), Result (25%)."
+      },
+      {
+        "heading": "Why STAR Works",
+        "content": "STAR ensures your answers are:\n\n**Specific:** Forces concrete examples instead of generalizations\n\n**Complete:** Covers setup, your role, actions, and outcomes\n\n**Focused:** Keeps you on track instead of rambling\n\n**Memorable:** Stories with structure are easier to remember and evaluate\n\nInterviewers often use structured scorecards. STAR answers provide clear evidence for each evaluation criterion."
+      },
+      {
+        "heading": "Common Mistakes",
+        "content": "**Too much situation, not enough action:**\n\"We were working on this huge project with many challenges...\" (5 minutes of context)\nFix: Set context in 2-3 sentences, then move to your actions.\n\n**\"We\" instead of \"I\":**\n\"We decided to refactor the system...\"\nFix: Be specific about your contributions. \"I proposed the refactor and led the implementation.\"\n\n**No measurable results:**\n\"It went well and everyone was happy.\"\nFix: Quantify when possible. \"Reduced deployment time by 60%\" or \"Shipped 2 weeks ahead of schedule.\"\n\n**Hypotheticals instead of real examples:**\n\"I would handle that by...\"\nFix: Answer with actual past experiences, even if imperfect."
+      },
+      {
+        "heading": "Answering Effectively",
+        "content": "When you hear a behavioral question:\n\n**1. Pause briefly** (3-5 seconds is fine)\n- Don't start rambling immediately\n- Select an appropriate story\n- Mentally outline STAR structure\n\n**2. Deliver your answer** (2-3 minutes total)\n- Keep situation/task brief\n- Emphasize your actions and reasoning\n- End with clear results\n\n**3. Check in**\n- \"Does that answer your question?\"\n- \"Would you like me to go deeper on any part?\"\n\n**If you don't have a perfect example:**\n\"I haven't faced that exact situation, but here's a related experience that demonstrates the same skills...\""
+      },
+      {
+        "heading": "Practice Exercise",
+        "content": "Take this common question and practice STAR:\n\n**\"Tell me about a time you had to deal with a difficult coworker.\"**\n\n**Situation:** \"In my previous role, I was on a team with a senior engineer who often dismissed ideas from newer team members.\"\n\n**Task:** \"I needed to collaborate with him on a critical feature while maintaining a productive relationship and ensuring my contributions were heard.\"\n\n**Action:** \"I started by having a one-on-one conversation to understand his perspective. I learned he was frustrated by previous experiences with junior engineers. I then made sure to come to discussions thoroughly prepared with data and prototypes. When we disagreed, I focused on the technical merits rather than positions.\"\n\n**Result:** \"Over three months, our working relationship improved significantly. He became one of my strongest advocates, recommending me for a promotion. The feature shipped successfully and is still in production.\"\n\nPractice telling this story out loud until it flows naturally."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Amazon Leadership Principles",
+        "source": "Amazon",
+        "url": "https://www.amazon.jobs/content/en/our-workplace/leadership-principles",
+        "type": "Reference",
+        "description": "Amazon's behavioral framework—useful even for non-Amazon interviews"
+      }
+    ],
+    "keyTakeaways": [
+      "STAR = Situation (10%), Task (15%), Action (50%), Result (25%)",
+      "Use \"I\" not \"we\"—be specific about your contributions",
+      "Quantify results whenever possible",
+      "Pause to think before answering—selecting the right story matters"
+    ]
+  },
+  "building-story-bank": {
+    "title": "Building Your Story Bank",
+    "intro": "Top behavioral interview performers don't improvise—they draw from a prepared bank of stories. Building this bank ahead of time lets you answer any question with a relevant, well-structured example.",
+    "sections": [
+      {
+        "heading": "Why You Need a Story Bank",
+        "content": "Behavioral questions vary in wording but test similar themes:\n\n- \"Tell me about a time you failed\"\n- \"Describe a situation where things didn't go as planned\"\n- \"Give me an example of a mistake you made\"\n\nAll three test the same thing: self-awareness and learning from setbacks.\n\n**With a story bank:**\n- You have pre-selected strong examples\n- You've practiced telling them clearly\n- You can adapt one story to multiple questions\n- You reduce anxiety by eliminating improvisation\n\n**Without preparation:**\n- You scramble to think of examples under pressure\n- You might choose weak stories that don't showcase your strengths\n- Your delivery will be disorganized"
+      },
+      {
+        "heading": "Core Themes to Cover",
+        "content": "Prepare 8-12 stories covering these themes:\n\n**Leadership & Influence**\n- Leading without authority\n- Influencing stakeholders\n- Mentoring others\n\n**Problem Solving**\n- Technical challenges overcome\n- Debugging complex issues\n- Creative solutions\n\n**Conflict & Difficult Situations**\n- Disagreements with coworkers\n- Challenging stakeholders\n- Delivering bad news\n\n**Failure & Growth**\n- Mistakes and what you learned\n- Projects that didn't succeed\n- Feedback that changed you\n\n**Collaboration**\n- Cross-functional work\n- Team achievements\n- Helping others succeed\n\n**Initiative & Impact**\n- Going above and beyond\n- Identifying and solving problems proactively\n- Delivering results under pressure"
+      },
+      {
+        "heading": "Selecting Your Stories",
+        "content": "For each story, consider:\n\n**Recency:** Prefer stories from the last 3-5 years\n\n**Relevance:** Choose examples that match the role you're targeting\n\n**Results:** Select stories where you can quantify or clearly describe impact\n\n**Your role:** Pick situations where you were a key contributor, not a bystander\n\n**Complexity:** Include both smaller wins and larger, more complex situations\n\n**Diversity:** Vary the contexts—different teams, projects, and challenges\n\n**Tip:** One strong story can often be adapted to multiple questions. A project rescue story might work for \"handling pressure,\" \"dealing with failure,\" and \"leadership.\""
+      },
+      {
+        "heading": "Documenting Your Stories",
+        "content": "For each story, write down:\n\n**Title:** Brief identifier (\"Payment System Rewrite\")\n\n**STAR summary:**\n- Situation: 2-3 sentences\n- Task: 1-2 sentences\n- Action: 5-8 bullet points of what you did\n- Result: 2-3 sentences with metrics if possible\n\n**Themes this story demonstrates:** List 3-4 competencies\n\n**Potential questions it answers:** List specific questions\n\n**Key details to remember:** Technical specifics, names, dates\n\nKeep this in a document you can review before interviews."
+      },
+      {
+        "heading": "Practicing Your Stories",
+        "content": "Preparation isn't complete until you've practiced out loud:\n\n**Solo practice:**\n- Tell each story out loud, timing yourself (aim for 2-3 minutes)\n- Record yourself and listen back\n- Refine until it flows naturally\n\n**Practice with others:**\n- Ask friends or family to listen\n- Do mock interviews with peers\n- Get feedback on clarity and pacing\n\n**What to practice:**\n- Hitting the key points without rambling\n- Smooth transitions between STAR sections\n- Authentic delivery (not robotic recitation)\n- Adapting the same story to different question framings\n\nYou should be able to tell any story in your bank clearly, even if woken up at 3 AM."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Behavioral Interview Question Bank",
+        "source": "Glassdoor",
+        "url": "https://www.glassdoor.com/blog/guide/most-common-behavioral-interview-questions/",
+        "type": "Question Bank",
+        "description": "Common behavioral questions to test your stories against"
+      }
+    ],
+    "keyTakeaways": [
+      "Build a bank of 8-12 stories covering leadership, problem-solving, conflict, failure, and collaboration",
+      "Document each story with STAR structure and the questions it can answer",
+      "One strong story can often answer multiple different questions",
+      "Practice out loud until every story flows naturally in 2-3 minutes"
+    ]
+  },
+  "common-behavioral-questions": {
+    "title": "Common Behavioral Questions",
+    "intro": "While behavioral questions vary, certain themes appear consistently across companies. Preparing for these common questions ensures you're ready for the majority of behavioral interviews.",
+    "sections": [
+      {
+        "heading": "Leadership Questions",
+        "content": "**\"Tell me about a time you led a project or team.\"**\nFocus on: Setting direction, motivating others, handling obstacles\n\n**\"Describe a situation where you had to influence someone without authority.\"**\nFocus on: Building relationships, persuasion techniques, finding common ground\n\n**\"Give an example of when you had to make a difficult decision.\"**\nFocus on: Decision-making process, weighing tradeoffs, taking responsibility\n\n**Tips:**\n- Show you can lead through influence, not just authority\n- Demonstrate how you empower others\n- Include results that came from collective effort"
+      },
+      {
+        "heading": "Problem-Solving Questions",
+        "content": "**\"Tell me about a challenging technical problem you solved.\"**\nFocus on: Investigation process, creative solutions, technical depth\n\n**\"Describe a time you had to learn something quickly.\"**\nFocus on: Learning strategies, resourcefulness, applying new knowledge\n\n**\"Give an example of when you improved a process or system.\"**\nFocus on: Identifying opportunities, implementing changes, measuring impact\n\n**Tips:**\n- Walk through your thought process, not just the solution\n- Show how you break complex problems into manageable pieces\n- Quantify the impact of your solutions"
+      },
+      {
+        "heading": "Conflict Questions",
+        "content": "**\"Tell me about a disagreement with a coworker.\"**\nFocus on: Listening, finding common ground, maintaining relationships\n\n**\"Describe a time you received difficult feedback.\"**\nFocus on: Openness, processing emotions, making changes\n\n**\"Give an example of managing competing priorities.\"**\nFocus on: Communication, negotiation, stakeholder management\n\n**Tips:**\n- Never badmouth former colleagues or companies\n- Show you can disagree professionally\n- Demonstrate resolution and learning, not just the conflict"
+      },
+      {
+        "heading": "Failure Questions",
+        "content": "**\"Tell me about a time you failed.\"**\nFocus on: Taking responsibility, analyzing what went wrong, lessons learned\n\n**\"Describe a project that didn't go as planned.\"**\nFocus on: Adaptation, resilience, salvaging value from setbacks\n\n**\"Give an example of a mistake you made and how you handled it.\"**\nFocus on: Accountability, correction, preventing recurrence\n\n**Tips:**\n- Choose a real failure, not a humble brag (\"I worked too hard\")\n- Take ownership—don't blame others\n- Emphasize what you learned and how you changed"
+      },
+      {
+        "heading": "\"Tell Me About Yourself\"",
+        "content": "This opening question sets the tone. Prepare a 2-minute pitch:\n\n**Structure:**\n1. Brief background (where you started)\n2. Key career highlights (major roles/achievements)\n3. Current situation and interests\n4. Why you're talking to this company\n\n**Example:**\n\"I started my career as a frontend developer at [Company], where I discovered my passion for building user-facing products. Over five years, I progressed to senior engineer, leading the redesign of our checkout flow that increased conversions by 25%. I'm now looking to join a company where I can have broader impact on product direction, which is why [Company's] mission around [specific thing] excites me.\"\n\n**Avoid:**\n- Reciting your entire resume\n- Personal life details irrelevant to the role\n- Generic statements that apply to any company"
+      },
+      {
+        "heading": "\"Why This Company?\"",
+        "content": "Interviewers want genuine interest, not flattery. Show you've done your homework:\n\n**Good answers include:**\n- Specific products or technical challenges that excite you\n- Company values that resonate with your own\n- Team or leadership you've researched\n- Recent news or developments you find interesting\n\n**Structure:**\n1. What drew you to apply\n2. What you've learned in research\n3. How this connects to your goals\n\n**Bad answers:**\n- \"You're a great company\" (vague)\n- \"The salary is good\" (transactional)\n- \"I'll take anything right now\" (desperate)\n\nPrepare specific, genuine reasons for each company you interview with."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Jeff Sipe YouTube Channel",
+        "source": "YouTube",
+        "url": "https://www.youtube.com/@JeffHSipe",
+        "type": "Video Series",
+        "description": "Former Google recruiter with detailed behavioral interview advice"
+      }
+    ],
+    "keyTakeaways": [
+      "Leadership questions test influence and decision-making, not just authority",
+      "Failure questions require real failures—take ownership and show growth",
+      "\"Tell me about yourself\" should be a 2-minute pitch, not your full resume",
+      "\"Why this company\" requires specific research, not generic flattery"
+    ]
+  },
+  "questions-to-ask-interviewers": {
+    "title": "Questions to Ask Interviewers",
+    "intro": "The questions you ask reveal as much as the answers you give. Thoughtful questions demonstrate engagement, help you evaluate the opportunity, and leave a strong final impression.",
+    "sections": [
+      {
+        "heading": "Why Your Questions Matter",
+        "content": "At the end of most interviews, you'll hear: \"Do you have any questions for me?\"\n\n**This matters because:**\n- It's your chance to demonstrate genuine interest\n- Your questions reveal what you care about\n- It helps you determine if this role is right for you\n- It's the last impression you leave\n\n**Never say:**\n- \"No, I think you covered everything\" (signals disengagement)\n- \"What does this company do?\" (shows no research)\n- \"How much vacation time do I get?\" (save for HR/offer stage)"
+      },
+      {
+        "heading": "Questions About the Role",
+        "content": "**\"What does success look like in this role in the first 6 months?\"**\nShows you're thinking about impact and expectations.\n\n**\"What's the biggest challenge the person in this role will face?\"**\nHelps you understand pain points and how you can help.\n\n**\"Can you walk me through a typical project lifecycle here?\"**\nReveals process, collaboration, and how work gets done.\n\n**\"What would I be working on in my first week? First month?\"**\nGives concrete insight into onboarding and initial responsibilities.\n\n**\"How is performance evaluated for this role?\"**\nHelps you understand what success metrics matter."
+      },
+      {
+        "heading": "Questions About the Team",
+        "content": "**\"How would you describe the team culture?\"**\nListen for specific examples, not just buzzwords.\n\n**\"What's the team's approach to code review/technical decisions?\"**\nReveals collaboration style and engineering culture.\n\n**\"How does the team handle disagreements?\"**\nShows how conflict is managed.\n\n**\"What's the balance between feature work and technical debt?\"**\nReveals engineering priorities and sustainability.\n\n**\"How has the team changed in the past year?\"**\nSignals growth, turnover, or organizational shifts."
+      },
+      {
+        "heading": "Questions About Growth",
+        "content": "**\"What learning and development opportunities are available?\"**\nShows you're invested in growing.\n\n**\"What career paths have people in this role taken?\"**\nHelps you understand progression options.\n\n**\"How does the company support engineers staying current with technology?\"**\nReveals investment in employee development.\n\n**\"Can you tell me about someone who's grown significantly here?\"**\nConcrete examples beat abstract promises."
+      },
+      {
+        "heading": "Questions to Ask Different Interviewers",
+        "content": "Tailor questions to who you're speaking with:\n\n**Recruiters:**\n- Interview process and timeline\n- Team structure and reporting\n- Company benefits and culture\n\n**Hiring managers:**\n- Team challenges and priorities\n- Success metrics and expectations\n- Management style and philosophy\n\n**Peers (potential teammates):**\n- Day-to-day experience\n- Team dynamics and collaboration\n- What they wish they'd known before joining\n\n**Senior engineers:**\n- Technical challenges and architecture\n- Engineering culture and practices\n- Growth and mentorship opportunities\n\nPrepare 3-4 questions for each type of interviewer you might meet."
+      },
+      {
+        "heading": "Questions That Impress",
+        "content": "The best questions show you've done research:\n\n**Reference something specific:**\n\"I read about [recent product launch]. How did that project affect the team, and are there similar initiatives planned?\"\n\n**Connect to your research:**\n\"I noticed [interviewer's blog post/talk]. How has that approach evolved since then?\"\n\n**Show strategic thinking:**\n\"Given [industry trend], how is the team thinking about [relevant technical challenge]?\"\n\n**Demonstrate values alignment:**\n\"Your engineering blog mentioned [specific practice]. Can you tell me more about how that works in practice?\"\n\nThese questions show initiative and genuine interest that generic questions cannot."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Key Values",
+        "source": "Key Values",
+        "url": "https://www.keyvalues.com/",
+        "type": "Research Tool",
+        "description": "Find companies that match your values and culture preferences"
+      }
+    ],
+    "keyTakeaways": [
+      "Never say \"no questions\"—always have at least 2-3 prepared",
+      "Tailor questions to your interviewer's role (recruiter, manager, peer)",
+      "The best questions reference specific research about the company",
+      "Use questions to evaluate the opportunity, not just to impress"
+    ]
+  },
+  "understanding-comp-packages": {
+    "title": "Understanding Compensation Packages",
+    "intro": "Tech compensation is complex. Understanding all the components helps you evaluate offers accurately and negotiate effectively.",
+    "sections": [
+      {
+        "heading": "Components of Tech Compensation",
+        "content": "A total compensation (TC) package typically includes:\n\n**Base salary:** Fixed annual pay, usually paid biweekly or monthly\n\n**Signing bonus:** One-time payment when you join, sometimes with clawback clauses\n\n**Annual bonus:** Performance-based payment, typically 10-20% of base for engineers\n\n**Equity:** Stock options or RSUs, often the largest component at tech companies\n\n**Benefits:** Health insurance, 401(k) match, PTO, etc.\n\n**Perks:** Meals, transit, wellness stipends, learning budgets\n\nWhen comparing offers, calculate total first-year compensation and average annual compensation over 4 years."
+      },
+      {
+        "heading": "Understanding Equity",
+        "content": "**RSUs (Restricted Stock Units):**\n- Actual shares given to you\n- Value = number of shares × stock price\n- Taxed as income when they vest\n- Common at public companies\n\n**Stock Options:**\n- Right to buy shares at a set price (strike price)\n- Value = (current price - strike price) × number of options\n- More common at startups and private companies\n- Can be worthless if company fails or price drops\n\n**Vesting schedules:**\n- Typically 4 years with 1-year cliff\n- Cliff means nothing vests until year 1\n- After cliff, monthly or quarterly vesting\n\n**Key questions for equity:**\n- What percentage of the company does this represent?\n- What's the current valuation/price?\n- What's the vesting schedule?\n- What happens if the company is acquired?"
+      },
+      {
+        "heading": "Public vs Private Company Compensation",
+        "content": "**Public companies:**\n- Equity value is clear (current stock price)\n- Liquidity—you can sell vested shares\n- Stock price fluctuates, affecting ongoing comp\n- Generally more stable and predictable\n\n**Private companies/startups:**\n- Equity value is speculative\n- Illiquid until IPO or acquisition\n- Potential for large upside (10x+) or worthless\n- May offer more equity to compensate for risk\n\n**Evaluating startup equity:**\n- What's the latest valuation?\n- What's the path to liquidity?\n- How much runway does the company have?\n- What's your percentage ownership?\n\nAs a rule of thumb, discount private company equity by 50-80% when comparing to public company offers due to liquidity and risk."
+      },
+      {
+        "heading": "Calculating Total Compensation",
+        "content": "**Example calculation:**\n\n| Component | Year 1 | Year 2 | Year 3 | Year 4 |\n|-----------|--------|--------|--------|--------|\n| Base | $150K | $155K | $160K | $165K |\n| Bonus (15%) | $22.5K | $23K | $24K | $25K |\n| RSUs ($200K/4yr) | $50K | $50K | $50K | $50K |\n| Signing bonus | $30K | - | - | - |\n| **Total** | **$252.5K** | **$228K** | **$234K** | **$240K** |\n\n**Year 1 TC:** $252,500\n**4-year average:** $238,625\n\nYear 1 is often inflated by signing bonuses. Look at year 2+ for ongoing compensation."
+      },
+      {
+        "heading": "Hidden Value and Red Flags",
+        "content": "**Hidden value to consider:**\n- 401(k) match (can be $10K+ annually)\n- Health insurance quality and cost\n- ESPP (Employee Stock Purchase Plan) with discount\n- Professional development budget\n- Remote work flexibility\n\n**Red flags:**\n- Vesting cliffs longer than 1 year\n- Clawback clauses on signing bonuses\n- Options with short exercise windows post-departure\n- Equity with excessive vesting terms\n- Below-market base with \"we'll make it up in equity\"\n\nGet offer details in writing. Verbal promises don't count."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Levels.fyi",
+        "source": "Levels.fyi",
+        "url": "https://www.levels.fyi/",
+        "type": "Compensation Data",
+        "description": "Crowdsourced compensation data for tech roles by company and level"
+      },
+      {
+        "title": "Blind",
+        "source": "Blind",
+        "url": "https://www.teamblind.com/",
+        "type": "Forum",
+        "description": "Anonymous forum with compensation discussions and negotiation advice"
+      }
+    ],
+    "keyTakeaways": [
+      "Total compensation includes base, bonus, equity, and benefits—evaluate all components",
+      "Calculate year 1 TC and 4-year average when comparing offers",
+      "Private company equity is speculative—discount 50-80% compared to public company",
+      "Get offer details in writing and watch for red flags like unusual vesting terms"
+    ]
+  },
+  "negotiation-tactics": {
+    "title": "Negotiation Tactics That Work",
+    "intro": "Most candidates leave money on the table by not negotiating or negotiating poorly. With the right approach, you can increase your offer without risking it.",
+    "sections": [
+      {
+        "heading": "The Negotiation Mindset",
+        "content": "**Negotiation is expected:** Companies budget for it. Initial offers are rarely final.\n\n**You have leverage:** They've invested time and money to get here. They want you to say yes.\n\n**It's collaborative, not adversarial:** Both sides want to reach agreement.\n\n**Common fears (and why they're overblown):**\n- \"They'll rescind the offer\" → Extremely rare for professional negotiation\n- \"They'll think I'm greedy\" → Negotiating is standard professional behavior\n- \"I'll damage the relationship\" → Done respectfully, it shows you know your value"
+      },
+      {
+        "heading": "Timing Your Negotiation",
+        "content": "**Before you have an offer:**\n- Deflect salary questions: \"I'm focused on finding the right fit. I'm confident we can find a number that works for both of us.\"\n- If pressed: \"Based on my research, roles like this pay in the range of $X-Y. But I'd need to understand the full package before discussing specifics.\"\n\n**When you receive the offer:**\n- Express enthusiasm: \"Thank you, I'm excited about this opportunity.\"\n- Don't accept or counter immediately: \"I'd like to review the full details. Can we schedule a call to discuss later this week?\"\n- Take 24-48 hours to evaluate and prepare your counter\n\n**Never negotiate over email for complex discussions.** Phone or video lets you read reactions and adjust."
+      },
+      {
+        "heading": "Preparing Your Counter",
+        "content": "**Research market rates:**\n- Levels.fyi for company-specific data\n- Glassdoor and LinkedIn Salary\n- Ask contacts at similar companies\n\n**Know your priorities:**\n- What matters most? Base? Equity? Signing bonus?\n- What's your walk-away number?\n- What would make this a \"hell yes\"?\n\n**Prepare your case:**\n- Why you're worth more (competing offers, specific experience, unique skills)\n- What comparable roles pay\n- Your enthusiasm for the role (negotiation works better when they believe you'll accept)\n\n**Set targets:**\n- Ideal outcome\n- Minimum acceptable\n- What you'll ask for (usually higher than ideal to leave room)"
+      },
+      {
+        "heading": "The Conversation",
+        "content": "**Opening:**\n\"Thank you for the offer. I'm excited about joining [Company]. After reviewing the details and comparing to market data, I'd like to discuss the compensation.\"\n\n**Making your ask:**\n\"Based on my research and competing opportunities, I was hoping for a base salary of $X. I bring [specific value: experience, skills, impact]. Is there flexibility here?\"\n\n**Key principles:**\n- Be specific (\"I'm looking for $180K\" not \"a bit more\")\n- Justify with data and value, not need\n- Ask for more than you expect to get\n- Let them respond without filling silence\n\n**If they can't meet your number:**\n\"I understand base salary may be constrained. Are there other components we could adjust, like signing bonus or equity?\""
+      },
+      {
+        "heading": "Handling Pushback",
+        "content": "**\"This is our standard offer for this level.\"**\nResponse: \"I understand you have bands. Based on my [specific qualifications], I believe I'm at the higher end of this level's range.\"\n\n**\"We can't go higher on base.\"**\nResponse: \"I appreciate that. What about a signing bonus or additional equity to bridge the gap?\"\n\n**\"This is our final offer.\"**\nResponse: \"I understand. I want to make sure I'm making the right decision. Can I have until [date] to decide?\"\n\n**\"We need an answer by tomorrow.\"**\nResponse: \"I'm very interested, but I want to make a thoughtful decision. An extra few days would help me commit fully.\"\n\nStay calm and professional. Never get emotional or confrontational."
+      },
+      {
+        "heading": "Negotiating Beyond Salary",
+        "content": "If base salary is capped, negotiate other components:\n\n**Signing bonus:** Often more flexible than base\n\n**Equity:** RSUs, options, or accelerated vesting\n\n**Start date:** Extra time off before starting\n\n**Title:** Higher title can help future negotiations\n\n**Review timing:** 6-month review instead of annual\n\n**Remote flexibility:** WFH days or full remote\n\n**Learning budget:** Conference attendance, training\n\n**Relocation:** Moving expenses, temporary housing\n\nGet any negotiated terms in writing in your offer letter."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Ten Rules for Negotiating a Job Offer",
+        "source": "Haseeb Qureshi",
+        "url": "https://haseebq.com/my-ten-rules-for-negotiating-a-job-offer/",
+        "type": "Article",
+        "description": "Influential guide on tech offer negotiation"
+      },
+      {
+        "title": "Candor Salary Negotiation",
+        "source": "Candor",
+        "url": "https://candor.co/guides/salary-negotiation",
+        "type": "Guide",
+        "description": "Comprehensive salary negotiation guide with scripts"
+      }
+    ],
+    "keyTakeaways": [
+      "Negotiation is expected—initial offers are rarely final",
+      "Don't accept or counter immediately; take 24-48 hours to prepare",
+      "Be specific about what you want and justify with market data",
+      "If base is capped, negotiate signing bonus, equity, or other benefits"
+    ]
+  }
+}

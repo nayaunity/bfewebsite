@@ -64,6 +64,10 @@ import personalBrandingCourse from "@/data/courses/personal-branding.json";
 import personalBrandingLessons from "@/data/courses/personal-branding-lessons.json";
 import resumeLinkedInCourse from "@/data/courses/resume-linkedin.json";
 import resumeLinkedInLessons from "@/data/courses/resume-linkedin-lessons.json";
+import salaryNegotiationCourse from "@/data/courses/salary-negotiation.json";
+import salaryNegotiationLessons from "@/data/courses/salary-negotiation-lessons.json";
+import interviewPrepCourse from "@/data/courses/interview-prep.json";
+import interviewPrepLessons from "@/data/courses/interview-prep-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
@@ -80,6 +84,10 @@ export function getCourse(courseId: string): Course | null {
       return personalBrandingCourse as Course;
     case "resume-linkedin":
       return resumeLinkedInCourse as Course;
+    case "salary-negotiation":
+      return salaryNegotiationCourse as Course;
+    case "interview-prep":
+      return interviewPrepCourse as Course;
     default:
       return null;
   }
@@ -109,6 +117,12 @@ export function getLessonContent(
       break;
     case "resume-linkedin":
       lessons = resumeLinkedInLessons as Record<string, LessonContent>;
+      break;
+    case "salary-negotiation":
+      lessons = salaryNegotiationLessons as Record<string, LessonContent>;
+      break;
+    case "interview-prep":
+      lessons = interviewPrepLessons as Record<string, LessonContent>;
       break;
     default:
       return null;

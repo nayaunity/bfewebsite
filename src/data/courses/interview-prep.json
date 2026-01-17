@@ -1,0 +1,236 @@
+{
+  "id": "interview-prep",
+  "title": "Interview Prep",
+  "subtitle": "Master the tech interview process from application to offer",
+  "description": "The tech interview process is notoriously challenging, but it doesn't have to be a mystery. Learn exactly what recruiters and hiring managers look for, how to ace technical and behavioral interviews, and how to negotiate the best offer.",
+  "tag": "Career",
+  "tagColor": "orange",
+  "stats": {
+    "modules": 5,
+    "lessons": 20,
+    "freeLessons": 5
+  },
+  "features": [
+    "Understand the full hiring pipeline",
+    "Prepare for technical interviews",
+    "Master behavioral questions",
+    "Negotiate competitive offers"
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "Understanding the Tech Interview Process",
+      "description": "Get a complete overview of how tech companies hire and what to expect at each stage.",
+      "lessons": [
+        {
+          "id": "1.1",
+          "slug": "anatomy-of-tech-hiring",
+          "title": "Anatomy of Tech Hiring",
+          "duration": "12 min",
+          "type": "article",
+          "free": true,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "1.2",
+          "slug": "what-recruiters-look-for",
+          "title": "What Recruiters Actually Look For",
+          "duration": "10 min",
+          "type": "article",
+          "free": true,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "1.3",
+          "slug": "types-of-tech-interviews",
+          "title": "Types of Tech Interviews",
+          "duration": "15 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "1.4",
+          "slug": "interview-timeline-expectations",
+          "title": "Interview Timeline & Expectations",
+          "duration": "8 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Beginner"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Resume & Application Strategy",
+      "description": "Craft application materials that get you past the initial screening.",
+      "lessons": [
+        {
+          "id": "2.1",
+          "slug": "resume-that-gets-interviews",
+          "title": "Build a Resume That Gets Interviews",
+          "duration": "18 min",
+          "type": "article",
+          "free": true,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "2.2",
+          "slug": "beating-ats-systems",
+          "title": "Beating ATS Systems",
+          "duration": "10 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "2.3",
+          "slug": "tailoring-applications",
+          "title": "Tailoring Your Application",
+          "duration": "12 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "2.4",
+          "slug": "portfolio-and-github",
+          "title": "Portfolio & GitHub Presence",
+          "duration": "15 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Technical Interview Preparation",
+      "description": "Develop a systematic approach to conquering technical interviews.",
+      "lessons": [
+        {
+          "id": "3.1",
+          "slug": "coding-interview-fundamentals",
+          "title": "Coding Interview Fundamentals",
+          "duration": "20 min",
+          "type": "article",
+          "free": true,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "3.2",
+          "slug": "data-structures-to-know",
+          "title": "Data Structures You Must Know",
+          "duration": "25 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "3.3",
+          "slug": "algorithm-patterns",
+          "title": "Common Algorithm Patterns",
+          "duration": "22 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Advanced"
+        },
+        {
+          "id": "3.4",
+          "slug": "system-design-interviews",
+          "title": "System Design Interview Basics",
+          "duration": "25 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Advanced"
+        },
+        {
+          "id": "3.5",
+          "slug": "take-home-assignments",
+          "title": "Crushing Take-Home Assignments",
+          "duration": "15 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "3.6",
+          "slug": "live-coding-strategies",
+          "title": "Live Coding Strategies",
+          "duration": "18 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Behavioral Interview Mastery",
+      "description": "Tell compelling stories that demonstrate your value and cultural fit.",
+      "lessons": [
+        {
+          "id": "4.1",
+          "slug": "star-method-deep-dive",
+          "title": "The STAR Method Deep Dive",
+          "duration": "15 min",
+          "type": "article",
+          "free": true,
+          "difficulty": "Beginner"
+        },
+        {
+          "id": "4.2",
+          "slug": "building-story-bank",
+          "title": "Building Your Story Bank",
+          "duration": "18 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "4.3",
+          "slug": "common-behavioral-questions",
+          "title": "Common Behavioral Questions",
+          "duration": "20 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "4.4",
+          "slug": "questions-to-ask-interviewers",
+          "title": "Questions to Ask Interviewers",
+          "duration": "12 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Beginner"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Negotiation & Closing",
+      "description": "Secure the best possible offer and navigate the final stages.",
+      "lessons": [
+        {
+          "id": "5.1",
+          "slug": "understanding-comp-packages",
+          "title": "Understanding Compensation Packages",
+          "duration": "15 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Intermediate"
+        },
+        {
+          "id": "5.2",
+          "slug": "negotiation-tactics",
+          "title": "Negotiation Tactics That Work",
+          "duration": "20 min",
+          "type": "article",
+          "free": false,
+          "difficulty": "Advanced"
+        }
+      ]
+    }
+  ]
+}
