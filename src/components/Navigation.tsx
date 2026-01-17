@@ -180,7 +180,14 @@ export default function Navigation() {
       </nav>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--background)] border-t border-[var(--card-border)] pb-safe transform-gpu">
+      <nav
+        className="md:hidden fixed inset-x-0 bottom-0 z-[9999] bg-[var(--background)] border-t border-[var(--card-border)]"
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          willChange: 'transform',
+          WebkitBackfaceVisibility: 'hidden'
+        }}
+      >
         <div className="flex items-center justify-around h-16">
           {mobileNavLinks.map((link) => {
             const active = isActive(link.href);

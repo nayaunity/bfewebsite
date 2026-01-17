@@ -93,27 +93,20 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Safe area padding for iOS devices */
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
 /* Add bottom padding on mobile for fixed bottom nav */
 @media (max-width: 767px) {
   main {
     padding-bottom: 5rem;
   }
-
-  /* Prevent bottom nav from moving with browser chrome */
-  html, body {
-    overscroll-behavior: none;
-  }
 }
 
-/* GPU acceleration for fixed elements */
-.transform-gpu {
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+/* Ensure proper viewport on iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  html {
+    height: -webkit-fill-available;
+  }
+
+  body {
+    min-height: -webkit-fill-available;
+  }
 }
