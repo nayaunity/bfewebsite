@@ -26,7 +26,7 @@ export default function LessonContent({
   const [hasAccess, setHasAccess] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const { isLoading: isSubmitting, error: subscribeError, subscribe } = useSubscribe();
   const { isCompleted, markComplete, isSignedIn } = useProgress(course.id);
 
@@ -50,7 +50,7 @@ export default function LessonContent({
     if (!email) return;
 
     await subscribe(email, {
-      tags: ["bfewebsite", "course-signup", "system-design-guide"],
+      tags: ["bfewebsite", "course-signup", "salary-negotiation-guide"],
       onSuccess: () => {
         // Store access in localStorage
         localStorage.setItem("bfe-course-access", "true");
@@ -148,7 +148,7 @@ export default function LessonContent({
         <div className="mt-12 flex items-center justify-between pt-8 border-t border-[var(--card-border)]">
           {prevLesson ? (
             <Link
-              href={`/resources/system-design/${prevLesson.slug}`}
+              href={`/resources/salary-negotiation/${prevLesson.slug}`}
               className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@ export default function LessonContent({
           )}
           {nextLesson ? (
             <Link
-              href={`/resources/system-design/${nextLesson.slug}`}
+              href={`/resources/salary-negotiation/${nextLesson.slug}`}
               className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
             >
               <div className="text-right">
@@ -215,12 +215,14 @@ export default function LessonContent({
             )}
             {lesson.type}
           </span>
-          <span className="flex items-center gap-1.5 text-green-600">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-            </svg>
-            Unlocked
-          </span>
+          {status !== "authenticated" && (
+            <span className="flex items-center gap-1.5 text-green-600">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+              </svg>
+              Unlocked
+            </span>
+          )}
         </div>
       </div>
 
@@ -378,7 +380,7 @@ export default function LessonContent({
                   className={`px-6 py-3 rounded-full font-medium transition-colors ${
                     isCompleted(lesson.slug)
                       ? "bg-[var(--accent-green-bg)] text-[var(--accent-green-text)] hover:bg-[var(--accent-green-bg)]"
-                      : "bg-[var(--foreground)] text-white hover:bg-[var(--gray-800)]"
+                      : "bg-black text-white hover:bg-[var(--gray-800)]"
                   }`}
                 >
                   {isCompleted(lesson.slug) ? (
@@ -400,8 +402,8 @@ export default function LessonContent({
                   Save your progress and pick up where you left off on any device.
                 </p>
                 <Link
-                  href={`/auth/signin?callbackUrl=/resources/system-design/${lesson.slug}`}
-                  className="inline-block bg-[var(--foreground)] text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--gray-800)] transition-colors"
+                  href={`/auth/signin?callbackUrl=/resources/salary-negotiation/${lesson.slug}`}
+                  className="inline-block bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--gray-800)] transition-colors"
                 >
                   Sign in to track progress
                 </Link>
@@ -422,8 +424,8 @@ export default function LessonContent({
             We&apos;re working on this lesson. Check back soon or explore other available lessons.
           </p>
           <Link
-            href="/resources/system-design"
-            className="inline-block mt-6 bg-[var(--foreground)] text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--gray-800)] transition-colors"
+            href="/resources/salary-negotiation"
+            className="inline-block mt-6 bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--gray-800)] transition-colors"
           >
             Back to Course Overview
           </Link>
@@ -434,7 +436,7 @@ export default function LessonContent({
       <div className="mt-12 flex items-center justify-between pt-8 border-t border-[var(--card-border)]">
         {prevLesson ? (
           <Link
-            href={`/resources/system-design/${prevLesson.slug}`}
+            href={`/resources/salary-negotiation/${prevLesson.slug}`}
             className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -450,7 +452,7 @@ export default function LessonContent({
         )}
         {nextLesson ? (
           <Link
-            href={`/resources/system-design/${nextLesson.slug}`}
+            href={`/resources/salary-negotiation/${nextLesson.slug}`}
             className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
           >
             <div className="text-right">

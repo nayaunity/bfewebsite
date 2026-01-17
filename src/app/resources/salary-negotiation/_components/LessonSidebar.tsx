@@ -98,7 +98,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                     {module.lessons.map((lesson) => (
                       <Link
                         key={lesson.id}
-                        href={`/resources/personal-branding/${lesson.slug}`}
+                        href={`/resources/salary-negotiation/${lesson.slug}`}
                         className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[var(--gray-50)] transition-colors text-sm block ${
                           currentSlug === lesson.slug ? "bg-[#ffe500]/20" : ""
                         }`}

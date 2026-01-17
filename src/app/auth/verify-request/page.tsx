@@ -2,13 +2,13 @@ import Link from "next/link";
 
 export default function VerifyRequestPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--gray-50)] px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div className="bg-[var(--card-bg)] rounded-2xl shadow-lg p-8 text-center border border-[var(--card-border)]">
           {/* Email icon */}
-          <div className="mx-auto w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+          <div className="mx-auto w-16 h-16 bg-[var(--gray-100)] rounded-full flex items-center justify-center mb-6">
             <svg
-              className="w-8 h-8 text-neutral-700"
+              className="w-8 h-8 text-[var(--foreground)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -23,18 +23,18 @@ export default function VerifyRequestPage() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-2xl font-serif font-bold text-neutral-900 mb-2">
+          <h1 className="text-2xl font-serif font-bold text-[var(--foreground)] mb-2">
             Check your email
           </h1>
 
           {/* Description */}
-          <p className="text-neutral-600 mb-6">
+          <p className="text-[var(--gray-600)] mb-6">
             We sent you a sign-in link. Click the link in your email to continue.
           </p>
 
           {/* Tips */}
-          <div className="bg-neutral-50 rounded-lg p-4 text-left text-sm text-neutral-600 mb-6">
-            <p className="font-medium text-neutral-700 mb-2">
+          <div className="bg-[var(--gray-50)] rounded-lg p-4 text-left text-sm text-[var(--gray-600)] mb-6">
+            <p className="font-medium text-[var(--foreground)] mb-2">
               Didn&apos;t receive the email?
             </p>
             <ul className="space-y-1 list-disc list-inside">
@@ -47,7 +47,7 @@ export default function VerifyRequestPage() {
           {/* Back link */}
           <Link
             href="/auth/signin"
-            className="inline-block text-sm font-medium text-neutral-900 hover:underline"
+            className="inline-block text-sm font-medium text-[var(--foreground)] hover:underline"
           >
             &larr; Try a different email
           </Link>

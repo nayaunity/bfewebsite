@@ -59,9 +59,9 @@ export default async function LessonPage({ params }: PageProps) {
       <Navigation />
       <main className="pt-28 md:pt-32">
         {/* Breadcrumb */}
-        <div className="bg-gray-50 border-b border-gray-100">
+        <div className="bg-[var(--gray-50)] border-b border-[var(--card-border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-[var(--gray-600)]">
               <Link href="/resources" className="hover:text-[#ef562a]">
                 Resources
               </Link>
@@ -70,7 +70,7 @@ export default async function LessonPage({ params }: PageProps) {
                 Break Into Tech
               </Link>
               <span>/</span>
-              <span className="text-gray-900">{lesson.title}</span>
+              <span className="text-[var(--foreground)]">{lesson.title}</span>
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default async function LessonPage({ params }: PageProps) {
               {/* Content - Module info header */}
               <div className="flex-1 min-w-0">
                 <div className="mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <div className="flex items-center gap-2 text-sm text-[var(--gray-600)]">
                     <span>Module {module.id}: {module.title}</span>
                     <span>&bull;</span>
                     <span>Lesson {lessonNumber} of {course.stats.lessons}</span>

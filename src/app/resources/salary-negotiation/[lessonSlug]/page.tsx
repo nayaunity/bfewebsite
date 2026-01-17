@@ -17,7 +17,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const course = getCourse("personal-branding");
+  const course = getCourse("salary-negotiation");
   if (!course) return [];
 
   return course.modules.flatMap((module) =>
@@ -29,28 +29,28 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   const { lessonSlug } = await params;
-  const course = getCourse("personal-branding");
+  const course = getCourse("salary-negotiation");
   if (!course) return {};
 
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) return {};
 
   return {
-    title: `${lessonInfo.lesson.title} | Personal Branding | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to building your personal brand.`,
+    title: `${lessonInfo.lesson.title} | Salary Negotiation | The Black Female Engineer`,
+    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to salary negotiation.`,
   };
 }
 
 export default async function LessonPage({ params }: PageProps) {
   const { lessonSlug } = await params;
-  const course = getCourse("personal-branding");
+  const course = getCourse("salary-negotiation");
   if (!course) notFound();
 
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) notFound();
 
   const { lesson, module } = lessonInfo;
-  const content = getLessonContent("personal-branding", lessonSlug);
+  const content = getLessonContent("salary-negotiation", lessonSlug);
   const { prev, next } = getAdjacentLessons(course, lessonSlug);
   const lessonNumber = getLessonNumber(course, lessonSlug);
 
@@ -66,8 +66,8 @@ export default async function LessonPage({ params }: PageProps) {
                 Resources
               </Link>
               <span>/</span>
-              <Link href="/resources/personal-branding" className="hover:text-[#ef562a]">
-                Personal Branding
+              <Link href="/resources/salary-negotiation" className="hover:text-[#ef562a]">
+                Salary Negotiation
               </Link>
               <span>/</span>
               <span className="text-[var(--foreground)]">{lesson.title}</span>

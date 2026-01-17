@@ -76,7 +76,7 @@ export default function ModuleLessons({ module, coursePath, courseId }: ModuleLe
 
             {/* Lesson info */}
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium truncate group-hover:text-[#ef562a] ${isCompleted(lesson.slug) ? "text-green-700" : ""}`}>
+              <p className={`text-sm font-medium truncate group-hover:text-[#ef562a] ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
                 {lesson.title}
               </p>
               <p className="text-xs text-[var(--gray-600)]">
@@ -86,7 +86,7 @@ export default function ModuleLessons({ module, coursePath, courseId }: ModuleLe
 
             {/* Badge - only show if not logged in */}
             {!isLoading && !hasAccess && lesson.free && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent-green-bg)] text-[var(--accent-green-text)]">
                 Unlocked
               </span>
             )}

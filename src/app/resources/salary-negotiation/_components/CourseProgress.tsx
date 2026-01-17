@@ -37,7 +37,7 @@ export default function CourseProgress({ course }: CourseProgressProps) {
             </p>
           </div>
           <Link
-            href="/auth/signin?callbackUrl=/resources/resume-linkedin"
+            href="/auth/signin?callbackUrl=/resources/salary-negotiation"
             className="px-5 py-2.5 bg-[var(--card-bg)] text-[var(--foreground)] rounded-full font-medium hover:bg-neutral-100 transition-colors text-sm"
           >
             Sign In

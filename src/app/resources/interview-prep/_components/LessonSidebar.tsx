@@ -146,7 +146,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                           </svg>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#ef562a] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-green-700" : ""}`}>
+                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#ef562a] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
                             {lesson.title}
                           </p>
                           <p className="text-xs text-[var(--gray-600)]">{lesson.duration}</p>

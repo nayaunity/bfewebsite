@@ -107,7 +107,7 @@ export default function LessonContent({
         <div className="bg-[var(--gray-50)] rounded-2xl p-8 md:p-12">
           <div className="text-center max-w-md mx-auto">
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
@@ -236,7 +236,7 @@ export default function LessonContent({
 
             {content.sections.map((section, index) => (
               <div key={index} className="mt-10">
-                <h2 className="font-serif text-2xl mb-4">{section.heading}</h2>
+                <h2 className="font-serif text-2xl mb-4 text-[var(--foreground)]">{section.heading}</h2>
                 <div className="text-[var(--gray-600)] leading-relaxed">
                   <ReactMarkdown
                     components={{
@@ -287,7 +287,7 @@ export default function LessonContent({
                         </strong>
                       ),
                       blockquote: ({ children }) => (
-                        <blockquote className="border-l-4 border-[#ef562a] bg-orange-50 pl-4 py-3 my-4 italic text-[var(--foreground)]">
+                        <blockquote className="border-l-4 border-[#ef562a] bg-[var(--blockquote-bg)] pl-4 py-3 my-4 italic text-[var(--blockquote-text)]">
                           {children}
                         </blockquote>
                       ),
@@ -379,7 +379,7 @@ export default function LessonContent({
                   onClick={() => markComplete(lesson.slug, !isCompleted(lesson.slug))}
                   className={`px-6 py-3 rounded-full font-medium transition-colors ${
                     isCompleted(lesson.slug)
-                      ? "bg-green-100 text-green-700 hover:bg-green-200"
+                      ? "bg-[var(--accent-green-bg)] text-[var(--accent-green-text)] hover:bg-[var(--accent-green-bg)]"
                       : "bg-black text-white hover:bg-[var(--gray-800)]"
                   }`}
                 >
@@ -419,7 +419,7 @@ export default function LessonContent({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <h2 className="font-serif text-2xl mb-4">Content Coming Soon</h2>
+          <h2 className="font-serif text-2xl mb-4 text-[var(--foreground)]">Content Coming Soon</h2>
           <p className="text-[var(--gray-600)] max-w-md mx-auto">
             We&apos;re working on this lesson. Check back soon or explore other available lessons.
           </p>

@@ -41,7 +41,7 @@ function SignInForm() {
     <>
       {/* Error message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600 text-sm">
           {error}
         </div>
       )}
@@ -51,7 +51,7 @@ function SignInForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-neutral-700 mb-2"
+            className="block text-sm font-medium text-[var(--foreground)] mb-2"
           >
             Email address
           </label>
@@ -63,14 +63,14 @@ function SignInForm() {
             placeholder="you@example.com"
             required
             disabled={isLoading}
-            className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 border border-[var(--card-border)] rounded-lg bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         <button
           type="submit"
           disabled={isLoading || !email}
-          className="w-full py-3 px-4 bg-neutral-900 text-white font-medium rounded-lg hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-3 px-4 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--foreground)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -108,25 +108,25 @@ function SignInForm() {
 function SignInFormFallback() {
   return (
     <div className="space-y-6">
-      <div className="h-20 bg-neutral-100 rounded-lg animate-pulse" />
-      <div className="h-12 bg-neutral-100 rounded-lg animate-pulse" />
+      <div className="h-20 bg-[var(--gray-100)] rounded-lg animate-pulse" />
+      <div className="h-12 bg-[var(--gray-100)] rounded-lg animate-pulse" />
     </div>
   );
 }
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--gray-50)] px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-[var(--card-bg)] rounded-2xl shadow-lg p-8 border border-[var(--card-border)]">
           {/* Logo / Brand */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
-              <h1 className="font-serif text-2xl font-bold text-neutral-900">
+              <h1 className="font-serif text-2xl font-bold text-[var(--foreground)]">
                 BFE
               </h1>
             </Link>
-            <p className="mt-2 text-neutral-600 text-sm">
+            <p className="mt-2 text-[var(--gray-600)] text-sm">
               Sign in to track your learning progress
             </p>
           </div>
@@ -136,7 +136,7 @@ export default function SignInPage() {
           </Suspense>
 
           {/* Info text */}
-          <p className="mt-6 text-center text-sm text-neutral-500">
+          <p className="mt-6 text-center text-sm text-[var(--gray-600)]">
             We&apos;ll send you a magic link to sign in. No password needed.
           </p>
         </div>
@@ -145,7 +145,7 @@ export default function SignInPage() {
         <div className="mt-6 text-center">
           <Link
             href="/resources/system-design"
-            className="text-sm text-neutral-600 hover:text-neutral-900"
+            className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)]"
           >
             &larr; Back to course
           </Link>

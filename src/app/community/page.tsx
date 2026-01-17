@@ -155,7 +155,7 @@ export default function CommunityPage() {
               {communityMembers.map((member, index) => (
                 <div
                   key={index}
-                  className="aspect-[4/5] bg-gray-800 rounded-2xl overflow-hidden relative group"
+                  className="aspect-[4/5] bg-[var(--gray-800)] rounded-2xl overflow-hidden relative group"
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">

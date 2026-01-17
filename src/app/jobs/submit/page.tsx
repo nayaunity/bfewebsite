@@ -64,12 +64,12 @@ export default function SubmitJobPage() {
               </svg>
             </div>
             <h1 className="font-serif text-4xl md:text-5xl mb-4">Job Added!</h1>
-            <p className="text-gray-600 text-lg mb-8">
+            <p className="text-[var(--gray-600)] text-lg mb-8">
               The job has been added to the board and is now live.
             </p>
             <Link
               href="/jobs"
-              className="inline-block bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
+              className="inline-block bg-[var(--foreground)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--gray-800)] transition-colors"
             >
               Back to Job Board
             </Link>
@@ -87,13 +87,13 @@ export default function SubmitJobPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-12">
-            <Link href="/jobs" className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+            <Link href="/jobs" className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] mb-4 inline-block">
               &larr; Back to Job Board
             </Link>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight">
               Submit a <span className="italic text-[#ef562a]">job</span>
             </h1>
-            <p className="mt-4 text-gray-600 text-lg">
+            <p className="mt-4 text-[var(--gray-600)] text-lg">
               Know of a great opportunity? Share it with our community of 200K+ tech professionals.
             </p>
           </div>
@@ -137,7 +137,7 @@ export default function SubmitJobPage() {
                 name="company"
                 required
                 placeholder="e.g. Microsoft"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function SubmitJobPage() {
                 name="title"
                 required
                 placeholder="e.g. Senior Software Engineer"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
             </div>
 
@@ -167,7 +167,7 @@ export default function SubmitJobPage() {
                 name="location"
                 required
                 placeholder="e.g. San Francisco, CA or Remote"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
             </div>
 
@@ -182,7 +182,7 @@ export default function SubmitJobPage() {
                   id="remote"
                   name="remote"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-white"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="">Select...</option>
                   <option value="Yes">Yes - Fully Remote</option>
@@ -200,7 +200,7 @@ export default function SubmitJobPage() {
                   id="job_type"
                   name="job_type"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-white"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="">Select...</option>
                   <option value="Full-time">Full-time</option>
@@ -214,14 +214,14 @@ export default function SubmitJobPage() {
             {/* Salary Range */}
             <div>
               <label htmlFor="salary" className="block text-sm font-medium mb-2">
-                Salary Range <span className="text-gray-400">(optional)</span>
+                Salary Range <span className="text-[var(--gray-600)]">(optional)</span>
               </label>
               <input
                 type="text"
                 id="salary"
                 name="salary"
                 placeholder="e.g. $120K - $180K"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
             </div>
 
@@ -236,9 +236,9 @@ export default function SubmitJobPage() {
                 name="job_url"
                 required
                 placeholder="https://careers.company.com/job/123"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-[var(--gray-600)]">
                 Direct link to the job posting so we can verify it&apos;s active
               </p>
             </div>
@@ -246,16 +246,16 @@ export default function SubmitJobPage() {
             {/* Skills/Tags */}
             <div>
               <label htmlFor="tags" className="block text-sm font-medium mb-2">
-                Skills / Tags <span className="text-gray-400">(optional)</span>
+                Skills / Tags <span className="text-[var(--gray-600)]">(optional)</span>
               </label>
               <input
                 type="text"
                 id="tags"
                 name="tags"
                 placeholder="e.g. Python, React, AWS, Machine Learning"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-[var(--gray-600)]">
                 Comma-separated list of relevant skills
               </p>
             </div>
@@ -271,9 +271,9 @@ export default function SubmitJobPage() {
                 name="email"
                 required
                 placeholder="you@company.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors"
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-[var(--gray-600)]">
                 We&apos;ll only contact you if we have questions about the listing
               </p>
             </div>
@@ -291,9 +291,9 @@ export default function SubmitJobPage() {
           </form>
 
           {/* Note */}
-          <div className="mt-12 p-6 bg-gray-50 rounded-2xl">
+          <div className="mt-12 p-6 bg-[var(--gray-50)] rounded-2xl">
             <h3 className="font-medium mb-2">Team Note</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[var(--gray-600)]">
               Jobs submitted here are added directly to the job board and will appear immediately.
               Make sure all information is accurate before submitting.
             </p>

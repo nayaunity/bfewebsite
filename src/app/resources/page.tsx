@@ -51,10 +51,10 @@ export default function ResourcesPage() {
   const getTagColor = (tag: string) => {
     const colors: Record<string, string> = {
       "Popular": "bg-[#ffe500] text-black",
-      "Free": "bg-green-100 text-green-800",
+      "Free": "bg-[var(--accent-green-bg)] text-[var(--accent-green-text)]",
       "Essential": "bg-[var(--gray-100)] text-[var(--foreground)]",
-      "Advanced": "bg-purple-100 text-purple-800",
-      "Beginner": "bg-blue-100 text-blue-800",
+      "Advanced": "bg-[var(--accent-purple-bg)] text-[var(--accent-purple-text)]",
+      "Beginner": "bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)]",
       "In-Demand": "bg-[#ef562a]/10 text-[#ef562a]",
       "Trending": "bg-pink-100 text-pink-800",
       "Growth": "bg-teal-100 text-teal-800",

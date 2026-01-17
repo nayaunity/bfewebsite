@@ -23,7 +23,7 @@ export default function InterviewPrepPage() {
       <Navigation />
       <main className="pt-28 md:pt-32">
         {/* Hero */}
-        <section className="bg-gradient-to-b from-orange-50 to-[var(--background)] py-12 md:py-16 border-b border-[var(--card-border)]">
+        <section className="bg-[var(--background)] py-12 md:py-16 border-b border-[var(--card-border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
               <Link href="/resources" className="hover:text-[#ef562a]">
@@ -35,7 +35,7 @@ export default function InterviewPrepPage() {
 
             <div className="grid lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2">
-                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-orange-100 text-orange-800 mb-4">
+                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--accent-orange-bg)] text-[var(--accent-orange-text)] mb-4">
                   {course.tag}
                 </span>
                 <h1 className="font-serif text-4xl md:text-5xl leading-tight">
@@ -77,10 +77,10 @@ export default function InterviewPrepPage() {
                   {course.features.map((feature, index) => (
                     <div key={index} className="flex items-center gap-3 text-sm">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        index === 0 ? "bg-green-100" : index === 1 ? "bg-yellow-100" : index === 2 ? "bg-orange-100" : "bg-purple-100"
+                        index === 0 ? "bg-[var(--accent-green-bg)]" : index === 1 ? "bg-[var(--accent-yellow-bg)]" : index === 2 ? "bg-[var(--accent-orange-bg)]" : "bg-[var(--accent-purple-bg)]"
                       }`}>
                         <svg className={`w-4 h-4 ${
-                          index === 0 ? "text-green-600" : index === 1 ? "text-yellow-600" : index === 2 ? "text-orange-600" : "text-purple-600"
+                          index === 0 ? "text-[var(--accent-green-text)]" : index === 1 ? "text-[var(--accent-yellow-text)]" : index === 2 ? "text-[var(--accent-orange-text)]" : "text-[var(--accent-purple-text)]"
                         }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -151,7 +151,7 @@ export default function InterviewPrepPage() {
         <section className="bg-[var(--gray-50)] py-16 md:py-24 border-t border-[var(--card-border)]">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>

@@ -7,13 +7,13 @@ import CourseProgress from "./_components/CourseProgress";
 import ModuleLessons from "./_components/ModuleLessons";
 
 export const metadata = {
-  title: "Personal Branding | The Black Female Engineer",
+  title: "Salary Negotiation | The Black Female Engineer",
   description:
-    "Build your reputation in the tech industry. Learn how to create a personal brand that gets you noticed, lands you opportunities, and establishes you as a thought leader.",
+    "Get paid what you're actually worth. Learn the strategies, scripts, and psychology behind successful salary negotiations—whether you're accepting a new offer or asking for a raise.",
 };
 
-export default function PersonalBrandingPage() {
-  const course = getCourse("personal-branding");
+export default function SalaryNegotiationPage() {
+  const course = getCourse("salary-negotiation");
   if (!course) notFound();
 
   const firstLesson = course.modules[0]?.lessons[0];
@@ -30,12 +30,12 @@ export default function PersonalBrandingPage() {
                 Resources
               </Link>
               <span>/</span>
-              <span>Personal Branding</span>
+              <span>Salary Negotiation</span>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2">
-                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-teal-100 text-teal-800 mb-4">
+                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--accent-green-bg)] text-[var(--accent-green-text)] mb-4">
                   {course.tag}
                 </span>
                 <h1 className="font-serif text-4xl md:text-5xl leading-tight">
@@ -91,7 +91,7 @@ export default function PersonalBrandingPage() {
                 </div>
                 {firstLesson && (
                   <Link
-                    href={`/resources/personal-branding/${firstLesson.slug}`}
+                    href={`/resources/salary-negotiation/${firstLesson.slug}`}
                     className="block w-full bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-center"
                   >
                     Start Module 1 &rarr;
@@ -138,7 +138,7 @@ export default function PersonalBrandingPage() {
                         </span>
                       </div>
 
-                      <ModuleLessons module={module} coursePath="/resources/personal-branding" courseId="personal-branding" />
+                      <ModuleLessons module={module} coursePath="/resources/salary-negotiation" courseId="salary-negotiation" />
                     </div>
                   ))}
                 </div>
@@ -160,7 +160,7 @@ export default function PersonalBrandingPage() {
             </h2>
             <p className="text-[var(--gray-600)] mb-8">
               Get access to all {course.stats.lessons} lessons, including advanced strategies
-              for building your personal brand. Just enter your email to continue.
+              for negotiating your salary. Just enter your email to continue.
             </p>
             <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
