@@ -237,16 +237,16 @@ export default function CommunityPage() {
         </section>
 
         {/* Join CTA */}
-        <section id="join" className="bg-[#ffe500] py-16 md:py-24">
+        <section id="join" className="bg-[var(--cta-bg)] py-16 md:py-24 border-t border-[var(--card-border)]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4 text-[var(--cta-text)]">
               Ready to level up?
             </h2>
-            <p className="text-black/70 mb-8 text-lg">
+            <p className="text-[var(--cta-text-muted)] mb-8 text-lg">
               Get actionable tech, career, and finance content delivered to your inbox.
             </p>
             {isSuccess ? (
-              <div className="p-4 bg-black/10 text-black rounded-full max-w-md mx-auto text-center">
+              <div className="p-4 bg-[var(--card-bg)] text-[var(--foreground)] rounded-full max-w-md mx-auto text-center border border-[var(--card-border)]">
                 {message}
               </div>
             ) : (
@@ -259,18 +259,18 @@ export default function CommunityPage() {
                     placeholder="Enter your email"
                     required
                     disabled={isLoading}
-                    className="flex-1 px-5 py-4 bg-white border-2 border-black/10 rounded-l-full focus:outline-none focus:border-black/20 disabled:opacity-50"
+                    className="flex-1 px-5 py-4 bg-[var(--card-bg)] text-[var(--foreground)] border-2 border-[var(--card-border)] rounded-l-full focus:outline-none focus:border-[var(--gray-600)] disabled:opacity-50 placeholder:text-[var(--gray-600)]"
                   />
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-black text-white px-6 py-4 rounded-r-full font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
                   >
                     {isLoading ? "..." : "Join Us"}
                   </button>
                 </div>
                 {error && (
-                  <p className="mt-2 text-sm text-red-700">{error}</p>
+                  <p className="mt-2 text-sm text-red-400">{error}</p>
                 )}
               </form>
             )}

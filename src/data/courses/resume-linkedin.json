@@ -7,7 +7,7 @@
   "tagColor": "blue",
   "stats": {
     "modules": 3,
-    "lessons": 8,
+    "lessons": 9,
     "freeLessons": 2
   },
   "features": [
@@ -42,6 +42,14 @@
           "slug": "quantifying-your-impact",
           "title": "Quantifying Your Impact",
           "duration": "15 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "1.4",
+          "slug": "winning-resume-examples",
+          "title": "Winning Resume Examples",
+          "duration": "18 min",
           "type": "article",
           "free": false
         }
