@@ -1,0 +1,737 @@
+{
+  "why-projects-beat-credentials": {
+    "title": "Why Projects Beat Credentials",
+    "intro": "Here's a truth that might surprise you: most hiring managers care more about what you can build than where you learned to build it. While degrees and bootcamp certificates signal that you've completed a program, projects prove that you can actually do the work.",
+    "sections": [
+      {
+        "heading": "The Hiring Manager's Perspective",
+        "content": "When a hiring manager reviews candidates, they're trying to answer one question: **\"Can this person do the job?\"**\n\nCredentials provide indirect evidence. A CS degree suggests you probably learned algorithms. A bootcamp certificate implies you've built some apps.\n\nBut projects provide **direct evidence**. A deployed application shows you can:\n- Take an idea from concept to completion\n- Write code that actually works\n- Debug problems in production\n- Make technical decisions independently"
+      },
+      {
+        "heading": "The Chicken-and-Egg Problem",
+        "content": "Every aspiring developer faces the same frustrating paradox:\n\n> \"I need experience to get a job, but I need a job to get experience.\"\n\nThis feels insurmountable until you realize: **nobody said the experience has to be paid.**\n\nThe skills you develop building a side project are the same skills you'd develop on the job:\n- Writing production-quality code\n- Working with APIs and databases\n- Debugging complex issues\n- Shipping features users actually use"
+      },
+      {
+        "heading": "What Counts as Real Experience",
+        "content": "Here's what hiring managers consider valuable experience:\n\n**Personal projects** — Shows initiative and ability to ship\n\n**Open source contributions** — Proves you can collaborate on real codebases\n\n**Hackathon projects** — Demonstrates speed and creativity\n\n**Freelance work** — Validates that someone paid for your skills\n\n**Volunteer tech work** — Shows community involvement and real-world impact"
+      },
+      {
+        "heading": "The Self-Taught Developer Advantage",
+        "content": "Self-taught developers who build projects often have an advantage over traditional candidates:\n\n1. **Demonstrated self-motivation**: Nobody made you build that app\n2. **Problem-solving skills**: You figured things out without a curriculum\n3. **Relevant, modern skills**: You learned what you needed, not what a syllabus dictated\n4. **Portfolio of work**: You have tangible proof of your abilities"
+      },
+      {
+        "heading": "Your Path Forward",
+        "content": "The rest of this course will show you exactly how to build experience that rivals—and often exceeds—what you'd gain in an entry-level job:\n\n- **Projects**: Build a portfolio that showcases your skills\n- **Open Source**: Contribute to real software used by real companies\n- **Hackathons**: Accelerate your learning and build connections\n- **Alternative paths**: Freelancing, volunteering, and teaching\n\nYou don't need permission to start building your career. You just need to start building."
+      }
+    ],
+    "resources": [
+      {
+        "title": "The Odin Project",
+        "source": "The Odin Project",
+        "url": "https://www.theodinproject.com/",
+        "type": "Course",
+        "description": "Free full-stack curriculum with real projects, not tutorials"
+      },
+      {
+        "title": "Build Your Own X",
+        "source": "GitHub",
+        "url": "https://github.com/codecrafters-io/build-your-own-x",
+        "type": "Resource",
+        "description": "Tutorials for building your own versions of popular technologies"
+      }
+    ],
+    "keyTakeaways": [
+      "Projects provide direct proof of your abilities, while credentials only provide indirect signals",
+      "The experience paradox is solved by creating your own experience through projects and contributions",
+      "Self-taught developers with strong portfolios often outcompete candidates with traditional credentials",
+      "You don't need permission to start building—begin creating experience today"
+    ]
+  },
+  "projects-that-get-you-hired": {
+    "title": "Types of Projects That Get You Hired",
+    "intro": "Not all projects are created equal. A todo app might teach you React, but it won't make recruiters stop scrolling. This lesson covers the types of projects that actually move the needle in your job search.",
+    "sections": [
+      {
+        "heading": "The Project Quality Spectrum",
+        "content": "**Tier 1: Tutorial Projects (Low Value)**\nThese are projects you build by following along with a course or YouTube video: todo apps, weather apps, calculator apps, generic e-commerce clones. Everyone has them. They show you can follow instructions, not that you can solve problems.\n\n**Tier 2: Modified Tutorial Projects (Medium Value)**\nTake a tutorial concept and add your own twist: a todo app with team collaboration features, a weather app that tracks running conditions, an e-commerce site for a specific niche. These show some creativity and independent thinking.\n\n**Tier 3: Problem-Solving Projects (High Value)**\nProjects that solve a real problem you or others have: a tool that automates a tedious task, an app that scratches your own itch, a solution to something that frustrated you. These demonstrate product thinking and real-world problem solving.\n\n**Tier 4: Technical Deep-Dives (Very High Value)**\nProjects that showcase genuine technical depth: your own implementation of a complex algorithm, a programming language or interpreter, a database or distributed system, a machine learning model trained on novel data. These prove you understand fundamentals, not just frameworks."
+      },
+      {
+        "heading": "The Anatomy of a Standout Project",
+        "content": "The best portfolio projects share these characteristics:\n\n**1. It Solves a Real Problem**\nBefore writing code, ask: \"Who would use this and why?\"\n- Weak: \"I built a social media app\"\n- Strong: \"I built a tool for runners to find routes based on current air quality\"\n\n**2. It's Actually Deployed**\nA live URL beats a GitHub repo every time. Deployment proves you can configure environments, handle production concerns, and ship something people can use.\n\n**3. It Has Users (Even If Few)**\nEven 10 active users transforms a project from \"something I built\" to \"something people use.\"\n\n**4. The Code Is Clean and Documented**\nHiring managers often read your code. Make sure it reflects how you'd work professionally."
+      },
+      {
+        "heading": "Project Ideas by Career Goal",
+        "content": "**For Frontend Roles:**\n- Accessibility audit tool that scans websites and suggests improvements\n- Design system with reusable components and Storybook documentation\n- Performance dashboard that visualizes Core Web Vitals for any URL\n- Interactive data visualization using D3.js with real datasets\n\n**For Backend Roles:**\n- API gateway with rate limiting and authentication\n- Message queue implementing a simple pub/sub system\n- Search engine with full-text search and ranking\n- Webhook processor that handles, retries, and logs deliveries\n\n**For Full-Stack Roles:**\n- Real-time collaboration tool (like a simple Notion or Figma)\n- Developer productivity tool solving a pain point developers face\n- Marketplace or platform with two-sided user types\n- SaaS product with auth, billing, and dashboards\n\n**For Data/ML Roles:**\n- Prediction API that trains and serves a model via REST\n- Data pipeline with ETL from multiple sources and scheduling\n- Recommendation engine for content or products\n- Anomaly detection system with real-time alerts"
+      },
+      {
+        "heading": "The Build in Public Multiplier",
+        "content": "Whatever you build, share your progress publicly:\n\n- Tweet your daily progress\n- Write blog posts about challenges you faced\n- Share on LinkedIn with technical insights\n- Create a YouTube video or Loom walkthrough\n\nThis does three things:\n1. Creates accountability to finish\n2. Builds an audience that validates your work\n3. Demonstrates communication skills"
+      },
+      {
+        "heading": "Quantity vs Quality",
+        "content": "**Hot take:** You're better off with 2-3 excellent projects than 10 mediocre ones.\n\nRecruiter time on your portfolio: ~30 seconds. They'll click on 1-2 projects max. Make them count.\n\n**Your Action Plan:**\n1. Pick a problem you actually care about\n2. Validate that others have this problem too (Reddit, Twitter, forums)\n3. Build an MVP that solves the core problem\n4. Deploy it and get 5 people to try it\n5. Document everything in a compelling README"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Project Ideas for Web Developers",
+        "source": "freeCodeCamp",
+        "url": "https://www.freecodecamp.org/news/javascript-projects-for-beginners/",
+        "type": "Guide",
+        "description": "Curated list of project ideas with increasing complexity"
+      },
+      {
+        "title": "App Ideas Collection",
+        "source": "GitHub",
+        "url": "https://github.com/florinpop17/app-ideas",
+        "type": "Resource",
+        "description": "Collection of app ideas organized by difficulty level"
+      }
+    ],
+    "keyTakeaways": [
+      "Tutorial projects have low value—aim for problem-solving projects that solve real issues",
+      "The best projects are deployed, have users, and are well-documented",
+      "Quality beats quantity: 2-3 excellent projects outperform 10 mediocre ones",
+      "Build in public to create accountability and demonstrate communication skills"
+    ]
+  },
+  "from-idea-to-deployed": {
+    "title": "From Idea to Deployed: Your First Showcase Project",
+    "intro": "This lesson walks you through building a portfolio-worthy project from scratch. We'll cover the entire journey from picking an idea to having a live, deployed application you can show employers.",
+    "sections": [
+      {
+        "heading": "Phase 1: Choosing Your Idea",
+        "content": "Your project idea should check at least 3 of these boxes:\n\n- Solves a problem you personally have\n- You're excited enough to finish it\n- Can be built to MVP in 2-4 weeks\n- Uses technologies relevant to your target jobs\n- Has a clear explanation in one sentence\n\n**Where to Find Ideas:**\n\n**Your own frustrations:** What manual task do you do repeatedly? What tool do you wish existed? What app do you use that annoys you?\n\n**Online communities:** Reddit threads asking \"Is there an app for...\", Twitter complaints about existing tools, IndieHackers problems/solutions\n\n**Improve existing tools:** Take a popular tool and build a simpler version, combine two tools that should work together, build a niche-specific version of something general"
+      },
+      {
+        "heading": "Phase 2: Planning",
+        "content": "**Define Your MVP**\n\nAn MVP (Minimum Viable Product) is the smallest version that proves your idea works.\n\n*Not MVP:* User accounts with social login, beautiful polished UI, every feature you can imagine\n\n*MVP:* The core functionality that solves the problem, basic but functional interface, works for the happy path\n\n**Technical Decisions**\n\nChoose your stack based on:\n1. Your target jobs (using relevant technologies)\n2. Your current skills (don't learn 5 new things at once)\n3. Deployment simplicity (can you ship this easily?)\n\n**Create a Simple Spec:**\n- Core features (3-5 max for MVP)\n- User flow (step by step what user does)\n- Data model (what you're storing)"
+      },
+      {
+        "heading": "Phase 3: Building",
+        "content": "**Day-by-Day Approach:**\n\n*Days 1-2: Foundation* — Set up project structure, get basic UI rendering, connect to database, deploy \"Hello World\" version\n\n*Days 3-5: Core Feature* — Build the main functionality, don't worry about edge cases yet, keep code messy if needed—you'll refactor\n\n*Days 6-8: Polish Core* — Handle errors gracefully, add basic validation, improve the UI enough to be usable\n\n*Days 9-10: Complete the Loop* — Make sure the full user journey works, test on different browsers/devices, fix critical bugs\n\n**Avoiding Scope Creep:**\n\nKeep a \"Future Features\" document. When you think of something new: write it down, keep working on your MVP, review the list AFTER you've shipped."
+      },
+      {
+        "heading": "Phase 4: Deployment",
+        "content": "**Deployment Checklist:**\n- Environment variables are secure (not in code)\n- Production database is configured\n- Error tracking is set up (Sentry free tier)\n- Basic analytics (Plausible, Simple Analytics)\n- Custom domain (optional but professional)\n\n**Recommended Deployment Platforms:**\n\n*Static/Frontend:* Vercel, Netlify, Cloudflare Pages\n\n*Backend/API:* Railway, Render, Fly.io\n\n*Database:* Supabase, PlanetScale, Neon\n\n*Full-stack:* Vercel, Railway\n\n**Deploy Early, Deploy Often**\n\nDon't wait until you're \"done.\" Deploy on day 1 with a basic version. This forces you to figure out deployment early, gives you a URL to share for feedback, and makes final deployment anticlimactic (in a good way)."
+      },
+      {
+        "heading": "Phase 5: Documentation and Launch",
+        "content": "**The README That Gets You Hired:**\n\n```\n# Project Name\n\nOne-line description of what this does.\n\n## Demo\n[Live Demo](https://your-deployed-url.com)\n\n## The Problem\nBrief description of the problem this solves.\n\n## Features\n- Feature 1: Brief description\n- Feature 2: Brief description\n\n## Tech Stack\n- Frontend: React, TypeScript, Tailwind\n- Backend: Node.js, Express\n- Database: PostgreSQL\n\n## What I Learned\nBrief reflection on challenges and growth.\n```\n\n**Get Your First Users:**\n1. Personal network (friends, family, classmates)\n2. Online communities (Reddit, Discord, Twitter)\n3. Product Hunt (if polished enough)\n4. Hacker News (Show HN posts for side projects)"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Vercel",
+        "source": "Vercel",
+        "url": "https://vercel.com/",
+        "type": "Platform",
+        "description": "Deploy frontend and full-stack applications with zero configuration"
+      },
+      {
+        "title": "Railway",
+        "source": "Railway",
+        "url": "https://railway.app/",
+        "type": "Platform",
+        "description": "Deploy backends, databases, and full applications easily"
+      },
+      {
+        "title": "Supabase",
+        "source": "Supabase",
+        "url": "https://supabase.com/",
+        "type": "Platform",
+        "description": "Open source Firebase alternative with PostgreSQL database"
+      }
+    ],
+    "keyTakeaways": [
+      "Pick an idea you're excited about that solves a real problem you understand",
+      "Define your MVP ruthlessly—cut everything that's not essential to proving the idea works",
+      "Deploy on day 1 and iterate from there; don't wait for perfection",
+      "Documentation is part of the project—a great README can be the difference between getting hired or not"
+    ]
+  },
+  "documenting-your-work": {
+    "title": "Documenting Your Work Like a Pro",
+    "intro": "Great documentation separates hobbyists from professionals. When a hiring manager visits your GitHub, your READMEs and commit history tell them as much about your skills as the code itself.",
+    "sections": [
+      {
+        "heading": "Why Documentation Matters",
+        "content": "**The Hiring Manager's Journey:**\n1. They find your GitHub profile\n2. They click on a pinned project\n3. They read your README for 30 seconds\n4. They decide whether to look deeper\n\nIf your README is empty or confusing, they move on. If it's clear and compelling, they dig into your code.\n\n**Documentation = Communication**\n\nSoftware development is a team sport. Your ability to explain what you built, why you built it, how to use it, and how it works is as important as your ability to write the code."
+      },
+      {
+        "heading": "The Perfect README Template",
+        "content": "Every project README should include:\n\n**Header:** Project name with a one-line description and demo link\n\n**Why I Built This:** 2-3 sentences about the problem and your motivation\n\n**Features:** Bullet list of key features with brief explanations\n\n**Tech Stack:** Table showing frontend, backend, database, and deployment technologies\n\n**Getting Started:** Prerequisites, installation steps, and how to run locally\n\n**What I Learned:** Reflection on challenges, solutions, and growth\n\n**Future Roadmap:** Checkbox list of planned improvements"
+      },
+      {
+        "heading": "Commit Messages That Impress",
+        "content": "**Bad Commit Messages:**\n- fix stuff\n- updated code\n- wip\n- asdfasdf\n- final FINAL version\n\n**Good Commit Messages:**\n- feat: add user authentication with NextAuth.js\n- fix: resolve race condition in payment processing\n- refactor: extract API client into separate module\n- docs: add API documentation for webhook endpoints\n- test: add integration tests for user signup flow\n\n**The Conventional Commits Format:**\n\n```\n<type>: <short description>\n\n[optional body with more detail]\n```\n\nCommon types: feat (new feature), fix (bug fix), refactor (code change), docs (documentation), test (adding tests), chore (maintenance)"
+      },
+      {
+        "heading": "Code Comments: Quality Over Quantity",
+        "content": "**Don't Comment the Obvious:**\n\n```javascript\n// Bad: Comments that explain WHAT\n// Increment i by 1\ni++;\n\n// Good: Comments that explain WHY\n// Skip the first element because it's the header row\nfor (let i = 1; i < rows.length; i++) {\n```\n\n**When to Comment:**\n1. Complex business logic: \"Users get 3 free tries before rate limiting\"\n2. Non-obvious decisions: \"We use polling instead of websockets because...\"\n3. Workarounds: \"This handles a bug in Safari where...\"\n4. TODO/FIXME: Mark known issues or planned improvements"
+      },
+      {
+        "heading": "Visual Documentation",
+        "content": "**When to Use Diagrams:**\n- System architecture (how services connect)\n- Database schemas (entity relationships)\n- User flows (how users navigate)\n- Deployment pipelines (CI/CD process)\n\n**Tools for Diagrams:**\n- Excalidraw: Sketchy, hand-drawn style\n- Mermaid: Diagrams as code (renders in GitHub)\n- Lucidchart/Figma: Polished professional diagrams\n\n**Add Screenshots and GIFs:**\nA GIF or screenshot is worth 1000 words in a README. Use screen recording tools like Loom or CleanShot to show the main user flow. Keep it under 30 seconds."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Make a README",
+        "source": "Make a README",
+        "url": "https://www.makeareadme.com/",
+        "type": "Guide",
+        "description": "Comprehensive guide to writing great READMEs with templates"
+      },
+      {
+        "title": "Conventional Commits",
+        "source": "Conventional Commits",
+        "url": "https://www.conventionalcommits.org/",
+        "type": "Specification",
+        "description": "A specification for adding human and machine readable meaning to commit messages"
+      },
+      {
+        "title": "Excalidraw",
+        "source": "Excalidraw",
+        "url": "https://excalidraw.com/",
+        "type": "Tool",
+        "description": "Free whiteboard tool for creating hand-drawn style diagrams"
+      }
+    ],
+    "keyTakeaways": [
+      "Your README is often the first thing a hiring manager reads—make it count",
+      "Use conventional commit messages to show professional development practices",
+      "Comment the 'why' not the 'what'—explain decisions, not obvious code",
+      "Include visuals like screenshots, GIFs, and diagrams to make your project tangible"
+    ]
+  },
+  "open-source-ecosystem": {
+    "title": "Understanding the Open Source Ecosystem",
+    "intro": "Open source isn't just about free software—it's an entire ecosystem where developers collaborate, learn, and build careers. Contributing to open source is one of the most powerful ways to gain real-world experience.",
+    "sections": [
+      {
+        "heading": "What Is Open Source?",
+        "content": "Open source software has its source code publicly available for anyone to view, use, modify, and distribute.\n\n**Open Source Is Everywhere:**\n- Linux: Powers most servers and Android\n- React/Vue/Angular: Frontend frameworks\n- Node.js/Python/Ruby: Languages and runtimes\n- PostgreSQL/MongoDB: Databases\n- VS Code: Your IDE is open source\n- Git: The tool you use to manage code"
+      },
+      {
+        "heading": "Why Contribute to Open Source?",
+        "content": "**1. Real-World Experience**\nOpen source projects are real software with large complex codebases, established coding standards, code review processes, issue tracking, and CI/CD pipelines.\n\n**2. Proof of Skills**\nYour contributions are public and verifiable. Hiring managers can see your PRs, your code review feedback shows collaboration skills, and merged PRs prove you can write production code.\n\n**3. Learning from Experts**\nCode reviews from maintainers teach you best practices, patterns you haven't encountered, and how to write maintainable code.\n\n**4. Building Reputation**\nActive contributors become known in communities. Maintainers remember helpful contributors, and this reputation leads to job referrals.\n\n**5. Networking**\nYou'll interact with developers who work at companies you want to work at, can refer you for positions, and become long-term professional connections."
+      },
+      {
+        "heading": "Understanding Project Structure",
+        "content": "**Key Files in Every Project:**\n\n- README.md: Project overview and quick start\n- CONTRIBUTING.md: How to contribute\n- CODE_OF_CONDUCT.md: Community behavior guidelines\n- LICENSE: Legal terms for using the code\n- CHANGELOG.md: History of changes\n- .github/ISSUE_TEMPLATE/: Templates for bug reports/features\n- .github/PULL_REQUEST_TEMPLATE.md: PR template\n\n**Project Governance:**\n- Maintainers: Core team with merge rights\n- Contributors: Anyone who submits accepted changes\n- Community: Users, bug reporters, discussion participants"
+      },
+      {
+        "heading": "Types of Contributions",
+        "content": "**Code Contributions:**\n- Bug fixes: Solve reported issues\n- Features: Add new functionality\n- Refactoring: Improve code quality\n- Performance: Optimize slow code\n\n**Non-Code Contributions (Equally Valuable!):**\n- Documentation: Fix typos, add examples, improve clarity\n- Testing: Add test cases, find bugs\n- Translation: Make software accessible in other languages\n- Triage: Help categorize and reproduce issues\n- Design: Improve UI/UX, create graphics\n- Community: Answer questions, help new contributors"
+      },
+      {
+        "heading": "Open Source Culture",
+        "content": "**Communication Norms:**\n- Be patient: Maintainers are often volunteers\n- Be respectful: Follow the code of conduct\n- Be thorough: Include context in issues and PRs\n- Be responsive: Reply to feedback promptly\n\n**What Maintainers Look For:**\n1. Follows contribution guidelines (read CONTRIBUTING.md)\n2. Matches project style (code looks like existing code)\n3. Includes tests (doesn't break existing functionality)\n4. Clear PR description (explains what and why)\n5. Responsive to feedback (engages with review comments)\n\n**Red Flags That Get PRs Rejected:**\n- Ignoring existing issues or PRs\n- Massive changes without discussion\n- No tests or breaking existing tests\n- Poor commit messages\n- Ignoring code review feedback"
+      }
+    ],
+    "resources": [
+      {
+        "title": "First Timers Only",
+        "source": "First Timers Only",
+        "url": "https://www.firsttimersonly.com/",
+        "type": "Guide",
+        "description": "Friendly guide to making your first open source contribution"
+      },
+      {
+        "title": "Good First Issues",
+        "source": "Good First Issue",
+        "url": "https://goodfirstissue.dev/",
+        "type": "Resource",
+        "description": "Curated list of beginner-friendly issues across popular projects"
+      },
+      {
+        "title": "Open Source Guide",
+        "source": "GitHub",
+        "url": "https://opensource.guide/",
+        "type": "Guide",
+        "description": "Comprehensive guide to participating in open source"
+      }
+    ],
+    "keyTakeaways": [
+      "Open source provides real-world experience with production codebases and professional workflows",
+      "Contributions are public proof of your skills that hiring managers can verify",
+      "Non-code contributions like documentation and testing are equally valuable",
+      "Success in open source requires patience, clear communication, and responsiveness to feedback"
+    ]
+  },
+  "finding-first-contribution": {
+    "title": "Finding Your First Contribution",
+    "intro": "The hardest part of open source is getting started. This lesson shows you exactly how to find the right project and the right issue for your first contribution.",
+    "sections": [
+      {
+        "heading": "Choosing Your First Project",
+        "content": "**The Goldilocks Zone**\n\nYou want a project that's:\n\n*Not too big:* Massive projects (React, VS Code) can be overwhelming with long review queues and complex contribution processes.\n\n*Not too small:* Dead projects with no maintainers, no clear contribution guidelines, and your PR might never get reviewed.\n\n*Just right:* Active but not massive (50-5000 stars), regular commits in the last month, issues get responses within a week, clear CONTRIBUTING.md.\n\n**Project Health Checklist:**\n- Last commit within 30 days\n- Issues get responses (not ignored)\n- PRs get merged (check closed PRs)\n- CONTRIBUTING.md exists and is helpful\n- Code of conduct exists\n- At least 2-3 active maintainers"
+      },
+      {
+        "heading": "Finding Beginner-Friendly Issues",
+        "content": "**Good First Issue Labels:**\n\nLook for these labels on GitHub:\n- good first issue\n- beginner-friendly\n- easy\n- help wanted\n- documentation\n- low-hanging-fruit\n\n**GitHub Search Queries:**\n\n```\n# Good first issues in JavaScript projects\nlabel:\"good first issue\" language:javascript\n\n# Help wanted in React projects\nlabel:\"help wanted\" react in:name,description\n\n# Documentation issues (great for first PRs)\nlabel:documentation is:issue is:open\n\n# Issues with no assignee\nlabel:\"good first issue\" no:assignee\n```\n\n**Dedicated Discovery Sites:**\n- goodfirstissue.dev: Curated first issues by language\n- firsttimersonly.com: Issues saved for first-timers\n- up-for-grabs.net: Projects that welcome new contributors"
+      },
+      {
+        "heading": "Types of First Contributions",
+        "content": "**Tier 1: Documentation (Lowest Barrier)**\n\nPerfect for your very first PR: fix typos in README, add missing documentation, improve code examples, add screenshots or GIFs, translate documentation.\n\n**Tier 2: Tests (Low Barrier, High Value)**\n\nMaintainers love when you add tests: add missing test cases, increase code coverage, add edge case tests, write integration tests.\n\n**Tier 3: Bug Fixes (Medium Barrier)**\n\nLook for well-defined bugs with clear reproduction steps, maintainer has confirmed the bug, and solution is somewhat obvious.\n\n**Tier 4: Small Features (Higher Barrier)**\n\nAfter a few PRs, tackle small features: add a config option, implement a helper function, add a new output format."
+      },
+      {
+        "heading": "Evaluating an Issue",
+        "content": "**Green Flags:**\n- Clear description of what's needed\n- Maintainer has added helpful context\n- No one else is assigned or actively working on it\n- Recent activity on the issue\n- Fits your skill level\n\n**Red Flags:**\n- Vague description (\"something is wrong with X\")\n- Long debates about approach (unresolved)\n- Someone already submitted a PR\n- Issue is very old with no activity\n- Requires deep domain knowledge"
+      },
+      {
+        "heading": "The Claiming Process",
+        "content": "**Step 1: Check if It's Available**\n\nLook at: Is someone assigned? Any recent comments claiming it? Any open PRs linked to it?\n\n**Step 2: Ask Before Starting**\n\n```\nHi! I'd like to work on this issue. I've read through the\ndiscussion and I'm planning to [brief approach].\n\nCould I be assigned to this? I expect to have a PR ready\nwithin [timeframe].\n```\n\n**Step 3: Understand the Expectations**\n\nAsk clarifying questions if needed: Is my approach correct? Should I add tests? Any style guidelines I should follow?"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Good First Issue",
+        "source": "Good First Issue",
+        "url": "https://goodfirstissue.dev/",
+        "type": "Resource",
+        "description": "Find beginner-friendly issues in popular open source projects"
+      },
+      {
+        "title": "Up For Grabs",
+        "source": "Up For Grabs",
+        "url": "https://up-for-grabs.net/",
+        "type": "Resource",
+        "description": "List of projects with tasks specifically for new contributors"
+      },
+      {
+        "title": "First Contributions",
+        "source": "GitHub",
+        "url": "https://github.com/firstcontributions/first-contributions",
+        "type": "Tutorial",
+        "description": "Practice making your first contribution in a safe environment"
+      }
+    ],
+    "keyTakeaways": [
+      "Choose a project that's active but not overwhelming—50-5000 stars is a good range",
+      "Look for 'good first issue' and 'help wanted' labels on GitHub issues",
+      "Documentation and test contributions are great ways to start with lower barriers",
+      "Always ask before starting work to avoid duplicate effort and get guidance"
+    ]
+  },
+  "first-pull-request": {
+    "title": "Making Your First Pull Request",
+    "intro": "You've found an issue and claimed it. Now it's time to write the code, submit your changes, and navigate the code review process. This lesson walks you through every step.",
+    "sections": [
+      {
+        "heading": "Setting Up Your Fork",
+        "content": "**Step 1: Fork the Repository**\nClick \"Fork\" on GitHub to create your copy of the project.\n\n**Step 2: Clone Your Fork**\n```bash\n# Clone YOUR fork (not the original)\ngit clone https://github.com/YOUR-USERNAME/project-name.git\ncd project-name\n```\n\n**Step 3: Add the Upstream Remote**\n```bash\n# Add the original repo as \"upstream\"\ngit remote add upstream https://github.com/ORIGINAL-OWNER/project-name.git\n\n# Verify your remotes\ngit remote -v\n```\n\n**Step 4: Set Up the Development Environment**\n```bash\n# Install dependencies (varies by project)\nnpm install       # Node.js\npip install -e .  # Python\n\n# Run tests to make sure everything works\nnpm test\n```"
+      },
+      {
+        "heading": "Creating Your Changes",
+        "content": "**Step 1: Create a Feature Branch**\n```bash\n# Make sure you're on main and up to date\ngit checkout main\ngit pull upstream main\n\n# Create your feature branch\ngit checkout -b fix/issue-123-button-alignment\n```\n\nBranch naming conventions: `fix/issue-123-description`, `feat/add-dark-mode`, `docs/update-readme`\n\n**Step 2: Make Your Changes**\n\nRead existing code to understand patterns. Match their style for indentation, semicolons, quotes, and naming conventions.\n\n**Step 3: Test Your Changes**\n```bash\nnpm test      # Run tests\nnpm run lint  # Run linting\nnpm run build # Build the project\n```\n\n**Step 4: Commit Your Changes**\n```bash\ngit add .\ngit commit -m \"fix: align button text on mobile devices\n\nFixes #123\"\n```"
+      },
+      {
+        "heading": "Submitting Your Pull Request",
+        "content": "**Step 1: Push Your Branch**\n```bash\ngit push origin fix/issue-123-button-alignment\n```\n\n**Step 2: Create the Pull Request**\n1. Go to YOUR fork on GitHub\n2. Click \"Compare & pull request\"\n3. Make sure the base is the original repo's main branch\n\n**Step 3: Write a Great PR Description**\n\n```markdown\n## Summary\nFixes the button text overflow issue on mobile devices (#123).\n\n## Changes Made\n- Added responsive font sizing for buttons\n- Added text-overflow handling with ellipsis\n- Added tests for mobile viewport\n\n## Testing\n- [x] Tested on Chrome mobile emulator\n- [x] All existing tests pass\n- [x] Added new tests for edge cases\n```"
+      },
+      {
+        "heading": "Navigating Code Review",
+        "content": "**Responding to Feedback:**\n\nCode review is normal and expected. When you get feedback:\n\n*Do:* Thank the reviewer, ask questions if you don't understand, make requested changes promptly, explain your reasoning respectfully if you disagree.\n\n*Don't:* Take feedback personally, argue without listening, disappear for weeks, make excuses.\n\n**Common Review Requests:**\n\n*\"Please add tests\"* — Add a test file or add to existing tests\n\n*\"Please squash your commits\"* — Use `git rebase -i HEAD~3` to combine commits\n\n*\"Please rebase on main\"* — `git fetch upstream && git rebase upstream/main`\n\n**Updating Your PR:**\n\nWhen you push new commits, the PR automatically updates. Leave a comment: \"Thanks for the feedback! I've addressed your comments.\""
+      },
+      {
+        "heading": "After Your PR Is Merged",
+        "content": "**Celebrate!**\nSeriously, your first merged PR is a milestone. You're now an open source contributor.\n\n**Clean Up:**\n```bash\ngit checkout main\ngit pull upstream main\ngit branch -d fix/issue-123-button-alignment\ngit push origin --delete fix/issue-123-button-alignment\n```\n\n**Add It to Your Profile:**\n- Pin the project on your GitHub profile\n- Update your LinkedIn: \"Open Source Contributor at [Project]\"\n- Add to your resume under Projects or Contributions\n\n**Troubleshooting:**\n- \"CI is failing\" — Click the failing check to see the error (usually linting, tests, or build)\n- \"Stale PR\" — Comment asking for a review; be patient\n- \"Changes requested\" multiple times — This is normal! Stay patient and responsive"
+      }
+    ],
+    "resources": [
+      {
+        "title": "How to Contribute to Open Source",
+        "source": "freeCodeCamp",
+        "url": "https://www.freecodecamp.org/news/how-to-contribute-to-open-source-projects-beginners-guide/",
+        "type": "Guide",
+        "description": "Comprehensive beginner's guide to open source contributions"
+      },
+      {
+        "title": "Git Flow Cheatsheet",
+        "source": "Daniel Kummer",
+        "url": "https://danielkummer.github.io/git-flow-cheatsheet/",
+        "type": "Reference",
+        "description": "Visual cheatsheet for git branching workflows"
+      }
+    ],
+    "keyTakeaways": [
+      "Fork, clone, branch, code, push, PR—this workflow becomes second nature with practice",
+      "Always test your changes locally before submitting a PR",
+      "Code review is normal and educational—embrace feedback gracefully",
+      "Your first merged PR is a resume-worthy accomplishment—document it!"
+    ]
+  },
+  "hackathon-strategy": {
+    "title": "Hackathon Strategy: Before, During, and After",
+    "intro": "Hackathons are accelerated learning experiences that can build your skills, portfolio, and network in a single weekend. This lesson covers how to maximize every hackathon you attend.",
+    "sections": [
+      {
+        "heading": "Why Hackathons Matter",
+        "content": "**What You Gain:**\n- A complete project in 24-48 hours (forced shipping)\n- Team experience and collaboration under pressure\n- Exposure to new technologies in a safe space to experiment\n- Networking with developers, mentors, and recruiters\n- Potential prizes including money, interviews, and internships\n- Tangible content for your resume\n\n**Hackathons Are Not Just for Students**\n\nCommon misconception: Hackathons are only for college students.\n\nReality: Many hackathons welcome career changers, self-taught developers, working professionals, and complete beginners."
+      },
+      {
+        "heading": "Before the Hackathon",
+        "content": "**Choosing the Right Hackathon:**\n\n*For beginners:* Choose beginner-friendly events with workshops and mentorship. Virtual hackathons are less intimidating.\n\n*For portfolio building:* Company-sponsored hackathons, industry-specific events, hackathons with notable judges.\n\n**Finding hackathons:** Devpost, MLH (Major League Hacking), Hackathons.com, university listings, Twitter/LinkedIn announcements.\n\n**Forming Your Team:**\n\nIdeal composition: 1-2 backend developers, 1-2 frontend/design people, someone who can present well. Mix of skill levels is fine.\n\n**Pre-Hackathon Preparation (1 week before):**\n- Set up development environment\n- Have boilerplate projects ready\n- Read hackathon rules and judging criteria\n- Research sponsor APIs and technologies\n- Brainstorm project ideas loosely"
+      },
+      {
+        "heading": "During the Hackathon",
+        "content": "**First 2 Hours: Planning**\n\nDon't jump into coding immediately!\n\n1. Review the judging criteria—what do judges care about most?\n2. Finalize your idea—scope it DOWN, then scope it down more\n3. Define success—what does a working demo look like?\n4. Divide responsibilities—who owns what?\n\n**Hours 2-18: Building**\n\n- Get something working first (ugly is fine)\n- Deploy early (first hour if possible)\n- Commit frequently\n- Use familiar technologies (hackathons aren't for learning new frameworks)\n- Leverage starter templates\n\n**Time Management:**\n- 18+ hours left: Core feature development\n- 12 hours left: Complete MVP, start polish\n- 6 hours left: Feature freeze, focus on demo\n- 2 hours left: Demo prep, practice pitch\n- 30 min left: Final touches only"
+      },
+      {
+        "heading": "The Demo That Wins",
+        "content": "**The demo matters more than the code.**\n\n**Demo Script:**\n\n*30 seconds — The Problem:* \"Have you ever...\" or \"X million people struggle with...\"\n\n*15 seconds — Solution Introduction:* \"That's why we built [Name]. It...\"\n\n*60-90 seconds — Live Demo:* Show the actual product working, highlight 2-3 key features, keep it moving\n\n*15 seconds — Technical Highlights:* \"We used [tech] to achieve [cool thing]\"\n\n*15 seconds — Future Vision:* \"With more time, we'd add...\"\n\n**Demo Best Practices:**\n- Practice 3-5 times minimum\n- Have a backup video if live demo fails\n- Use large fonts and visible UI\n- Clear your notifications before screensharing\n- Don't apologize for bugs"
+      },
+      {
+        "heading": "After the Hackathon",
+        "content": "**Win or Lose, You Win:**\n\nEven if you don't place, you have a project for your portfolio, you learned under pressure, you made connections, and you practiced presenting.\n\n**Document Your Project (immediately while fresh):**\n- Record a demo video\n- Take screenshots\n- Write up what you built\n- Document what you learned\n\n**Add to your portfolio:**\n- GitHub repo with README\n- Devpost submission page\n- LinkedIn post about the experience\n\n**Keep In Touch:**\n- Connect with teammates on LinkedIn\n- Thank mentors who helped\n- Follow judges on social media\n- Join the hackathon's community Discord"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Devpost Hackathons",
+        "source": "Devpost",
+        "url": "https://devpost.com/hackathons",
+        "type": "Platform",
+        "description": "Browse and register for hackathons worldwide"
+      },
+      {
+        "title": "Major League Hacking",
+        "source": "MLH",
+        "url": "https://mlh.io/",
+        "type": "Organization",
+        "description": "Official student hackathon league with events globally"
+      },
+      {
+        "title": "Hackathon Guide",
+        "source": "MLH",
+        "url": "https://guide.mlh.io/",
+        "type": "Guide",
+        "description": "Tips and resources for hackathon participants"
+      }
+    ],
+    "keyTakeaways": [
+      "Hackathons compress learning and portfolio-building into a single weekend",
+      "Spend the first 2 hours planning—don't jump straight into coding",
+      "The demo matters more than the code: practice your presentation",
+      "Document your project immediately after—it's portfolio gold"
+    ]
+  },
+  "winning-hackathon-projects": {
+    "title": "Building Winning Hackathon Projects",
+    "intro": "What separates hackathon winners from the rest? It's rarely the most technically complex project. Winners understand what judges look for and build accordingly.",
+    "sections": [
+      {
+        "heading": "What Judges Actually Look For",
+        "content": "Most hackathons judge on some combination of:\n\n**Innovation/Creativity (25-30%):** Is this a fresh idea or approach? Does it solve a problem in a new way?\n\n**Technical Complexity (20-25%):** Does it demonstrate skill? Is the implementation solid?\n\n**Impact/Usefulness (25-30%):** Does it solve a real problem? Would people actually use this?\n\n**Presentation/Demo (20-25%):** Can they clearly explain what it does? Does the demo work smoothly?\n\n**Key insight:** Technical complexity is only 20-25%. A simple, polished project often beats a complex, buggy one."
+      },
+      {
+        "heading": "The Winning Project Formula",
+        "content": "**Formula: Specific Problem + Clean Solution + Great Demo**\n\n*Weak:* \"We built an AI app\"\n*Strong:* \"We built a tool that helps blind users navigate grocery stores using their phone camera\"\n\nThe more specific the problem, the more compelling the solution.\n\n**Characteristics of Winners:**\n\n1. **They complete something** — A finished MVP beats an unfinished ambitious project. Judges can't evaluate what doesn't work.\n\n2. **They solve a real problem** — Clear user and use case with obvious value proposition.\n\n3. **They demo flawlessly** — Rehearsed presentation with backup plan if demo fails.\n\n4. **They look polished** — Clean UI (even if simple), consistent branding, professional presentation."
+      },
+      {
+        "heading": "High-Impact Categories",
+        "content": "**Accessibility:** Tools for people with disabilities, making technology more inclusive. Strong emotional resonance with judges.\n\n**Sustainability:** Environmental impact projects, resource optimization. Timely and relevant.\n\n**Education:** Learning tools, skill development, democratizing knowledge.\n\n**Healthcare:** Health monitoring, mental health tools, patient/doctor communication.\n\n**Leveraging Sponsor APIs:**\n\nMany hackathons have sponsor prizes. Strategy:\n1. Look at sponsor prize categories\n2. Build something using their API creatively\n3. You're often competing against fewer teams\n4. Sponsors appreciate seeing their tech highlighted"
+      },
+      {
+        "heading": "Smart Technical Choices",
+        "content": "**The MVP Matrix:**\n- Core functionality: Must have\n- Demo flow works: Must have\n- Error handling: Nice to have\n- Extra features: Cut it\n- Perfect code: Not now\n\n**Use:**\n- Technologies you know well\n- Managed services (Firebase, Supabase)\n- UI component libraries (shadcn/ui, Chakra)\n- Starter templates\n\n**Avoid:**\n- Learning new frameworks during the event\n- Building from scratch what you could import\n- Optimizing before it works\n\n**Acceptable Hackathon Shortcuts:**\n- Hardcoded data that looks dynamic\n- Demo accounts with perfect data\n- Manual steps you could later automate\n- Limited scope (\"works for this demo\")"
+      },
+      {
+        "heading": "What Doesn't Win",
+        "content": "**Common Losing Patterns:**\n\n1. **Too ambitious:** \"We're building a better Uber\"\n2. **No clear problem:** \"It's a platform for... stuff\"\n3. **Can't demo it:** \"It works, but you have to imagine...\"\n4. **Same as everything else:** \"Another todo app\"\n5. **Technical showcase only:** \"Look at our microservices architecture\"\n\n**Case Study: Simple But Polished**\n\n*Project:* \"Plant Pal\" — Get SMS reminders to water your plants\n\n*Why it won:* Crystal clear value proposition, working demo with Twilio integration, beautiful simple UI, relatable problem.\n\n*Complexity:* Low-medium\n*Execution:* Perfect"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Devpost Winners",
+        "source": "Devpost",
+        "url": "https://devpost.com/software/search?query=winner",
+        "type": "Inspiration",
+        "description": "Browse winning projects from past hackathons"
+      },
+      {
+        "title": "shadcn/ui",
+        "source": "shadcn",
+        "url": "https://ui.shadcn.com/",
+        "type": "Library",
+        "description": "Beautiful, accessible UI components for rapid development"
+      }
+    ],
+    "keyTakeaways": [
+      "Technical complexity is only 20-25% of judging—execution and presentation matter more",
+      "Specific problems with clear solutions always beat vague or overly ambitious ideas",
+      "A simple, polished project with a great demo beats a complex, buggy one every time",
+      "Use sponsor APIs strategically to compete for additional prize categories"
+    ]
+  },
+  "coding-competitions": {
+    "title": "Coding Competitions and Technical Challenges",
+    "intro": "Beyond hackathons, coding competitions are another powerful way to develop skills, build your resume, and get noticed by top companies.",
+    "sections": [
+      {
+        "heading": "Types of Competitions",
+        "content": "**Algorithmic Competitions**\n\nSolve problems using data structures and algorithms.\n\n*Platforms:* LeetCode (interview-focused), Codeforces (competitive programming), HackerRank (mixed challenges), CodeChef (monthly contests)\n\n*What you learn:* Algorithms, time complexity analysis, problem-solving under pressure, code optimization\n\n*Resume value:* Shows analytical thinking, often tested in interviews\n\n**Competitive Programming Contests**\n\n*Major competitions:* Google Code Jam, Facebook Hacker Cup, ICPC (for students), Advent of Code (yearly December challenge)\n\n**CTF (Capture The Flag)**\n\nCybersecurity competitions where you find vulnerabilities, decrypt hidden messages, and exploit systems (legally).\n\n*Platforms:* CTFtime, PicoCTF (beginner-friendly), HackTheBox\n\n**AI/ML Competitions**\n\nBuild models to solve real problems with data.\n\n*Platforms:* Kaggle (gold standard), DrivenData (social impact), Zindi (Africa-focused)"
+      },
+      {
+        "heading": "Getting Started with Competitive Programming",
+        "content": "**Your First 30 Days:**\n\n*Week 1 — Fundamentals:* Solve 5 \"Easy\" problems on LeetCode. Focus on Arrays, Strings, Hash Maps. Don't time yourself yet.\n\n*Week 2 — Core Data Structures:* Solve 5 more Easy problems. Focus on Linked Lists, Trees, Stacks, Queues. Start understanding Big O.\n\n*Week 3 — Algorithms:* Move to Easy-Medium problems. Focus on Sorting, Binary Search, BFS/DFS. Time yourself loosely.\n\n*Week 4 — Pattern Recognition:* Solve themed problem sets. Start recognizing problem patterns. Join your first online contest.\n\n**Essential Topics to Master:**\n\n*Must know:* Arrays, Strings, Hash Maps, Trees, Graphs, Heaps, Sorting, Searching, BFS/DFS\n\n*Learn over time:* Dynamic Programming, Greedy algorithms, Backtracking\n\n*If competing seriously:* Segment Trees, Tries, Network Flow"
+      },
+      {
+        "heading": "Practice Strategy",
+        "content": "**Daily Routine:**\n1. Solve 1-2 problems\n2. If stuck for 30 min, read hints\n3. If still stuck, read the solution\n4. Implement the solution yourself\n5. Understand WHY it works\n\n**Weekly:**\n- Participate in one timed contest\n- Review problems you got wrong\n- Learn one new concept\n\n**When You're Stuck:**\n- Look at hints after 20-30 minutes\n- Read the solution after 45 minutes\n- Implement it yourself from understanding\n- Re-solve the problem in 2 weeks"
+      },
+      {
+        "heading": "Getting Started with Kaggle",
+        "content": "**Beginner Path:**\n1. Complete the free courses (Python, Pandas, ML Intro)\n2. Do the Titanic challenge (the \"Hello World\" of Kaggle)\n3. Read winning solutions from past competitions\n4. Join a competition and submit something (anything)\n5. Improve iteratively based on leaderboard feedback\n\n**From Zero to Competent:**\n\n*Month 1:* Complete courses, finish 2-3 \"Getting Started\" competitions\n\n*Months 2-3:* Join active competitions, read discussion forums, experiment with approaches\n\n*Months 4-6:* Start teaming up with others, aim for top 20-30% finishes\n\n**Kaggle Ranking System:**\n- Novice: Sign up\n- Contributor: Run code, make comments\n- Expert: Top solutions in competitions\n- Master: Multiple gold/silver medals\n- Grandmaster: Multiple competition wins"
+      },
+      {
+        "heading": "Leveraging Competitions for Jobs",
+        "content": "**What to Put on Your Resume:**\n\n*Algorithmic competitions:*\n> LeetCode: Solved 300+ problems, Contest Rating: 1800+\n> Google Code Jam 2024: Advanced to Round 2 (top 4,500 globally)\n\n*Kaggle:*\n> Kaggle Expert (Competition & Notebooks)\n> Home Credit Default Risk: Top 8% (Silver Medal)\n\n**How Companies View Competition Experience:**\n\n*Very positive for:* Algorithmic interview readiness, problem-solving ability, dedication and self-motivation, relevant technical skills\n\n*What matters most:* Consistency over time > one good result, learning and improvement > raw ranking, ability to explain your solutions in interviews"
+      }
+    ],
+    "resources": [
+      {
+        "title": "LeetCode",
+        "source": "LeetCode",
+        "url": "https://leetcode.com/",
+        "type": "Platform",
+        "description": "Practice coding problems used in technical interviews"
+      },
+      {
+        "title": "Kaggle",
+        "source": "Kaggle",
+        "url": "https://www.kaggle.com/",
+        "type": "Platform",
+        "description": "Machine learning competitions and datasets"
+      },
+      {
+        "title": "NeetCode",
+        "source": "YouTube",
+        "url": "https://www.youtube.com/c/NeetCode",
+        "type": "Video",
+        "description": "Clear explanations of LeetCode problems and patterns"
+      }
+    ],
+    "keyTakeaways": [
+      "Coding competitions sharpen skills that directly transfer to technical interviews",
+      "Start with LeetCode Easy problems and work up to Medium over your first month",
+      "Kaggle Expert rank is impressive on a resume—start with the Titanic challenge",
+      "Consistency over time matters more than one lucky result"
+    ]
+  },
+  "freelancing-contract-work": {
+    "title": "Freelancing and Contract Work",
+    "intro": "Freelancing lets you gain paid experience on your own terms. Even small projects build your portfolio and prove that someone valued your skills enough to pay for them.",
+    "sections": [
+      {
+        "heading": "Why Freelancing Works",
+        "content": "**Benefits for Your Career:**\n\n1. **Paid experience** — Someone paid you to code—that's professional experience\n2. **Client work** — Learning to work with non-technical stakeholders\n3. **Diverse projects** — Exposure to different technologies and domains\n4. **Testimonials** — Build social proof for future opportunities\n5. **Flexibility** — Learn while earning on your schedule\n\n**Types of Freelance Work:**\n\n*Project-based (fixed scope, fixed price):* Build a website, create an app feature, migrate a database\n\n*Hourly consulting (paid by the hour):* Bug fixing, code reviews, technical advising\n\n*Retainer work (ongoing relationship):* Maintenance and updates, regular feature development, on-call support"
+      },
+      {
+        "heading": "Getting Started",
+        "content": "**Where to Find Work:**\n\n*Freelance platforms:* Upwork (varied projects), Toptal (high-end clients), Fiverr (small gigs), Freelancer.com (global clients)\n\n*Direct outreach:* Local small businesses, startups on LinkedIn, founders in your network, agencies needing overflow help\n\n*Communities:* Twitter/X tech communities, Discord servers, local meetups, Slack workspaces\n\n**Your First Clients: The Easy Wins**\n\nStart with your network: friends with side businesses, family members' companies, former colleagues, people from school\n\n**Offer specific value:**\n\n*Bad:* \"I can help with your website\"\n\n*Good:* \"I noticed your website isn't mobile-friendly. I can fix that for $300, and it'll help your Google search ranking.\""
+      },
+      {
+        "heading": "Pricing Your Work",
+        "content": "**Pricing Strategies:**\n\n*Hourly rate:* Easy to start with, penalizes efficiency, good for unclear scope\n\n*Project-based:* Rewards efficiency, requires accurate scoping, clients prefer fixed costs\n\n*Value-based:* Price based on client value, highest earning potential, requires understanding their business\n\n**Setting Your Rate:**\n\n*Starting out (< 6 months):* $20-50/hour on platforms, $30-60/hour for direct clients\n\n*Intermediate (6-18 months):* $40-75/hour on platforms, $50-100/hour for direct clients\n\n**The Quote Formula:**\n\n```\nProject Price = (Estimated Hours x 1.5) x Hourly Rate\n```\n\nThe 1.5x buffer accounts for scope creep, revisions, client communication, and things taking longer than expected."
+      },
+      {
+        "heading": "Managing Client Relationships",
+        "content": "**Set Expectations Early:**\n- When you're available\n- How quickly you respond\n- How you prefer to communicate\n- What's included and what's extra\n\n**Regular Updates:**\n- Weekly progress reports\n- Demo calls for visual work\n- Early warning if timeline slips\n\n**Handling Difficult Situations:**\n\n*Scope creep:* \"That's a great idea! Let me scope that as a separate phase after we complete the current project.\"\n\n*Late payments:* \"I'll pause work until the outstanding invoice is paid. Happy to resume immediately once received.\"\n\n**Contracts Matter:**\n\nAlways have a contract covering scope of work, timeline, payment terms, revision limits, intellectual property, and cancellation terms."
+      },
+      {
+        "heading": "Building Your Portfolio with Client Work",
+        "content": "**Getting Permission:**\n\n> \"I'd love to feature this project in my portfolio. Would you be comfortable with that? I can anonymize any sensitive information.\"\n\nMost say yes. Some want approval rights.\n\n**Documenting Client Projects:**\n\n- Challenge: What problem was the client facing?\n- Solution: What did you build? What technologies?\n- Results: Measurable outcomes (40% faster page load, 3x mobile conversions)\n- Testimonial: Quote from the client\n\n**Using Freelance Experience on Your Resume:**\n\n```\nFreelance Software Developer | 2023 - Present\n- Delivered 12+ projects for clients including [notable ones]\n- Specialized in [technologies]\n- Maintained 5-star rating on [platform] with 20+ reviews\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Upwork",
+        "source": "Upwork",
+        "url": "https://www.upwork.com/",
+        "type": "Platform",
+        "description": "Freelance marketplace for finding development work"
+      },
+      {
+        "title": "Freelancer's Guide",
+        "source": "freeCodeCamp",
+        "url": "https://www.freecodecamp.org/news/freelance-web-developer-guide/",
+        "type": "Guide",
+        "description": "Comprehensive guide to freelance web development"
+      }
+    ],
+    "keyTakeaways": [
+      "Freelancing provides paid experience that belongs on your resume—even small projects count",
+      "Start with your network and offer specific, valuable solutions (not generic help)",
+      "Use the 1.5x buffer when quoting projects to account for inevitable extras",
+      "Document client work with permission and use testimonials for social proof"
+    ]
+  },
+  "volunteer-tech-work": {
+    "title": "Volunteer Tech Work for Nonprofits",
+    "intro": "Volunteering your tech skills helps organizations that need it while building your portfolio with meaningful projects. It's real work for real users—exactly what employers want to see.",
+    "sections": [
+      {
+        "heading": "Why Volunteer Tech Work?",
+        "content": "**Career Benefits:**\n\n1. **Real users** — Your code helps actual people\n2. **Full project lifecycle** — Often soup-to-nuts responsibility\n3. **Team experience** — Work with other volunteers and staff\n4. **References** — Nonprofit contacts can vouch for you\n5. **Story for interviews** — \"I built X that helped Y people do Z\"\n\n**It's Not \"Fake\" Experience**\n\nHiring managers know that nonprofits have limited budgets, volunteers take on real responsibility, the work matters to real users, and it demonstrates character and initiative."
+      },
+      {
+        "heading": "Finding Volunteer Opportunities",
+        "content": "**Dedicated Platforms:**\n\n- Code for America: Civic tech projects\n- Catchafire: Skills-based volunteering\n- VolunteerMatch: Local nonprofits\n- Datakind: Data science for good\n- freeCodeCamp: Contribute to the platform\n\n**Local Opportunities:**\n\nOrganizations that need tech help: local food banks, youth organizations, religious institutions, community centers, small museums and libraries, animal shelters\n\n**How to Approach Them:**\n\n> Subject: Volunteer Web Developer Available\n>\n> Hi [Name],\n>\n> I'm a web developer looking to volunteer my skills for a local nonprofit. I noticed [specific thing about their website/tech] and thought I might be able to help.\n>\n> Would you have 15 minutes to chat about how I could help [Organization Name]?"
+      },
+      {
+        "heading": "Making the Most of Volunteer Work",
+        "content": "**Treat It Professionally:**\n\n*Do:* Set clear expectations and timeline, communicate regularly, deliver what you promise, document your work, train someone to maintain it\n\n*Don't:* Ghost the project, over-promise and under-deliver, disappear when it gets hard, leave them with something they can't maintain\n\n**Scope Projects Appropriately:**\n\nNonprofits often don't know what they need. Help them:\n\n> \"I'd love to help, but let's start small. What's the one thing that would make the biggest difference for you right now?\"\n\nBetter to finish one small project than abandon an ambitious one.\n\n**Build for Sustainability:**\n\nOrganizations need to maintain things after you leave: use common technologies (WordPress, Squarespace), document everything, train staff members, avoid complex custom solutions if simpler works."
+      },
+      {
+        "heading": "Types of Projects",
+        "content": "**Website Projects:**\n\n*Simple (2-4 weeks):* Update content and design, add donation integration, make site mobile-friendly, set up analytics\n\n*Medium (1-2 months):* Full website redesign, event registration system, member portal, content management training\n\n*Complex (3+ months):* Custom web application, database system, multi-site management, integration between systems\n\n**Data Projects:**\n- Clean and organize messy data\n- Create dashboards for reporting\n- Automate data collection\n- Build impact visualizations\n\n**Automation Projects:**\n- Email workflow automation\n- Social media scheduling\n- Volunteer coordination tools\n- Grant tracking systems"
+      },
+      {
+        "heading": "Documenting for Your Portfolio",
+        "content": "**Tell the Story:**\n\n*The Challenge:* [Organization] is a nonprofit serving [mission]. Their website was outdated, not mobile-friendly, and made it difficult for donors to contribute.\n\n*My Role:* Volunteer Web Developer (Solo project), 3-month engagement, 60+ hours contributed\n\n*The Solution:* Redesigned website using WordPress + custom theme, integrated Stripe for one-click donations, added events calendar\n\n*Results:* 150% increase in online donations, mobile traffic up 200%, staff can now update content independently\n\n*Testimonial:* \"[Quote from nonprofit contact about your work]\"\n\n**Ask for References:**\n\n> \"I've really enjoyed working with [Organization]. Would you be comfortable serving as a reference for me?\""
+      }
+    ],
+    "resources": [
+      {
+        "title": "Code for America",
+        "source": "Code for America",
+        "url": "https://codeforamerica.org/",
+        "type": "Organization",
+        "description": "Civic tech organization with local volunteer brigades"
+      },
+      {
+        "title": "Catchafire",
+        "source": "Catchafire",
+        "url": "https://www.catchafire.org/",
+        "type": "Platform",
+        "description": "Match your skills with nonprofits that need them"
+      },
+      {
+        "title": "DataKind",
+        "source": "DataKind",
+        "url": "https://www.datakind.org/",
+        "type": "Organization",
+        "description": "Data science volunteering for social good"
+      }
+    ],
+    "keyTakeaways": [
+      "Volunteer work is real experience that builds your portfolio while helping organizations that need it",
+      "Scope projects appropriately—one completed small project beats one abandoned ambitious one",
+      "Build for sustainability: use common technologies, document everything, train staff",
+      "Document your impact with measurable results and ask for testimonials and references"
+    ]
+  },
+  "teaching-and-content-creation": {
+    "title": "Teaching, Blogging, and Content Creation",
+    "intro": "Teaching what you know solidifies your knowledge, builds your reputation, and creates artifacts that demonstrate your expertise. You don't need to be an expert—you just need to be one step ahead of your audience.",
+    "sections": [
+      {
+        "heading": "Why Creating Content Works",
+        "content": "**The Learning-in-Public Advantage:**\n\n1. **Teaching solidifies knowledge** — Explaining forces understanding\n2. **Content is forever** — Blog posts work while you sleep\n3. **Demonstrates communication** — A key professional skill\n4. **Builds reputation** — Become known for something\n5. **Networking magnet** — Experts find your content\n\n**The \"One Step Ahead\" Principle:**\n\nYou don't need to be an expert. You need to know more than your audience.\n\n- Learning React? Teach people who haven't started\n- 6 months in? Help complete beginners\n- Junior dev? Guide career changers and students\n- Mid-level? Help juniors level up"
+      },
+      {
+        "heading": "Types of Content to Create",
+        "content": "**Technical Blog Posts:**\n\n*Tutorial format:* \"How to build X with Y\" — step-by-step instructions, code examples, common pitfalls\n\n*Explainer format:* \"Understanding X\" — concept breakdowns, analogies and visuals, when to use it\n\n*Problem-solution format:* \"How I fixed X\" — the problem you encountered, what you tried, what finally worked\n\n**Video Content:** YouTube tutorials (longer, comprehensive), Shorts/Reels (quick tips), Livestreams (coding sessions, Q&A)\n\n**Social Media:** Twitter/X (quick tips, threads), LinkedIn (professional insights), Dev.to/Hashnode (technical articles with built-in audience)\n\n**Other Formats:** Podcasts, newsletters, open source documentation, courses"
+      },
+      {
+        "heading": "Getting Started with Blogging",
+        "content": "**Where to Blog:**\n\n*Hosted platforms (easier start):* Dev.to (built-in developer audience), Hashnode (custom domain free), Medium (general audience)\n\n*Self-hosted (more control):* Your own domain with Ghost, WordPress, or static site. Shows you can deploy and maintain a site.\n\n**Your First 5 Blog Posts:**\n\n1. Your learning journey: How you started coding\n2. Tutorial: Something you just learned\n3. Problem-solution: A bug you fixed this week\n4. Tool comparison: \"X vs Y — Which should you use?\"\n5. Concept explainer: Something you finally understood\n\n**Writing Tips:**\n\nMake it scannable: short paragraphs, headers and subheaders, code blocks with syntax highlighting, bullet points. Include working code examples. Add visuals like screenshots and diagrams."
+      },
+      {
+        "heading": "Building an Audience",
+        "content": "**Consistency Over Virality:**\n\n*Weak strategy:* Write one \"perfect\" post\n*Strong strategy:* Publish every week for a year\n\nQuantity leads to quality. Publishing builds the habit.\n\n**Distribution Matters:**\n\nWriting is half the work. Sharing is the other half:\n1. Post to Twitter with key takeaways\n2. Share to relevant subreddits\n3. Post in Discord communities\n4. Cross-post to Dev.to, Hashnode, Medium\n5. Share to LinkedIn with professional angle\n\n**Engage With Others:**\n\nComment on other people's posts, share others' content with your take, answer questions in communities, collaborate on posts."
+      },
+      {
+        "heading": "Content for Your Career",
+        "content": "**What Hiring Managers See:**\n\n> \"Candidate has a blog with 30 technical posts\" =\n> Can communicate complex ideas, actively engaged in learning, has initiative and follow-through, writes clearly\n\n**Adding Content to Your Resume:**\n\n```\nTechnical Writing & Speaking\n- Technical blog with 40+ posts on React, Node.js, and system design\n- 5,000+ monthly readers\n- Speaker at [Local Meetup] on \"Intro to Docker\"\n```\n\n**Talking About It in Interviews:**\n\n> \"I write regularly about what I'm learning. For example, when I was learning [topic], I wrote a post explaining [concept]. It forced me to really understand it, and it's been read by thousands of developers since.\"\n\n**Common Objections:**\n\n*\"I'm not expert enough\"* — You're one step ahead of someone. Teach to that person.\n\n*\"It's all been written before\"* — Your perspective is unique. People learn from different explanations.\n\n*\"I don't have time\"* — Start with one post per month. 30 minutes weekly."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Dev.to",
+        "source": "Dev.to",
+        "url": "https://dev.to/",
+        "type": "Platform",
+        "description": "Community platform for developers to share articles"
+      },
+      {
+        "title": "Hashnode",
+        "source": "Hashnode",
+        "url": "https://hashnode.com/",
+        "type": "Platform",
+        "description": "Blogging platform for developers with custom domain support"
+      },
+      {
+        "title": "The Coding Career Handbook",
+        "source": "Shawn Wang",
+        "url": "https://www.learninpublic.org/",
+        "type": "Book",
+        "description": "Guide to learning in public and building your developer career"
+      }
+    ],
+    "keyTakeaways": [
+      "You don't need to be an expert to teach—just one step ahead of your audience",
+      "Consistency beats perfection: publish weekly rather than waiting for one perfect post",
+      "Distribution is half the work—share your content across multiple platforms",
+      "Content creation demonstrates communication skills and creates permanent proof of your abilities"
+    ]
+  },
+  "github-profile-optimization": {
+    "title": "Crafting Your GitHub Profile",
+    "intro": "Your GitHub profile is often the first place hiring managers look after reading your resume. A well-crafted profile showcases your skills, activity, and personality—turning casual visitors into interview invitations.",
+    "sections": [
+      {
+        "heading": "Anatomy of a Great GitHub Profile",
+        "content": "**What Hiring Managers Notice:**\n\n1. **Profile photo and bio** — First impression\n2. **Pinned repositories** — Your best work\n3. **Contribution graph** — Activity level\n4. **README profile** — Your personal pitch\n5. **Repository quality** — Code and documentation\n\n**The Complete Profile Checklist:**\n\n- Professional profile photo\n- Clear, compelling bio\n- Location and/or timezone\n- Personal website or portfolio link\n- Profile README\n- 4-6 pinned repositories\n- Consistent activity"
+      },
+      {
+        "heading": "Setting Up Your Profile README",
+        "content": "GitHub shows a special README if you create a repo with your username.\n\n**Step 1: Create the Repo**\n1. Create a new repository named exactly your username\n2. Make it public\n3. Add a README.md\n4. This README appears on your profile\n\n**What to Include:**\n\n```markdown\n# Hi, I'm [Your Name]\n\nI'm a [role] passionate about [interests].\n\n## What I'm Working On\n- Currently building [current project]\n- Learning [current focus]\n- Ask me about [expertise areas]\n\n## Tech Stack\n[Technology badges]\n\n## Let's Connect\n[LinkedIn and Portfolio links]\n```\n\n**Tips:** Keep it concise (readable in 30 seconds), show personality, highlight current focus, use visual elements sparingly."
+      },
+      {
+        "heading": "Pinning the Right Repositories",
+        "content": "You can pin up to 6 repositories. Choose wisely.\n\n**What to Pin:**\n1. Your best complete project (deployed, documented)\n2. Open source contributions (if notable)\n3. Projects showcasing different skills\n4. Active projects you're working on\n\n**What NOT to Pin:**\n- Tutorial follow-alongs\n- Forks you haven't modified\n- Abandoned projects\n- Empty or minimal repos\n- Repos with poor documentation\n\n**Making Pinned Repos Shine:**\n\nFor each pinned repo:\n1. Add topics/tags for discoverability\n2. Write a great one-line description\n3. Create a comprehensive README\n4. Add a live demo link if applicable\n5. Use a social preview image"
+      },
+      {
+        "heading": "The Contribution Graph",
+        "content": "**Why It Matters:**\n\nThe green squares show consistent coding activity, long-term commitment, and that you're actively building skills.\n\n**How to Keep It Green:**\n\n*Legitimate activity that counts:* Commits to repos, opening PRs, opening issues, reviewing PRs\n\n*Keep in mind:* Quality matters more than quantity, gaps are okay (everyone takes breaks), private contributions can be shown\n\n**Showing Private Contributions:**\n\nSettings → Profile → Contribution settings → \"Include private contributions\"\n\nThis shows that you're active without revealing private repo details."
+      },
+      {
+        "heading": "GitHub Profile for Job Seekers",
+        "content": "**Optimize for ATS and Recruiters:**\n\nIn your bio, include your target role, mention key technologies, add location if relevant.\n\n*Example bio:*\n> Full-stack developer specializing in React and Node.js. Building tools that help developers ship faster. Based in San Francisco.\n\n**What Recruiters Look For:**\n1. Active within last month (shows current engagement)\n2. Quality pinned projects (proof of skills)\n3. Good READMEs (communication skills)\n4. Meaningful commits (not just \"update\")\n5. Collaboration (PRs to other projects)\n\n**Red Flags Recruiters Notice:**\n- No activity for months\n- Only forked repos\n- Poor or no documentation\n- Copied tutorial projects\n- Unprofessional content\n\n**Quick Wins (15-minute improvements):**\n- Add a professional photo\n- Write a compelling bio\n- Pin your best 4-6 repos\n- Add descriptions to pinned repos\n- Create profile README"
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Profile README Generator",
+        "source": "GitHub",
+        "url": "https://rahuldkjain.github.io/gh-profile-readme-generator/",
+        "type": "Tool",
+        "description": "Generate a beautiful GitHub profile README with badges and stats"
+      },
+      {
+        "title": "Awesome GitHub Profile README",
+        "source": "GitHub",
+        "url": "https://github.com/abhisheknaiidu/awesome-github-profile-readme",
+        "type": "Resource",
+        "description": "Curated list of impressive GitHub profile READMEs for inspiration"
+      },
+      {
+        "title": "GitHub Profile README Stats",
+        "source": "GitHub",
+        "url": "https://github.com/anuraghazra/github-readme-stats",
+        "type": "Tool",
+        "description": "Dynamically generated stats for your GitHub profile README"
+      }
+    ],
+    "keyTakeaways": [
+      "Your GitHub profile is a 24/7 representation of your skills—maintain it like a professional asset",
+      "Create a profile README by making a repo with your username",
+      "Pin 4-6 of your best, most complete projects with great documentation",
+      "Activity matters but quality beats quantity—meaningful commits over empty green squares"
+    ]
+  }
+}

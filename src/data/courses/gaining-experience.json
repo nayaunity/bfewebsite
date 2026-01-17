@@ -1,0 +1,167 @@
+{
+  "id": "gaining-experience",
+  "title": "Gaining Experience Without Experience",
+  "subtitle": "Build a hireable portfolio from scratch",
+  "description": "You don't need a job to get experience. Learn how to build real-world skills through projects, open source, hackathons, and more—the same paths used by self-taught developers who landed roles at top companies.",
+  "tag": "Career",
+  "tagColor": "blue",
+  "stats": {
+    "modules": 5,
+    "lessons": 14,
+    "freeLessons": 3
+  },
+  "features": [
+    "Build projects that impress recruiters",
+    "Make meaningful open source contributions",
+    "Win hackathons and coding competitions"
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "Building Your Project Portfolio",
+      "description": "Learn how to create projects that demonstrate real skills and catch recruiters' attention.",
+      "lessons": [
+        {
+          "id": "1.1",
+          "slug": "why-projects-beat-credentials",
+          "title": "Why Projects Beat Credentials",
+          "duration": "8 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1.2",
+          "slug": "projects-that-get-you-hired",
+          "title": "Types of Projects That Get You Hired",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "1.3",
+          "slug": "from-idea-to-deployed",
+          "title": "From Idea to Deployed: Your First Showcase Project",
+          "duration": "18 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "1.4",
+          "slug": "documenting-your-work",
+          "title": "Documenting Your Work Like a Pro",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Open Source Contributions",
+      "description": "Break into open source and build a track record of real-world collaboration.",
+      "lessons": [
+        {
+          "id": "2.1",
+          "slug": "open-source-ecosystem",
+          "title": "Understanding the Open Source Ecosystem",
+          "duration": "10 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2.2",
+          "slug": "finding-first-contribution",
+          "title": "Finding Your First Contribution",
+          "duration": "14 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "2.3",
+          "slug": "first-pull-request",
+          "title": "Making Your First Pull Request",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Hackathons & Competitions",
+      "description": "Use hackathons and coding competitions to build skills, projects, and connections fast.",
+      "lessons": [
+        {
+          "id": "3.1",
+          "slug": "hackathon-strategy",
+          "title": "Hackathon Strategy: Before, During, and After",
+          "duration": "15 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "3.2",
+          "slug": "winning-hackathon-projects",
+          "title": "Building Winning Hackathon Projects",
+          "duration": "14 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3.3",
+          "slug": "coding-competitions",
+          "title": "Coding Competitions and Technical Challenges",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Alternative Experience Paths",
+      "description": "Explore unconventional ways to gain real experience and build your reputation.",
+      "lessons": [
+        {
+          "id": "4.1",
+          "slug": "freelancing-contract-work",
+          "title": "Freelancing and Contract Work",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4.2",
+          "slug": "volunteer-tech-work",
+          "title": "Volunteer Tech Work for Nonprofits",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4.3",
+          "slug": "teaching-and-content-creation",
+          "title": "Teaching, Blogging, and Content Creation",
+          "duration": "11 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Packaging Your Experience",
+      "description": "Turn your projects and contributions into a compelling narrative for employers.",
+      "lessons": [
+        {
+          "id": "5.1",
+          "slug": "github-profile-optimization",
+          "title": "Crafting Your GitHub Profile",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    }
+  ]
+}

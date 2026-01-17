@@ -68,6 +68,8 @@ import salaryNegotiationCourse from "@/data/courses/salary-negotiation.json";
 import salaryNegotiationLessons from "@/data/courses/salary-negotiation-lessons.json";
 import interviewPrepCourse from "@/data/courses/interview-prep.json";
 import interviewPrepLessons from "@/data/courses/interview-prep-lessons.json";
+import gainingExperienceCourse from "@/data/courses/gaining-experience.json";
+import gainingExperienceLessons from "@/data/courses/gaining-experience-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
@@ -88,6 +90,8 @@ export function getCourse(courseId: string): Course | null {
       return salaryNegotiationCourse as Course;
     case "interview-prep":
       return interviewPrepCourse as Course;
+    case "gaining-experience":
+      return gainingExperienceCourse as Course;
     default:
       return null;
   }
@@ -123,6 +127,9 @@ export function getLessonContent(
       break;
     case "interview-prep":
       lessons = interviewPrepLessons as Record<string, LessonContent>;
+      break;
+    case "gaining-experience":
+      lessons = gainingExperienceLessons as Record<string, LessonContent>;
       break;
     default:
       return null;
