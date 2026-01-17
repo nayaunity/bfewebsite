@@ -151,7 +151,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <p className="text-sm tracking-widest mb-8">WE&apos;VE PARTNERED WITH</p>
-              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-200)]">
+              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-400)]">
                 <span>AMAZON</span>
                 <span className="text-[#ef562a]">MICROSOFT</span>
                 <span>ADOBE</span>

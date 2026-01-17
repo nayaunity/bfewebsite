@@ -66,7 +66,7 @@ export default function About() {
           </p>
 
           {/* Partner Logos as Text - Row 1 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span className="text-[#ef562a]">MICROSOFT</span>
             <span>ADOBE</span>
             <span>AMAZON</span>
@@ -74,7 +74,7 @@ export default function About() {
           </div>
 
           {/* Partner Logos as Text - Row 2 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>TIKTOK</span>
             <span className="text-[#ef562a]">LINKEDIN</span>
             <span>SAS</span>
@@ -82,7 +82,7 @@ export default function About() {
           </div>
 
           {/* Partner Logos as Text - Row 3 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>JETBRAINS</span>
             <span>SERVICENOW</span>
             <span className="text-[#ef562a]">ANTHROPIC</span>
