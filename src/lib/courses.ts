@@ -58,6 +58,8 @@ import webDevelopmentCourse from "@/data/courses/web-development.json";
 import webDevelopmentLessons from "@/data/courses/web-development-lessons.json";
 import claudeCodeCourse from "@/data/courses/claude-code.json";
 import claudeCodeLessons from "@/data/courses/claude-code-lessons.json";
+import breakIntoTechCourse from "@/data/courses/break-into-tech.json";
+import breakIntoTechLessons from "@/data/courses/break-into-tech-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
@@ -68,6 +70,8 @@ export function getCourse(courseId: string): Course | null {
       return webDevelopmentCourse as Course;
     case "claude-code":
       return claudeCodeCourse as Course;
+    case "break-into-tech":
+      return breakIntoTechCourse as Course;
     default:
       return null;
   }
@@ -88,6 +92,9 @@ export function getLessonContent(
       break;
     case "claude-code":
       lessons = claudeCodeLessons as Record<string, LessonContent>;
+      break;
+    case "break-into-tech":
+      lessons = breakIntoTechLessons as Record<string, LessonContent>;
       break;
     default:
       return null;

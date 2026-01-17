@@ -1,0 +1,687 @@
+{
+  "portfolio-mindset": {
+    "title": "The Portfolio Mindset",
+    "intro": "Yes, the goal of your projects is to practice all you've learned, but instead, have the mindset of \"how can I build something I'd like to share with employers?\" This mindset will naturally push you to learn and develop more so you can expedite your path to a new job!",
+    "sections": [
+      {
+        "heading": "Think Like an Employer",
+        "content": "When building projects, shift your thinking from \"What can I make to practice?\" to \"What can I build that demonstrates my value to employers?\" This subtle mindset shift transforms how you approach every project.\n\nEmployers want to see:\n- **Problem-solving ability**: Can you identify a problem and build a solution?\n- **Technical skills**: Do you understand the technologies you claim to know?\n- **Attention to detail**: Is your work polished and professional?\n- **Initiative**: Did you go beyond the basics?"
+      },
+      {
+        "heading": "Quality Over Quantity",
+        "content": "You don't need 20 projects in your portfolio. Focus on 4-5 well-built, polished applications that showcase different aspects of your skills.\n\nEach project should:\n- Solve a real problem (even if it's a simple one)\n- Be deployed and accessible online\n- Have clean, documented code\n- Include a comprehensive README\n- Demonstrate technical skills relevant to jobs you want"
+      },
+      {
+        "heading": "The MVP Trap",
+        "content": "\"The MVP will get you through bootcamp, the additional functionalities will get you a job.\"\n\nMany new developers stop at the minimum viable product. But the features you add *beyond* the MVP are what set you apart. That extra login functionality, the thoughtful UX touch, the edge case handling—these details show employers you think like a professional developer."
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Student Developer Pack",
+        "source": "GitHub",
+        "url": "https://education.github.com/pack",
+        "type": "Tool",
+        "description": "Free developer tools and resources for students"
+      },
+      {
+        "title": "How to Build a Portfolio That Gets You Hired",
+        "source": "freeCodeCamp",
+        "url": "https://www.freecodecamp.org/news/how-to-build-a-portfolio-that-gets-you-hired/",
+        "type": "Article",
+        "description": "Comprehensive guide to building an effective developer portfolio"
+      }
+    ],
+    "keyTakeaways": [
+      "Build projects with the mindset of sharing them with employers",
+      "Focus on 4-5 polished projects rather than many incomplete ones",
+      "Go beyond the MVP—additional features demonstrate professional thinking",
+      "Every project should solve a real problem and be deployed"
+    ]
+  },
+  "must-have-projects": {
+    "title": "Must-Have Projects",
+    "intro": "You want your portfolio projects to show employers your capabilities and skillsets. You also want your projects to show that you are versatile. Here are the types of projects that will make you stand out.",
+    "sections": [
+      {
+        "heading": "Search Engine / API Project",
+        "content": "A common skill listed under \"required qualifications\" of developer job postings is experience with JSON. Building a search engine will get you working with APIs and JSON.\n\nThese projects are great because if you find the right API, you can create a very impressive app without too much of a challenge.\n\n**Examples:**\n- Book Search App (using Google Books API)\n- Recipe Lookup App (using Edamam API)\n- Movie Database (using TMDB API)\n- Weather Dashboard (using OpenWeather API)"
+      },
+      {
+        "heading": "Financial App",
+        "content": "Not all jobs you come across will be for the cool, trendy new startups. Banks need software engineers too! You want to show that your skills can be useful for them because you too can employ that analytical mind.\n\n**Examples:**\n- Monthly Budget Tracker\n- Stock Market Dashboard\n- Expense Categorizer\n- Investment Portfolio Tracker"
+      },
+      {
+        "heading": "Copycat Project",
+        "content": "By attempting to clone an already existing app, you show employers that you understand what goes into building such apps and products. The goal isn't to end up with the exact app—add your own spin to it!\n\nThink about your own hobbies and interests and intertwine that into the app. You just want the UI/UX close enough that others can see the relation.\n\n**Examples:**\n- Tinder but to connect activists with local causes\n- Instagram but only for pets/pet photos\n- Spotify playlist manager with custom features\n- Twitter clone for a specific community"
+      },
+      {
+        "heading": "Passion Project",
+        "content": "Nothing brightens people up more than when they are talking about something they are truly passionate about. You'll be surprised how much storytelling plays into the interview process.\n\nBy building a passion project that you are truly proud of, you'll be so excited any time an interviewer/recruiter brings it up, and that joy will be spread to them as well.\n\n\"Overall, people will forget what you said and what you did, however, they'll never forget how you made them feel.\"\n\nThis quote is important to remember during interviews—having something you are passionate about and excited to share is powerful."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Public APIs List",
+        "source": "GitHub",
+        "url": "https://github.com/public-apis/public-apis",
+        "type": "Resource",
+        "description": "A collective list of free APIs for use in software and web development"
+      },
+      {
+        "title": "App Ideas Collection",
+        "source": "GitHub",
+        "url": "https://github.com/florinpop17/app-ideas",
+        "type": "Resource",
+        "description": "Collection of application ideas categorized by difficulty"
+      }
+    ],
+    "keyTakeaways": [
+      "Include a search/API project to demonstrate JSON and API skills",
+      "Build a financial app to show analytical thinking",
+      "Clone a popular app with your own unique twist",
+      "Create at least one passion project you're genuinely excited about"
+    ]
+  },
+  "standout-projects": {
+    "title": "The Key to Standout Projects",
+    "intro": "When building your projects, think of features and functionalities you can include. It's the additional functionalities built that will get you a job.",
+    "sections": [
+      {
+        "heading": "Start with Your MVP",
+        "content": "During bootcamp, we created projects (apps) every 3 weeks. For one project, my partner and I decided to create a recipe app like Allrecipes. We thought of our MVP (Minimally Viable Product) and it came down to 2 things:\n\n1. Pulling from an API to create an index of recipes with filtering capabilities via a search bar\n2. Upon clicking a recipe, being able to see the ingredients needed\n\nThis was our foundation—the minimum needed to call it a \"recipe app.\""
+      },
+      {
+        "heading": "Then Add the Extra Features",
+        "content": "After identifying our MVP, we spent additional time thinking of extra features we could add. Some of the features we thought of were:\n\n- **Clickable images** that take you to the full recipe page\n- **Shopping cart** based on ingredients the user didn't have\n- **Log-in/Log-out functionality** for personalization\n- **User's name displayed** when logged in\n\nThese \"extras\" are what transform a bootcamp project into a portfolio piece that impresses employers."
+      },
+      {
+        "heading": "Real Example: The Bird Call App",
+        "content": "One of my classmates was an avid bird watcher. For one of his projects, he created a sort of \"SoundCloud\" but for bird calls.\n\nSoundCloud is an app that identifies a song's title and artist upon hearing a portion of the song. Well, that's what he created! If you were hiking/birdwatching and heard a bird's song, you could activate the app and it would provide you with what type of bird was making that sound.\n\nThis was a topic that interested him, and he built an app around it. **DO THAT.**"
+      },
+      {
+        "heading": "Feature Ideas to Consider",
+        "content": "When building your next project, consider adding:\n\n- **User authentication** (login/logout/signup)\n- **Data persistence** (save user preferences)\n- **Search and filtering** capabilities\n- **Responsive design** for mobile devices\n- **API integrations** for dynamic data\n- **Error handling** with user-friendly messages\n- **Loading states** and animations\n- **Dark mode** toggle"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Firebase Authentication",
+        "source": "Google Firebase",
+        "url": "https://firebase.google.com/docs/auth",
+        "type": "Documentation",
+        "description": "Add user authentication to your projects easily"
+      },
+      {
+        "title": "Responsive Web Design Basics",
+        "source": "web.dev",
+        "url": "https://web.dev/responsive-web-design-basics/",
+        "type": "Guide",
+        "description": "Learn the fundamentals of responsive design"
+      }
+    ],
+    "keyTakeaways": [
+      "The MVP gets you through bootcamp; extra features get you the job",
+      "Always brainstorm additional features after defining your MVP",
+      "Build apps around topics you're genuinely interested in",
+      "Common features like auth, search, and persistence impress employers"
+    ]
+  },
+  "passion-projects": {
+    "title": "Building Your Passion Project",
+    "intro": "What are you passionate about? Start there. The rest, with hard work, consistency, and a hint of creativity, will follow.",
+    "sections": [
+      {
+        "heading": "Finding Your Passion Project Idea",
+        "content": "Don't think that you need to create large complex apps about the stock market or data visualization. You can create apps based on your favorite:\n\n- **Hobbies** (gaming, cooking, fitness, music)\n- **Shows** (fan databases, quote generators, trivia)\n- **Activities** (travel planning, workout tracking, habit building)\n- **Communities** (connecting people with shared interests)\n\nBecause overall, it's the features those apps include that will get you to the job."
+      },
+      {
+        "heading": "The Interview Advantage",
+        "content": "When you build something you're genuinely excited about, that enthusiasm shows in interviews. Interviewers can tell the difference between:\n\n- Someone who built a todo app because a tutorial told them to\n- Someone who built a plant care tracker because they're obsessed with keeping their houseplants alive\n\nThe second person will light up when discussing their project, explaining the challenges they solved and features they added. That energy is infectious and memorable."
+      },
+      {
+        "heading": "Workshop: Plan Your Passion Project",
+        "content": "Let's plan your passion project right now:\n\n**Step 1: List your interests**\nWrite down 5 things you genuinely enjoy or care about.\n\n**Step 2: Identify problems**\nFor each interest, what's a problem or inconvenience you or others face?\n\n**Step 3: Envision the solution**\nWhat app could solve that problem? What would the core feature be?\n\n**Step 4: Plan the extras**\nWhat features would make it even better? Think about personalization, data visualization, social features.\n\n**Step 5: Research the tech**\nWhat technologies would you need to build this? Any APIs that could help?"
+      },
+      {
+        "heading": "Examples to Inspire You",
+        "content": "Here are some passion project ideas based on common interests:\n\n**For book lovers:**\nReading tracker with statistics, reviews, and book club features\n\n**For fitness enthusiasts:**\nWorkout planner that generates routines based on available equipment\n\n**For foodies:**\nMeal prep assistant that generates shopping lists and reduces waste\n\n**For gamers:**\nGame backlog tracker with price monitoring and playtime statistics\n\n**For plant parents:**\nPlant care reminder with watering schedules and growth tracking"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Side Project Marketing",
+        "source": "Indie Hackers",
+        "url": "https://www.indiehackers.com/",
+        "type": "Community",
+        "description": "Community of developers building side projects"
+      },
+      {
+        "title": "Product Hunt",
+        "source": "Product Hunt",
+        "url": "https://www.producthunt.com/",
+        "type": "Inspiration",
+        "description": "Discover new products and get inspiration for your own"
+      }
+    ],
+    "keyTakeaways": [
+      "Passion projects showcase your personality and enthusiasm",
+      "Choose a project based on your genuine interests, not trends",
+      "Your excitement about the project will show in interviews",
+      "The best projects solve real problems you actually care about"
+    ]
+  },
+  "github-for-recruiters": {
+    "title": "Optimizing GitHub for Recruiters",
+    "intro": "People stumble by not understanding that those looking over their resumes, LinkedIn's, and GitHub are likely recruiters, not developers. Because of this, it's important to optimize your GitHub for recruiters, not developers.",
+    "sections": [
+      {
+        "heading": "Understanding Your Audience",
+        "content": "The recruiter may have enough experience in tech to pick out people who would be good for their company's teams. However, when it comes to very technical jargon, that's where you may lose them.\n\nRecruiters typically:\n- Scan quickly for relevant keywords\n- Look for clear demonstrations of skills\n- Check for recent activity\n- Appreciate visual elements like screenshots\n\nMake it easy for them to understand your value!"
+      },
+      {
+        "heading": "Profile Optimization",
+        "content": "Your GitHub profile is often the first thing people see. Optimize it:\n\n**Profile Picture**: Use a professional, friendly photo\n\n**Bio**: Include your role (\"Software Engineer\"), key skills, and what you're interested in\n\n**Pinned Repositories**: Pin your 6 best projects—not the most recent, the BEST\n\n**README Profile**: Create a profile README with:\n- Brief introduction\n- Current focus/learning\n- Tech stack icons\n- Links to portfolio and LinkedIn"
+      },
+      {
+        "heading": "Repository Presentation",
+        "content": "Each repository should be polished:\n\n**Repository Name**: Clear, descriptive names (not \"project-1\")\n\n**Description**: One-line summary of what it does\n\n**Topics/Tags**: Add relevant technology tags\n\n**Live Demo Link**: If deployed, add the URL\n\n**Consistent Activity**: Commit regularly, even small improvements"
+      },
+      {
+        "heading": "What Recruiters Look For",
+        "content": "When recruiters scan your GitHub, they want to quickly assess:\n\n1. **Is this person active?** Recent commits matter\n2. **Can they write clean code?** Organization and naming\n3. **Do they document well?** READMEs are crucial\n4. **What technologies do they know?** Listed clearly\n5. **Can they work on a team?** Any collaborative projects?"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Awesome GitHub Profile README",
+        "source": "GitHub",
+        "url": "https://github.com/abhisheknaiidu/awesome-github-profile-readme",
+        "type": "Resource",
+        "description": "Collection of awesome GitHub profile READMEs for inspiration"
+      },
+      {
+        "title": "GitHub Profile README Generator",
+        "source": "rahuldkjain",
+        "url": "https://rahuldkjain.github.io/gh-profile-readme-generator/",
+        "type": "Tool",
+        "description": "Easy tool to create your GitHub profile README"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters, not developers, often review your GitHub first",
+      "Pin your 6 best projects prominently on your profile",
+      "Use clear, non-technical descriptions when possible",
+      "Consistent activity and clean documentation are essential"
+    ]
+  },
+  "github-readme-sections": {
+    "title": "GitHub README Sections",
+    "intro": "Include these sections to stand out and clearly convey to your recruiter your skillsets and capabilities.",
+    "sections": [
+      {
+        "heading": "Table of Contents",
+        "content": "For this section to be particularly useful, add it in a list view, making sure to hyperlink each item so that once clicked, the page jumps down to that particular section of the README.\n\nDepending on where you are in the development process, you may move things around or add things—so even though this appears first, add it last.\n\n```markdown\n## Table of Contents\n- [General Info](#general-info)\n- [Technologies](#technologies)\n- [Setup](#setup)\n- [Features](#features)\n- [Status](#status)\n- [Contact](#contact)\n```"
+      },
+      {
+        "heading": "General Info",
+        "content": "Provide a 3-5 sentence summary of your app. This likely will be the general idea you had when first developing it. Include:\n\n- **Who** this app is for\n- **What** the overall goal of the app is\n- **What problem** this app is trying to solve\n- **What inspired** you to focus on this topic\n\nAdding bits of personal information about who you are and what you care about is a very powerful tool."
+      },
+      {
+        "heading": "Walkthrough Video",
+        "content": "Because recruiters sometimes don't have much technical experience, looking through your code may not help them understand the full functionality of your app.\n\n**Record yourself using the app as a 'user'.** Simply post it onto YouTube (or any other media-sharing platform) and paste the link onto this section.\n\n*Pro tip: You can post the YouTube video as \"unlisted\" so that only those with the link can access it.*"
+      },
+      {
+        "heading": "Technologies Used",
+        "content": "List the technologies used within your app along with the version of the language/framework. Recruiters often use platforms like GitHub to verify information you've listed on your resume.\n\nThey won't be able to decipher between React and Node by looking at your code. Make their job easier!\n\n```markdown\n## Technologies\n- React 18.2\n- Node.js 18.x\n- PostgreSQL 14\n- Tailwind CSS 3.3\n```"
+      },
+      {
+        "heading": "Setup Instructions",
+        "content": "This is for developers looking to learn from you or build upon what you've created. Add detailed setup instructions:\n\n- Prerequisites (Node version, database setup)\n- API keys needed and how to obtain them\n- Step-by-step installation commands\n- How to run the development server\n\nThe developer community loves to learn from one another—make that easier!"
+      },
+      {
+        "heading": "Code Examples",
+        "content": "Add a few lines of code into your README. People looking to better understand your coding style will appreciate this.\n\nNow they don't need to dig through your code because examples are readily available. This shows recruiters you write efficient code and uphold proper coding standards.\n\n```javascript\n// Example: Fetching recipes from API\nconst fetchRecipes = async (ingredient) => {\n  const response = await fetch(\n    `${API_URL}/search?q=${ingredient}`\n  );\n  return response.json();\n};\n```"
+      },
+      {
+        "heading": "Features & Status",
+        "content": "**Features**: List all the amazing features of your app, no matter how small! Login capabilities? Personalization? Animation effects? Express them!\n\nFor every feature you built, there is someone out there who can't.\n\n**Status**: \"A project is never completed, it is abandoned.\" State where the project stands:\n\n*\"Project is finished with an option to expand upon [xyz] functionalities.\"*"
+      },
+      {
+        "heading": "Contact",
+        "content": "Explicitly state yourself (and all contributors) as the developers of the app.\n\nMake your name a **clickable link** to your LinkedIn profile!\n\n```markdown\n## Contact\nCreated by [Your Name](https://linkedin.com/in/yourprofile) - feel free to reach out!\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Make a README",
+        "source": "makeareadme.com",
+        "url": "https://www.makeareadme.com/",
+        "type": "Guide",
+        "description": "Learn what makes a good README"
+      },
+      {
+        "title": "README Templates",
+        "source": "GitHub",
+        "url": "https://github.com/othneildrew/Best-README-Template",
+        "type": "Template",
+        "description": "An awesome README template to jumpstart your projects"
+      }
+    ],
+    "keyTakeaways": [
+      "Include a Table of Contents with hyperlinks for easy navigation",
+      "Add a walkthrough video so non-technical viewers understand your app",
+      "List technologies with versions to verify your resume claims",
+      "Include code examples to showcase your coding style"
+    ]
+  },
+  "optimizing-linkedin": {
+    "title": "Optimizing Your LinkedIn",
+    "intro": "LinkedIn is one of the most powerful tools out there when it comes to the job hunt. All of a sudden, you have access to top professionals all because you're connected to the right people.",
+    "sections": [
+      {
+        "heading": "1. High Quality Profile Picture",
+        "content": "How can we convince a recruiter that you are a competent, qualified individual before they even review your resume? \n\nWith a profile picture that is:\n- **High resolution** (no blurry phone selfies)\n- **Focused on you** (face takes up most of the frame)\n- **Few to no distractions** in the background\n- **Professional but approachable** (you can smile!)\n\nFirst impressions matter—your photo is often the first thing people see."
+      },
+      {
+        "heading": "2. The Background Cover: Prime Real Estate",
+        "content": "Your background cover is a perfect place to share the most important parts of your resume and how to reach you!\n\nConsider including:\n- What you want people to know you for\n- Your highest achievement or current focus\n- How people can reach you (email, portfolio link)\n\nWith a free tool like **Canva**, you can create a professional cover in minutes."
+      },
+      {
+        "heading": "3. The Headline",
+        "content": "You don't need to be employed to be considered a \"software engineer.\" \n\n**Do NOT state \"Aspiring\" anything.** Would you hire an aspiring chef? An aspiring doctor? Exactly.\n\nDon't be afraid to claim that title in your headline! Studies have shown that if you label yourself as a \"Software Engineer\" instead of a \"Software Developer,\" you're more likely to be offered a higher salary.\n\nSo say it: \"I am a software engineer.\" Now go put that on your LinkedIn."
+      },
+      {
+        "heading": "4. Your 'About' Section",
+        "content": "You've passed the profile and cover test! This recruiter is now eager to read more about you.\n\nYour About section should include:\n- **Who you are** and your background\n- **What work you're interested in** (full-stack, frontend, etc.)\n- **Technical skills** you've built\n- **What makes you unique** (career changer perspective, diverse background)"
+      },
+      {
+        "heading": "5-8. Additional Optimization",
+        "content": "**5. Open to Work: Enabled**\nGo into settings and enable this. It helps recruiters looking to fill roles find you.\n\n**6. Featured Activity Bar**\nThis is your mini portfolio. What 3-5 pieces of work would you show a recruiter? Keep this updated!\n\n**7. Previous Experience**\nJust like on your resume, list experience. No tech experience? List your projects here!\n\n**8. Remember Your Target Market**\nThroughout all of this, remember: THE RECRUITER is your audience. Ask yourself: \"Will this properly show the type of developer, employee, and teammate I am and would be?\""
+      }
+    ],
+    "resources": [
+      {
+        "title": "Canva",
+        "source": "Canva",
+        "url": "https://www.canva.com/",
+        "type": "Tool",
+        "description": "Free design tool for creating LinkedIn banners"
+      },
+      {
+        "title": "LinkedIn Profile Tips",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/help/linkedin/answer/a522735",
+        "type": "Guide",
+        "description": "Official LinkedIn tips for optimizing your profile"
+      }
+    ],
+    "keyTakeaways": [
+      "Use a high-quality, professional profile picture",
+      "Never use \"Aspiring\"—claim your title as Software Engineer",
+      "Enable \"Open to Work\" to be found by recruiters",
+      "Keep your Featured section updated with your best work"
+    ]
+  },
+  "connecting-with-intention": {
+    "title": "Connecting with Intention",
+    "intro": "Now that you have a LinkedIn, it's time to use it. Yes, connecting with people in your network is great, however, let's be more intentional than that.",
+    "sections": [
+      {
+        "heading": "The Strategy",
+        "content": "Every time you see a job posting you would like to apply for, stop for a moment, open your LinkedIn account, and find someone in the company you can connect with.\n\nLet's say you want to apply to a posting made by a company called Rathon. By simply typing in LinkedIn's search bar \"Rathon Software Engineer\", you will be presented with pages of individuals who fit that search.\n\nNow that you have an idea of who is employed by Rathon, find someone you feel comfortable reaching out to."
+      },
+      {
+        "heading": "Who to Reach Out To",
+        "content": "I, being a woman of color, steered more towards people who appeared to possess that same identity. Since this is the tech field where there are very few women of color, exact matches did not happen often, so I would go to the second best: either women, or a man of color.\n\nAfter identifying 1-2 people I'd like to contact from that company, I would draft a message noting that I'm very interested in the company and would appreciate a quick call to discuss their experience."
+      },
+      {
+        "heading": "The Connection Message",
+        "content": "Here's an example message (Character Count: 294/300):\n\n---\n\n*Hi Jess,*\n\n*My name is Naya and I am a software engineer very interested in Rathon. To be frank, given that the tech field is composed of very few women, I was hoping to speak with you about your experience within Rathon as a backend engineer? I'd appreciate any insight you could provide.*\n\n*Best,*\n*Naya*\n\n---\n\nWhen the message was drafted, select \"Connect\" and \"Add a message.\" Insert your blurb and send. Then go back and apply!"
+      },
+      {
+        "heading": "Ask for Advice, Get a Job",
+        "content": "About 50-60 percent of the time I would get a response back. We would set up a time to chat and I would talk to them about me, my passion for the field, and note how I have already applied.\n\n**I am highly against asking for something.** There's a saying:\n\n> \"Ask for a job, get advice. Ask for advice, get a job.\"\n\nAnd WOW, is this true.\n\nAfter talking with them, follow up with a note thanking them for their time, expressing how excited you are to go through the recruitment process.\n\n**Best case scenario:** They look for your application and personally flag it for recruiting managers to see.\n\n**Worst case scenario:** You still got great insight about life at the company."
+      }
+    ],
+    "resources": [
+      {
+        "title": "How to Network on LinkedIn",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2021/03/a-simple-way-to-network-on-linkedin",
+        "type": "Article",
+        "description": "Effective networking strategies for professionals"
+      }
+    ],
+    "keyTakeaways": [
+      "For every job application, find someone at the company to connect with",
+      "Ask for advice, not for a job—this approach is more effective",
+      "Follow up with a thank you note after any conversation",
+      "50-60% of connection requests get responses—it's worth trying"
+    ]
+  },
+  "medium-for-developers": {
+    "title": "Medium for Developers",
+    "intro": "If you are at a coding bootcamp or self-teaching, odds are you are trying to switch from another field and/or you don't have a CS degree. Because of this, it is important to showcase your expertise. Medium articles are a great way to get your name out there.",
+    "sections": [
+      {
+        "heading": "Why Write?",
+        "content": "Show that you know what you are talking about and you are not just \"dabbling\" in coding.\n\nMy very first Medium article was picked up by **The Startup**, a page on Medium with over 700K followers. And that was my very first one!\n\nThe visibility posting onto Medium regularly can provide is immeasurable, which is why I highly recommend adding this to your job hunt routine."
+      },
+      {
+        "heading": "Finding Knowledge Gaps",
+        "content": "I recommend writing articles because you may think you know a topic, but when it's time to write it down and explain it to an audience, you may realize you have some gaps in your knowledge.\n\nFinding these gaps is good! If you didn't know you had them, they might have shown up live during an interview, which is NOT what we want.\n\nBeing able to explain topics in a highly effective, efficient, and clear manner is a skill you are expected to have both in interviews and on the job."
+      },
+      {
+        "heading": "Article Ideas",
+        "content": "Feel free to be both specific and broad in your articles. Both have their advantages!\n\n**Example Titles:**\n1. How To Use Bootstrap In Your Web Apps\n2. Key Considerations For Your First Portfolio Project\n3. How To Use The Edamam API In Your Next Recipe App\n4. Key JavaScript Takeaways As A New Programmer\n5. New To Python? Know This First\n6. How To Refactor Your Code To Be The Most Efficient It Can Be\n\nWrite about what you're learning—there's always someone a step behind you who would benefit from your insights."
+      },
+      {
+        "heading": "Getting Started",
+        "content": "**Step 1:** Create a Medium account and complete your profile\n\n**Step 2:** Pick a topic you recently learned or struggled with\n\n**Step 3:** Write as if explaining to your past self from 2 weeks ago\n\n**Step 4:** Include code examples and screenshots\n\n**Step 5:** Submit to publications like \"The Startup\" or \"Better Programming\" for more visibility\n\n**Step 6:** Share on LinkedIn and Twitter"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Medium",
+        "source": "Medium",
+        "url": "https://medium.com/",
+        "type": "Platform",
+        "description": "Where to publish your technical articles"
+      },
+      {
+        "title": "Dev.to",
+        "source": "DEV Community",
+        "url": "https://dev.to/",
+        "type": "Platform",
+        "description": "Alternative platform for developer content"
+      }
+    ],
+    "keyTakeaways": [
+      "Writing articles establishes you as knowledgeable, not just \"dabbling\"",
+      "Articles can be picked up by large publications with massive audiences",
+      "Writing helps you discover and fill gaps in your knowledge",
+      "Explain concepts to help others while building your personal brand"
+    ]
+  },
+  "resume-without-experience": {
+    "title": "Building a Resume Without Experience",
+    "intro": "Building your resume and applying to jobs can be very daunting. It's likely that you don't have any tech experience that ties to a job you've had. That's okay! I mean, that's why we're here, right?",
+    "sections": [
+      {
+        "heading": "Projects as Experience",
+        "content": "When you have 4-5 projects you are proud of, add these under your \"Experience\" section of your resume.\n\nInstead of leaving the \"Relevant Experience\" section blank, put the names of your projects here accompanied with:\n- Technologies used\n- Key functionalities\n- The problem(s) it solves"
+      },
+      {
+        "heading": "Resume Example",
+        "content": "Here's how to format a project as experience:\n\n---\n\n**FULL STACK APPLICATION: \"MINCE\"**\n*Ruby on Rails, PostgreSQL, JavaScript, HTML/CSS*\n\n• Utilize RESTful APIs and CRUD methodology to build an ingredient-to-recipe web application that provides users access to 5k+ recipes and narrows down options based on their ingredient search\n\n• Enhance the user experience by allowing users to save their favorite recipes onto their profile and generate a shopping list based on the recipe's required ingredients\n\n---"
+      },
+      {
+        "heading": "Key Resume Sections",
+        "content": "Your resume should include:\n\n**Header:**\n- Name\n- Email\n- GitHub URL\n- Phone number\n- LinkedIn (optional)\n\n**Technical Skills:**\n- Languages (JavaScript, Python, etc.)\n- Frameworks (React, Node.js, etc.)\n- Tools (Git, PostgreSQL, etc.)\n\n**Relevant Projects:**\n- 2-4 of your best projects\n\n**Education:**\n- Bootcamp or relevant coursework\n- Degree if applicable"
+      },
+      {
+        "heading": "Writing Strong Bullet Points",
+        "content": "Use action verbs and be specific:\n\n**Weak:** Made an app with React\n\n**Strong:** Developed a full-stack React application with user authentication and real-time data updates serving 100+ test users\n\n**Weak:** Worked with APIs\n\n**Strong:** Integrated 3 external APIs to aggregate and display real-time cryptocurrency pricing data with automatic refresh functionality"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Tech Resume Template",
+        "source": "Overleaf",
+        "url": "https://www.overleaf.com/latex/templates/software-developer-resume/",
+        "type": "Template",
+        "description": "LaTeX resume templates for developers"
+      }
+    ],
+    "keyTakeaways": [
+      "Projects count as relevant experience on your resume",
+      "Format projects with technologies, features, and impact",
+      "Use action verbs and specific numbers in bullet points",
+      "Keep your resume to one page"
+    ]
+  },
+  "leveraging-past-experience": {
+    "title": "Leveraging Your Past Experience",
+    "intro": "Don't be afraid to use your past experience! If you have been employed in other roles, think of ways to make your experience and skills gained applicable for the role you want.",
+    "sections": [
+      {
+        "heading": "Transferable Skills",
+        "content": "Every job teaches skills that apply to software engineering:\n\n**Data Analysis?** → You're detail-oriented and precise\n\n**Restaurant Server?** → You manage multiple projects and understand communication\n\n**Customer Service?** → You solve problems and handle pressure\n\n**Project Management?** → You can lead initiatives and meet deadlines\n\nAll great traits for a Software Engineer!"
+      },
+      {
+        "heading": "Real Resume Example",
+        "content": "Here's how I framed my finance background:\n\n---\n\n**Bank of America Merrill Lynch**\n*Finance Management Analyst*\n\n• Practice efficient communication through my daily, weekly, and monthly commentary as to the reasoning behind the profit/loss of the Equity Client Solutions' derivatives department to 10+ team members with larger reports sent to executives\n\n• Enhance journal entry efficiency by 95% by implementing a code-based solution to the team's previously arduous monthly journal entry process\n\n---\n\nNotice how I highlighted communication and problem-solving with code!"
+      },
+      {
+        "heading": "Reframing Your Experience",
+        "content": "For each past role, ask yourself:\n\n1. **Did I solve any problems?** → Problem-solving is the core of engineering\n\n2. **Did I work with others?** → Collaboration is essential in tech\n\n3. **Did I learn new tools?** → Shows you can adapt and learn\n\n4. **Did I improve any processes?** → Shows initiative and analytical thinking\n\n5. **Did I handle data or reports?** → Attention to detail and accuracy"
+      },
+      {
+        "heading": "The Career Changer Advantage",
+        "content": "Your diverse background is actually an advantage:\n\n- **Unique perspective**: You see problems differently\n- **Domain knowledge**: You understand industries others don't\n- **Soft skills**: You've developed communication and collaboration\n- **Maturity**: You've navigated professional environments\n\nDon't hide your past—leverage it as a strength that CS graduates don't have."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Action Verbs for Resumes",
+        "source": "Harvard",
+        "url": "https://hwpi.harvard.edu/files/ocs/files/hes-resume-cover-letter-guide.pdf",
+        "type": "Guide",
+        "description": "Strong action verbs to use on your resume"
+      }
+    ],
+    "keyTakeaways": [
+      "Every job teaches transferable skills valuable in tech",
+      "Reframe past experiences to highlight relevant abilities",
+      "Your diverse background is a unique advantage",
+      "Focus on problem-solving, communication, and adaptability"
+    ]
+  },
+  "when-to-apply": {
+    "title": "When to Start Applying",
+    "intro": "Don't wait until bootcamp graduation or the very end of your self-teaching curriculum to apply. You can expect to wait 3-6 weeks before hearing back about your applications. Because of this, apply now.",
+    "sections": [
+      {
+        "heading": "The Timeline Reality",
+        "content": "Here's what the application timeline actually looks like:\n\n- **Week 1:** Submit application\n- **Weeks 2-3:** Application reviewed (maybe)\n- **Weeks 3-4:** Initial recruiter call scheduled\n- **Weeks 4-6:** Technical interviews begin\n- **Weeks 6-8:** Final rounds and offer\n\nIf you wait until graduation to apply, you're looking at 2+ months of waiting with no income. Start earlier!"
+      },
+      {
+        "heading": "The Practice Benefit",
+        "content": "If you do hear back from a company early, now you get to practice interviewing and see what to expect.\n\n**Word of caution:** Do not apply to your dream job at this time.\n\nThe goal is to get comfortable with the process so that when you do come across your dream job, you have more insight about the whole experience."
+      },
+      {
+        "heading": "The Math of Early Applications",
+        "content": "**Worst case scenario:** You get to practice and get better at applying for jobs\n\n**Best case scenario:** You apply, get interviews, then an offer, then have a job lined up right after your learning journey is complete!\n\n**I see no losing here.**\n\nEven rejection emails provide valuable data about what's working and what isn't in your approach."
+      },
+      {
+        "heading": "How to Start Now",
+        "content": "Even if you're still learning:\n\n1. **Apply to 3-5 positions per week** to practice\n2. **Target companies** you're interested in but not your top choices\n3. **Note what questions** come up in initial calls\n4. **Refine your resume** based on what gets responses\n5. **Build confidence** with each interaction\n\nBy the time you're ready for your dream company, you'll be a polished candidate."
+      }
+    ],
+    "resources": [
+      {
+        "title": "LinkedIn Jobs",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/jobs/",
+        "type": "Job Board",
+        "description": "Find and apply to software engineering positions"
+      },
+      {
+        "title": "Wellfound (AngelList)",
+        "source": "Wellfound",
+        "url": "https://wellfound.com/",
+        "type": "Job Board",
+        "description": "Startup jobs and salary information"
+      }
+    ],
+    "keyTakeaways": [
+      "Applications can take 3-6 weeks to hear back—start early",
+      "Early applications give you practice before your dream job",
+      "Worst case: you practice. Best case: you have a job lined up",
+      "Save your top choice companies until you're more polished"
+    ]
+  },
+  "tracking-applications": {
+    "title": "Tracking Your Applications",
+    "intro": "It's important to keep track of your applications so that as the weeks go by, you know which jobs to follow up on and which you have heard back from.",
+    "sections": [
+      {
+        "heading": "Why Track?",
+        "content": "If you've heard back from multiple companies, you can see if there's a theme.\n\nIf you keep getting interviews for Ruby developer jobs, odds are your resume does a good job showing your Ruby skills. Is this something you expected? Is this something you want? If not, now you know you need to alter your resume.\n\nJob hunting is stressful enough—don't make it worse by not keeping track of where you stand with different companies."
+      },
+      {
+        "heading": "What to Track",
+        "content": "For each application, record:\n\n- **Job Title**: The exact position title\n- **Company**: Company name\n- **Location**: Where the job is based\n- **Date Applied**: When you submitted\n- **Stage**: Applied → Phone Screen → Technical → Onsite → Offer/Rejected\n- **Recruiter Email**: For follow-ups\n- **Notes**: Any important details or feedback"
+      },
+      {
+        "heading": "Tools for Tracking",
+        "content": "Choose whatever works for you:\n\n**Simple:**\n- Google Sheets / Excel spreadsheet\n- Notion database\n\n**Purpose-built:**\n- Huntr (free job tracking app)\n- Teal (job search management)\n- Trello board with columns for each stage\n\nThe best tool is the one you'll actually use consistently."
+      },
+      {
+        "heading": "Following Up",
+        "content": "Use your tracker to:\n\n**After 1 week:** If you connected with someone at the company, follow up thanking them again\n\n**After 2 weeks:** If no response, send a polite follow-up email to the recruiter\n\n**After 4 weeks:** Consider the application cold unless you hear otherwise\n\nTracking helps you know when it's appropriate to follow up without being pushy."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Huntr",
+        "source": "Huntr",
+        "url": "https://huntr.co/",
+        "type": "Tool",
+        "description": "Free job application tracker"
+      },
+      {
+        "title": "Notion Job Application Template",
+        "source": "Notion",
+        "url": "https://www.notion.so/templates/job-applications",
+        "type": "Template",
+        "description": "Customizable job tracking template"
+      }
+    ],
+    "keyTakeaways": [
+      "Track every application to identify patterns and stay organized",
+      "Record key details: company, date, stage, and recruiter contact",
+      "Use your tracker to time follow-ups appropriately",
+      "Patterns in responses can help you improve your approach"
+    ]
+  },
+  "interview-preparation": {
+    "title": "Interview Preparation Essentials",
+    "intro": "The interview process can feel overwhelming, but with the right preparation, you can walk in confident. Here's what you need to know to succeed.",
+    "sections": [
+      {
+        "heading": "Types of Interviews",
+        "content": "Most tech interviews follow a similar pattern:\n\n**1. Recruiter Screen (15-30 min)**\n- Tell me about yourself\n- Why this company?\n- Salary expectations\n- Timeline and logistics\n\n**2. Technical Screen (45-60 min)**\n- Coding problem or take-home project\n- Questions about your projects\n- Technical knowledge questions\n\n**3. Onsite/Final Rounds (3-5 hours)**\n- Multiple technical interviews\n- System design (sometimes)\n- Behavioral interviews\n- Meet the team"
+      },
+      {
+        "heading": "Preparing Your Stories",
+        "content": "Have stories ready for common questions:\n\n- **Tell me about yourself**: 2-minute pitch of your background and why software engineering\n- **Why this company?**: Research-backed enthusiasm\n- **Tell me about a challenge**: A project obstacle you overcame\n- **Conflict with a teammate**: How you resolved a disagreement professionally\n\nUse the **STAR method**: Situation, Task, Action, Result"
+      },
+      {
+        "heading": "Technical Preparation",
+        "content": "For your technical interviews:\n\n**Know your projects inside and out:**\n- Why did you make certain technical decisions?\n- What would you do differently?\n- What was the hardest part?\n\n**Review fundamentals:**\n- Data structures basics\n- Your language/framework of choice\n- How the web works (HTTP, APIs, etc.)\n\n**Practice coding out loud:**\n- Talk through your thought process\n- Get comfortable with ambiguity\n- Practice on a whiteboard or shared doc"
+      },
+      {
+        "heading": "The Day Before",
+        "content": "**Logistics:**\n- Confirm the time and format (video/phone/onsite)\n- Test your video and audio if virtual\n- Research your interviewers on LinkedIn\n\n**Mindset:**\n- Review the job description one more time\n- Prepare 3-5 questions to ask them\n- Get good sleep—being rested matters more than last-minute cramming"
+      }
+    ],
+    "resources": [
+      {
+        "title": "LeetCode",
+        "source": "LeetCode",
+        "url": "https://leetcode.com/",
+        "type": "Practice",
+        "description": "Technical coding interview practice"
+      },
+      {
+        "title": "Pramp",
+        "source": "Pramp",
+        "url": "https://www.pramp.com/",
+        "type": "Practice",
+        "description": "Free mock technical interviews with peers"
+      }
+    ],
+    "keyTakeaways": [
+      "Know the typical interview stages: recruiter, technical, onsite",
+      "Prepare stories using the STAR method for behavioral questions",
+      "Know your projects deeply—expect detailed questions about them",
+      "Prepare thoughtful questions to ask your interviewers"
+    ]
+  },
+  "behavioral-interviews": {
+    "title": "Nailing Behavioral Interviews",
+    "intro": "Technical skills get you in the door, but behavioral interviews determine if you're someone the team wants to work with. Here's how to shine.",
+    "sections": [
+      {
+        "heading": "What They're Really Asking",
+        "content": "Every behavioral question is trying to assess:\n\n**\"Tell me about a time you...\"**\n- Can you communicate clearly?\n- Do you take ownership?\n- Are you self-aware?\n- Would you be good to work with?\n\nThey want to see how you handle real situations, not hypotheticals."
+      },
+      {
+        "heading": "The STAR Method",
+        "content": "Structure every answer with STAR:\n\n**Situation**: Set the scene briefly (2-3 sentences)\n*\"On my recipe app project, we had a deadline in 2 weeks and my partner suddenly had a family emergency.\"*\n\n**Task**: What was your responsibility?\n*\"I needed to deliver the full-stack application, which was originally scoped for two people.\"*\n\n**Action**: What did YOU do? (This is the longest part)\n*\"I prioritized features, cut scope to the MVP, communicated with instructors about the situation, and worked extended hours on the critical path.\"*\n\n**Result**: What was the outcome? Include metrics if possible.\n*\"We delivered on time with core functionality. I later added the stretch features and the project became my strongest portfolio piece.\"*"
+      },
+      {
+        "heading": "Common Questions",
+        "content": "Prepare stories for these themes:\n\n1. **Challenge/Obstacle**: When something went wrong\n2. **Teamwork**: Working with others\n3. **Conflict**: Disagreement with a colleague\n4. **Failure**: Something that didn't work out\n5. **Learning**: Picking up a new skill quickly\n6. **Initiative**: Going above and beyond\n\nYou can often adapt the same 3-4 stories to answer many different questions."
+      },
+      {
+        "heading": "What NOT to Do",
+        "content": "Avoid these common mistakes:\n\n**Don't:**\n- Give vague answers without specifics\n- Blame others for failures\n- Share confidential information about past employers\n- Give answers longer than 2-3 minutes\n- Say you've never had conflict or challenges\n\n**Do:**\n- Be specific and concrete\n- Own your mistakes and share what you learned\n- Focus on what YOU did, even in team situations\n- Practice your stories out loud"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Top 30 Behavioral Interview Questions",
+        "source": "Indeed",
+        "url": "https://www.indeed.com/career-advice/interviewing/most-common-behavioral-interview-questions-and-answers",
+        "type": "Guide",
+        "description": "Common behavioral questions with tips"
+      }
+    ],
+    "keyTakeaways": [
+      "Use the STAR method to structure every behavioral answer",
+      "Prepare 4-5 versatile stories that can answer many questions",
+      "Be specific—vague answers are forgettable",
+      "Own your failures and share what you learned from them"
+    ]
+  },
+  "your-first-90-days": {
+    "title": "Your First 90 Days",
+    "intro": "Congratulations—you landed the job! Now the real work begins. Here's how to set yourself up for success in your first role as a software engineer.",
+    "sections": [
+      {
+        "heading": "The First 30 Days: Learn",
+        "content": "Your only job is to absorb information:\n\n**Focus on:**\n- Understanding the codebase and architecture\n- Learning team processes and tools\n- Meeting your teammates and stakeholders\n- Completing onboarding tasks\n- Asking lots of questions (this is expected!)\n\n**Don't worry about:**\n- Making big contributions yet\n- Having strong opinions about the code\n- Feeling like you should know everything"
+      },
+      {
+        "heading": "Days 31-60: Contribute",
+        "content": "Start making small impacts:\n\n**Look for:**\n- Small bugs to fix\n- Documentation to improve\n- Tests to add\n- Code reviews to participate in\n\n**Build relationships:**\n- Have 1:1s with teammates\n- Attend team social events\n- Find a mentor or buddy\n- Ask for feedback early and often"
+      },
+      {
+        "heading": "Days 61-90: Own",
+        "content": "Take ownership of larger work:\n\n**Step up to:**\n- Own a small feature end-to-end\n- Lead a small initiative\n- Improve a process you've noticed\n- Share knowledge with others\n\n**By day 90, you should:**\n- Understand how to ship code independently\n- Know who to go to for different questions\n- Have a sense of the team's priorities\n- Feel like a contributing member of the team"
+      },
+      {
+        "heading": "Ongoing Success Tips",
+        "content": "Habits that will serve you throughout your career:\n\n**Take notes religiously**: You won't remember everything\n\n**Ask questions early**: It's better to ask \"dumb\" questions in week 1 than week 10\n\n**Communicate proactively**: Update your manager on progress, blockers, and concerns\n\n**Seek feedback**: Don't wait for performance reviews\n\n**Keep learning**: The learning never stops in tech\n\nYou made it this far—you absolutely belong here."
+      }
+    ],
+    "resources": [
+      {
+        "title": "The First 90 Days",
+        "source": "Michael D. Watkins",
+        "url": "https://hbr.org/2009/06/the-first-90-days",
+        "type": "Article",
+        "description": "Classic framework for starting a new role"
+      }
+    ],
+    "keyTakeaways": [
+      "First 30 days: focus on learning, not contributing",
+      "Days 31-60: start making small impacts and building relationships",
+      "Days 61-90: own larger work and establish yourself as a contributor",
+      "Take notes, ask questions, and seek feedback throughout"
+    ]
+  }
+}

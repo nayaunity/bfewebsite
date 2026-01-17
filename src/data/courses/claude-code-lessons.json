@@ -1,5 +1,6 @@
 {
   "what-is-claude-code": {
+    "title": "What is Claude Code?",
     "intro": "Claude Code is an agentic coding tool that lives in your terminal. It understands your codebase, can edit files, run commands, and help you build software faster than ever before.",
     "sections": [
       {
@@ -38,6 +39,7 @@
     ]
   },
   "installation-setup": {
+    "title": "Installation & Setup",
     "intro": "Getting started with Claude Code takes just a few minutes. Let's walk through the installation process and initial configuration.",
     "sections": [
       {
@@ -80,6 +82,7 @@
     ]
   },
   "your-first-prompt": {
+    "title": "Your First Prompt",
     "intro": "Now that Claude Code is installed, let's write your first prompt and see the magic happen. We'll start with something simple and build from there.",
     "sections": [
       {
@@ -115,6 +118,7 @@
     ]
   },
   "understanding-the-interface": {
+    "title": "Understanding the Interface",
     "intro": "Claude Code's terminal interface is designed to keep you informed and in control. Let's explore its key elements and how to navigate effectively.",
     "sections": [
       {
@@ -150,6 +154,7 @@
     ]
   },
   "anatomy-of-a-good-prompt": {
+    "title": "Anatomy of a Good Prompt",
     "intro": "The quality of your prompts directly affects the quality of Claude's output. Learn the components of effective prompts that get you better results faster.",
     "sections": [
       {
@@ -185,6 +190,7 @@
     ]
   },
   "context-is-everything": {
+    "title": "Context is Everything",
     "intro": "Claude Code can read your entire codebase, but it still benefits from context you provide. Learn how to give Claude the right context for better results.",
     "sections": [
       {
@@ -220,6 +226,7 @@
     ]
   },
   "iterative-refinement": {
+    "title": "Iterative Refinement",
     "intro": "Complex tasks rarely come out perfect on the first try. Learn how to iterate with Claude to refine results and achieve exactly what you need.",
     "sections": [
       {
@@ -255,6 +262,7 @@
     ]
   },
   "common-prompting-mistakes": {
+    "title": "Common Prompting Mistakes",
     "intro": "Even experienced developers make prompting mistakes. Learn the most common pitfalls and how to avoid them for smoother Claude Code sessions.",
     "sections": [
       {
@@ -290,6 +298,7 @@
     ]
   },
   "generating-code-from-scratch": {
+    "title": "Generating Code from Scratch",
     "intro": "One of Claude Code's superpowers is generating entire features from descriptions. Learn how to get high-quality code generation that fits your project.",
     "sections": [
       {
@@ -325,6 +334,7 @@
     ]
   },
   "editing-existing-code": {
+    "title": "Editing Existing Code",
     "intro": "Most of your time with Claude Code will be spent editing existing code rather than writing from scratch. Learn techniques for precise, safe modifications.",
     "sections": [
       {
@@ -360,6 +370,7 @@
     ]
   },
   "refactoring-with-ai": {
+    "title": "Refactoring with AI",
     "intro": "Refactoring is where Claude Code truly shines. It can analyze patterns, suggest improvements, and execute large-scale refactors that would take hours manually.",
     "sections": [
       {
@@ -395,6 +406,7 @@
     ]
   },
   "writing-tests": {
+    "title": "Writing Tests with Claude",
     "intro": "Claude Code can write tests that actually catch bugs. Learn how to generate meaningful test coverage for your code.",
     "sections": [
       {
@@ -437,6 +449,7 @@
     ]
   },
   "debugging-with-claude": {
+    "title": "Debugging with Claude",
     "intro": "Debugging is one of Claude Code's strongest capabilities. It can analyze errors, trace through code, and suggest fixes faster than traditional debugging.",
     "sections": [
       {
@@ -472,6 +485,7 @@
     ]
   },
   "understanding-error-messages": {
+    "title": "Understanding Error Messages",
     "intro": "Error messages often contain the key to fixing bugs, but they can be cryptic. Learn how to use Claude to decode and resolve errors quickly.",
     "sections": [
       {
@@ -507,6 +521,7 @@
     ]
   },
   "code-review-assistance": {
+    "title": "Code Review Assistance",
     "intro": "Claude can act as a code reviewer, catching bugs, suggesting improvements, and ensuring consistency. Learn how to get valuable code review feedback.",
     "sections": [
       {
@@ -542,6 +557,7 @@
     ]
   },
   "performance-optimization": {
+    "title": "Performance Optimization",
     "intro": "Claude can identify performance bottlenecks and suggest optimizations. Learn how to use it to make your code faster.",
     "sections": [
       {
@@ -584,6 +600,7 @@
     ]
   },
   "project-planning-with-ai": {
+    "title": "Project Planning with AI",
     "intro": "Claude Code can help you plan projects before writing any code. Learn how to use it for architecture decisions and feature planning.",
     "sections": [
       {
@@ -619,6 +636,7 @@
     ]
   },
   "documentation-generation": {
+    "title": "Documentation Generation",
     "intro": "Good documentation is essential but time-consuming. Claude can generate and maintain documentation that stays accurate and helpful.",
     "sections": [
       {
@@ -661,6 +679,7 @@
     ]
   },
   "git-workflows": {
+    "title": "Git Workflows with Claude",
     "intro": "Claude Code integrates seamlessly with git, helping you manage commits, branches, and pull requests more efficiently.",
     "sections": [
       {
@@ -703,6 +722,7 @@
     ]
   },
   "building-full-features": {
+    "title": "Building Full Features",
     "intro": "Put it all together: use Claude Code to build complete features from start to finish. This lesson walks through a real-world example.",
     "sections": [
       {

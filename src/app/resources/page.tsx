@@ -26,7 +26,7 @@ export default function ResourcesPage() {
       title: "Career Growth",
       description: "Actionable advice for breaking into tech and leveling up.",
       items: [
-        { name: "Breaking Into Tech", description: "Strategies for landing your first tech role", tag: "Featured" },
+        { name: "Breaking Into Tech", description: "Strategies for landing your first tech role", tag: "Featured", href: "/resources/break-into-tech" },
         { name: "Interview Prep", description: "Ace technical and behavioral interviews", tag: "Popular" },
         { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth" },
