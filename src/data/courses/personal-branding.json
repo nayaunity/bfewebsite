@@ -1,0 +1,66 @@
+{
+  "id": "personal-branding",
+  "title": "Personal Branding",
+  "subtitle": "Build your reputation in the tech industry",
+  "description": "Resumes don't cut it anymore. Learn how to build a personal brand that gets you noticed, lands you opportunities, and establishes you as someone who knows their stuff.",
+  "tag": "Growth",
+  "tagColor": "teal",
+  "stats": {
+    "modules": 2,
+    "lessons": 4,
+    "freeLessons": 1
+  },
+  "features": [
+    "Build your online presence",
+    "Create valuable content",
+    "Network at industry events"
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "Building Your Brand",
+      "description": "Understand why personal branding matters and how to get started.",
+      "lessons": [
+        {
+          "id": "1.1",
+          "slug": "build-a-personal-brand",
+          "title": "Build A Personal Brand",
+          "duration": "15 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1.2",
+          "slug": "choosing-your-platform",
+          "title": "Choosing Your Platform",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Content & Visibility",
+      "description": "Create content that establishes you as a thought leader.",
+      "lessons": [
+        {
+          "id": "2.1",
+          "slug": "content-that-converts",
+          "title": "Content That Converts",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "2.2",
+          "slug": "physical-presence",
+          "title": "Your Physical Presence",
+          "duration": "8 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    }
+  ]
+}

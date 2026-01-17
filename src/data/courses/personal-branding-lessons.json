@@ -1,0 +1,69 @@
+{
+  "build-a-personal-brand": {
+    "title": "Build A Personal Brand",
+    "intro": "Resumes don't cut it anymore. In 2025, building a personal brand is what will get you the job, the promotion, and recognition as someone who knows their stuff. Whether you're in tech, marketing, or any industry—your brand needs to show that you are knowledgeable and capable.",
+    "sections": [
+      {
+        "heading": "Why Personal Branding Matters Now",
+        "content": "I became a software engineer in 2020 after attending a coding bootcamp. Because I knew I was at a disadvantage without a computer science degree, I needed to establish myself as someone who knows their stuff.\n\nI started posting on platforms like LinkedIn and Medium at least weekly. On LinkedIn, I'd talk about what I learned and projects I was creating. On Medium, I'd post technical articles—I even wrote a tutorial about using GraphQL to integrate graphing into an app I'd built.\n\nIf I had gotten a CS degree, I never would have thought to do those things. I was doing them purely because I was at a disadvantage. But here's the truth: **now everyone needs to do it**—degree, bootcamp, or self-taught.\n\n> \"No matter what industry you're in, your brand needs to be the same thing: a person who knows their stuff.\"\n\nIf you're in marketing, you need to be the marketing person who knows what they're talking about. If you're in tech, you need to show you're knowledgeable on emerging trends and technologies."
+      },
+      {
+        "heading": "Your Online Presence",
+        "content": "Your online presence lives on social media platforms: YouTube, TikTok, Instagram, LinkedIn, Medium, Substack—there are so many options.\n\nLet's address something first: **the era of feeling cringed out or shy about content creation is over**. Anyone who thinks making content is cringe? They're the weird ones now. Don't let that hesitation stop you.\n\nThe good news is there's something for every type of creator:\n\n- **Long-form video content** (YouTube)\n- **Long-form written content** (Medium, Substack)\n- **Short-form video content** (TikTok, Instagram Reels)\n- **Short-form written content** (LinkedIn posts, Twitter/X)\n\nStart with **one platform**—whichever you're most comfortable with—and dive deep on it. You can expand later, but mastery on one platform beats mediocrity on five."
+      },
+      {
+        "heading": "The Three Content Buckets",
+        "content": "When creating content, focus on three types that establish you as a thought leader:\n\n**Bucket 1: Industry News & Trends**\nWhat's something you saw recently in the news or a trend in your field? What do you think about it? To be a thought leader, you need to have thoughts. Share your perspective on emerging developments.\n\n**Bucket 2: Your Work Experience**\nWhat are you doing in your current work that made you think, learn something new, or that you'd like more people to know about?\n\nFor example, I once worked on making our team's digital assets accessible—checking if pages could be navigated using just a keyboard. I could turn that into a LinkedIn post or Medium article titled *\"6 Accessibility Pitfalls Companies Are Landing Into With Their Web Pages.\"*\n\nYou just turned your work experience into something valuable for many more people.\n\n**Bucket 3: Day-in-the-Life Content**\nThis micro content lets people see what your shoes look like. A quick post showing timestamps of what you did throughout your day gives insight into what they can expect in a role like yours.\n\nWhenever I'm considering a career switch, I love watching day-in-the-life content to see if I'd actually enjoy the day-to-day—not just what I imagine it to be based on preconceived notions."
+      },
+      {
+        "heading": "Platform-Specific Strategy",
+        "content": "Here's how to dive deep on each platform:\n\n**YouTube**\nOne long-form video (7-15 minutes) every single week. Obviously this comes with time constraints, but consistency matters.\n\n**TikTok & Instagram**\nAim for five videos per week. Some say you need to post 3-5 times per day, but for building your brand for corporate, value matters way more than volume.\n\n**LinkedIn**\nAbout three posts per week is fantastic. **Important tip:** In 2025, LinkedIn is prioritizing video content like never before. Mix text posts with short vertical videos (same format as TikTok/Reels—about 60 seconds).\n\n**Medium & Substack**\nPosting an article a couple times a week would be phenomenal.\n\n**Wherever you decide to live, make sure that platform has a fantastic bio.** Think: *What do I want to be known for?* Create a tagline and put it in every bio. Make it easy for someone to think of you the way you want to be thought about—by telling them how to think about you."
+      },
+      {
+        "heading": "Your Physical Presence",
+        "content": "I'm going to hold your hand while I say this: **we need to go outside**.\n\nCompanies want to hire people who are keeping up with emerging tech and trends. One way to show you care is by physically putting yourself in environments where those things are being talked about.\n\n**The Goal for This Year:**\n\n1. **One nationally recognized conference** — These are bigger events that probably cost money. If you're currently employed, you can often get your employer to send you. If not, you may be able to deduct some expenses on your taxes (consult a tax professional!).\n\n2. **Two smaller industry events** — These can be free, small groups of people, no bells and whistles necessary. Just something to get yourself deep into your community.\n\n**After you attend these events, post about what you learned.** It becomes a loop: attend → learn → share → establish yourself as a thought leader.\n\nThis is how we cement our personal brand as being a knowledgeable, reliable person in our industry."
+      },
+      {
+        "heading": "The Harsh Reality",
+        "content": "Resumes don't cut it anymore. I feel like we started seeing this about two years ago, but we kept crossing our fingers hoping it wasn't true. Last year was rough, and it's only becoming more necessary.\n\nThis is what you need to:\n- Get a job\n- Grow in your job\n- Grow in your field\n- Grow in your industry\n\nI don't see this going away anytime soon. I only see it becoming more and more essential.\n\n**Don't make it harder on yourself in 2026 and 2027** when you're seeing your entire team posting day-in-the-life videos and wondering why you're not getting the promotion.\n\nStart now. Pick one platform. Post consistently. Build your brand as someone who knows their stuff."
+      }
+    ],
+    "resources": [
+      {
+        "title": "LinkedIn",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/",
+        "type": "Platform",
+        "description": "Professional networking platform—prioritizing video content in 2025"
+      },
+      {
+        "title": "Medium",
+        "source": "Medium",
+        "url": "https://medium.com/",
+        "type": "Platform",
+        "description": "Long-form content platform for thought leadership articles"
+      },
+      {
+        "title": "Canva",
+        "source": "Canva",
+        "url": "https://www.canva.com/",
+        "type": "Tool",
+        "description": "Free design tool for creating content graphics and thumbnails"
+      },
+      {
+        "title": "Eventbrite Tech Events",
+        "source": "Eventbrite",
+        "url": "https://www.eventbrite.com/d/online/tech-conferences/",
+        "type": "Resource",
+        "description": "Find tech conferences and industry events near you"
+      }
+    ],
+    "keyTakeaways": [
+      "Resumes alone don't cut it anymore—personal branding is essential for career growth",
+      "Start with one platform you're comfortable with and dive deep on it",
+      "Use three content buckets: industry news, work experience, and day-in-the-life",
+      "LinkedIn is prioritizing video content in 2025—mix text posts with short videos",
+      "Attend at least one major conference and two smaller industry events this year"
+    ]
+  }
+}
