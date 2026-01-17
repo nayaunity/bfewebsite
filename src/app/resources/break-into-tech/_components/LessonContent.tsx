@@ -237,8 +237,33 @@ export default function LessonContent({
             {content.sections.map((section, index) => (
               <div key={index} className="mt-10">
                 <h2 className="font-serif text-2xl mb-4">{section.heading}</h2>
-                <div className="text-gray-600 leading-relaxed prose prose-lg max-w-none prose-p:my-4 prose-ul:my-4 prose-li:my-1 prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[#ef562a] prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-pre:bg-gray-900 prose-pre:text-gray-100">
-                  <ReactMarkdown>{section.content}</ReactMarkdown>
+                <div className="text-gray-600 leading-relaxed prose prose-lg max-w-none prose-p:my-4 prose-ul:my-4 prose-li:my-1">
+                  <ReactMarkdown
+                    components={{
+                      code: ({ className, children, ...props }) => {
+                        const isInline = !className;
+                        if (isInline) {
+                          return (
+                            <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[#ef562a] font-normal text-sm" {...props}>
+                              {children}
+                            </code>
+                          );
+                        }
+                        return (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                      pre: ({ children }) => (
+                        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4 text-sm">
+                          {children}
+                        </pre>
+                      ),
+                    }}
+                  >
+                    {section.content}
+                  </ReactMarkdown>
                 </div>
               </div>
             ))}
