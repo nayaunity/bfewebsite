@@ -237,7 +237,7 @@ export default function LessonContent({
             {content.sections.map((section, index) => (
               <div key={index} className="mt-10">
                 <h2 className="font-serif text-2xl mb-4">{section.heading}</h2>
-                <div className="text-gray-600 leading-relaxed prose prose-lg max-w-none prose-p:my-4 prose-ul:my-4 prose-li:my-1">
+                <div className="text-gray-600 leading-relaxed">
                   <ReactMarkdown
                     components={{
                       code: ({ className, children, ...props }) => {
@@ -259,6 +259,37 @@ export default function LessonContent({
                         <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto my-4 text-sm">
                           {children}
                         </pre>
+                      ),
+                      ul: ({ children }) => (
+                        <ul className="my-4 ml-4 space-y-2">
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="my-4 ml-4 space-y-2 list-decimal list-inside">
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="flex gap-2">
+                          <span className="text-[#ef562a] mt-1.5 flex-shrink-0">•</span>
+                          <span>{children}</span>
+                        </li>
+                      ),
+                      p: ({ children }) => (
+                        <p className="my-4 leading-relaxed">
+                          {children}
+                        </p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="font-semibold text-gray-900">
+                          {children}
+                        </strong>
+                      ),
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-[#ef562a] bg-orange-50 pl-4 py-3 my-4 italic text-gray-700">
+                          {children}
+                        </blockquote>
                       ),
                     }}
                   >
