@@ -337,7 +337,7 @@
       },
       {
         "heading": "The Connection Message",
-        "content": "Here's an example message (Character Count: 294/300):\n\n---\n\n*Hi Jess,*\n\n*My name is Naya and I am a software engineer very interested in Rathon. To be frank, given that the tech field is composed of very few women, I was hoping to speak with you about your experience within Rathon as a backend engineer? I'd appreciate any insight you could provide.*\n\n*Best,*\n*Naya*\n\n---\n\nWhen the message was drafted, select \"Connect\" and \"Add a message.\" Insert your blurb and send. Then go back and apply!"
+        "content": "Here's an example message (Character Count: 294/300):\n\n```\nHi Jess,\n\nMy name is Naya and I am a software engineer very\ninterested in Rathon. To be frank, given that the tech\nfield is composed of very few women, I was hoping to\nspeak with you about your experience within Rathon as\na backend engineer? I'd appreciate any insight you\ncould provide.\n\nBest,\nNaya\n```\n\nWhen the message was drafted, select \"Connect\" and \"Add a message.\" Insert your blurb and send. Then go back and apply!"
       },
       {
         "heading": "Ask for Advice, Get a Job",
@@ -414,7 +414,7 @@
       },
       {
         "heading": "Resume Example",
-        "content": "Here's how to format a project as experience:\n\n---\n\n**FULL STACK APPLICATION: \"MINCE\"**\n*Ruby on Rails, PostgreSQL, JavaScript, HTML/CSS*\n\n• Utilize RESTful APIs and CRUD methodology to build an ingredient-to-recipe web application that provides users access to 5k+ recipes and narrows down options based on their ingredient search\n\n• Enhance the user experience by allowing users to save their favorite recipes onto their profile and generate a shopping list based on the recipe's required ingredients\n\n---"
+        "content": "Here's how to format a project as experience:\n\n```\nFULL STACK APPLICATION: \"MINCE\"\nRuby on Rails, PostgreSQL, JavaScript, HTML/CSS\n\n• Utilize RESTful APIs and CRUD methodology to build an\n  ingredient-to-recipe web application that provides users\n  access to 5k+ recipes and narrows down options based on\n  their ingredient search\n\n• Enhance the user experience by allowing users to save\n  their favorite recipes onto their profile and generate\n  a shopping list based on the recipe's required ingredients\n```"
       },
       {
         "heading": "Key Resume Sections",
@@ -451,7 +451,7 @@
       },
       {
         "heading": "Real Resume Example",
-        "content": "Here's how I framed my finance background:\n\n---\n\n**Bank of America Merrill Lynch**\n*Finance Management Analyst*\n\n• Practice efficient communication through my daily, weekly, and monthly commentary as to the reasoning behind the profit/loss of the Equity Client Solutions' derivatives department to 10+ team members with larger reports sent to executives\n\n• Enhance journal entry efficiency by 95% by implementing a code-based solution to the team's previously arduous monthly journal entry process\n\n---\n\nNotice how I highlighted communication and problem-solving with code!"
+        "content": "Here's how I framed my finance background:\n\n```\nBank of America Merrill Lynch\nFinance Management Analyst\n\n• Practice efficient communication through my daily, weekly,\n  and monthly commentary as to the reasoning behind the\n  profit/loss of the Equity Client Solutions' derivatives\n  department to 10+ team members with larger reports sent\n  to executives\n\n• Enhance journal entry efficiency by 95% by implementing\n  a code-based solution to the team's previously arduous\n  monthly journal entry process\n```\n\nNotice how I highlighted communication and problem-solving with code!"
       },
       {
         "heading": "Reframing Your Experience",

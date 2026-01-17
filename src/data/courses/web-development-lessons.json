@@ -201,11 +201,11 @@
     "sections": [
       {
         "heading": "Elements, Tags, and Attributes",
-        "content": "**Element**: A complete piece of HTML\n```html\n<p class=\"intro\">Hello world</p>\n```\n\n**Tag**: The opening `<p>` and closing `</p>` parts\n\n**Attribute**: Extra information like `class=\"intro\"`\n- Attributes go in the opening tag\n- Format: `name=\"value\"`\n- Common attributes: `id`, `class`, `href`, `src`\n\n**Content**: The text \"Hello world\" between tags"
+        "content": "**Element**: A complete piece of HTML\n\n```html\n<p class=\"intro\">Hello world</p>\n```\n\n**Tag**: The opening `<p>` and closing `</p>` parts\n\n**Attribute**: Extra information like `class=\"intro\"`\n- Attributes go in the opening tag\n- Format: `name=\"value\"`\n- Common attributes: `id`, `class`, `href`, `src`\n\n**Content**: The text \"Hello world\" between tags"
       },
       {
         "heading": "Nesting and Indentation",
-        "content": "Elements can contain other elements (nesting):\n\n```html\n<div>\n    <h1>Welcome</h1>\n    <p>This paragraph is inside the div.</p>\n</div>\n```\n\n**Rules for nesting:**\n- Close inner elements before outer ones\n- Indent nested elements for readability\n- Use 2 or 4 spaces (be consistent)\n\n**Wrong:**\n```html\n<div><p>Text</div></p>  <!-- Tags crossed! -->\n```\n\n**Right:**\n```html\n<div><p>Text</p></div>  <!-- Properly nested -->\n```"
+        "content": "Elements can contain other elements (nesting):\n\n```html\n<div>\n    <h1>Welcome</h1>\n    <p>This paragraph is inside the div.</p>\n</div>\n```\n\n**Rules for nesting:**\n- Close inner elements before outer ones\n- Indent nested elements for readability\n- Use 2 or 4 spaces (be consistent)\n\n**Wrong:**\n\n```html\n<div><p>Text</div></p>  <!-- Tags crossed! -->\n```\n\n**Right:**\n\n```html\n<div><p>Text</p></div>  <!-- Properly nested -->\n```"
       },
       {
         "heading": "Self-Closing Tags",
@@ -256,7 +256,7 @@
       },
       {
         "heading": "Paragraphs and Line Breaks",
-        "content": "**Paragraphs** (`<p>`) are blocks of text:\n```html\n<p>This is a paragraph. It has automatic spacing above and below.</p>\n<p>This is another paragraph.</p>\n```\n\n**Line breaks** (`<br>`) force a new line without starting a new paragraph:\n```html\n<p>Line one<br>Line two<br>Line three</p>\n```\n\n**Horizontal rules** (`<hr>`) create a thematic break:\n```html\n<p>First section content</p>\n<hr>\n<p>Second section content</p>\n```"
+        "content": "**Paragraphs** (`<p>`) are blocks of text:\n\n```html\n<p>This is a paragraph. It has automatic spacing above and below.</p>\n<p>This is another paragraph.</p>\n```\n\n**Line breaks** (`<br>`) force a new line without starting a new paragraph:\n\n```html\n<p>Line one<br>Line two<br>Line three</p>\n```\n\n**Horizontal rules** (`<hr>`) create a thematic break:\n\n```html\n<p>First section content</p>\n<hr>\n<p>Second section content</p>\n```"
       },
       {
         "heading": "Text Formatting",
@@ -264,7 +264,7 @@
       },
       {
         "heading": "Block vs Inline Elements",
-        "content": "**Block elements** start on a new line and take full width:\n- `<h1>` - `<h6>`, `<p>`, `<div>`, `<ul>`, `<ol>`\n\n**Inline elements** flow within text:\n- `<strong>`, `<em>`, `<a>`, `<span>`, `<img>`\n\nExample:\n```html\n<p>This paragraph contains <strong>bold</strong> and <em>italic</em> text.</p>\n```\n\nUnderstanding this distinction helps when styling with CSS."
+        "content": "**Block elements** start on a new line and take full width:\n- `<h1>` - `<h6>`, `<p>`, `<div>`, `<ul>`, `<ol>`\n\n**Inline elements** flow within text:\n- `<strong>`, `<em>`, `<a>`, `<span>`, `<img>`\n\nExample:\n\n```html\n<p>This paragraph contains <strong>bold</strong> and <em>italic</em> text.</p>\n```\n\nUnderstanding this distinction helps when styling with CSS."
       }
     ],
     "resources": [
@@ -351,7 +351,7 @@
       },
       {
         "heading": "Ordered Lists",
-        "content": "Use `<ol>` for lists where order matters (numbered):\n\n```html\n<h2>Recipe Instructions</h2>\n<ol>\n    <li>Preheat oven to 350°F</li>\n    <li>Mix ingredients</li>\n    <li>Bake for 30 minutes</li>\n</ol>\n```\n\nYou can customize the numbering:\n```html\n<ol type=\"A\">  <!-- A, B, C -->\n<ol type=\"i\">  <!-- i, ii, iii -->\n<ol start=\"5\"> <!-- Start at 5 -->\n```"
+        "content": "Use `<ol>` for lists where order matters (numbered):\n\n```html\n<h2>Recipe Instructions</h2>\n<ol>\n    <li>Preheat oven to 350°F</li>\n    <li>Mix ingredients</li>\n    <li>Bake for 30 minutes</li>\n</ol>\n```\n\nYou can customize the numbering:\n\n```html\n<ol type=\"A\">  <!-- A, B, C -->\n<ol type=\"i\">  <!-- i, ii, iii -->\n<ol start=\"5\"> <!-- Start at 5 -->\n```"
       },
       {
         "heading": "Nested Lists",
@@ -442,7 +442,7 @@
     "sections": [
       {
         "heading": "What is Semantic HTML?",
-        "content": "Compare these two approaches:\n\n**Non-semantic (bad):**\n```html\n<div class=\"header\">\n    <div class=\"nav\">...</div>\n</div>\n<div class=\"main-content\">...</div>\n<div class=\"footer\">...</div>\n```\n\n**Semantic (good):**\n```html\n<header>\n    <nav>...</nav>\n</header>\n<main>...</main>\n<footer>...</footer>\n```\n\nBoth look the same, but semantic HTML tells browsers and screen readers what each section IS, not just how it looks."
+        "content": "Compare these two approaches:\n\n**Non-semantic (bad):**\n\n```html\n<div class=\"header\">\n    <div class=\"nav\">...</div>\n</div>\n<div class=\"main-content\">...</div>\n<div class=\"footer\">...</div>\n```\n\n**Semantic (good):**\n\n```html\n<header>\n    <nav>...</nav>\n</header>\n<main>...</main>\n<footer>...</footer>\n```\n\nBoth look the same, but semantic HTML tells browsers and screen readers what each section IS, not just how it looks."
       },
       {
         "heading": "Key Semantic Elements",
@@ -504,11 +504,11 @@
       },
       {
         "heading": "CSS Syntax",
-        "content": "CSS uses a simple pattern:\n\n```css\nselector {\n    property: value;\n    property: value;\n}\n```\n\nExample:\n```css\nh1 {\n    color: blue;\n    font-size: 32px;\n    text-align: center;\n}\n```\n\n- **Selector**: What to style (`h1`, `.class`, `#id`)\n- **Property**: What to change (`color`, `font-size`)\n- **Value**: The new setting (`blue`, `32px`)"
+        "content": "CSS uses a simple pattern:\n\n```css\nselector {\n    property: value;\n    property: value;\n}\n```\n\nExample:\n\n```css\nh1 {\n    color: blue;\n    font-size: 32px;\n    text-align: center;\n}\n```\n\n- **Selector**: What to style (`h1`, `.class`, `#id`)\n- **Property**: What to change (`color`, `font-size`)\n- **Value**: The new setting (`blue`, `32px`)"
       },
       {
         "heading": "Three Ways to Add CSS",
-        "content": "**1. External stylesheet (recommended):**\n```html\n<head>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n```\n\n**2. Internal styles (in the HTML file):**\n```html\n<head>\n    <style>\n        h1 { color: blue; }\n    </style>\n</head>\n```\n\n**3. Inline styles (on the element):**\n```html\n<h1 style=\"color: blue;\">Hello</h1>\n```\n\nExternal stylesheets are best - they keep HTML clean and styles reusable."
+        "content": "**1. External stylesheet (recommended):**\n\n```html\n<head>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n```\n\n**2. Internal styles (in the HTML file):**\n\n```html\n<head>\n    <style>\n        h1 { color: blue; }\n    </style>\n</head>\n```\n\n**3. Inline styles (on the element):**\n\n```html\n<h1 style=\"color: blue;\">Hello</h1>\n```\n\nExternal stylesheets are best - they keep HTML clean and styles reusable."
       },
       {
         "heading": "Your First Stylesheet",
@@ -563,7 +563,7 @@
       },
       {
         "heading": "Using Web Fonts",
-        "content": "Google Fonts offers hundreds of free fonts:\n\n**1. Add to your HTML head:**\n```html\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n```\n\n**2. Use in CSS:**\n```css\nbody {\n    font-family: 'Inter', sans-serif;\n}\n```\n\n**Popular font pairings:**\n- Headings: Playfair Display, Poppins, Montserrat\n- Body: Inter, Open Sans, Roboto\n\nLimit yourself to 2-3 fonts per site for consistency."
+        "content": "Google Fonts offers hundreds of free fonts:\n\n**1. Add to your HTML head:**\n\n```html\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n```\n\n**2. Use in CSS:**\n\n```css\nbody {\n    font-family: 'Inter', sans-serif;\n}\n```\n\n**Popular font pairings:**\n- Headings: Playfair Display, Poppins, Montserrat\n- Body: Inter, Open Sans, Roboto\n\nLimit yourself to 2-3 fonts per site for consistency."
       }
     ],
     "resources": [
