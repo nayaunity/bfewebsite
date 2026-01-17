@@ -1,32 +1,326 @@
 [
-  "Apple",
-  "Microsoft",
-  "Cisco",
-  "Salesforce",
-  "Pinterest",
-  "Accenture",
-  "Deloitte",
-  "EY",
-  "PwC",
-  "KPMG",
-  "Ben & Jerry's",
-  "Levi Strauss & Co.",
-  "Patagonia",
-  "Costco Wholesale",
-  "Delta Air Lines",
-  "JPMorgan Chase",
-  "Goldman Sachs",
-  "Fidelity Investments",
-  "Principal Financial Group",
-  "Progressive Insurance",
-  "Dell Technologies",
-  "Nvidia",
-  "Oracle",
-  "Unisys",
-  "Boston Scientific",
-  "Novartis",
-  "Johnson & Johnson",
-  "Procter & Gamble",
-  "PepsiCo",
-  "Medium"
+  {
+    "name": "Apple",
+    "slug": "apple",
+    "careersUrl": "https://jobs.apple.com/en-us/search?location=united-states-USA",
+    "industry": "Technology",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Microsoft",
+    "slug": "microsoft",
+    "careersUrl": "https://apply.careers.microsoft.com/careers?start=0&location=United+States&pid=1970393556619550&sort_by=distance&filter_include_remote=1",
+    "industry": "Technology",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Cisco",
+    "slug": "cisco",
+    "careersUrl": "https://jobs.cisco.com/",
+    "industry": "Technology",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Salesforce",
+    "slug": "salesforce",
+    "careersUrl": "https://www.salesforce.com/company/careers/",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://salesforce.wd12.myworkdayjobs.com",
+      "company": "salesforce",
+      "siteName": "External_Career_Site"
+    }
+  },
+  {
+    "name": "Pinterest",
+    "slug": "pinterest",
+    "careersUrl": "https://www.pinterestcareers.com/",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "pinterest" }
+  },
+  {
+    "name": "Accenture",
+    "slug": "accenture",
+    "careersUrl": "https://www.accenture.com/us-en/careers",
+    "industry": "Consulting",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Deloitte",
+    "slug": "deloitte",
+    "careersUrl": "https://apply.deloitte.com/careers/SearchJobs",
+    "industry": "Consulting",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "EY",
+    "slug": "ey",
+    "careersUrl": "https://www.ey.com/en_us/careers",
+    "industry": "Consulting",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "PwC",
+    "slug": "pwc",
+    "careersUrl": "https://www.pwc.com/us/en/careers.html",
+    "industry": "Consulting",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "KPMG",
+    "slug": "kpmg",
+    "careersUrl": "https://www.kpmg.us/careers.html",
+    "industry": "Consulting",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Ben & Jerry's",
+    "slug": "ben-and-jerrys",
+    "careersUrl": "https://www.benjerry.com/about-us/jobs",
+    "industry": "Consumer Goods",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Levi Strauss & Co.",
+    "slug": "levi-strauss",
+    "careersUrl": "https://www.levistrauss.com/careers/",
+    "industry": "Consumer Goods",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Patagonia",
+    "slug": "patagonia",
+    "careersUrl": "https://www.patagonia.com/careers/",
+    "industry": "Consumer Goods",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Costco Wholesale",
+    "slug": "costco",
+    "careersUrl": "https://www.costco.com/jobs.html",
+    "industry": "Retail",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Delta Air Lines",
+    "slug": "delta",
+    "careersUrl": "https://www.delta.com/us/en/careers",
+    "industry": "Transportation",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "JPMorgan Chase",
+    "slug": "jpmorgan-chase",
+    "careersUrl": "https://careers.jpmorgan.com/",
+    "industry": "Finance",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Goldman Sachs",
+    "slug": "goldman-sachs",
+    "careersUrl": "https://www.goldmansachs.com/careers/",
+    "industry": "Finance",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Fidelity Investments",
+    "slug": "fidelity",
+    "careersUrl": "https://jobs.fidelity.com/",
+    "industry": "Finance",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Principal Financial Group",
+    "slug": "principal-financial",
+    "careersUrl": "https://www.principal.com/about-us/careers",
+    "industry": "Finance",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Progressive Insurance",
+    "slug": "progressive",
+    "careersUrl": "https://www.progressive.com/careers/",
+    "industry": "Finance",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Dell Technologies",
+    "slug": "dell",
+    "careersUrl": "https://jobs.dell.com/",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://dell.wd1.myworkdayjobs.com",
+      "company": "dell",
+      "siteName": "External"
+    }
+  },
+  {
+    "name": "Nvidia",
+    "slug": "nvidia",
+    "careersUrl": "https://www.nvidia.com/en-us/about-nvidia/careers/",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://nvidia.wd5.myworkdayjobs.com",
+      "company": "nvidia",
+      "siteName": "NVIDIAExternalCareerSite"
+    }
+  },
+  {
+    "name": "Oracle",
+    "slug": "oracle",
+    "careersUrl": "https://careers.oracle.com/en/sites/jobsearch/jobs?location=United%20States&locationId=300000000149325",
+    "industry": "Technology",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Unisys",
+    "slug": "unisys",
+    "careersUrl": "https://unisys.wd5.myworkdayjobs.com/External",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://unisys.wd5.myworkdayjobs.com",
+      "company": "unisys",
+      "siteName": "External"
+    }
+  },
+  {
+    "name": "Boston Scientific",
+    "slug": "boston-scientific",
+    "careersUrl": "https://bostonscientific.eightfold.ai/careers",
+    "industry": "Healthcare",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Novartis",
+    "slug": "novartis",
+    "careersUrl": "https://www.novartis.com/careers",
+    "industry": "Healthcare",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://novartis.wd3.myworkdayjobs.com",
+      "company": "novartis",
+      "siteName": "Novartis_Careers"
+    }
+  },
+  {
+    "name": "Johnson & Johnson",
+    "slug": "johnson-and-johnson",
+    "careersUrl": "https://www.careers.jnj.com/",
+    "industry": "Healthcare",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Procter & Gamble",
+    "slug": "procter-and-gamble",
+    "careersUrl": "https://www.pgcareers.com/",
+    "industry": "Consumer Goods",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "PepsiCo",
+    "slug": "pepsico",
+    "careersUrl": "https://www.pepsicojobs.com/",
+    "industry": "Consumer Goods",
+    "atsType": "custom",
+    "atsConfig": null
+  },
+  {
+    "name": "Medium",
+    "slug": "medium",
+    "careersUrl": "https://medium.com/jobs-at-medium",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "medium" }
+  },
+  {
+    "name": "Airbnb",
+    "slug": "airbnb",
+    "careersUrl": "https://careers.airbnb.com/",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "airbnb" }
+  },
+  {
+    "name": "Stripe",
+    "slug": "stripe",
+    "careersUrl": "https://stripe.com/jobs",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "stripe" }
+  },
+  {
+    "name": "Coinbase",
+    "slug": "coinbase",
+    "careersUrl": "https://www.coinbase.com/careers",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "coinbase" }
+  },
+  {
+    "name": "Lyft",
+    "slug": "lyft",
+    "careersUrl": "https://www.lyft.com/careers",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "lyft" }
+  },
+  {
+    "name": "Dropbox",
+    "slug": "dropbox",
+    "careersUrl": "https://www.dropbox.com/jobs",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "dropbox" }
+  },
+  {
+    "name": "Robinhood",
+    "slug": "robinhood",
+    "careersUrl": "https://careers.robinhood.com/",
+    "industry": "Finance",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "robinhood" }
+  },
+  {
+    "name": "Databricks",
+    "slug": "databricks",
+    "careersUrl": "https://www.databricks.com/company/careers",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "databricks" }
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "careersUrl": "https://www.figma.com/careers/",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "figma" }
+  }
 ]

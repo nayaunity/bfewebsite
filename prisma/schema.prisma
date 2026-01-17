@@ -67,3 +67,42 @@ model LessonProgress {
   @@index([userId])
   @@index([courseId])
 }
+
+// Job board
+model Job {
+  id          String    @id @default(cuid())
+  externalId  String    // ATS job ID for deduplication
+  company     String
+  companySlug String
+  title       String
+  location    String
+  type        String    // Full-time, Contract, etc.
+  remote      Boolean   @default(false)
+  salary      String?
+  postedAt    DateTime?
+  applyUrl    String
+  category    String    // Software Engineering, Data Science, etc.
+  tags        String    // JSON array as string
+  source      String    // greenhouse, workday, etc.
+  isActive    Boolean   @default(true)
+  scrapedAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([externalId, companySlug])
+  @@index([category])
+  @@index([remote])
+  @@index([isActive])
+  @@index([companySlug])
+}
+
+model ScrapeLog {
+  id           String   @id @default(cuid())
+  companySlug  String
+  status       String   // success, error, partial
+  jobsFound    Int      @default(0)
+  errorMessage String?
+  createdAt    DateTime @default(now())
+
+  @@index([companySlug])
+  @@index([createdAt])
+}
