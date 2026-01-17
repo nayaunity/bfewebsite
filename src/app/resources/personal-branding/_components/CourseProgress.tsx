@@ -28,11 +28,11 @@ export default function CourseProgress({ course }: CourseProgressProps) {
   // Not signed in - show prompt
   if (!session?.user) {
     return (
-      <div className="bg-[var(--accent-yellow-bg)] rounded-2xl p-5 sm:p-6 mb-8">
+      <div className="bg-[#ef562a] rounded-2xl p-5 sm:p-6 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="font-medium text-lg mb-1 text-[var(--accent-yellow-text)]">Track your progress</h3>
-            <p className="text-[var(--accent-yellow-text)] text-sm opacity-80">
+            <h3 className="font-medium text-lg mb-1 text-white">Track your progress</h3>
+            <p className="text-white text-sm opacity-80">
               Sign in to save your progress and pick up where you left off.
             </p>
           </div>
@@ -53,7 +53,7 @@ export default function CourseProgress({ course }: CourseProgressProps) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-medium text-lg">Your Progress</h3>
-          <p className="text-[var(--accent-yellow-text)] text-sm opacity-80">
+          <p className="text-white text-sm opacity-80">
             {completedCount} of {totalLessons} lessons completed
           </p>
         </div>
