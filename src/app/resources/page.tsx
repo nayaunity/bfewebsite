@@ -28,7 +28,7 @@ export default function ResourcesPage() {
       items: [
         { name: "Breaking Into Tech", description: "Strategies for landing your first tech role", tag: "Featured", href: "/resources/break-into-tech" },
         { name: "Interview Prep", description: "Ace technical and behavioral interviews", tag: "Popular" },
-        { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential" },
+        { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential", href: "/resources/resume-linkedin" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth", href: "/resources/personal-branding" },
         { name: "Leadership Skills", description: "Advance from IC to management roles", tag: "Advanced" },
         { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },

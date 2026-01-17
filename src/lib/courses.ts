@@ -62,6 +62,8 @@ import breakIntoTechCourse from "@/data/courses/break-into-tech.json";
 import breakIntoTechLessons from "@/data/courses/break-into-tech-lessons.json";
 import personalBrandingCourse from "@/data/courses/personal-branding.json";
 import personalBrandingLessons from "@/data/courses/personal-branding-lessons.json";
+import resumeLinkedInCourse from "@/data/courses/resume-linkedin.json";
+import resumeLinkedInLessons from "@/data/courses/resume-linkedin-lessons.json";
 
 // Course data access functions
 export function getCourse(courseId: string): Course | null {
@@ -76,6 +78,8 @@ export function getCourse(courseId: string): Course | null {
       return breakIntoTechCourse as Course;
     case "personal-branding":
       return personalBrandingCourse as Course;
+    case "resume-linkedin":
+      return resumeLinkedInCourse as Course;
     default:
       return null;
   }
@@ -102,6 +106,9 @@ export function getLessonContent(
       break;
     case "personal-branding":
       lessons = personalBrandingLessons as Record<string, LessonContent>;
+      break;
+    case "resume-linkedin":
+      lessons = resumeLinkedInLessons as Record<string, LessonContent>;
       break;
     default:
       return null;
