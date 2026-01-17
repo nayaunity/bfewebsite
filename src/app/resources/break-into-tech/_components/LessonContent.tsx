@@ -256,7 +256,7 @@ export default function LessonContent({
                         );
                       },
                       pre: ({ children }) => (
-                        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4 text-sm">
+                        <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto my-4 text-sm">
                           {children}
                         </pre>
                       ),
