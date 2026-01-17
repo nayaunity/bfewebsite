@@ -23,7 +23,7 @@ export default function WebDevelopmentGuidePage() {
       <Navigation />
       <main className="pt-28 md:pt-32">
         {/* Hero */}
-        <section className="bg-[var(--background)] py-12 md:py-16 border-b border-[var(--card-border)]">
+        <section className="py-12 md:py-16 border-b border-[var(--card-border)]" style={{ background: 'linear-gradient(to bottom, var(--hero-gradient-from), var(--background))' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
               <Link href="/resources" className="hover:text-[#ef562a]">
