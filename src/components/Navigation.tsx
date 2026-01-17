@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { AuthButton } from "./AuthButton";
 import DarkModeToggle from "./DarkModeToggle";
@@ -9,28 +9,26 @@ import DarkModeToggle from "./DarkModeToggle";
 export default function Navigation() {
   const pathname = usePathname();
   const bottomNavRef = useRef<HTMLElement>(null);
-  const [bottomOffset, setBottomOffset] = useState(0);
 
   // Fix for iOS Safari viewport changes when address bar shows/hides
   useEffect(() => {
+    const nav = bottomNavRef.current;
+    if (!nav || typeof window === 'undefined' || !window.visualViewport) return;
+
     const updatePosition = () => {
-      if (typeof window !== 'undefined' && window.visualViewport) {
-        const viewport = window.visualViewport;
-        const offset = window.innerHeight - viewport.height - viewport.offsetTop;
-        setBottomOffset(Math.max(0, offset));
-      }
+      const viewport = window.visualViewport!;
+      const offset = window.innerHeight - viewport.height - viewport.offsetTop;
+      nav.style.bottom = `${Math.max(0, offset)}px`;
     };
 
-    if (typeof window !== 'undefined' && window.visualViewport) {
-      window.visualViewport.addEventListener('resize', updatePosition);
-      window.visualViewport.addEventListener('scroll', updatePosition);
-      updatePosition();
+    window.visualViewport.addEventListener('resize', updatePosition);
+    window.visualViewport.addEventListener('scroll', updatePosition);
+    updatePosition();
 
-      return () => {
-        window.visualViewport?.removeEventListener('resize', updatePosition);
-        window.visualViewport?.removeEventListener('scroll', updatePosition);
-      };
-    }
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updatePosition);
+      window.visualViewport?.removeEventListener('scroll', updatePosition);
+    };
   }, []);
 
   const navLinks = [
@@ -207,9 +205,8 @@ export default function Navigation() {
       {/* Mobile Bottom Navigation */}
       <nav
         ref={bottomNavRef}
-        className="md:hidden fixed inset-x-0 z-[9999] bg-[var(--background)] border-t border-[var(--card-border)]"
+        className="md:hidden fixed inset-x-0 bottom-0 z-[9999] bg-[var(--background)] border-t border-[var(--card-border)]"
         style={{
-          bottom: bottomOffset,
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
       >
