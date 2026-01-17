@@ -241,8 +241,9 @@ export default function LessonContent({
                   <ReactMarkdown
                     components={{
                       code: ({ className, children, ...props }) => {
-                        const isInline = !className;
-                        if (isInline) {
+                        const content = String(children);
+                        const isCodeBlock = className || content.includes('\n');
+                        if (!isCodeBlock) {
                           return (
                             <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[#ef562a] font-normal text-sm" {...props}>
                               {children}
@@ -250,13 +251,13 @@ export default function LessonContent({
                           );
                         }
                         return (
-                          <code className={className} {...props}>
+                          <code className="text-gray-800" {...props}>
                             {children}
                           </code>
                         );
                       },
                       pre: ({ children }) => (
-                        <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto my-4 text-sm">
+                        <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto my-4 text-sm">
                           {children}
                         </pre>
                       ),
