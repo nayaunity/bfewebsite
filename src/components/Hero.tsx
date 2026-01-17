@@ -17,7 +17,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="bg-white pt-32 md:pt-40 pb-16 md:pb-24">
+    <section className="bg-[var(--background)] pt-32 md:pt-40 pb-16 md:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left Content */}
@@ -32,7 +32,7 @@ export default function Hero() {
               <span className="italic text-[#ef562a]">actionable</span>.
             </h1>
 
-            <p className="mt-8 text-lg text-gray-600 max-w-md">
+            <p className="mt-8 text-lg text-[var(--gray-600)] max-w-md">
               Join 200K+ young professionals and tech-minded creatives getting the tools and inspiration to make an impact.
             </p>
 
@@ -51,12 +51,12 @@ export default function Hero() {
                     placeholder="Enter your email"
                     required
                     disabled={isLoading}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-l-full focus:outline-none focus:border-gray-400 disabled:bg-gray-50"
+                    className="flex-1 px-4 py-3 border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--foreground)] rounded-l-full focus:outline-none focus:border-[var(--gray-600)] disabled:opacity-50 placeholder:text-[var(--gray-600)]"
                   />
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-black text-white px-6 py-3 rounded-r-full hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    className="bg-[#ffe500] text-black px-6 py-3 rounded-r-full hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
                   >
                     {isLoading ? (
                       <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ export default function Hero() {
                   </button>
                 </div>
                 {error && (
-                  <p className="mt-2 text-sm text-red-600">{error}</p>
+                  <p className="mt-2 text-sm text-red-400">{error}</p>
                 )}
               </form>
             )}
@@ -79,7 +79,7 @@ export default function Hero() {
 
           {/* Right Image */}
           <div className="relative">
-            <div className="aspect-[4/5] bg-gray-100 rounded-3xl overflow-hidden relative">
+            <div className="aspect-[4/5] bg-[var(--gray-100)] rounded-3xl overflow-hidden relative">
               <Image
                 src="/images/hero-community.png"
                 alt="Black women engineers collaborating"
@@ -89,7 +89,7 @@ export default function Hero() {
               />
             </div>
             {/* Decorative curved text - simplified */}
-            <div className="absolute -right-4 top-2/4 text-xs tracking-[0.3em] text-gray-300 transform rotate-90 origin-right whitespace-nowrap">
+            <div className="absolute -right-4 top-2/4 text-xs tracking-[0.3em] text-[var(--gray-200)] transform rotate-90 origin-right whitespace-nowrap">
               THE BLACK FEMALE ENGINEER
             </div>
           </div>

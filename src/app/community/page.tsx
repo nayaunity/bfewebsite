@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import DarkModeToggle from "@/components/DarkModeToggle";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function CommunityPage() {
@@ -43,7 +42,6 @@ export default function CommunityPage() {
   return (
     <>
       <Navigation />
-      <DarkModeToggle />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
         <section className="bg-[var(--background)] pb-16 md:pb-24">

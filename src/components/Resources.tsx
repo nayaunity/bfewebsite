@@ -32,7 +32,7 @@ export default function Resources() {
   ];
 
   return (
-    <section id="resources" className="bg-white py-20 md:py-28">
+    <section id="resources" className="bg-[var(--background)] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -47,7 +47,7 @@ export default function Resources() {
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           {resources.map((section, index) => (
             <div key={index}>
-              <h3 className="text-sm tracking-widest mb-6 pb-4 border-b border-gray-200">
+              <h3 className="text-sm tracking-widest mb-6 pb-4 border-b border-[var(--card-border)]">
                 {section.category.toUpperCase()}
               </h3>
               <ul className="space-y-4">

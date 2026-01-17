@@ -23,9 +23,9 @@ export default function JobsPage() {
   return (
     <>
       <Navigation />
-      <main className="pt-32 md:pt-40">
+      <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
-        <section className="bg-white pb-16 md:pb-20">
+        <section className="bg-[var(--background)] pb-16 md:pb-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
@@ -33,7 +33,7 @@ export default function JobsPage() {
                 <br />
                 opportunity
               </h1>
-              <p className="mt-6 text-xl text-gray-600">
+              <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Explore roles at companies committed to diversity and inclusion in tech.
               </p>
             </div>
@@ -45,8 +45,8 @@ export default function JobsPage() {
                   key={index}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     index === 0
-                      ? "bg-black text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-[#ffe500] text-black"
+                      : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
                   {category}
@@ -57,7 +57,7 @@ export default function JobsPage() {
         </section>
 
         {/* Job Listings */}
-        <section className="bg-gray-50 py-16 md:py-24">
+        <section className="bg-[var(--gray-50)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="space-y-4">
               {jobs.map((job, index) => (
@@ -66,7 +66,7 @@ export default function JobsPage() {
                   href={job.href || "#"}
                   target={job.href ? "_blank" : undefined}
                   rel={job.href ? "noopener noreferrer" : undefined}
-                  className="block bg-white p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group"
+                  className="block bg-[var(--card-bg)] p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border border-[var(--card-border)]"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
@@ -81,18 +81,18 @@ export default function JobsPage() {
                       <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
                         {job.title}
                       </h3>
-                      <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                      <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
                         <span>{job.location}</span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
                         <span>{job.type}</span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
                         <span>{job.posted}</span>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {job.tags.map((tag, tagIndex) => (
                           <span
                             key={tagIndex}
-                            className="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full"
+                            className="text-xs px-3 py-1 bg-[var(--gray-100)] text-[var(--gray-600)] rounded-full"
                           >
                             {tag}
                           </span>
@@ -100,9 +100,9 @@ export default function JobsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-lg font-medium text-gray-900">{job.salary}</span>
+                      <span className="text-lg font-medium">{job.salary}</span>
                       <svg
-                        className="w-6 h-6 text-gray-300 group-hover:text-[#ef562a] transition-colors"
+                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -117,7 +117,7 @@ export default function JobsPage() {
 
             {/* Load More */}
             <div className="mt-12 text-center">
-              <button className="bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors">
+              <button className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors">
                 Load More Jobs
               </button>
             </div>

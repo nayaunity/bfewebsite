@@ -3,11 +3,11 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <section id="about" className="bg-white">
+    <section id="about" className="bg-[var(--background)]">
       {/* Grid Section - like Generation She */}
       <div className="grid grid-cols-1 md:grid-cols-4">
         {/* Image Block */}
-        <div className="aspect-square md:aspect-auto bg-gray-200 relative overflow-hidden">
+        <div className="aspect-square md:aspect-auto bg-[var(--gray-200)] relative overflow-hidden">
           <Image
             src="/images/bfeimage2.png"
             alt="Person working at computer with headphones"
@@ -17,7 +17,7 @@ export default function About() {
         </div>
 
         {/* Yellow Block */}
-        <div className="bg-[#ffe500] p-8 md:p-12 flex flex-col justify-center">
+        <div className="bg-[#ffe500] p-8 md:p-12 flex flex-col justify-center text-black">
           <p className="text-sm tracking-wide">
             BRIDGING THE GAP
             <br />
@@ -29,7 +29,7 @@ export default function About() {
         </div>
 
         {/* Beige/Cream Block */}
-        <div className="bg-[#f5f0e8] p-8 md:p-12 flex flex-col justify-center">
+        <div className="bg-[var(--gray-100)] p-8 md:p-12 flex flex-col justify-center">
           <p className="text-sm tracking-wide leading-relaxed">
             EQUIPPING YOU WITH
             <br />
@@ -48,10 +48,10 @@ export default function About() {
         </div>
 
         {/* CTA Block */}
-        <div className="bg-white p-8 md:p-12 flex items-center justify-center border-l border-gray-100">
+        <div className="bg-[var(--background)] p-8 md:p-12 flex items-center justify-center border-l border-[var(--card-border)]">
           <Link
             href="#community"
-            className="border-2 border-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#ffe500] transition-colors text-center"
+            className="border-2 border-[#ffe500] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#ffe500] hover:text-black transition-colors text-center"
           >
             JOIN US
           </Link>
@@ -59,14 +59,14 @@ export default function About() {
       </div>
 
       {/* Partners Section */}
-      <div className="py-16 md:py-20 border-t border-gray-100">
+      <div className="py-16 md:py-20 border-t border-[var(--card-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm tracking-widest mb-12">
             WE&apos;VE PARTNERED WITH SOME PRETTY GREAT COMPANIES
           </p>
 
           {/* Partner Logos as Text - Row 1 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
             <span className="text-[#ef562a]">MICROSOFT</span>
             <span>ADOBE</span>
             <span>AMAZON</span>
@@ -74,7 +74,7 @@ export default function About() {
           </div>
 
           {/* Partner Logos as Text - Row 2 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
             <span>TIKTOK</span>
             <span className="text-[#ef562a]">LINKEDIN</span>
             <span>SAS</span>
@@ -82,7 +82,7 @@ export default function About() {
           </div>
 
           {/* Partner Logos as Text - Row 3 */}
-          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-200)]">
             <span>JETBRAINS</span>
             <span>SERVICENOW</span>
             <span className="text-[#ef562a]">ANTHROPIC</span>

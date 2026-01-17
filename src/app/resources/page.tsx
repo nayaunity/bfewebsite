@@ -31,7 +31,7 @@ export default function ResourcesPage() {
         { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential", href: "/resources/resume-linkedin" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth", href: "/resources/personal-branding" },
         { name: "Leadership Skills", description: "Advance from IC to management roles", tag: "Advanced" },
-        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Popular" },
+        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Essential", href: "/resources/salary-negotiation" },
       ],
     },
     // {
@@ -69,9 +69,9 @@ export default function ResourcesPage() {
   return (
     <>
       <Navigation />
-      <main className="pt-32 md:pt-40">
+      <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
-        <section className="bg-white pb-16 md:pb-24">
+        <section className="bg-[var(--background)] pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
@@ -79,7 +79,7 @@ export default function ResourcesPage() {
                 <br />
                 to make an impact
               </h1>
-              <p className="mt-6 text-xl text-gray-600">
+              <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Actionable tools and guides on tech, coding, career growth, and finance for young professionals.
               </p>
             </div>
@@ -90,12 +90,12 @@ export default function ResourcesPage() {
         {resourceCategories.map((category, categoryIndex) => (
           <section
             key={categoryIndex}
-            className={categoryIndex % 2 === 0 ? "bg-gray-50 py-16 md:py-24" : "bg-white py-16 md:py-24"}
+            className={categoryIndex % 2 === 0 ? "bg-[var(--gray-50)] py-16 md:py-24" : "bg-[var(--background)] py-16 md:py-24"}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mb-12">
                 <h2 className="font-serif text-3xl md:text-4xl">{category.title}</h2>
-                <p className="mt-2 text-gray-600">{category.description}</p>
+                <p className="mt-2 text-[var(--gray-600)]">{category.description}</p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -103,14 +103,14 @@ export default function ResourcesPage() {
                   <Link
                     key={itemIndex}
                     href={item.href || "#"}
-                    className="bg-white p-6 rounded-2xl border border-gray-100 hover:border-[#ffe500] hover:shadow-lg transition-all group"
+                    className="bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#ffe500] hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <span className={`text-xs px-2 py-1 rounded-full font-medium ${getTagColor(item.tag)}`}>
                         {item.tag}
                       </span>
                       <svg
-                        className="w-5 h-5 text-gray-300 group-hover:text-[#ef562a] transition-colors"
+                        className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ export default function ResourcesPage() {
                     <h3 className="font-serif text-xl group-hover:text-[#ef562a] transition-colors">
                       {item.name}
                     </h3>
-                    <p className="mt-2 text-sm text-gray-600">{item.description}</p>
+                    <p className="mt-2 text-sm text-[var(--gray-600)]">{item.description}</p>
                   </Link>
                 ))}
               </div>

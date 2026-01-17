@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AuthButton } from "./AuthButton";
+import DarkModeToggle from "./DarkModeToggle";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function Navigation() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center">
+            <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center border border-[var(--card-border)] rounded-full px-2">
                 {navLinks.map((link, index) => (
                   <Link
@@ -83,22 +84,26 @@ export default function Navigation() {
                   </Link>
                 ))}
               </div>
+              <DarkModeToggle />
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
+            {/* Mobile Menu Button and Toggle */}
+            <div className="md:hidden flex items-center gap-2">
+              <DarkModeToggle />
+              <button
+                className="p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 

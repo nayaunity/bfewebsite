@@ -101,7 +101,7 @@ export default function Community() {
       </div>
 
       {/* Community Stats - White Section */}
-      <div className="bg-white py-20 md:py-28">
+      <div className="bg-[var(--background)] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-16">
             <span className="italic">what</span> OUR COMMUNITY*
@@ -112,19 +112,19 @@ export default function Community() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             <div>
               <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">10K+</div>
-              <div className="mt-2 text-sm text-gray-600">Members</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Members</div>
             </div>
             <div>
               <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">500+</div>
-              <div className="mt-2 text-sm text-gray-600">Resources</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Resources</div>
             </div>
             <div>
               <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200+</div>
-              <div className="mt-2 text-sm text-gray-600">Partner Companies</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Partner Companies</div>
             </div>
             <div>
               <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
-              <div className="mt-2 text-sm text-gray-600">Events/Year</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div>
             </div>
           </div>
         </div>
