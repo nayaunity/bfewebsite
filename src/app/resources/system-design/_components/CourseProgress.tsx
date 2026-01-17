@@ -28,17 +28,17 @@ export default function CourseProgress({ course }: CourseProgressProps) {
   // Not signed in - show prompt
   if (!session?.user) {
     return (
-      <div className="bg-[#ef562a] rounded-2xl p-5 sm:p-6 mb-8">
+      <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 sm:p-6 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="font-medium text-lg mb-1 text-white">Track your progress</h3>
-            <p className="text-white text-sm opacity-80">
+            <h3 className="font-medium text-lg mb-1 text-[var(--foreground)]">Track your progress</h3>
+            <p className="text-[var(--gray-600)] text-sm">
               Sign in to save your progress and pick up where you left off.
             </p>
           </div>
           <Link
             href="/auth/signin?callbackUrl=/resources/system-design"
-            className="px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] rounded-full font-medium hover:opacity-90 transition-colors text-sm text-center shrink-0"
+            className="px-5 py-2.5 bg-[#ef562a] text-white rounded-full font-medium hover:bg-[#d94d25] transition-colors text-sm text-center shrink-0"
           >
             Sign In
           </Link>
@@ -53,7 +53,7 @@ export default function CourseProgress({ course }: CourseProgressProps) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-medium text-lg">Your Progress</h3>
-          <p className="text-white text-sm opacity-80">
+          <p className="text-[var(--gray-600)] text-sm">
             {completedCount} of {totalLessons} lessons completed
           </p>
         </div>
