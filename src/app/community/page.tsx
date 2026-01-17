@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import DarkModeToggle from "@/components/DarkModeToggle";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 export default function CommunityPage() {
@@ -42,9 +43,10 @@ export default function CommunityPage() {
   return (
     <>
       <Navigation />
-      <main className="pt-32 md:pt-40">
+      <DarkModeToggle />
+      <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
-        <section className="bg-white pb-16 md:pb-24">
+        <section className="bg-[var(--background)] pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
@@ -52,7 +54,7 @@ export default function CommunityPage() {
                 <br />
                 community
               </h1>
-              <p className="mt-6 text-xl text-gray-600">
+              <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Connect with 200K+ young professionals and tech enthusiasts who inspire, educate, and support each other.
               </p>
               <div className="mt-8">
@@ -68,31 +70,31 @@ export default function CommunityPage() {
         </section>
 
         {/* Stats */}
-        <section className="bg-gray-50 py-16 md:py-20">
+        <section className="bg-[var(--gray-50)] py-16 md:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
               <div>
                 <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200K+</div>
-                <div className="mt-2 text-gray-600">Followers</div>
+                <div className="mt-2 text-[var(--gray-600)]">Followers</div>
               </div>
               <div>
                 <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">63%</div>
-                <div className="mt-2 text-gray-600">Women</div>
+                <div className="mt-2 text-[var(--gray-600)]">Women</div>
               </div>
               <div>
                 <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">67%</div>
-                <div className="mt-2 text-gray-600">Ages 18-34</div>
+                <div className="mt-2 text-[var(--gray-600)]">Ages 18-34</div>
               </div>
               <div>
                 <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">7.8%</div>
-                <div className="mt-2 text-gray-600">Engagement</div>
+                <div className="mt-2 text-[var(--gray-600)]">Engagement</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* What We Offer */}
-        <section className="bg-white py-16 md:py-24">
+        <section className="bg-[var(--background)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl">
@@ -108,7 +110,7 @@ export default function CommunityPage() {
                   </svg>
                 </div>
                 <h3 className="font-serif text-xl mb-3">Tech &amp; Coding</h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--gray-600)]">
                   Hands-on projects, coding tutorials, and practical tech applications to level up your skills.
                 </p>
               </div>
@@ -119,7 +121,7 @@ export default function CommunityPage() {
                   </svg>
                 </div>
                 <h3 className="font-serif text-xl mb-3">Career Growth</h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--gray-600)]">
                   Actionable advice on career strategies, personal branding, and breaking into your dream role.
                 </p>
               </div>
@@ -130,7 +132,7 @@ export default function CommunityPage() {
                   </svg>
                 </div>
                 <h3 className="font-serif text-xl mb-3">Finance</h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--gray-600)]">
                   Financial growth strategies, salary negotiation tips, and building wealth in tech.
                 </p>
               </div>
@@ -169,12 +171,12 @@ export default function CommunityPage() {
         </section>
 
         {/* Upcoming Events */}
-        <section className="bg-white py-16 md:py-24">
+        <section className="bg-[var(--background)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
               <div>
                 <h2 className="font-serif text-3xl md:text-4xl">Upcoming Events</h2>
-                <p className="mt-2 text-gray-600">Join us at our next event</p>
+                <p className="mt-2 text-[var(--gray-600)]">Join us at our next event</p>
               </div>
               <Link href="#" className="mt-4 md:mt-0 text-[#ef562a] font-medium hover:underline">
                 View all events →
@@ -186,7 +188,7 @@ export default function CommunityPage() {
                 <Link
                   key={index}
                   href="#"
-                  className="p-6 border border-gray-200 rounded-2xl hover:border-[#ffe500] transition-colors group"
+                  className="p-6 border border-[var(--card-border)] bg-[var(--card-bg)] rounded-2xl hover:border-[#ffe500] transition-colors group"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -198,10 +200,10 @@ export default function CommunityPage() {
                       <h3 className="font-serif text-xl mt-3 group-hover:text-[#ef562a] transition-colors">
                         {event.title}
                       </h3>
-                      <p className="text-gray-500 mt-2">{event.date}</p>
+                      <p className="text-[var(--gray-600)] mt-2">{event.date}</p>
                     </div>
                     <svg
-                      className="w-5 h-5 text-gray-300 group-hover:text-[#ef562a] transition-colors"
+                      className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -216,16 +218,16 @@ export default function CommunityPage() {
         </section>
 
         {/* Content Themes */}
-        <section className="bg-gray-50 py-16 md:py-24">
+        <section className="bg-[var(--gray-50)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl mb-4">Content that matters</h2>
-            <p className="text-gray-600 mb-12">Topics we cover to help you make an impact</p>
+            <p className="text-[var(--gray-600)] mb-12">Topics we cover to help you make an impact</p>
 
             <div className="flex flex-wrap justify-center gap-3">
               {contentThemes.map((theme, index) => (
                 <span
                   key={index}
-                  className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors cursor-default"
+                  className="px-5 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full text-sm hover:border-[#ffe500] hover:bg-[#ffe500] hover:text-black transition-colors cursor-default"
                 >
                   {theme}
                 </span>
