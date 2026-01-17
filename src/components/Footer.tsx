@@ -53,7 +53,7 @@ export default function Footer() {
           <div>
             <h4 className="text-sm tracking-widest mb-6">CONNECT</h4>
             <ul className="space-y-3">
-              <li><a href="mailto:hello@theblackfemaleengineer.com" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Contact Us</a></li>
+              <li><a href="mailto:hello@bfepartnerships.com" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Contact Us</a></li>
               <li><Link href="#" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Partner With Us</Link></li>
               <li><Link href="#" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Submit a Resource</Link></li>
               {/* Hidden: Team uses /jobs/submit directly */}
