@@ -11,17 +11,14 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category");
     const company = searchParams.get("company");
     const remote = searchParams.get("remote");
+    const search = searchParams.get("search");
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 10);
     const offset = (page - 1) * limit;
 
-    // Build where clause
-    const where: {
-      isActive: boolean;
-      category?: string;
-      companySlug?: string;
-      remote?: boolean;
-    } = {
+    // Build where clause with search support
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {
       isActive: true,
     };
 
@@ -35,6 +32,31 @@ export async function GET(request: NextRequest) {
 
     if (remote === "true") {
       where.remote = true;
+    }
+
+    // Fuzzy search on title, company, location, and tags
+    // Note: SQLite LIKE is case-insensitive by default for ASCII
+    // Supports comma-separated terms for OR search
+    if (search && search.trim()) {
+      const searchTerms = search.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+
+      if (searchTerms.length === 1) {
+        // Single term search
+        where.OR = [
+          { title: { contains: searchTerms[0] } },
+          { company: { contains: searchTerms[0] } },
+          { location: { contains: searchTerms[0] } },
+          { tags: { contains: searchTerms[0] } },
+        ];
+      } else {
+        // Multiple terms - OR across all terms
+        where.OR = searchTerms.flatMap(term => [
+          { title: { contains: term } },
+          { company: { contains: term } },
+          { location: { contains: term } },
+          { tags: { contains: term } },
+        ]);
+      }
     }
 
     // Get total count for pagination

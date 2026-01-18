@@ -35,6 +35,17 @@ const categories = [
   "Design",
 ];
 
+const mobileFilters = [
+  { label: "All", value: "" },
+  { label: "Full Stack", value: "software engineer,software developer" },
+  { label: "Frontend", value: "frontend" },
+  { label: "Backend", value: "backend" },
+  { label: "Data", value: "data" },
+  { label: "AI/ML", value: "machine learning" },
+  { label: "Manager", value: "manager" },
+  { label: "Designer", value: "design" },
+];
+
 export default function JobBoard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +54,7 @@ export default function JobBoard() {
   const [selectedCategory, setSelectedCategory] = useState("All Jobs");
   const [selectedCompany, setSelectedCompany] = useState("");
   const [remoteOnly, setRemoteOnly] = useState(false);
+  const [selectedMobileFilter, setSelectedMobileFilter] = useState("");
 
   const fetchJobs = useCallback(
     async (page = 1, append = false) => {
@@ -66,9 +78,22 @@ export default function JobBoard() {
         if (remoteOnly) {
           params.set("remote", "true");
         }
+        if (selectedMobileFilter) {
+          params.set("search", selectedMobileFilter);
+        }
 
         const response = await fetch(`/api/jobs?${params.toString()}`);
         const data = await response.json();
+
+        // Handle API errors gracefully
+        if (!response.ok || !data.jobs) {
+          console.error("API error:", data);
+          if (!append) {
+            setJobs([]);
+            setPagination(null);
+          }
+          return;
+        }
 
         if (append) {
           setJobs((prev) => [...prev, ...data.jobs]);
@@ -83,7 +108,7 @@ export default function JobBoard() {
         setLoadingMore(false);
       }
     },
-    [selectedCategory, selectedCompany, remoteOnly]
+    [selectedCategory, selectedCompany, remoteOnly, selectedMobileFilter]
   );
 
   useEffect(() => {
@@ -105,6 +130,10 @@ export default function JobBoard() {
 
   const handleRemoteToggle = () => {
     setRemoteOnly((prev) => !prev);
+  };
+
+  const handleMobileFilterChange = (filter: string) => {
+    setSelectedMobileFilter(filter);
   };
 
   const handleJobClick = (job: Job) => {
@@ -151,8 +180,47 @@ export default function JobBoard() {
             </p>
           </div>
 
+          {/* Mobile filter pills */}
+          <div className="md:hidden mt-8">
+            <div className="flex flex-wrap gap-2">
+              {mobileFilters.map((filter) => (
+                <button
+                  key={filter.label}
+                  onClick={() => handleMobileFilterChange(filter.value)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedMobileFilter === filter.value
+                      ? "bg-[#ffe500] text-black"
+                      : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+              <button
+                onClick={handleRemoteToggle}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  remoteOnly
+                    ? "bg-green-100 text-green-800 border border-green-200"
+                    : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    remoteOnly ? "bg-green-500" : "bg-[var(--gray-400)]"
+                  }`}
+                />
+                Remote
+              </button>
+            </div>
+            {pagination && (
+              <p className="mt-3 text-sm text-[var(--gray-600)]">
+                {pagination.total} job{pagination.total !== 1 ? "s" : ""} found
+              </p>
+            )}
+          </div>
+
           {/* Filters - hidden on mobile */}
-          <div className="hidden md:block mt-10 space-y-4">
+          <div className="hidden md:block mt-6 space-y-4">
             {/* Categories */}
             <div className="flex flex-wrap gap-3">
               {categories.map((category) => (
@@ -237,7 +305,7 @@ export default function JobBoard() {
                 </div>
               ))}
             </div>
-          ) : jobs.length === 0 ? (
+          ) : !jobs || jobs.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lg text-[var(--gray-600)]">
                 No jobs found matching your criteria.
@@ -247,6 +315,7 @@ export default function JobBoard() {
                   setSelectedCategory("All Jobs");
                   setSelectedCompany("");
                   setRemoteOnly(false);
+                  setSelectedMobileFilter("");
                 }}
                 className="mt-4 text-[#ef562a] hover:underline"
               >
