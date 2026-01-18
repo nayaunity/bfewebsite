@@ -268,8 +268,8 @@ export function ActivityFeed() {
   }
 
   return (
-    <div className="hidden lg:block w-72 xl:w-80 shrink-0">
-      <div className="sticky top-56 max-h-[calc(100vh-16rem)] overflow-hidden">
+    <div className="hidden lg:block w-72 xl:w-80 shrink-0 self-start sticky top-[300px]">
+      <div className="max-h-[calc(100vh-320px)] overflow-hidden">
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
           {/* Header */}
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
