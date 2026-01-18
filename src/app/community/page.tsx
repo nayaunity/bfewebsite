@@ -177,7 +177,7 @@ export default function CommunityPage() {
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-6">
               {/* Main Content */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 min-h-[150vh]">
                 {/* Loading State */}
                 {isLoadingWins ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
