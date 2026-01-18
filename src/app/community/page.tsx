@@ -108,8 +108,8 @@ export default function CommunityPage() {
               </button>
             </div>
 
-            {/* Filter Pills */}
-            <div className="flex flex-wrap gap-2 mt-4">
+            {/* Filter Pills - hidden on mobile */}
+            <div className="hidden md:flex flex-wrap gap-2 mt-4">
               <button
                 onClick={() => setFilterPrompt(null)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${

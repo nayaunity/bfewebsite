@@ -175,7 +175,7 @@ export default function WorkWithUsPage() {
                     </Link>
                   ) : (
                     <a
-                      href="mailto:partnerships@theblackfemaleengineer.com"
+                      href="mailto:hello@bfepartnerships.com"
                       className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
                     >
                       {service.cta}
@@ -275,7 +275,7 @@ export default function WorkWithUsPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="mailto:partnerships@theblackfemaleengineer.com"
+                href="mailto:hello@bfepartnerships.com"
                 className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
               >
                 Get in Touch

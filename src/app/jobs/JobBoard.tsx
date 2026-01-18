@@ -151,8 +151,8 @@ export default function JobBoard() {
             </p>
           </div>
 
-          {/* Filters */}
-          <div className="mt-10 space-y-4">
+          {/* Filters - hidden on mobile */}
+          <div className="hidden md:block mt-10 space-y-4">
             {/* Categories */}
             <div className="flex flex-wrap gap-3">
               {categories.map((category) => (

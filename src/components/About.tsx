@@ -91,9 +91,9 @@ export default function About() {
 
           <p className="text-center mt-12 text-sm">
             WANT TO PARTNER WITH US?{" "}
-            <Link href="#contact" className="underline hover:text-[#ef562a]">
+            <a href="/work-with-us" className="underline hover:text-[#ef562a]">
               LET US KNOW
-            </Link>
+            </a>
           </p>
         </div>
       </div>
