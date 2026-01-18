@@ -46,7 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                       <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e5e5;">
                       <p style="margin: 0; font-size: 12px; color: #8a8a8a;">
                         The Black Female Engineer<br>
-                        Empowering Black women in engineering
+                        Empowering young professionals in tech
                       </p>
                     </td>
                   </tr>

@@ -16,7 +16,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "The Black Female Engineer | Resources, Jobs & Community",
-  description: "Empowering Black women in engineering with resources, job opportunities, mentorship, and a supportive community.",
+  description: "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
 };
 
 export default function RootLayout({
