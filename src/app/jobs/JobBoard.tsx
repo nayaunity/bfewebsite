@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import deiCompanies from "@/data/dei-companies.json";
 
 interface Job {
@@ -217,45 +216,6 @@ export default function JobBoard() {
         </div>
       </section>
 
-      {/* DEI Companies Banner */}
-      <section className="bg-[var(--background)] pb-8 md:pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/jobs/dei-companies"
-            className="group block bg-gradient-to-r from-[#ef562a]/10 to-[#ffe500]/10 rounded-2xl p-6 md:p-8 border border-[var(--card-border)] hover:border-[#ffe500] transition-all"
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <span className="text-xs px-3 py-1 bg-[#ef562a] text-white rounded-full font-medium">
-                  DEI Directory
-                </span>
-                <div>
-                  <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
-                    Explore {deiCompanies.length} DEI-Committed Companies
-                  </h3>
-                  <p className="text-sm text-[var(--gray-600)] mt-1">
-                    Discover companies dedicated to diversity, equity, and
-                    inclusion
-                  </p>
-                </div>
-              </div>
-              <svg
-                className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
-          </Link>
-        </div>
-      </section>
 
       {/* Job Listings */}
       <section className="bg-[var(--gray-50)] py-16 md:py-24">
