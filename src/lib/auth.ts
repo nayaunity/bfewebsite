@@ -13,9 +13,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         : "BFE <onboarding@resend.dev>",
       // Custom email template
       async sendVerificationRequest({ identifier: email, url, provider }) {
+        console.log("[Auth] sendVerificationRequest called for:", email);
+        console.log("[Auth] Magic link URL:", url);
+
         const { Resend: ResendClient } = await import("resend");
         const resend = new ResendClient(process.env.RESEND_API_KEY);
 
+        console.log("[Auth] Sending email via Resend...");
         const result = await resend.emails.send({
           from: provider.from!,
           to: email,
@@ -58,8 +62,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
 
         if (result.error) {
+          console.error("[Auth] Resend error:", result.error);
           throw new Error(`Failed to send email: ${result.error.message}`);
         }
+
+        console.log("[Auth] Email sent successfully, id:", result.data?.id);
       },
     }),
   ],

@@ -18,20 +18,19 @@ function SignInForm() {
     setError("");
 
     try {
-      const result = await signIn("resend", {
+      // Use native redirect (default behavior) - NextAuth v5 beta handles this better
+      // than redirect: false, which can return error-like results even on success
+      console.log("[SignIn] Initiating sign-in for:", email);
+      await signIn("resend", {
         email,
         callbackUrl,
-        redirect: false,
+        // redirect: true is the default, NextAuth will redirect to verifyRequest page
       });
-
-      if (result?.error) {
-        setError("Something went wrong. Please try again.");
-        setIsLoading(false);
-      } else {
-        // Redirect to verify-request page
-        window.location.href = "/auth/verify-request";
-      }
-    } catch {
+      // If we reach here without redirect, something unexpected happened
+      console.log("[SignIn] signIn returned without redirecting");
+    } catch (err) {
+      // Only actual errors will be caught here
+      console.error("[SignIn] Error during sign-in:", err);
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }
