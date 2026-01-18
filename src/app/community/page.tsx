@@ -63,19 +63,18 @@ export default function CommunityPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-[#f5f5f5] dark:bg-[#1a1a1a]">
+      <main className="min-h-screen bg-white dark:bg-[#1a1a1a] pt-24 md:pt-28">
         {/* Board Background with dots pattern */}
         <div
-          className="fixed inset-0 pointer-events-none"
+          className="fixed inset-0 pointer-events-none z-0"
           style={{
-            backgroundImage: `radial-gradient(circle, #d1d5db 1px, transparent 1px)`,
-            backgroundSize: "24px 24px",
-            opacity: 0.5,
+            backgroundImage: `radial-gradient(circle, #9ca3af 1px, transparent 1px)`,
+            backgroundSize: "20px 20px",
           }}
         />
 
         {/* Board Header */}
-        <div className="sticky top-16 md:top-20 z-40 bg-[#f5f5f5]/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm border-b border-[var(--card-border)]">
+        <div className="sticky top-16 md:top-20 z-40 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-sm border-b border-gray-200 dark:border-[var(--card-border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               {/* Title */}
@@ -107,8 +106,8 @@ export default function CommunityPage() {
                 onClick={() => setFilterPrompt(null)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   !filterPrompt
-                    ? "bg-[var(--foreground)] text-[var(--background)]"
-                    : "bg-white dark:bg-[#2a2a2a] text-[var(--gray-600)] hover:bg-[var(--gray-100)] border border-[var(--card-border)]"
+                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                    : "bg-gray-100 dark:bg-[#2a2a2a] text-gray-600 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] border border-gray-200 dark:border-gray-700"
                 }`}
               >
                 All
@@ -119,8 +118,8 @@ export default function CommunityPage() {
                   onClick={() => setFilterPrompt(key)}
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     filterPrompt === key
-                      ? "bg-[var(--foreground)] text-[var(--background)]"
-                      : "bg-white dark:bg-[#2a2a2a] text-[var(--gray-600)] hover:bg-[var(--gray-100)] border border-[var(--card-border)]"
+                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                      : "bg-gray-100 dark:bg-[#2a2a2a] text-gray-600 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] border border-gray-200 dark:border-gray-700"
                   }`}
                 >
                   {prompt.emoji} {prompt.prompt.replace("?", "").replace("What ", "").replace("What's ", "")}
@@ -170,17 +169,24 @@ export default function CommunityPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Loading State */}
             {isLoadingWins ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {[...Array(8)].map((_, i) => {
                   const color = getStickyColor(i);
                   return (
                     <div
                       key={i}
-                      className={`${color.bg} ${color.border} border rounded-lg p-5 shadow-md animate-pulse ${getRotation(i)}`}
+                      className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-lg animate-pulse ${getRotation(i)}`}
                     >
-                      <div className="h-3 bg-white/50 rounded w-2/3 mb-3" />
-                      <div className="h-3 bg-white/50 rounded w-full mb-2" />
-                      <div className="h-3 bg-white/50 rounded w-4/5" />
+                      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/10">
+                        <div className="w-6 h-6 bg-white/50 rounded" />
+                        <div className="h-3 bg-white/50 rounded w-24" />
+                      </div>
+                      <div className="h-4 bg-white/50 rounded w-full mb-2" />
+                      <div className="h-4 bg-white/50 rounded w-4/5 mb-4" />
+                      <div className="pt-3 border-t border-black/10 flex justify-between">
+                        <div className="h-3 bg-white/50 rounded w-16" />
+                        <div className="h-3 bg-white/50 rounded w-12" />
+                      </div>
                     </div>
                   );
                 })}
@@ -205,7 +211,7 @@ export default function CommunityPage() {
             ) : (
               /* Sticky Notes Grid */
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {microWins.map((win, index) => {
                     const color = getStickyColor(index);
                     const prompt = MICRO_WIN_PROMPTS[win.promptType as keyof typeof MICRO_WIN_PROMPTS];
@@ -213,24 +219,24 @@ export default function CommunityPage() {
                     return (
                       <div
                         key={win.id}
-                        className={`${color.bg} ${color.border} border rounded-lg p-5 shadow-md hover:shadow-lg transition-shadow ${getRotation(index)} hover:rotate-0 hover:scale-105 transition-transform cursor-default`}
+                        className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-200 ${getRotation(index)} hover:rotate-0 hover:scale-[1.02] cursor-default`}
                       >
                         {/* Prompt Tag */}
-                        <div className="flex items-center gap-1.5 mb-3">
-                          <span className="text-base">{prompt?.emoji || "✨"}</span>
-                          <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/10">
+                          <span className="text-xl">{prompt?.emoji || "✨"}</span>
+                          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             {prompt?.prompt.replace("?", "").replace("What ", "").replace("What's ", "") || "Win"}
                           </span>
                         </div>
 
                         {/* Content */}
-                        <p className="text-gray-800 leading-relaxed text-sm mb-4">
-                          {win.content}
+                        <p className="text-gray-800 leading-relaxed mb-4">
+                          &ldquo;{win.content}&rdquo;
                         </p>
 
                         {/* Footer */}
-                        <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-black/5">
-                          <span className="font-medium">{win.authorName || "Anonymous"}</span>
+                        <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-black/10">
+                          <span className="font-semibold text-gray-700">{win.authorName || "Anonymous"}</span>
                           <span>{formatRelativeTime(win.createdAt)}</span>
                         </div>
                       </div>
@@ -244,7 +250,7 @@ export default function CommunityPage() {
                     <button
                       onClick={handleLoadMore}
                       disabled={isLoadingMore}
-                      className="bg-white dark:bg-[#2a2a2a] text-[var(--foreground)] px-8 py-3 rounded-lg font-medium hover:bg-[var(--gray-100)] transition-colors border border-[var(--card-border)] shadow-sm disabled:opacity-50"
+                      className="bg-gray-100 dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 px-8 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-[#3a3a3a] transition-colors border border-gray-200 dark:border-gray-700 shadow-sm disabled:opacity-50"
                     >
                       {isLoadingMore ? "Loading..." : "Load more wins"}
                     </button>
