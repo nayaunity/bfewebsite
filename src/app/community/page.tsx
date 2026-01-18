@@ -178,31 +178,7 @@ export default function CommunityPage() {
             <div className="flex gap-6">
               {/* Main Content */}
               <div className="flex-1 min-w-0 min-h-[150vh]">
-                {/* Loading State */}
-                {isLoadingWins ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {[...Array(8)].map((_, i) => {
-                  const color = getStickyColor(i);
-                  return (
-                    <div
-                      key={i}
-                      className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-lg animate-pulse ${getRotation(i)}`}
-                    >
-                      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/10">
-                        <div className="w-6 h-6 bg-white/50 rounded" />
-                        <div className="h-3 bg-white/50 rounded w-24" />
-                      </div>
-                      <div className="h-4 bg-white/50 rounded w-full mb-2" />
-                      <div className="h-4 bg-white/50 rounded w-4/5 mb-4" />
-                      <div className="pt-3 border-t border-black/10 flex justify-between">
-                        <div className="h-3 bg-white/50 rounded w-16" />
-                        <div className="h-3 bg-white/50 rounded w-12" />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : microWins.length === 0 ? (
+                {!isLoadingWins && microWins.length === 0 ? (
               /* Empty State */
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
                 <div className="w-24 h-24 mb-6 rounded-2xl bg-[var(--accent-yellow-bg)] border-2 border-[var(--card-border)] flex items-center justify-center rotate-3 shadow-lg">
