@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {
@@ -62,16 +64,23 @@ export async function GET(request: NextRequest) {
       category: job.category,
     }));
 
-    return NextResponse.json({
-      jobs: transformedJobs,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasMore: offset + jobs.length < total,
+    return NextResponse.json(
+      {
+        jobs: transformedJobs,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+          hasMore: offset + jobs.length < total,
+        },
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching jobs:", error);
     const dbUrl = process.env.DATABASE_URL || "";
