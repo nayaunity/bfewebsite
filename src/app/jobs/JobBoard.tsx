@@ -90,9 +90,9 @@ export default function JobBoard() {
     fetchJobs(1, false);
   }, [fetchJobs]);
 
-  const handlePageChange = (page: number) => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-    fetchJobs(page, false);
+  const handlePageChange = async (page: number) => {
+    await fetchJobs(page, false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCategoryChange = (category: string) => {
