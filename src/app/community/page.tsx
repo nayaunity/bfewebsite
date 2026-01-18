@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useMicroWins } from "@/hooks/useMicroWins";
 import { MicroWinForm } from "@/components/micro-wins/MicroWinForm";
+import { ActivityFeed } from "@/components/ActivityFeed";
 import { MICRO_WIN_PROMPTS, formatRelativeTime } from "@/lib/micro-wins";
 
 // Sticky note colors for variety
@@ -164,12 +165,15 @@ export default function CommunityPage() {
           </div>
         )}
 
-        {/* Board Content */}
+        {/* Board Content with Activity Feed */}
         <div className="relative z-10 pt-8 pb-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Loading State */}
-            {isLoadingWins ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex gap-6">
+              {/* Main Content */}
+              <div className="flex-1 min-w-0">
+                {/* Loading State */}
+                {isLoadingWins ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[...Array(8)].map((_, i) => {
                   const color = getStickyColor(i);
                   return (
@@ -211,7 +215,7 @@ export default function CommunityPage() {
             ) : (
               /* Sticky Notes Grid */
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {microWins.map((win, index) => {
                     const color = getStickyColor(index);
                     const prompt = MICRO_WIN_PROMPTS[win.promptType as keyof typeof MICRO_WIN_PROMPTS];
@@ -258,6 +262,11 @@ export default function CommunityPage() {
                 )}
               </>
             )}
+              </div>
+
+              {/* Activity Feed Sidebar */}
+              <ActivityFeed />
+            </div>
           </div>
         </div>
       </main>
