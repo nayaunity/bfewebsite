@@ -125,3 +125,23 @@ CREATE INDEX IF NOT EXISTS "ScrapeLog_companySlug_idx" ON "ScrapeLog"("companySl
 
 -- CreateIndex
 CREATE INDEX IF NOT EXISTS "ScrapeLog_createdAt_idx" ON "ScrapeLog"("createdAt");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "JobClick" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "jobId" TEXT NOT NULL,
+    "company" TEXT NOT NULL,
+    "companySlug" TEXT NOT NULL,
+    "jobTitle" TEXT NOT NULL,
+    "applyUrl" TEXT NOT NULL,
+    "clickedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "JobClick_companySlug_idx" ON "JobClick"("companySlug");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "JobClick_clickedAt_idx" ON "JobClick"("clickedAt");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "JobClick_jobId_idx" ON "JobClick"("jobId");

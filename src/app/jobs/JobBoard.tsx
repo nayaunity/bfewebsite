@@ -109,6 +109,28 @@ export default function JobBoard() {
     setRemoteOnly((prev) => !prev);
   };
 
+  const handleJobClick = (job: Job) => {
+    // Fire and forget - log the click without blocking navigation
+    fetch("/api/jobs/click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jobId: job.id,
+        company: job.company,
+        companySlug: job.companySlug,
+        jobTitle: job.title,
+        applyUrl: job.href,
+      }),
+    }).catch(() => {
+      // Silently fail - don't block the user
+    });
+
+    // Open the job link in a new tab
+    if (job.href) {
+      window.open(job.href, "_blank", "noopener,noreferrer");
+    }
+  };
+
   // Get unique companies from DEI list that have supported ATS
   const companiesWithJobs = deiCompanies
     .filter((c) => c.atsType === "greenhouse" || c.atsType === "workday")
@@ -275,12 +297,10 @@ export default function JobBoard() {
           ) : (
             <div className="space-y-4">
               {jobs.map((job) => (
-                <Link
+                <button
                   key={job.id}
-                  href={job.href || "#"}
-                  target={job.href ? "_blank" : undefined}
-                  rel={job.href ? "noopener noreferrer" : undefined}
-                  className="block bg-[var(--card-bg)] p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border border-[var(--card-border)]"
+                  onClick={() => handleJobClick(job)}
+                  className="block w-full text-left bg-[var(--card-bg)] p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border border-[var(--card-border)] cursor-pointer"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
@@ -336,7 +356,7 @@ export default function JobBoard() {
                       </svg>
                     </div>
                   </div>
-                </Link>
+                </button>
               ))}
             </div>
           )}

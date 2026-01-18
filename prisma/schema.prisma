@@ -108,6 +108,21 @@ model ScrapeLog {
   @@index([createdAt])
 }
 
+// Job click tracking for proving traffic driven to company job pages
+model JobClick {
+  id          String   @id @default(cuid())
+  jobId       String
+  company     String
+  companySlug String
+  jobTitle    String
+  applyUrl    String
+  clickedAt   DateTime @default(now())
+
+  @@index([companySlug])
+  @@index([clickedAt])
+  @@index([jobId])
+}
+
 // Micro-Wins Wall
 model MicroWin {
   id          String    @id @default(cuid())
