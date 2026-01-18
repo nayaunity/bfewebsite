@@ -145,6 +145,11 @@ export default async function MemberPage({ params }: PageProps) {
                     )}
                   </div>
                 )}
+
+                {/* Summary */}
+                <p className="mt-8 text-[var(--gray-600)] leading-relaxed">
+                  {member.summary}
+                </p>
               </div>
             </div>
           </div>
@@ -157,9 +162,13 @@ export default async function MemberPage({ params }: PageProps) {
               My Story
             </h2>
             <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
-            <p className="text-xl md:text-2xl text-white/80 leading-relaxed">
-              {member.story}
-            </p>
+            <div className="space-y-6">
+              {member.story.map((paragraph, index) => (
+                <p key={index} className="text-xl md:text-2xl text-white/80 leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </section>
 
