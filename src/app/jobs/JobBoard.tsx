@@ -68,11 +68,8 @@ export default function JobBoard() {
           params.set("remote", "true");
         }
 
-        const url = `/api/jobs?${params.toString()}`;
-        console.log("[JobBoard] Fetching:", url);
-        const response = await fetch(url);
+        const response = await fetch(`/api/jobs?${params.toString()}`);
         const data = await response.json();
-        console.log("[JobBoard] Response:", { status: response.status, jobCount: data.jobs?.length, total: data.pagination?.total });
 
         if (append) {
           setJobs((prev) => [...prev, ...data.jobs]);
@@ -81,8 +78,7 @@ export default function JobBoard() {
         }
         setPagination(data.pagination);
       } catch (error) {
-        console.error("[JobBoard] Failed to fetch jobs:", error);
-        alert("Failed to fetch jobs: " + (error instanceof Error ? error.message : String(error)));
+        console.error("Failed to fetch jobs:", error);
       } finally {
         setLoading(false);
         setLoadingMore(false);
