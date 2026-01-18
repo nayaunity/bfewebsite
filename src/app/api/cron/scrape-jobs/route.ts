@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { scrapeAllCompanies } from "@/lib/scrapers";
 
+export const runtime = "nodejs";
 export const maxDuration = 300; // 5 minutes max for Vercel
 
 export async function GET(request: NextRequest) {

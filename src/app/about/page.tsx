@@ -28,11 +28,11 @@ export default function AboutPage() {
   ];
 
   const timeline = [
-    { year: "2020", event: "Started creating content to make tech accessible during the pandemic" },
-    { year: "2021", event: "Reached 10,000 followers across social platforms" },
-    { year: "2022", event: "Expanded to TikTok and YouTube with career and coding content" },
+    { year: "2020", event: "Pivoted to software engineering after earning my degree in Finance" },
+    { year: "2021", event: "Started creating content to make tech accessible during the pandemic" },
+    { year: "2022", event: "Expanded to TikTok and Instagram with career and coding content, reaching 50,000+ members across socials" },
     { year: "2023", event: "Grew community to 100K+ tech enthusiasts" },
-    { year: "2024", event: "Partnered with major tech companies and brands" },
+    { year: "2024", event: "Partnered with major tech companies and brands to teach new and emerging technologies and how to adopt them" },
     { year: "2025", event: "Reached 200K+ followers empowering the next generation of innovators" },
   ];
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 and everyday life
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
-                The Black Female Engineer is dedicated to making technology accessible and actionable, particularly for young professionals and tech-minded creatives.
+                I created the Black Female Engineer 5+ years ago, motivated by making technology accessible and actionable, particularly for young professionals and tech-minded creatives.
               </p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function AboutPage() {
         <section className="bg-[#1a1a1a] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white">
-              Our Mission
+              My Mission
             </h2>
             <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
             <p className="text-xl md:text-2xl text-white/80 font-serif italic">
@@ -75,7 +75,7 @@ export default function AboutPage() {
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
               <div>
                 <h2 className="font-serif text-3xl md:text-4xl">
-                  <span className="italic">what we</span> BELIEVE IN
+                  <span className="italic">what I</span> BELIEVE IN
                 </h2>
                 <p className="mt-6 text-[var(--gray-600)] text-lg leading-relaxed">
                   Young professionals and tech enthusiasts are eager to make their mark in tech and corporate. These driven individuals are looking for actionable advice on career growth, hands-on projects, and practical tech applications within everyday life.
@@ -103,7 +103,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="font-serif text-3xl md:text-4xl">
-                <span className="italic">our</span> VALUES
+                <span className="italic">my</span> VALUES
               </h2>
             </div>
 
@@ -126,7 +126,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="font-serif text-3xl md:text-4xl">
-                <span className="italic">our</span> JOURNEY
+                <span className="italic">my</span> JOURNEY
               </h2>
             </div>
 
@@ -150,7 +150,7 @@ export default function AboutPage() {
         <section className="bg-[var(--gray-50)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <p className="text-sm tracking-widest mb-8">WE&apos;VE PARTNERED WITH</p>
+              <p className="text-sm tracking-widest mb-8">I&apos;VE PARTNERED WITH</p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-400)]">
                 <span>AMAZON</span>
                 <span className="text-[#ef562a]">MICROSOFT</span>
@@ -161,9 +161,9 @@ export default function AboutPage() {
               </div>
             </div>
             <p className="text-center text-sm">
-              WANT TO PARTNER WITH US?{" "}
+              WANT TO PARTNER?{" "}
               <Link href="/contact" className="underline hover:text-[#ef562a]">
-                LET US KNOW
+                LET ME KNOW
               </Link>
             </p>
           </div>
