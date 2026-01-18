@@ -9,14 +9,14 @@ import { ActivityFeed } from "@/components/ActivityFeed";
 import { usePagePresence } from "@/hooks/usePagePresence";
 import { MICRO_WIN_PROMPTS, formatRelativeTime } from "@/lib/micro-wins";
 
-// Sticky note colors for variety - with dark mode variants
+// Sticky note colors for variety - consistent colors that work in both light/dark modes
 const STICKY_COLORS = [
-  { bg: "bg-yellow-100 dark:bg-yellow-900/40", border: "border-yellow-200 dark:border-yellow-700", shadow: "shadow-yellow-200/50 dark:shadow-yellow-900/30", text: "text-gray-800 dark:text-yellow-100", subtext: "text-gray-700 dark:text-yellow-200", muted: "text-gray-500 dark:text-yellow-300/70" },
-  { bg: "bg-pink-100 dark:bg-pink-900/40", border: "border-pink-200 dark:border-pink-700", shadow: "shadow-pink-200/50 dark:shadow-pink-900/30", text: "text-gray-800 dark:text-pink-100", subtext: "text-gray-700 dark:text-pink-200", muted: "text-gray-500 dark:text-pink-300/70" },
-  { bg: "bg-blue-100 dark:bg-blue-900/40", border: "border-blue-200 dark:border-blue-700", shadow: "shadow-blue-200/50 dark:shadow-blue-900/30", text: "text-gray-800 dark:text-blue-100", subtext: "text-gray-700 dark:text-blue-200", muted: "text-gray-500 dark:text-blue-300/70" },
-  { bg: "bg-green-100 dark:bg-green-900/40", border: "border-green-200 dark:border-green-700", shadow: "shadow-green-200/50 dark:shadow-green-900/30", text: "text-gray-800 dark:text-green-100", subtext: "text-gray-700 dark:text-green-200", muted: "text-gray-500 dark:text-green-300/70" },
-  { bg: "bg-purple-100 dark:bg-purple-900/40", border: "border-purple-200 dark:border-purple-700", shadow: "shadow-purple-200/50 dark:shadow-purple-900/30", text: "text-gray-800 dark:text-purple-100", subtext: "text-gray-700 dark:text-purple-200", muted: "text-gray-500 dark:text-purple-300/70" },
-  { bg: "bg-orange-100 dark:bg-orange-900/40", border: "border-orange-200 dark:border-orange-700", shadow: "shadow-orange-200/50 dark:shadow-orange-900/30", text: "text-gray-800 dark:text-orange-100", subtext: "text-gray-700 dark:text-orange-200", muted: "text-gray-500 dark:text-orange-300/70" },
+  { bg: "bg-yellow-100", border: "border-yellow-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
+  { bg: "bg-pink-100", border: "border-pink-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
+  { bg: "bg-blue-100", border: "border-blue-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
+  { bg: "bg-green-100", border: "border-green-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
+  { bg: "bg-purple-100", border: "border-purple-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
+  { bg: "bg-orange-100", border: "border-orange-300", text: "text-gray-800", subtext: "text-gray-700", muted: "text-gray-600" },
 ];
 
 function getStickyColor(index: number) {
@@ -68,30 +68,30 @@ export default function CommunityPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white pt-20 md:pt-[144px]">
-        {/* White cover to hide content behind nav area */}
-        <div className="fixed top-0 left-0 right-0 h-20 md:h-[144px] bg-white dark:bg-[#1a1a1a] z-30 pointer-events-none" />
+      <main className="min-h-screen pt-20 md:pt-[144px]" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+        {/* Cover to hide content behind nav area */}
+        <div className="fixed top-0 left-0 right-0 h-20 md:h-[144px] z-30 pointer-events-none" style={{ background: 'var(--background)' }} />
 
         {/* Board Background with dots pattern */}
         <div
-          className="fixed inset-0 pointer-events-none z-0 opacity-30 dark:opacity-20 text-gray-400 dark:text-gray-500"
+          className="fixed inset-0 pointer-events-none z-0 opacity-20"
           style={{
-            backgroundImage: `radial-gradient(circle, currentColor 0.5px, transparent 0.5px)`,
+            backgroundImage: `radial-gradient(circle, var(--gray-600) 0.5px, transparent 0.5px)`,
             backgroundSize: "20px 20px",
           }}
         />
 
         {/* Board Header - hidden on mobile */}
-        <div className="hidden md:block sticky top-20 md:top-[144px] z-40 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[var(--card-border)]">
+        <div className="hidden md:block sticky top-20 md:top-[144px] z-40 border-b border-[var(--card-border)]" style={{ background: 'var(--background)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               {/* Title */}
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-                <h1 className="font-serif text-2xl md:text-3xl text-gray-900 dark:text-white">
+                <h1 className="font-serif text-2xl md:text-3xl">
                   Micro-Wins Wall
                 </h1>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-sm text-[var(--gray-600)]">
                   {microWins.length} wins shared
                 </span>
               </div>
@@ -114,8 +114,8 @@ export default function CommunityPage() {
                 onClick={() => setFilterPrompt(null)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   !filterPrompt
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                    : "bg-gray-100 dark:bg-[#2a2a2a] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] border border-gray-200 dark:border-gray-700"
+                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                    : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)] border border-[var(--card-border)]"
                 }`}
               >
                 All
@@ -126,8 +126,8 @@ export default function CommunityPage() {
                   onClick={() => setFilterPrompt(key)}
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     filterPrompt === key
-                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                      : "bg-gray-100 dark:bg-[#2a2a2a] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] border border-gray-200 dark:border-gray-700"
+                      ? "bg-[var(--foreground)] text-[var(--background)]"
+                      : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)] border border-[var(--card-border)]"
                   }`}
                 >
                   {prompt.emoji} {prompt.prompt.replace("?", "").replace("What ", "").replace("What's ", "")}
@@ -205,11 +205,11 @@ export default function CommunityPage() {
             ) : microWins.length === 0 ? (
               /* Empty State */
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-                <div className="w-24 h-24 mb-6 rounded-2xl bg-yellow-100 dark:bg-yellow-900/40 border-2 border-yellow-200 dark:border-yellow-700 flex items-center justify-center rotate-3 shadow-lg">
+                <div className="w-24 h-24 mb-6 rounded-2xl bg-[var(--accent-yellow-bg)] border-2 border-[var(--card-border)] flex items-center justify-center rotate-3 shadow-lg">
                   <span className="text-5xl">✨</span>
                 </div>
-                <h2 className="font-serif text-3xl mb-3 text-gray-900 dark:text-white">The board is empty</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">
+                <h2 className="font-serif text-3xl mb-3">The board is empty</h2>
+                <p className="text-[var(--gray-600)] mb-6 max-w-md">
                   Be the first to share a micro-win. What clicked for you recently?
                 </p>
                 <button
@@ -233,7 +233,7 @@ export default function CommunityPage() {
                         className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-200 ${getRotation(index)} hover:rotate-0 hover:scale-[1.02] cursor-default`}
                       >
                         {/* Prompt Tag */}
-                        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/10 dark:border-white/10">
+                        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/10">
                           <span className="text-xl">{prompt?.emoji || "✨"}</span>
                           <span className={`text-xs font-semibold uppercase tracking-wider ${color.subtext}`}>
                             {prompt?.prompt.replace("?", "").replace("What ", "").replace("What's ", "") || "Win"}
@@ -246,7 +246,7 @@ export default function CommunityPage() {
                         </p>
 
                         {/* Footer */}
-                        <div className={`flex items-center justify-between text-xs pt-3 border-t border-black/10 dark:border-white/10 ${color.muted}`}>
+                        <div className={`flex items-center justify-between text-xs pt-3 border-t border-black/10 ${color.muted}`}>
                           <span className={`font-semibold ${color.subtext}`}>{win.authorName || "Anonymous"}</span>
                           <span>{formatRelativeTime(win.createdAt)}</span>
                         </div>
@@ -261,7 +261,7 @@ export default function CommunityPage() {
                     <button
                       onClick={handleLoadMore}
                       disabled={isLoadingMore}
-                      className="bg-gray-100 dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 px-8 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-[#3a3a3a] transition-colors border border-gray-200 dark:border-gray-700 shadow-sm disabled:opacity-50"
+                      className="bg-[var(--gray-100)] text-[var(--foreground)] px-8 py-3 rounded-lg font-medium hover:bg-[var(--gray-200)] transition-colors border border-[var(--card-border)] shadow-sm disabled:opacity-50"
                     >
                       {isLoadingMore ? "Loading..." : "Load more wins"}
                     </button>

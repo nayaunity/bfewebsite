@@ -19,16 +19,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (stored) {
       setTheme(stored);
       document.documentElement.setAttribute("data-theme", stored);
+      document.documentElement.classList.toggle("dark", stored === "dark");
     } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       setTheme("dark");
       document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.classList.add("dark");
     } else {
       document.documentElement.setAttribute("data-theme", "light");
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 

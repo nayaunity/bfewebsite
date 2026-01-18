@@ -257,10 +257,11 @@ export function ActivityFeed() {
     return (
       <button
         onClick={() => setIsVisible(true)}
-        className="fixed right-4 top-1/2 -translate-y-1/2 z-30 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-l-lg p-2 shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-30 border border-[var(--card-border)] rounded-l-lg p-2 shadow-lg transition-colors"
+        style={{ background: 'var(--card-bg)' }}
         title="Show Activity Feed"
       >
-        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-[var(--gray-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
@@ -270,16 +271,16 @@ export function ActivityFeed() {
   return (
     <div className="hidden lg:block w-72 xl:w-80 shrink-0 self-start sticky top-[300px]">
       <div className="max-h-[calc(100vh-320px)] overflow-hidden">
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
+        <div className="border border-[var(--card-border)] rounded-xl shadow-sm overflow-hidden" style={{ background: 'var(--card-bg)' }}>
           {/* Header */}
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-[var(--card-border)] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Activity Feed</h3>
+              <h3 className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>Activity Feed</h3>
             </div>
             <button
               onClick={() => setIsVisible(false)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="text-[var(--gray-600)] hover:opacity-80 transition-colors"
               title="Hide Activity Feed"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,13 +291,13 @@ export function ActivityFeed() {
 
           {/* Active Now Banner */}
           {data && data.presence.total > 0 && (
-            <div className="px-4 py-3 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-b border-emerald-100 dark:border-emerald-800/30">
+            <div className="px-4 py-3 border-b border-[var(--card-border)]" style={{ background: 'var(--accent-green-bg)' }}>
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                   <div className="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-ping opacity-75" />
                 </div>
-                <span className="font-semibold text-emerald-800 dark:text-emerald-200">
+                <span className="font-semibold" style={{ color: 'var(--accent-green-text)' }}>
                   {data.presence.total} {data.presence.total === 1 ? "person" : "people"} active right now
                 </span>
               </div>
@@ -304,16 +305,16 @@ export function ActivityFeed() {
           )}
 
           {/* Activity List */}
-          <div className="divide-y divide-gray-50 dark:divide-gray-800 max-h-[calc(100vh-14rem)] overflow-y-auto">
+          <div className="divide-y divide-[var(--card-border)] max-h-[calc(100vh-14rem)] overflow-y-auto">
             {isLoading ? (
               // Loading skeleton
               [...Array(5)].map((_, i) => (
                 <div key={i} className="px-4 py-3 animate-pulse">
                   <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700" />
+                    <div className="w-7 h-7 rounded-full bg-[var(--gray-200)]" />
                     <div className="flex-1">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
-                      <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-16" />
+                      <div className="h-4 bg-[var(--gray-200)] rounded w-full mb-2" />
+                      <div className="h-3 bg-[var(--gray-100)] rounded w-16" />
                     </div>
                   </div>
                 </div>
@@ -324,17 +325,17 @@ export function ActivityFeed() {
                 return (
                   <div
                     key={item.id}
-                    className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    className="px-4 py-3 hover:bg-[var(--gray-100)] transition-colors"
                   >
                     <div className="flex gap-3">
                       <div className={`w-7 h-7 rounded-full ${iconData.color} flex items-center justify-center shrink-0 text-xs font-bold`}>
                         {iconData.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+                        <p className="text-sm leading-snug" style={{ color: 'var(--foreground)' }}>
                           {item.message}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-[var(--gray-600)] mt-1">
                           {item.isLive ? (
                             <span className="flex items-center gap-1">
                               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -355,8 +356,8 @@ export function ActivityFeed() {
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-500 text-center">
+          <div className="px-4 py-2 bg-[var(--gray-50)] border-t border-[var(--card-border)]">
+            <p className="text-xs text-[var(--gray-600)] text-center">
               Live community activity
             </p>
           </div>
