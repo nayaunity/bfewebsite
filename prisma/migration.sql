@@ -145,3 +145,56 @@ CREATE INDEX IF NOT EXISTS "JobClick_clickedAt_idx" ON "JobClick"("clickedAt");
 
 -- CreateIndex
 CREATE INDEX IF NOT EXISTS "JobClick_jobId_idx" ON "JobClick"("jobId");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "MicroWin" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "content" TEXT NOT NULL,
+    "promptType" TEXT NOT NULL,
+    "authorName" TEXT,
+    "authorId" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'approved',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "MicroWin_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "MicroWin_status_idx" ON "MicroWin"("status");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "MicroWin_promptType_idx" ON "MicroWin"("promptType");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "MicroWin_createdAt_idx" ON "MicroWin"("createdAt");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "Activity" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "type" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "metadata" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "Activity_type_idx" ON "Activity"("type");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "Activity_createdAt_idx" ON "Activity"("createdAt");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "PagePresence" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "visitorId" TEXT NOT NULL,
+    "page" TEXT NOT NULL,
+    "lastSeenAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX IF NOT EXISTS "PagePresence_visitorId_page_key" ON "PagePresence"("visitorId", "page");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "PagePresence_page_idx" ON "PagePresence"("page");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "PagePresence_lastSeenAt_idx" ON "PagePresence"("lastSeenAt");
