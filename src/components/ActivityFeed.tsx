@@ -10,6 +10,7 @@ interface ActivityItem {
 }
 
 interface PresenceData {
+  home: number;
   jobs: number;
   resources: number;
   community: number;
@@ -197,6 +198,21 @@ export function ActivityFeed() {
             </button>
           </div>
 
+          {/* Active Now Banner */}
+          {data && data.presence.total > 0 && (
+            <div className="px-4 py-3 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-b border-emerald-100 dark:border-emerald-800/30">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-ping opacity-75" />
+                </div>
+                <span className="font-semibold text-emerald-800 dark:text-emerald-200">
+                  {data.presence.total} {data.presence.total === 1 ? "person" : "people"} active right now
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Activity List */}
           <div className="divide-y divide-gray-50 dark:divide-gray-800 max-h-[calc(100vh-14rem)] overflow-y-auto">
             {isLoading ? (
@@ -251,7 +267,7 @@ export function ActivityFeed() {
           {/* Footer */}
           <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800">
             <p className="text-xs text-gray-500 text-center">
-              {data?.presence.total ? `${data.presence.total} people online` : "Live community activity"}
+              Live community activity
             </p>
           </div>
         </div>

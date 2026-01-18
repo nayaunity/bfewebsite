@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       activities,
       presence: {
+        home: presenceMap["home"] || 0,
         jobs: presenceMap["jobs"] || 0,
         resources: presenceMap["resources"] || 0,
         community: presenceMap["community"] || 0,
