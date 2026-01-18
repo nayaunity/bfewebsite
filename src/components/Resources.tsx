@@ -5,28 +5,28 @@ export default function Resources() {
     {
       category: "Learning",
       items: [
-        "Technical Interview Prep",
-        "System Design Guide",
-        "Data Structures & Algorithms",
-        "Web Development Fundamentals",
+        { name: "Technical Interview Prep", href: "/resources/interview-prep" },
+        { name: "System Design Guide", href: "/resources/system-design" },
+        { name: "Break Into Tech", href: "/resources/break-into-tech" },
+        { name: "Web Development Fundamentals", href: "/resources/web-development" },
       ],
     },
     {
       category: "Career",
       items: [
-        "Resume Templates",
-        "Salary Negotiation Guide",
-        "LinkedIn Optimization",
-        "Personal Branding",
+        { name: "Resume & LinkedIn", href: "/resources/resume-linkedin" },
+        { name: "Salary Negotiation Guide", href: "/resources/salary-negotiation" },
+        { name: "Gaining Experience", href: "/resources/gaining-experience" },
+        { name: "Personal Branding", href: "/resources/personal-branding" },
       ],
     },
     {
       category: "Community",
       items: [
-        "Mentorship Programs",
-        "Networking Events",
-        "Slack Community",
-        "Local Chapters",
+        { name: "Meet the Community", href: "/community" },
+        { name: "Job Board", href: "/jobs" },
+        { name: "Work With Us", href: "/work-with-us" },
+        { name: "Contact Us", href: "/contact" },
       ],
     },
   ];
@@ -54,10 +54,10 @@ export default function Resources() {
                 {section.items.map((item, itemIndex) => (
                   <li key={itemIndex}>
                     <Link
-                      href="#"
+                      href={item.href}
                       className="group flex items-center justify-between py-2 hover:text-[#ef562a] transition-colors"
                     >
-                      <span className="font-serif text-xl">{item}</span>
+                      <span className="font-serif text-xl">{item.name}</span>
                       <svg
                         className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
                         fill="none"
@@ -82,7 +82,7 @@ export default function Resources() {
         {/* CTA */}
         <div className="mt-16 text-center">
           <Link
-            href="#"
+            href="/resources"
             className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
           >
             View All Resources
