@@ -68,7 +68,7 @@ export default function CommunityPage() {
         <div
           className="fixed inset-0 pointer-events-none z-0"
           style={{
-            backgroundImage: `radial-gradient(circle, #9ca3af 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, #9ca3af 0.5px, transparent 0.5px)`,
             backgroundSize: "20px 20px",
           }}
         />
