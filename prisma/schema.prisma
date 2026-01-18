@@ -16,6 +16,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   progress      LessonProgress[]
+  microWins     MicroWin[]
 }
 
 model Account {
@@ -104,5 +105,21 @@ model ScrapeLog {
   createdAt    DateTime @default(now())
 
   @@index([companySlug])
+  @@index([createdAt])
+}
+
+// Micro-Wins Wall
+model MicroWin {
+  id          String    @id @default(cuid())
+  content     String    // Max 280 characters (enforced in application)
+  promptType  String    // "clicked", "made_sense", "stopped_doing", "small_win"
+  authorName  String?   // Optional display name (e.g., "Sarah T.")
+  authorId    String?   // Optional link to User for signed-in users
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  status      String    @default("approved") // "pending", "approved", "rejected"
+  createdAt   DateTime  @default(now())
+
+  @@index([status])
+  @@index([promptType])
   @@index([createdAt])
 }

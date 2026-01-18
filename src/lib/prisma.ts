@@ -7,13 +7,13 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-function createPrismaClient() {
-  // Use Turso in production, local SQLite in development
-  if (process.env.DATABASE_URL?.startsWith("libsql://")) {
-    const adapter = new PrismaLibSQL({
-      url: process.env.DATABASE_URL!,
-      authToken: process.env.DATABASE_AUTH_TOKEN,
-    });
+function createPrismaClient(): PrismaClient {
+  const url = process.env.DATABASE_URL;
+  const authToken = process.env.DATABASE_AUTH_TOKEN;
+
+  // Use Turso in production with libsql:// URL
+  if (url && url.startsWith("libsql://")) {
+    const adapter = new PrismaLibSQL({ url, authToken });
     return new PrismaClient({ adapter });
   }
 

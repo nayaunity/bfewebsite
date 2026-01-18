@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useSubscribe } from "@/hooks/useSubscribe";
+import { MicroWinsPreview } from "@/components/micro-wins/MicroWinsPreview";
 
 export default function CommunityPage() {
   const [email, setEmail] = useState("");
@@ -165,6 +166,31 @@ export default function CommunityPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Micro-Wins Wall Preview */}
+        <section className="bg-[var(--background)] py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+              <div>
+                <span className="text-xs px-3 py-1 bg-[#ef562a] text-white rounded-full font-medium mb-4 inline-block">
+                  New
+                </span>
+                <h2 className="font-serif text-3xl md:text-4xl">Micro-Wins Wall</h2>
+                <p className="mt-2 text-[var(--gray-600)]">
+                  Small wins, big impact. See what clicked for others.
+                </p>
+              </div>
+              <Link
+                href="/community/micro-wins"
+                className="mt-4 md:mt-0 text-[#ef562a] font-medium hover:underline"
+              >
+                See all wins &rarr;
+              </Link>
+            </div>
+
+            <MicroWinsPreview />
           </div>
         </section>
 
