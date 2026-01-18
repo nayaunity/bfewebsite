@@ -8,7 +8,7 @@
   "stats": {
     "modules": 3,
     "lessons": 9,
-    "freeLessons": 2
+    "freeLessons": 4
   },
   "features": [
     "Write ATS-optimized resumes",
@@ -35,7 +35,7 @@
           "title": "Beating the ATS",
           "duration": "10 min",
           "type": "article",
-          "free": false
+          "free": true
         },
         {
           "id": "1.3",
@@ -43,7 +43,7 @@
           "title": "Quantifying Your Impact",
           "duration": "15 min",
           "type": "article",
-          "free": false
+          "free": true
         },
         {
           "id": "1.4",
@@ -51,7 +51,7 @@
           "title": "Winning Resume Examples",
           "duration": "18 min",
           "type": "article",
-          "free": false
+          "free": true
         }
       ]
     },
@@ -66,7 +66,7 @@
           "title": "LinkedIn Profile Optimization",
           "duration": "15 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2.2",

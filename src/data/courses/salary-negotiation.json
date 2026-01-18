@@ -43,7 +43,7 @@
           "title": "Total Compensation Breakdown",
           "duration": "15 min",
           "type": "article",
-          "free": false
+          "free": true
         }
       ]
     },
@@ -58,7 +58,7 @@
           "title": "When to Negotiate",
           "duration": "10 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2.2",

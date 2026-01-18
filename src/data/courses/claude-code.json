@@ -7,7 +7,7 @@
   "stats": {
     "modules": 5,
     "lessons": 20,
-    "freeLessons": 8
+    "freeLessons": 4
   },
   "features": [
     "Hands-on prompting techniques",
@@ -65,7 +65,7 @@
           "title": "Anatomy of a Good Prompt",
           "duration": "10 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2.2",
@@ -73,7 +73,7 @@
           "title": "Context is Everything",
           "duration": "12 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2.3",
@@ -81,7 +81,7 @@
           "title": "Iterative Refinement",
           "duration": "10 min",
           "type": "workshop",
-          "free": true
+          "free": false
         },
         {
           "id": "2.4",
@@ -89,7 +89,7 @@
           "title": "Common Prompting Mistakes",
           "duration": "8 min",
           "type": "article",
-          "free": true
+          "free": false
         }
       ]
     },

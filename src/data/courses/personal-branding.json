@@ -8,7 +8,7 @@
   "stats": {
     "modules": 2,
     "lessons": 4,
-    "freeLessons": 1
+    "freeLessons": 2
   },
   "features": [
     "Build your online presence",
@@ -35,7 +35,7 @@
           "title": "Choosing Your Platform",
           "duration": "10 min",
           "type": "article",
-          "free": false
+          "free": true
         }
       ]
     },

@@ -8,10 +8,10 @@
   "stats": {
     "modules": 5,
     "lessons": 26,
-    "freeLessons": 6
+    "freeLessons": 4
   },
   "features": [
-    "100% Free lessons",
+    "Free foundation module",
     "Curated top-tier resources",
     "Real system design practice"
   ],
@@ -66,7 +66,7 @@
           "title": "Load Balancers",
           "duration": "15 min",
           "type": "video",
-          "free": true
+          "free": false
         },
         {
           "id": "2-2",
@@ -74,7 +74,7 @@
           "title": "Caching Strategies",
           "duration": "20 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2-3",

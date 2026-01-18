@@ -8,7 +8,7 @@
   "stats": {
     "modules": 4,
     "lessons": 16,
-    "freeLessons": 6
+    "freeLessons": 4
   },
   "features": [
     "Build a standout portfolio",
@@ -66,7 +66,7 @@
           "title": "Optimizing GitHub for Recruiters",
           "duration": "12 min",
           "type": "article",
-          "free": true
+          "free": false
         },
         {
           "id": "2.2",
@@ -74,7 +74,7 @@
           "title": "GitHub README Sections",
           "duration": "10 min",
           "type": "workshop",
-          "free": true
+          "free": false
         },
         {
           "id": "2.3",
