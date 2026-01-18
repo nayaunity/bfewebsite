@@ -1,6 +1,7 @@
 import "server-only";
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
+import { createClient } from "@libsql/client";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -10,10 +11,11 @@ declare global {
 function createPrismaClient() {
   // Use Turso in production, local SQLite in development
   if (process.env.DATABASE_URL?.startsWith("libsql://")) {
-    const adapter = new PrismaLibSQL({
+    const libsql = createClient({
       url: process.env.DATABASE_URL,
       authToken: process.env.DATABASE_AUTH_TOKEN,
     });
+    const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
 
