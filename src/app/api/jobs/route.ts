@@ -75,7 +75,11 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs" },
+      {
+        error: "Failed to fetch jobs",
+        detail: error instanceof Error ? error.message : String(error),
+        dbUrl: process.env.DATABASE_URL?.substring(0, 30) + "...",
+      },
       { status: 500 }
     );
   }
