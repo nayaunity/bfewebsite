@@ -138,3 +138,27 @@ model MicroWin {
   @@index([promptType])
   @@index([createdAt])
 }
+
+// Activity Feed - tracks events for the activity feed
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // "course_completed", "lesson_completed", "micro_win", "job_click"
+  message     String   // Human-readable message
+  metadata    String?  // JSON string with extra data (courseId, lessonSlug, etc.)
+  createdAt   DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Page Presence - tracks active users on pages for real-time counts
+model PagePresence {
+  id          String   @id @default(cuid())
+  visitorId   String   // Anonymous visitor ID (stored in cookie/localStorage)
+  page        String   // "jobs", "resources", "community", "course:system-design"
+  lastSeenAt  DateTime @default(now())
+
+  @@unique([visitorId, page])
+  @@index([page])
+  @@index([lastSeenAt])
+}

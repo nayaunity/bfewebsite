@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { useMicroWins } from "@/hooks/useMicroWins";
 import { MicroWinForm } from "@/components/micro-wins/MicroWinForm";
 import { ActivityFeed } from "@/components/ActivityFeed";
+import { usePagePresence } from "@/hooks/usePagePresence";
 import { MICRO_WIN_PROMPTS, formatRelativeTime } from "@/lib/micro-wins";
 
 // Sticky note colors for variety
@@ -29,6 +30,9 @@ function getRotation(index: number) {
 }
 
 export default function CommunityPage() {
+  // Track presence on community page
+  usePagePresence("community");
+
   const {
     microWins,
     isLoadingWins,

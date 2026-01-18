@@ -106,6 +106,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Record activity event
+    const displayName = authorName?.trim() || "Someone";
+    await prisma.activity.create({
+      data: {
+        type: "micro_win",
+        message: `${displayName} shared a micro-win`,
+        metadata: JSON.stringify({ microWinId: microWin.id, promptType }),
+      },
+    });
+
     return NextResponse.json({ success: true, microWin });
   } catch (error) {
     console.error("Error creating micro-win:", error);

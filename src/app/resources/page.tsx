@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
 export const metadata = {
   title: "Resources | The Black Female Engineer",
@@ -68,6 +69,7 @@ export default function ResourcesPage() {
 
   return (
     <>
+      <PagePresenceTracker page="resources" />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
