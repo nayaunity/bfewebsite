@@ -113,7 +113,7 @@ export default function InterviewPrepPage() {
               <CourseSidebar course={course} />
 
               {/* Main Content - Course Overview */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 w-full overflow-hidden">
                 <h2 className="font-serif text-2xl md:text-3xl mb-8">Course Overview</h2>
 
                 {/* Progress Bar */}
@@ -125,15 +125,15 @@ export default function InterviewPrepPage() {
                     <div
                       key={module.id}
                       id={`module-${module.id}`}
-                      className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 hover:shadow-lg transition-shadow scroll-mt-40"
+                      className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow scroll-mt-40 overflow-hidden"
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div className="min-w-0 flex-1">
                           <span className="text-xs text-[var(--gray-600)]">Module {module.id}</span>
                           <h3 className="font-serif text-xl mt-1">{module.title}</h3>
                           <p className="text-[var(--gray-600)] text-sm mt-1">{module.description}</p>
                         </div>
-                        <span className="text-sm text-[var(--gray-600)]">
+                        <span className="text-sm text-[var(--gray-600)] flex-shrink-0">
                           {module.lessons.length} lessons
                         </span>
                       </div>
