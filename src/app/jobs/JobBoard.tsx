@@ -90,10 +90,9 @@ export default function JobBoard() {
     fetchJobs(1, false);
   }, [fetchJobs]);
 
-  const handleLoadMore = () => {
-    if (pagination?.hasMore) {
-      fetchJobs(pagination.page + 1, true);
-    }
+  const handlePageChange = (page: number) => {
+    fetchJobs(page, false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCategoryChange = (category: string) => {
@@ -321,15 +320,80 @@ export default function JobBoard() {
             </div>
           )}
 
-          {/* Load More */}
-          {pagination?.hasMore && !loading && (
-            <div className="mt-12 text-center">
+          {/* Pagination */}
+          {pagination && pagination.totalPages > 1 && !loading && (
+            <div className="mt-12 flex justify-center items-center gap-2">
+              {/* Previous Button */}
               <button
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1 || loadingMore}
+                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--gray-100)] transition-colors"
               >
-                {loadingMore ? "Loading..." : "Load More Jobs"}
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center gap-1">
+                {(() => {
+                  const pages: (number | string)[] = [];
+                  const current = pagination.page;
+                  const total = pagination.totalPages;
+
+                  // Always show first page
+                  pages.push(1);
+
+                  // Add ellipsis if needed
+                  if (current > 3) {
+                    pages.push("...");
+                  }
+
+                  // Show pages around current
+                  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+                    if (!pages.includes(i)) {
+                      pages.push(i);
+                    }
+                  }
+
+                  // Add ellipsis if needed
+                  if (current < total - 2) {
+                    pages.push("...");
+                  }
+
+                  // Always show last page
+                  if (total > 1 && !pages.includes(total)) {
+                    pages.push(total);
+                  }
+
+                  return pages.map((page, index) =>
+                    typeof page === "string" ? (
+                      <span key={`ellipsis-${index}`} className="px-2 text-[var(--gray-400)]">
+                        {page}
+                      </span>
+                    ) : (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        disabled={loadingMore}
+                        className={`min-w-[40px] h-10 rounded-lg font-medium transition-colors ${
+                          page === current
+                            ? "bg-[#ffe500] text-black"
+                            : "bg-[var(--background)] text-[var(--foreground)] border border-[var(--gray-200)] hover:bg-[var(--gray-100)]"
+                        } disabled:opacity-50`}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.totalPages || loadingMore}
+                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--gray-100)] transition-colors"
+              >
+                Next
               </button>
             </div>
           )}

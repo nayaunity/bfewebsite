@@ -26,6 +26,7 @@ interface StatsData {
 interface FeedData {
   activities: ActivityItem[];
   presence: PresenceData;
+  locations: Record<string, number>;
   stats: StatsData;
 }
 
@@ -35,8 +36,81 @@ const ACTIVITY_ICONS: Record<string, { icon: string; color: string }> = {
   micro_win: { icon: "✨", color: "bg-yellow-100 text-yellow-600" },
   job_click: { icon: "💼", color: "bg-purple-100 text-purple-600" },
   presence: { icon: "●", color: "bg-emerald-100 text-emerald-600" },
+  location: { icon: "🌍", color: "bg-sky-100 text-sky-600" },
   stat: { icon: "📊", color: "bg-orange-100 text-orange-600" },
 };
+
+// Map country codes to country names
+const COUNTRY_NAMES: Record<string, string> = {
+  US: "United States",
+  CA: "Canada",
+  GB: "United Kingdom",
+  AU: "Australia",
+  DE: "Germany",
+  FR: "France",
+  IN: "India",
+  NG: "Nigeria",
+  ZA: "South Africa",
+  KE: "Kenya",
+  GH: "Ghana",
+  BR: "Brazil",
+  MX: "Mexico",
+  JP: "Japan",
+  KR: "South Korea",
+  SG: "Singapore",
+  NL: "Netherlands",
+  IE: "Ireland",
+  SE: "Sweden",
+  NO: "Norway",
+  DK: "Denmark",
+  FI: "Finland",
+  NZ: "New Zealand",
+  PH: "Philippines",
+  PK: "Pakistan",
+  BD: "Bangladesh",
+  EG: "Egypt",
+  AE: "UAE",
+  IL: "Israel",
+  IT: "Italy",
+  ES: "Spain",
+  PT: "Portugal",
+  PL: "Poland",
+  CZ: "Czech Republic",
+  AT: "Austria",
+  CH: "Switzerland",
+  BE: "Belgium",
+  RO: "Romania",
+  UA: "Ukraine",
+  RU: "Russia",
+  TR: "Turkey",
+  AR: "Argentina",
+  CL: "Chile",
+  CO: "Colombia",
+  PE: "Peru",
+  VE: "Venezuela",
+  EC: "Ecuador",
+  TZ: "Tanzania",
+  UG: "Uganda",
+  RW: "Rwanda",
+  ET: "Ethiopia",
+  ZW: "Zimbabwe",
+  BW: "Botswana",
+  NA: "Namibia",
+  MZ: "Mozambique",
+  AO: "Angola",
+  CM: "Cameroon",
+  CI: "Ivory Coast",
+  SN: "Senegal",
+  MA: "Morocco",
+  TN: "Tunisia",
+  DZ: "Algeria",
+  LY: "Libya",
+  SD: "Sudan",
+};
+
+function getCountryName(code: string): string {
+  return COUNTRY_NAMES[code] || code;
+}
 
 function formatTimeAgo(dateString: string): string {
   const date = new Date(dateString);
@@ -113,6 +187,22 @@ export function ActivityFeed() {
         type: "presence",
         message: `${data.presence.community} ${data.presence.community === 1 ? "person" : "people"} on the community board`,
         isLive: true,
+      });
+    }
+
+    // Add location items (top 3 countries)
+    if (data.locations) {
+      const sortedLocations = Object.entries(data.locations)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3);
+
+      sortedLocations.forEach(([countryCode, count]) => {
+        feedItems.push({
+          id: `location-${countryCode}`,
+          type: "location",
+          message: `${count} ${count === 1 ? "person" : "people"} active from ${getCountryName(countryCode)}`,
+          isLive: true,
+        });
       });
     }
 

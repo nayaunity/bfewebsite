@@ -187,6 +187,7 @@ CREATE TABLE IF NOT EXISTS "PagePresence" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "visitorId" TEXT NOT NULL,
     "page" TEXT NOT NULL,
+    "country" TEXT,
     "lastSeenAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -198,3 +199,9 @@ CREATE INDEX IF NOT EXISTS "PagePresence_page_idx" ON "PagePresence"("page");
 
 -- CreateIndex
 CREATE INDEX IF NOT EXISTS "PagePresence_lastSeenAt_idx" ON "PagePresence"("lastSeenAt");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "PagePresence_country_idx" ON "PagePresence"("country");
+
+-- Add country column if table already exists
+ALTER TABLE "PagePresence" ADD COLUMN "country" TEXT;

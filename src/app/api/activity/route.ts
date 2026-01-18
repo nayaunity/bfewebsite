@@ -37,6 +37,24 @@ export async function GET(request: NextRequest) {
       presenceMap[p.page] = p._count.visitorId;
     });
 
+    // Get presence counts by country
+    const countryCounts = await prisma.pagePresence.groupBy({
+      by: ["country"],
+      where: {
+        lastSeenAt: { gte: fiveMinutesAgo },
+        country: { not: null },
+      },
+      _count: { visitorId: true },
+    });
+
+    // Convert to location map
+    const locationMap: Record<string, number> = {};
+    countryCounts.forEach((c) => {
+      if (c.country) {
+        locationMap[c.country] = c._count.visitorId;
+      }
+    });
+
     // Get recent completions count (last 24 hours)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentCompletions = await prisma.lessonProgress.count({
@@ -70,6 +88,7 @@ export async function GET(request: NextRequest) {
         community: presenceMap["community"] || 0,
         total: Object.values(presenceMap).reduce((a, b) => a + b, 0),
       },
+      locations: locationMap,
       stats: {
         completionsToday: recentCompletions,
         microWinsToday: recentMicroWins,

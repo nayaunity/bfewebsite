@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get country from Vercel geo headers
+    const country = request.headers.get("x-vercel-ip-country") || null;
+
     // Upsert the presence record
     await prisma.pagePresence.upsert({
       where: {
@@ -21,10 +24,12 @@ export async function POST(request: NextRequest) {
       },
       update: {
         lastSeenAt: new Date(),
+        country,
       },
       create: {
         visitorId,
         page,
+        country,
         lastSeenAt: new Date(),
       },
     });

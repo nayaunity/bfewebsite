@@ -156,9 +156,11 @@ model PagePresence {
   id          String   @id @default(cuid())
   visitorId   String   // Anonymous visitor ID (stored in cookie/localStorage)
   page        String   // "jobs", "resources", "community", "course:system-design"
+  country     String?  // Country code from Vercel geo headers (e.g., "US", "CA")
   lastSeenAt  DateTime @default(now())
 
   @@unique([visitorId, page])
   @@index([page])
   @@index([lastSeenAt])
+  @@index([country])
 }
