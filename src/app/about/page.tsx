@@ -31,9 +31,10 @@ export default function AboutPage() {
     { year: "2020", event: "Pivoted to software engineering after earning my degree in Finance" },
     { year: "2021", event: "Started creating content to make tech accessible during the pandemic" },
     { year: "2022", event: "Expanded to TikTok and Instagram with career and coding content, reaching 50,000+ members across socials" },
-    { year: "2023", event: "Grew community to 100K+ tech enthusiasts" },
-    { year: "2024", event: "Partnered with major tech companies and brands to teach new and emerging technologies and how to adopt them" },
+    // { year: "2023", event: "Grew community to 100K+ tech enthusiasts" },
+    // { year: "2024", event: "Partnered with major tech companies and brands to teach new and emerging technologies and how to adopt them" },
     { year: "2025", event: "Reached 200K+ followers empowering the next generation of innovators" },
+    { year: "2026", event: "Enabled thousands of technologists to land roles, grow skills, and build momentum through a centralized platform" },
   ];
 
   return (

@@ -183,7 +183,7 @@
     "atsType": "workday",
     "atsConfig": {
       "baseUrl": "https://nvidia.wd5.myworkdayjobs.com",
-      "company": "nvidia",
+      "company": "NVIDIA",
       "siteName": "NVIDIAExternalCareerSite"
     }
   },
