@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useSubscribe } from "@/hooks/useSubscribe";
+import { communityMembers } from "@/data/communityMembers";
 
 export default function Community() {
   const [email, setEmail] = useState("");
@@ -83,18 +85,37 @@ export default function Community() {
       <div className="bg-[#1a1a1a] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {/* Member cards - placeholder style */}
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="aspect-[4/5] bg-[var(--gray-800)] rounded-2xl overflow-hidden relative group"
+            {communityMembers.map((member) => (
+              <Link
+                key={member.id}
+                href={`/members/${member.slug}`}
+                className="aspect-[4/5] bg-[var(--gray-800)] rounded-2xl overflow-hidden relative group cursor-pointer"
               >
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#ffe500]/20 flex items-center justify-center group-hover:bg-[#ffe500]/30 transition-colors">
+                      <span className="font-serif text-2xl md:text-3xl text-white/60">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                  <h4 className="font-serif text-lg md:text-xl text-white">Community Member</h4>
-                  <p className="text-white/60 text-sm mt-1">Engineer at Company</p>
+                  <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#ffe500] transition-colors">
+                    {member.name}
+                  </h4>
+                  <p className="text-white/60 text-sm mt-1">
+                    {member.role} at {member.company}
+                  </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
