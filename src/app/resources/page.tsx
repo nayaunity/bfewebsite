@@ -141,7 +141,7 @@ export default function ResourcesPage() {
               Help inspire the next generation of innovators with your knowledge.
             </p>
             <Link
-              href="/contact"
+              href="/resources/submit"
               className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
             >
               Submit a Resource

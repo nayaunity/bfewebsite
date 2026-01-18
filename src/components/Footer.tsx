@@ -55,7 +55,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link href="/contact" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Contact Us</Link></li>
               <li><a href="/work-with-us" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Partner With Us</a></li>
-              <li><Link href="#" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Submit a Resource</Link></li>
+              <li><Link href="/resources/submit" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Submit a Resource</Link></li>
               {/* Hidden: Team uses /jobs/submit directly */}
             </ul>
           </div>
