@@ -198,17 +198,12 @@ export default function JobBoard() {
               ))}
               <button
                 onClick={handleRemoteToggle}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   remoteOnly
                     ? "bg-green-100 text-green-800 border border-green-200"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    remoteOnly ? "bg-green-500" : "bg-[var(--gray-400)]"
-                  }`}
-                />
                 Remote
               </button>
             </div>
