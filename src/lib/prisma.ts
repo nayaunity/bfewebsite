@@ -13,9 +13,9 @@ function createPrismaClient(): PrismaClient {
 
   // Use Turso in production with libsql:// or https:// URL
   if (url && (url.startsWith("libsql://") || url.startsWith("https://"))) {
-    // Ensure URL doesn't have trailing slash
-    const cleanUrl = url.endsWith("/") ? url.slice(0, -1) : url;
-    const adapter = new PrismaLibSQL({ url: cleanUrl, authToken });
+    // Ensure URL doesn't have trailing slash or whitespace
+    const cleanUrl = url.trim().replace(/\/+$/, "");
+    const adapter = new PrismaLibSQL({ url: cleanUrl, authToken: authToken || undefined });
     return new PrismaClient({ adapter });
   }
 
