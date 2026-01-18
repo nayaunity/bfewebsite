@@ -69,8 +69,8 @@ export default function CommunityPage() {
     <>
       <Navigation />
       <main className="min-h-screen bg-white dark:bg-[#1a1a1a] pt-20 md:pt-[144px]">
-        {/* White cover to hide dots behind nav area */}
-        <div className="fixed top-0 left-0 right-0 h-20 md:h-[144px] bg-white dark:bg-[#1a1a1a] z-10 pointer-events-none" />
+        {/* White cover to hide content behind nav area */}
+        <div className="fixed top-0 left-0 right-0 h-20 md:h-[144px] bg-white dark:bg-[#1a1a1a] z-30 pointer-events-none" />
 
         {/* Board Background with dots pattern */}
         <div
