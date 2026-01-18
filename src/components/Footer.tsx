@@ -68,8 +68,8 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[var(--gray-600)]">
             <p>&copy; {new Date().getFullYear()} The Black Female Engineer. All rights reserved.</p>
             <div className="flex gap-6">
-              <Link href="#" className="hover:text-[var(--foreground)] transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-[var(--foreground)] transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-[var(--foreground)] transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-[var(--foreground)] transition-colors">Terms</Link>
             </div>
           </div>
         </div>
