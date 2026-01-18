@@ -15,7 +15,11 @@ function createPrismaClient(): PrismaClient {
   if (url && (url.startsWith("libsql://") || url.startsWith("https://"))) {
     // Ensure URL doesn't have trailing slash or whitespace
     const cleanUrl = url.trim().replace(/\/+$/, "");
-    const adapter = new PrismaLibSQL({ url: cleanUrl, authToken: authToken || undefined });
+    const adapter = new PrismaLibSQL({
+      url: cleanUrl,
+      authToken: authToken || undefined,
+      intMode: "number"
+    });
     return new PrismaClient({ adapter });
   }
 

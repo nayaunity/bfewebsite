@@ -74,11 +74,16 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching jobs:", error);
+    const dbUrl = process.env.DATABASE_URL || "";
     return NextResponse.json(
       {
         error: "Failed to fetch jobs",
         detail: error instanceof Error ? error.message : String(error),
-        dbUrl: process.env.DATABASE_URL?.substring(0, 30) + "...",
+        stack: error instanceof Error ? error.stack?.split("\n").slice(0, 3) : undefined,
+        dbUrl: dbUrl.substring(0, 35) + "...",
+        dbUrlLen: dbUrl.length,
+        hasAuthToken: !!process.env.DATABASE_AUTH_TOKEN,
+        authTokenLen: process.env.DATABASE_AUTH_TOKEN?.length || 0,
       },
       { status: 500 }
     );
