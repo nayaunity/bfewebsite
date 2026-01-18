@@ -81,8 +81,8 @@ export default function CommunityPage() {
           }}
         />
 
-        {/* Board Header */}
-        <div className="sticky top-20 md:top-[144px] z-40 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[var(--card-border)]">
+        {/* Board Header - hidden on mobile */}
+        <div className="hidden md:block sticky top-20 md:top-[144px] z-40 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[var(--card-border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               {/* Title */}
