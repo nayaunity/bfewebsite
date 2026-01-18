@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
-    "@libsql/client": "^0.17.0",
+    "@libsql/client": "^0.8.0",
     "@prisma/adapter-libsql": "^6.19.2",
     "@prisma/client": "^6.19.2",
     "dotenv": "^17.2.3",
