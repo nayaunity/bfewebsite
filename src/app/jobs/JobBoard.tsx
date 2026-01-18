@@ -218,7 +218,7 @@ export default function JobBoard() {
 
 
       {/* Job Listings */}
-      <section className="bg-[var(--gray-50)] py-16 md:py-24">
+      <section className="bg-[var(--gray-50)] pt-8 pb-16 md:pt-12 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
             <div className="space-y-4">
