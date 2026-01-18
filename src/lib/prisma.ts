@@ -1,6 +1,7 @@
 import "server-only";
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
+import { createClient } from "@libsql/client";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -13,7 +14,8 @@ function createPrismaClient(): PrismaClient {
 
   // Use Turso in production with libsql:// or https:// URL
   if (url && (url.startsWith("libsql://") || url.startsWith("https://"))) {
-    const adapter = new PrismaLibSQL({ url, authToken });
+    const libsql = createClient({ url, authToken });
+    const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
 
