@@ -1,4 +1,5 @@
 import { auth } from "./auth";
+import { prisma } from "./prisma";
 import { redirect } from "next/navigation";
 
 /**
@@ -13,7 +14,13 @@ export async function requireAdmin() {
     redirect("/auth/signin?callbackUrl=/admin");
   }
 
-  if (session.user.role !== "admin") {
+  // Fetch role from database
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  if (user?.role !== "admin") {
     redirect("/");
   }
 
@@ -31,8 +38,14 @@ export async function checkAdmin() {
     return { isAdmin: false, session: null };
   }
 
+  // Fetch role from database
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
   return {
-    isAdmin: session.user.role === "admin",
+    isAdmin: user?.role === "admin",
     session,
   };
 }

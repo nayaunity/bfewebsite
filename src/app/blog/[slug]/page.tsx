@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -28,6 +29,110 @@ export async function generateMetadata({ params }: Props) {
     title: `${post.title} | The Black Female Engineer`,
     description: post.excerpt,
   };
+}
+
+function renderContent(content: string) {
+  const elements: React.ReactNode[] = [];
+  const lines = content.split("\n");
+  let i = 0;
+  let keyIndex = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Handle code blocks
+    if (trimmed.startsWith("```")) {
+      const codeLines: string[] = [];
+      i++; // Skip opening ```
+      while (i < lines.length && !lines[i].trim().startsWith("```")) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      i++; // Skip closing ```
+      elements.push(
+        <pre
+          key={keyIndex++}
+          className="bg-[#1a1a1a] p-4 rounded-xl my-6 text-sm leading-relaxed whitespace-pre-wrap break-words"
+        >
+          <code className="text-gray-100">
+            {codeLines.join("\n")}
+          </code>
+        </pre>
+      );
+      continue;
+    }
+
+    // Skip empty lines
+    if (!trimmed) {
+      i++;
+      continue;
+    }
+
+    // Handle headings
+    if (trimmed.startsWith("## ")) {
+      elements.push(
+        <h2 key={keyIndex++} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
+          {trimmed.replace("## ", "")}
+        </h2>
+      );
+      i++;
+      continue;
+    }
+
+    if (trimmed.startsWith("### ")) {
+      elements.push(
+        <h3 key={keyIndex++} className="font-serif text-xl md:text-2xl mt-8 mb-3">
+          {trimmed.replace("### ", "")}
+        </h3>
+      );
+      i++;
+      continue;
+    }
+
+    // Handle numbered lists
+    if (/^\d+\.\s/.test(trimmed)) {
+      elements.push(
+        <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-decimal">
+          {trimmed.replace(/^\d+\.\s/, "")}
+        </li>
+      );
+      i++;
+      continue;
+    }
+
+    // Handle bullet points
+    if (trimmed.startsWith("- ")) {
+      elements.push(
+        <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-disc">
+          {trimmed.replace("- ", "")}
+        </li>
+      );
+      i++;
+      continue;
+    }
+
+    // Handle bold text within paragraphs
+    if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+      elements.push(
+        <p key={keyIndex++} className="text-[var(--gray-700)] mb-4 leading-relaxed font-semibold">
+          {trimmed.slice(2, -2)}
+        </p>
+      );
+      i++;
+      continue;
+    }
+
+    // Regular paragraphs
+    elements.push(
+      <p key={keyIndex++} className="text-[var(--gray-700)] mb-4 leading-relaxed">
+        {trimmed}
+      </p>
+    );
+    i++;
+  }
+
+  return elements;
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -108,42 +213,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Content */}
           <div className="prose prose-lg max-w-none">
-            {post.content.split("\n").map((paragraph, index) => {
-              const trimmed = paragraph.trim();
-              if (!trimmed) return null;
-
-              // Handle headings
-              if (trimmed.startsWith("## ")) {
-                return (
-                  <h2 key={index} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
-                    {trimmed.replace("## ", "")}
-                  </h2>
-                );
-              }
-              if (trimmed.startsWith("### ")) {
-                return (
-                  <h3 key={index} className="font-serif text-xl md:text-2xl mt-8 mb-3">
-                    {trimmed.replace("### ", "")}
-                  </h3>
-                );
-              }
-
-              // Handle bullet points
-              if (trimmed.startsWith("- ")) {
-                return (
-                  <li key={index} className="text-[var(--gray-700)] ml-6 mb-2">
-                    {trimmed.replace("- ", "")}
-                  </li>
-                );
-              }
-
-              // Regular paragraphs
-              return (
-                <p key={index} className="text-[var(--gray-700)] mb-4 leading-relaxed">
-                  {trimmed}
-                </p>
-              );
-            })}
+            {renderContent(post.content)}
           </div>
 
           {/* Tags */}
