@@ -123,62 +123,44 @@ export default function BlogPage() {
                 <p className="text-[var(--gray-600)]">Check back soon for new content!</p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="divide-y divide-[var(--card-border)]">
                 {recentPosts.map((post) => (
                   <Link
                     key={post.slug}
                     href={`/blog/${post.slug}`}
-                    className="group flex flex-col md:flex-row gap-6 bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#ffe500] hover:shadow-lg transition-all"
+                    className="group flex flex-col-reverse md:flex-row gap-6 py-8 first:pt-0 last:pb-0"
                   >
-                    {post.image && (
-                      <div className="relative w-full md:w-48 aspect-[16/9] md:aspect-square flex-shrink-0 rounded-xl overflow-hidden">
+                    <div className="flex-1">
+                      <h3 className="font-serif text-xl md:text-2xl font-medium group-hover:text-[#ef562a] transition-colors leading-tight">
+                        {post.title}
+                      </h3>
+                      <p className="mt-3 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>
+                      <div className="mt-4 flex items-center gap-2 text-sm text-[var(--gray-500)]">
+                        <span className="uppercase">
+                          {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                        <span>·</span>
+                        <span>{post.author}</span>
+                      </div>
+                    </div>
+                    <div className="relative w-full md:w-64 aspect-[4/3] flex-shrink-0 rounded-xl overflow-hidden bg-[var(--gray-100)]">
+                      {post.image ? (
                         <Image
                           src={post.image}
                           alt={post.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                      </div>
-                    )}
-                    <div className="flex-1 flex flex-col justify-center">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-xs px-2 py-1 rounded-full bg-[var(--gray-100)] text-[var(--foreground)] font-medium">
-                          {post.category}
-                        </span>
-                        <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
-                      </div>
-                      <h3 className="font-serif text-xl group-hover:text-[#ef562a] transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="mt-2 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>
-                      <div className="mt-3 flex items-center gap-4">
-                        <span className="text-sm text-[var(--gray-600)]">
-                          {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
-                        {post.tags.length > 0 && (
-                          <div className="hidden md:flex gap-2">
-                            {post.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className="text-xs text-[var(--gray-600)]">
-                                #{tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="hidden md:flex items-center">
-                      <svg
-                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#ef562a] group-hover:translate-x-1 transition-all"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-12 h-12 text-[var(--gray-300)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 ))}
