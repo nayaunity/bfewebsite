@@ -62,13 +62,29 @@ export async function GET(request: NextRequest) {
     // Get total count for pagination
     const total = await prisma.job.count({ where });
 
-    // Get jobs
-    const jobs = await prisma.job.findMany({
+    // Get jobs - fetch more than needed to allow for US prioritization sorting
+    const allJobs = await prisma.job.findMany({
       where,
       orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
-      skip: offset,
-      take: limit,
     });
+
+    // Sort to prioritize US jobs first, then by date within each group
+    const sortedJobs = allJobs.sort((a, b) => {
+      const aIsUS = isUSLocation(a.location);
+      const bIsUS = isUSLocation(b.location);
+
+      // If one is US and the other isn't, US comes first
+      if (aIsUS && !bIsUS) return -1;
+      if (!aIsUS && bIsUS) return 1;
+
+      // Within the same group, sort by date (most recent first)
+      const aDate = a.postedAt || a.scrapedAt;
+      const bDate = b.postedAt || b.scrapedAt;
+      return bDate.getTime() - aDate.getTime();
+    });
+
+    // Apply pagination after sorting
+    const jobs = sortedJobs.slice(offset, offset + limit);
 
     // Transform jobs for the frontend
     const transformedJobs = jobs.map((job) => ({
@@ -211,4 +227,37 @@ function formatPostedDate(date: Date): string {
 
   const months = Math.floor(diffDays / 30);
   return `${months} months ago`;
+}
+
+// US state abbreviations
+const US_STATES = [
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"
+];
+
+function isUSLocation(location: string): boolean {
+  const loc = location.toUpperCase();
+
+  // Check for explicit US indicators
+  if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US")) {
+    return true;
+  }
+
+  // Check for US state abbreviations (e.g., "San Francisco, CA" or "Remote, CA")
+  for (const state of US_STATES) {
+    // Match patterns like ", CA" or ", CA " or ending with ", CA"
+    if (loc.includes(`, ${state}`) || loc.endsWith(` ${state}`)) {
+      return true;
+    }
+  }
+
+  // Check for "Remote" without specific country (assume US)
+  if (loc === "REMOTE" || loc === "REMOTE, US" || loc === "US REMOTE" || loc === "REMOTE - US") {
+    return true;
+  }
+
+  return false;
 }
