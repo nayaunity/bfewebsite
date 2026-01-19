@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { links, socialLinks } from "@/data/links";
@@ -91,11 +92,23 @@ export default function LinksPage() {
                     className="block bg-[#ffe500] text-black p-5 rounded-2xl hover:bg-[#f5dc00] transition-colors group"
                   >
                     <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-serif text-xl">{link.title}</h3>
-                        {link.description && (
-                          <p className="text-black/70 text-sm mt-1">{link.description}</p>
+                      <div className="flex items-center gap-4">
+                        {link.image && (
+                          <div className="relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden">
+                            <Image
+                              src={link.image}
+                              alt=""
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
                         )}
+                        <div>
+                          <h3 className="font-serif text-xl">{link.title}</h3>
+                          {link.description && (
+                            <p className="text-black/70 text-sm mt-1">{link.description}</p>
+                          )}
+                        </div>
                       </div>
                       <svg
                         className="w-5 h-5 flex-shrink-0 ml-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
@@ -129,11 +142,23 @@ export default function LinksPage() {
                   className="block bg-[var(--card-bg)] border border-[var(--card-border)] p-5 rounded-2xl hover:border-[#ffe500] transition-colors group"
                 >
                   <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-serif text-lg group-hover:text-[#ef562a] transition-colors">{link.title}</h3>
-                      {link.description && (
-                        <p className="text-[var(--gray-600)] text-sm mt-1">{link.description}</p>
+                    <div className="flex items-center gap-4">
+                      {link.image && (
+                        <div className="relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden">
+                          <Image
+                            src={link.image}
+                            alt=""
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       )}
+                      <div>
+                        <h3 className="font-serif text-lg group-hover:text-[#ef562a] transition-colors">{link.title}</h3>
+                        {link.description && (
+                          <p className="text-[var(--gray-600)] text-sm mt-1">{link.description}</p>
+                        )}
+                      </div>
                     </div>
                     <svg
                       className="w-5 h-5 flex-shrink-0 ml-4 text-[var(--gray-600)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"

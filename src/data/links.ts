@@ -5,6 +5,7 @@ export interface LinkItem {
   url: string;
   category?: string;
   featured?: boolean;
+  image?: string;
 }
 
 export const links: LinkItem[] = [
