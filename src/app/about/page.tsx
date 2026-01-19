@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -85,15 +86,13 @@ export default function AboutPage() {
                   We believe in inspiring, educating, and entertaining through relatable storytelling, valuable resources, and thought-provoking discussions. We believe in empowering underrepresented communities in tech and inspiring the next generation of innovators.
                 </p>
               </div>
-              <div className="bg-[var(--gray-100)] rounded-3xl aspect-square flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[#ffe500] flex items-center justify-center">
-                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </div>
-                  <p className="text-[var(--gray-600)] text-sm">Add team photo here</p>
-                </div>
+              <div className="relative rounded-3xl aspect-square overflow-hidden">
+                <Image
+                  src="/images/nyaradzo.jpg"
+                  alt="Nyaradzo"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
