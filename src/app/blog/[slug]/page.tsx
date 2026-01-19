@@ -1,0 +1,249 @@
+import Link from "next/link";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { getBlogPost, blogPosts } from "@/data/blog";
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return blogPosts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+
+  if (!post) {
+    return {
+      title: "Post Not Found | The Black Female Engineer",
+    };
+  }
+
+  return {
+    title: `${post.title} | The Black Female Engineer`,
+    description: post.excerpt,
+  };
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  // Get related posts (same category, excluding current)
+  const relatedPosts = blogPosts
+    .filter((p) => p.category === post.category && p.slug !== post.slug)
+    .slice(0, 3);
+
+  return (
+    <>
+      <Navigation />
+      <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
+        {/* Article Header */}
+        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <div className="mb-8">
+            <Link
+              href="/blog"
+              className="text-sm text-[var(--gray-600)] hover:text-[#ef562a] transition-colors inline-flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Blog
+            </Link>
+          </div>
+
+          {/* Meta */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-xs px-2 py-1 rounded-full bg-[#ffe500] text-black font-medium">
+              {post.category}
+            </span>
+            <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
+          </div>
+
+          {/* Title */}
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-6">
+            {post.title}
+          </h1>
+
+          {/* Author & Date */}
+          <div className="flex items-center gap-4 mb-8 pb-8 border-b border-[var(--card-border)]">
+            <div className="w-12 h-12 rounded-full bg-[var(--gray-200)] flex items-center justify-center">
+              <span className="font-serif text-lg">{post.author.charAt(0)}</span>
+            </div>
+            <div>
+              <p className="font-medium">{post.author}</p>
+              <p className="text-sm text-[var(--gray-600)]">
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+
+          {/* Featured Image */}
+          {post.image && (
+            <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-8">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="prose prose-lg max-w-none">
+            {post.content.split("\n").map((paragraph, index) => {
+              const trimmed = paragraph.trim();
+              if (!trimmed) return null;
+
+              // Handle headings
+              if (trimmed.startsWith("## ")) {
+                return (
+                  <h2 key={index} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
+                    {trimmed.replace("## ", "")}
+                  </h2>
+                );
+              }
+              if (trimmed.startsWith("### ")) {
+                return (
+                  <h3 key={index} className="font-serif text-xl md:text-2xl mt-8 mb-3">
+                    {trimmed.replace("### ", "")}
+                  </h3>
+                );
+              }
+
+              // Handle bullet points
+              if (trimmed.startsWith("- ")) {
+                return (
+                  <li key={index} className="text-[var(--gray-700)] ml-6 mb-2">
+                    {trimmed.replace("- ", "")}
+                  </li>
+                );
+              }
+
+              // Regular paragraphs
+              return (
+                <p key={index} className="text-[var(--gray-700)] mb-4 leading-relaxed">
+                  {trimmed}
+                </p>
+              );
+            })}
+          </div>
+
+          {/* Tags */}
+          {post.tags.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-[var(--card-border)]">
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-sm px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Share */}
+          <div className="mt-8 pt-8 border-t border-[var(--card-border)]">
+            <p className="text-sm text-[var(--gray-600)] mb-4">Share this article</p>
+            <div className="flex gap-3">
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://theblackfemaleengineer.com/blog/${post.slug}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors group"
+              >
+                <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://theblackfemaleengineer.com/blog/${post.slug}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors group"
+              >
+                <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        {/* Related Posts */}
+        {relatedPosts.length > 0 && (
+          <section className="bg-[var(--gray-50)] py-16 md:py-24 mt-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="font-serif text-2xl md:text-3xl mb-8">Related Articles</h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {relatedPosts.map((relatedPost) => (
+                  <Link
+                    key={relatedPost.slug}
+                    href={`/blog/${relatedPost.slug}`}
+                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[#ffe500] hover:shadow-lg transition-all"
+                  >
+                    {relatedPost.image && (
+                      <div className="relative aspect-[16/9] overflow-hidden">
+                        <Image
+                          src={relatedPost.image}
+                          alt={relatedPost.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <span className="text-xs text-[var(--gray-600)]">{relatedPost.readTime}</span>
+                      <h3 className="font-serif text-lg mt-2 group-hover:text-[#ef562a] transition-colors line-clamp-2">
+                        {relatedPost.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Newsletter CTA */}
+        <section className="bg-[var(--cta-bg)] py-16 md:py-24 border-t border-[var(--card-border)]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="font-serif text-3xl md:text-4xl mb-4 text-[var(--cta-text)]">
+              Enjoyed this article?
+            </h2>
+            <p className="text-[var(--cta-text-muted)] mb-8 text-lg">
+              Subscribe to get new posts delivered straight to your inbox.
+            </p>
+            <Link
+              href="#newsletter"
+              className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+            >
+              Subscribe to Newsletter
+            </Link>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}

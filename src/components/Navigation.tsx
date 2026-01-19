@@ -35,7 +35,7 @@ export default function Navigation() {
     { href: "/resources", label: "RESOURCES" },
     { href: "/jobs", label: "JOB BOARD" },
     { href: "/community", label: "COMMUNITY" },
-    { href: "/about", label: "ABOUT" },
+    { href: "/blog", label: "BLOG" },
     { href: "/work-with-us", label: "WORK WITH US" },
   ];
 
