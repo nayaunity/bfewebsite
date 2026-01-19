@@ -12,6 +12,7 @@ model User {
   id            String          @id @default(cuid())
   email         String          @unique
   emailVerified DateTime?
+  role          String          @default("user")  // "user" or "admin"
   createdAt     DateTime        @default(now())
   accounts      Account[]
   sessions      Session[]
@@ -163,4 +164,23 @@ model PagePresence {
   @@index([page])
   @@index([lastSeenAt])
   @@index([country])
+}
+
+// Links - managed via admin dashboard
+model Link {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  url         String
+  category    String?
+  featured    Boolean  @default(false)
+  image       String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([featured])
+  @@index([order])
+  @@index([isActive])
 }

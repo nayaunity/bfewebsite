@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { blogPosts, blogCategories } from "@/data/blog";
+import { getAllPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
 
 export const metadata = {
   title: "Blog | The Black Female Engineer",
@@ -10,8 +10,10 @@ export const metadata = {
 };
 
 export default function BlogPage() {
-  const featuredPosts = blogPosts.filter((post) => post.featured);
-  const recentPosts = blogPosts.slice(0, 10);
+  const allPosts = getAllPosts();
+  const featuredPosts = getFeaturedPosts();
+  const recentPosts = allPosts.slice(0, 10);
+  const blogCategories = getAllCategories();
 
   return (
     <>

@@ -2,7 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { links, socialLinks } from "@/data/links";
+import { prisma } from "@/lib/prisma";
+import { socialLinks } from "@/data/links";
 
 export const metadata = {
   title: "Links | The Black Female Engineer",
@@ -40,7 +41,12 @@ function SocialIcon({ icon }: { icon: string }) {
   }
 }
 
-export default function LinksPage() {
+export default async function LinksPage() {
+  const links = await prisma.link.findMany({
+    where: { isActive: true },
+    orderBy: { order: "asc" },
+  });
+
   const featuredLinks = links.filter((link) => link.featured);
   const otherLinks = links.filter((link) => !link.featured);
 

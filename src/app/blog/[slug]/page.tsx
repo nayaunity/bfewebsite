@@ -3,16 +3,15 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { getBlogPost, blogPosts } from "@/data/blog";
+import { getBlogPost, getAllPostSlugs, getAllPosts } from "@/lib/blog";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
+  const slugs = getAllPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -40,7 +39,8 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   // Get related posts (same category, excluding current)
-  const relatedPosts = blogPosts
+  const allPosts = getAllPosts();
+  const relatedPosts = allPosts
     .filter((p) => p.category === post.category && p.slug !== post.slug)
     .slice(0, 3);
 

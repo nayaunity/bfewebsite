@@ -76,8 +76,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     session({ session, user }) {
-      // Add user id to session
+      // Add user id and role to session
       session.user.id = user.id;
+      session.user.role = (user as { role?: string }).role || "user";
       return session;
     },
   },
@@ -93,6 +94,7 @@ declare module "next-auth" {
       id: string;
       email: string;
       emailVerified: Date | null;
+      role: string;
     };
   }
 }
