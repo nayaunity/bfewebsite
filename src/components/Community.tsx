@@ -64,23 +64,6 @@ export default function Community() {
         </div>
       </div>
 
-      {/* What we believe in */}
-      <div className="bg-[#1a1a1a] py-16 md:py-24 border-t border-white/10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white">
-            What we believe in
-          </h3>
-          <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
-          <p className="text-xl md:text-2xl text-white/80 font-serif italic mb-6">
-            A new wave of leaders has arrived, and they&apos;re{" "}
-            <span className="text-[#ef562a]">Black women in STEM</span>.
-          </p>
-          <p className="text-white/60 max-w-2xl mx-auto leading-relaxed">
-            Black women in engineering are a powerful group of digital natives, driven by what is right and have a passion for making change happen. However, the traditional world of tech and venture capital often overlooks and underestimates this cohort. We need to double down on investing in them now so we can unlock the potential of the next billion-dollar companies.
-          </p>
-        </div>
-      </div>
-
       {/* Community Members Grid */}
       <div className="bg-[#1a1a1a] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
