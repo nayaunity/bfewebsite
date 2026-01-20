@@ -19,7 +19,7 @@ export default function Community() {
 
   return (
     <section id="community">
-      {/* Dark Section - Who are we */}
+      {/* Dark Section - Who are we - COMMENTED OUT
       <div className="bg-[#1a1a1a] py-20 md:py-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white">
@@ -31,7 +31,6 @@ export default function Community() {
             <span className="text-[#ef562a]">out-of-the-box</span> thinkers.
           </p>
 
-          {/* Email Signup */}
           {isSuccess ? (
             <div className="mt-12 p-4 bg-green-500/20 text-green-300 rounded-full max-w-md mx-auto text-center">
               {message}
@@ -63,8 +62,9 @@ export default function Community() {
           )}
         </div>
       </div>
+      */}
 
-      {/* Community Members Grid */}
+      {/* Community Members Grid - COMMENTED OUT
       <div className="bg-[#1a1a1a] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
@@ -103,6 +103,7 @@ export default function Community() {
           </div>
         </div>
       </div>
+      */}
 
       {/* Community Stats - White Section */}
       <div className="bg-[var(--background)] py-20 md:py-28">
