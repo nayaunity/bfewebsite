@@ -1,14 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AuthButton } from "./AuthButton";
 import DarkModeToggle from "./DarkModeToggle";
+import SubscribeModal from "./SubscribeModal";
 
 export default function Navigation() {
   const pathname = usePathname();
   const bottomNavRef = useRef<HTMLElement>(null);
+  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
 
   // Fix for iOS Safari viewport changes when address bar shows/hides
   useEffect(() => {
@@ -139,12 +141,12 @@ export default function Navigation() {
             {/* Subscribe CTA and Auth */}
             <div className="flex items-center gap-4">
               <span className="hidden sm:block text-sm text-[var(--gray-600)]">tech, career, and finance in your inbox</span>
-              <Link
-                href="#newsletter"
+              <button
+                onClick={() => setIsSubscribeModalOpen(true)}
                 className="bg-[#ffe500] text-black px-5 py-2 rounded-full text-sm font-medium hover:bg-[#f5dc00] transition-colors"
               >
                 SUBSCRIBE
-              </Link>
+              </button>
               <div className="hidden sm:block border-l border-[var(--card-border)] pl-4">
                 <AuthButton />
               </div>
@@ -215,6 +217,12 @@ export default function Navigation() {
           })}
         </div>
       </nav>
+
+      {/* Subscribe Modal */}
+      <SubscribeModal
+        isOpen={isSubscribeModalOpen}
+        onClose={() => setIsSubscribeModalOpen(false)}
+      />
     </>
   );
 }
