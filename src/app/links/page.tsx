@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { prisma } from "@/lib/prisma";
 import { socialLinks } from "@/data/links";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Links | The Black Female Engineer",
   description: "All the important links and resources from The Black Female Engineer in one place.",

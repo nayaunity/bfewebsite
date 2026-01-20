@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 async function getStats() {
   const [jobsCount, activeJobsCount, linksCount, activeLinksCount] =
     await Promise.all([

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import JobsTable from "./JobsTable";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   searchParams: Promise<{ search?: string; page?: string }>;
 }
