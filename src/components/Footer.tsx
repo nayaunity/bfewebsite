@@ -56,6 +56,7 @@ export default function Footer() {
               <li><Link href="/contact" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Contact Us</Link></li>
               <li><a href="/work-with-us" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Partner With Us</a></li>
               <li><Link href="/resources/submit" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Submit a Resource</Link></li>
+              <li><Link href="/links" className="text-[var(--gray-600)] hover:text-[#ef562a] transition-colors">Link In Bio</Link></li>
               {/* Hidden: Team uses /jobs/submit directly */}
             </ul>
           </div>
