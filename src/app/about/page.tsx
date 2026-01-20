@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "About | The Black Female Engineer",
-  description: "Making technology accessible and actionable for young professionals and tech-minded creatives.",
+  description: "Making technology accessible and actionable for young professionals.",
 };
 
 export default function AboutPage() {

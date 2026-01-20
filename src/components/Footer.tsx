@@ -11,7 +11,7 @@ export default function Footer() {
               the<span className="text-[#ef562a]">BFE</span>
             </Link>
             <p className="mt-4 text-[var(--gray-600)] max-w-sm">
-              Making technology accessible and actionable for young professionals and tech-minded creatives.
+              Making technology accessible and actionable for young professionals.
             </p>
             {/* Social Icons */}
             <div className="flex gap-3 mt-6">
