@@ -10,7 +10,7 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/resources/system-design";
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,10 +143,10 @@ export default function SignInPage() {
         {/* Back link */}
         <div className="mt-6 text-center">
           <Link
-            href="/resources/system-design"
+            href="/"
             className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)]"
           >
-            &larr; Back to course
+            &larr; Back to home
           </Link>
         </div>
       </div>

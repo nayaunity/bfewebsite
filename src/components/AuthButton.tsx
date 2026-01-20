@@ -3,10 +3,12 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function AuthButton() {
   const { data: session, status } = useSession();
   const [showDropdown, setShowDropdown] = useState(false);
+  const pathname = usePathname();
 
   // Loading state
   if (status === "loading") {
@@ -19,7 +21,7 @@ export function AuthButton() {
   if (!session) {
     return (
       <Link
-        href="/auth/signin"
+        href={`/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`}
         className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
       >
         Sign In
