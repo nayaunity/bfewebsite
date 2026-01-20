@@ -236,15 +236,34 @@ const US_STATES = [
 function isUSLocation(location: string): boolean {
   const loc = location.toUpperCase();
 
+  // Explicit non-US indicators (check first)
+  const NON_US_COUNTRIES = [
+    "AUSTRALIA", "INDIA", "CANADA", "UK", "UNITED KINGDOM", "GERMANY",
+    "FRANCE", "JAPAN", "CHINA", "BRAZIL", "MEXICO", "SPAIN", "ITALY",
+    "NETHERLANDS", "SINGAPORE", "IRELAND", "ISRAEL", "SWEDEN", "POLAND"
+  ];
+
+  for (const country of NON_US_COUNTRIES) {
+    if (loc.includes(country)) {
+      return false;
+    }
+  }
+
   // Check for explicit US indicators
   if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US")) {
     return true;
   }
 
-  // Check for US state abbreviations (e.g., "San Francisco, CA" or "Remote, CA")
+  // Check for US state abbreviations at END of string
+  // Pattern: ", CA" or ", CA 94102" (with zip)
   for (const state of US_STATES) {
-    // Match patterns like ", CA" or ", CA " or ending with ", CA"
-    if (loc.includes(`, ${state}`) || loc.endsWith(` ${state}`)) {
+    // State at end of string
+    if (loc.endsWith(`, ${state}`) || loc.endsWith(` ${state}`)) {
+      return true;
+    }
+    // State followed by zip code (5 digits or 5+4 format)
+    const zipPattern = new RegExp(`, ${state}\\s+\\d{5}(-\\d{4})?$`);
+    if (zipPattern.test(loc)) {
       return true;
     }
   }
