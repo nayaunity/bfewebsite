@@ -116,7 +116,7 @@ export default function Community() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">2000K+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200K+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Community Members</div>
             </div>
             <div>
