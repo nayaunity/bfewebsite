@@ -66,13 +66,15 @@ export async function GET(request: NextRequest) {
       orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
     });
 
-    // Filter by region
+    // Filter by region - jobs with both US and international locations appear in both filters
     const filteredJobs = allJobs.filter((job) => {
-      const jobIsUS = isUSLocation(job.location);
+      const hasUS = hasUSLocation(job.location);
+      const hasIntl = hasInternationalLocation(job.location);
+
       if (region === "international") {
-        return !jobIsUS; // Only non-US jobs
+        return hasIntl; // Include if it has ANY international location
       }
-      return jobIsUS; // Default: only US jobs
+      return hasUS; // Include if it has ANY US location
     });
 
     // Get total count for pagination (after filtering)
@@ -81,13 +83,13 @@ export async function GET(request: NextRequest) {
     // Apply pagination
     const jobs = filteredJobs.slice(offset, offset + limit);
 
-    // Transform jobs for the frontend
+    // Transform jobs for the frontend with region-aware location display
     const transformedJobs = jobs.map((job) => ({
       id: job.id,
       company: job.company,
       companySlug: job.companySlug,
       title: job.title,
-      location: job.location,
+      location: getDisplayLocation(job.location, region),
       type: job.type,
       remote: job.remote,
       salary: job.salary || "",
@@ -233,37 +235,44 @@ const US_STATES = [
   "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"
 ];
 
-function isUSLocation(location: string): boolean {
+// US cities for multi-location detection
+const US_CITIES = [
+  "CHICAGO", "NEW YORK", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE",
+  "AUSTIN", "BOSTON", "DENVER", "PORTLAND", "ATLANTA", "MIAMI",
+  "DALLAS", "HOUSTON", "PHOENIX", "PHILADELPHIA", "SAN DIEGO",
+  "SAN JOSE", "WASHINGTON DC", "MINNEAPOLIS", "DETROIT", "CLEVELAND",
+  "PITTSBURGH", "BALTIMORE", "CHARLOTTE", "NASHVILLE", "RALEIGH"
+];
+
+// International indicators for multi-location detection
+const NON_US_INDICATORS = [
+  "AUSTRALIA", "INDIA", "CANADA", "UK", "UNITED KINGDOM", "GERMANY",
+  "FRANCE", "JAPAN", "CHINA", "BRAZIL", "MEXICO", "SPAIN", "ITALY",
+  "NETHERLANDS", "SINGAPORE", "IRELAND", "ISRAEL", "SWEDEN", "POLAND",
+  "TORONTO", "VANCOUVER", "LONDON", "BERLIN", "PARIS", "TOKYO", "SYDNEY",
+  "MELBOURNE", "BANGALORE", "MUMBAI", "DUBLIN"
+];
+
+// Check if location contains US cities/states
+function hasUSLocation(location: string): boolean {
   const loc = location.toUpperCase();
-
-  // Explicit non-US indicators (check first)
-  const NON_US_COUNTRIES = [
-    "AUSTRALIA", "INDIA", "CANADA", "UK", "UNITED KINGDOM", "GERMANY",
-    "FRANCE", "JAPAN", "CHINA", "BRAZIL", "MEXICO", "SPAIN", "ITALY",
-    "NETHERLANDS", "SINGAPORE", "IRELAND", "ISRAEL", "SWEDEN", "POLAND"
-  ];
-
-  for (const country of NON_US_COUNTRIES) {
-    if (loc.includes(country)) {
-      return false;
-    }
-  }
 
   // Check for explicit US indicators
   if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US")) {
     return true;
   }
 
-  // Check for US state abbreviations at END of string
-  // Pattern: ", CA" or ", CA 94102" (with zip)
+  // Check for US state abbreviations anywhere in string
   for (const state of US_STATES) {
-    // State at end of string
-    if (loc.endsWith(`, ${state}`) || loc.endsWith(` ${state}`)) {
+    const statePattern = new RegExp(`\\b${state}\\b`);
+    if (statePattern.test(loc)) {
       return true;
     }
-    // State followed by zip code (5 digits or 5+4 format)
-    const zipPattern = new RegExp(`, ${state}\\s+\\d{5}(-\\d{4})?$`);
-    if (zipPattern.test(loc)) {
+  }
+
+  // Check US city names (for multi-location entries like "Chicago, or Toronto")
+  for (const city of US_CITIES) {
+    if (loc.includes(city)) {
       return true;
     }
   }
@@ -274,4 +283,47 @@ function isUSLocation(location: string): boolean {
   }
 
   return false;
+}
+
+// Check if location contains international cities/countries
+function hasInternationalLocation(location: string): boolean {
+  const loc = location.toUpperCase();
+
+  for (const indicator of NON_US_INDICATORS) {
+    if (loc.includes(indicator)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Extract the relevant portion of location based on region filter
+function getDisplayLocation(location: string, region: string): string {
+  // If it's a simple single-location, return as-is
+  if (!location.includes(" or ") && !location.includes(", or ") && !location.includes("/")) {
+    return location;
+  }
+
+  // Split on common multi-location separators
+  const parts = location.split(/(?:,?\s+or\s+|\/)/i).map(p => p.trim());
+
+  if (region === "us") {
+    // Find the US part
+    for (const part of parts) {
+      if (hasUSLocation(part) && !hasInternationalLocation(part)) {
+        return part;
+      }
+    }
+  } else {
+    // Find the international part
+    for (const part of parts) {
+      if (hasInternationalLocation(part)) {
+        return part;
+      }
+    }
+  }
+
+  // Fallback to original
+  return location;
 }
