@@ -130,22 +130,22 @@ export default function Community() {
             <span className="italic">has been</span> UP TO
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">10K+</div>
-              <div className="mt-2 text-sm text-[var(--gray-600)]">Members</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">2000K+</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Community Members</div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">500+</div>
-              <div className="mt-2 text-sm text-[var(--gray-600)]">Resources</div>
-            </div>
-            <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200+</div>
-              <div className="mt-2 text-sm text-[var(--gray-600)]">Partner Companies</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">100+</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Resources Shared</div>
             </div>
             <div>
               <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
-              <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Partnered Companies</div>
+            </div>
+            <div>
+              {/* <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
+              <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div> */}
             </div>
           </div>
         </div>

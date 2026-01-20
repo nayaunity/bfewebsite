@@ -79,8 +79,8 @@ export default function WorkWithUsPage() {
 
   const stats = [
     { number: "200K+", label: "Community Members" },
-    { number: "50K+", label: "Newsletter Subscribers" },
-    { number: "10M+", label: "Content Views" },
+    // { number: "50K+", label: "Newsletter Subscribers" },
+    { number: "50M+", label: "Content Views" },
     { number: "100+", label: "Brand Partnerships" },
   ];
 
@@ -116,7 +116,7 @@ export default function WorkWithUsPage() {
         {/* Stats */}
         <section className="bg-[#1a1a1a] py-16 md:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="font-serif text-4xl md:text-5xl text-[#ffe500] mb-2">
