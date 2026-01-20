@@ -148,7 +148,7 @@ export default function BlogPage() {
                         <span>{post.author}</span>
                       </div>
                     </div>
-                    <div className="relative w-full md:w-64 aspect-[4/3] flex-shrink-0 rounded-xl overflow-hidden bg-[var(--gray-100)]">
+                    <div className="relative w-full md:w-80 aspect-[16/9] flex-shrink-0 rounded-xl overflow-hidden bg-[var(--gray-100)]">
                       {post.image ? (
                         <Image
                           src={post.image}
