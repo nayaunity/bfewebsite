@@ -7,7 +7,7 @@ readTime: "8 min read"
 category: "Life"
 tags: ["gpt", "goals", "productivity", "personal-development", "ai"]
 featured: true
-image: ""
+image: "/images/blog/future-gpt.png"
 ---
 
 I've always been one to spend my days fantasizing about my future. When ChatGPT came out, specifically voice mode, I would go on walks and talk to it, asking it to read me a day in my life as someone who's accomplished x goal x years from now.
