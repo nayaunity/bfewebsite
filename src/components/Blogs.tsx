@@ -19,13 +19,13 @@ export default function Blogs() {
         </div>
 
         {/* Blog Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {posts.length > 0 ? (
             posts.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="bg-[#2a2a2a] rounded-2xl overflow-hidden hover:bg-[#333] transition-colors group border border-white/10"
+                className="bg-[#2a2a2a] rounded-2xl overflow-hidden hover:bg-[#333] transition-colors group border border-white/10 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
               >
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-[#333]">
