@@ -14,6 +14,8 @@ interface PresenceData {
   jobs: number;
   resources: number;
   community: number;
+  blog: number;
+  links: number;
   total: number;
 }
 
@@ -21,6 +23,7 @@ interface StatsData {
   completionsToday: number;
   microWinsToday: number;
   jobClicksToday: number;
+  linkClicksToday: number;
 }
 
 interface FeedData {
@@ -190,6 +193,24 @@ export function ActivityFeed() {
       });
     }
 
+    if (data.presence.blog > 0) {
+      feedItems.push({
+        id: "presence-blog",
+        type: "presence",
+        message: `${data.presence.blog} ${data.presence.blog === 1 ? "person" : "people"} reading the blog`,
+        isLive: true,
+      });
+    }
+
+    if (data.presence.links > 0) {
+      feedItems.push({
+        id: "presence-links",
+        type: "presence",
+        message: `${data.presence.links} ${data.presence.links === 1 ? "person" : "people"} browsing links`,
+        isLive: true,
+      });
+    }
+
     // Add location items (top 3 countries)
     if (data.locations) {
       const sortedLocations = Object.entries(data.locations)
@@ -230,6 +251,15 @@ export function ActivityFeed() {
         id: "stat-jobclicks",
         type: "stat",
         message: `${data.stats.jobClicksToday} job applications started today`,
+        isLive: false,
+      });
+    }
+
+    if (data.stats.linkClicksToday > 0) {
+      feedItems.push({
+        id: "stat-linkclicks",
+        type: "stat",
+        message: `${data.stats.linkClicksToday} links clicked today`,
         isLive: false,
       });
     }

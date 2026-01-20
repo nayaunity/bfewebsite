@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { getAllPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
 
 export const metadata = {
@@ -17,6 +18,7 @@ export default function BlogPage() {
 
   return (
     <>
+      <PagePresenceTracker page="blog" />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}

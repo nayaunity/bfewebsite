@@ -79,6 +79,13 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    // Get recent link clicks (last 24 hours)
+    const recentLinkClicks = await prisma.linkClick.count({
+      where: {
+        clickedAt: { gte: oneDayAgo },
+      },
+    });
+
     return NextResponse.json({
       activities,
       presence: {
@@ -86,6 +93,8 @@ export async function GET(request: NextRequest) {
         jobs: presenceMap["jobs"] || 0,
         resources: presenceMap["resources"] || 0,
         community: presenceMap["community"] || 0,
+        blog: presenceMap["blog"] || 0,
+        links: presenceMap["links"] || 0,
         total: Object.values(presenceMap).reduce((a, b) => a + b, 0),
       },
       locations: locationMap,
@@ -93,6 +102,7 @@ export async function GET(request: NextRequest) {
         completionsToday: recentCompletions,
         microWinsToday: recentMicroWins,
         jobClicksToday: recentJobClicks,
+        linkClicksToday: recentLinkClicks,
       },
     });
   } catch (error) {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { prisma } from "@/lib/prisma";
 import { socialLinks } from "@/data/links";
 import { LinkCard } from "./LinkCard";
@@ -54,6 +55,7 @@ export default async function LinksPage() {
 
   return (
     <>
+      <PagePresenceTracker page="links" />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
