@@ -175,3 +175,14 @@ model Link {
   @@index([order])
   @@index([isActive])
 }
+
+model LinkClick {
+  id        String   @id @default(cuid())
+  linkId    String
+  linkTitle String
+  linkUrl   String
+  clickedAt DateTime @default(now())
+
+  @@index([linkId])
+  @@index([clickedAt])
+}
