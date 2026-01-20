@@ -3,7 +3,7 @@ import Image from "next/image";
 import { getAllPostsMeta } from "@/lib/blog";
 
 export default function Blogs() {
-  const posts = getAllPostsMeta().slice(0, 6);
+  const posts = getAllPostsMeta().slice(0, 3);
 
   return (
     <section id="blog" className="bg-[#1a1a1a] py-20 md:py-28">
