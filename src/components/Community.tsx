@@ -105,6 +105,47 @@ export default function Community() {
       </div>
       */}
 
+      {/* Newsletter Section */}
+      <div id="newsletter" className="bg-[#1a1a1a] py-16 md:py-20">
+        <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
+            Stay in the loop
+          </h2>
+          <p className="text-white/60 mb-8">
+            Get tech, career, and finance insights delivered to your inbox.
+          </p>
+          {isSuccess ? (
+            <div className="p-4 bg-green-500/20 text-green-300 rounded-full max-w-md mx-auto text-center">
+              {message}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+              <div className="flex">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={isLoading}
+                  className="flex-1 px-5 py-4 bg-white/10 border border-white/20 text-white placeholder-white/50 rounded-l-full focus:outline-none focus:border-white/40 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? "..." : "Subscribe"}
+                </button>
+              </div>
+              {error && (
+                <p className="mt-2 text-sm text-red-400">{error}</p>
+              )}
+            </form>
+          )}
+        </div>
+      </div>
+
       {/* Community Stats - White Section */}
       <div className="bg-[var(--background)] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
