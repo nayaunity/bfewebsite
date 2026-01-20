@@ -55,6 +55,7 @@ export default function JobBoard() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [selectedMobileFilter, setSelectedMobileFilter] = useState("");
+  const [isInternational, setIsInternational] = useState(false);
 
   const fetchJobs = useCallback(
     async (page = 1, append = false) => {
@@ -80,6 +81,9 @@ export default function JobBoard() {
         }
         if (selectedMobileFilter) {
           params.set("search", selectedMobileFilter);
+        }
+        if (isInternational) {
+          params.set("region", "international");
         }
 
         const response = await fetch(`/api/jobs?${params.toString()}`);
@@ -108,7 +112,7 @@ export default function JobBoard() {
         setLoadingMore(false);
       }
     },
-    [selectedCategory, selectedCompany, remoteOnly, selectedMobileFilter]
+    [selectedCategory, selectedCompany, remoteOnly, selectedMobileFilter, isInternational]
   );
 
   useEffect(() => {
@@ -134,6 +138,10 @@ export default function JobBoard() {
 
   const handleMobileFilterChange = (filter: string) => {
     setSelectedMobileFilter(filter);
+  };
+
+  const handleInternationalToggle = () => {
+    setIsInternational((prev) => !prev);
   };
 
   const handleJobClick = (job: Job) => {
@@ -206,10 +214,20 @@ export default function JobBoard() {
               >
                 Remote
               </button>
+              <button
+                onClick={handleInternationalToggle}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  isInternational
+                    ? "bg-blue-100 text-blue-800 border border-blue-200"
+                    : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
+                }`}
+              >
+                International
+              </button>
             </div>
             {pagination && (
               <p className="mt-3 text-sm text-[var(--gray-600)]">
-                {pagination.total} job{pagination.total !== 1 ? "s" : ""} found
+                {pagination.total} {isInternational ? "international" : "US"} job{pagination.total !== 1 ? "s" : ""} found
               </p>
             )}
           </div>
@@ -266,10 +284,27 @@ export default function JobBoard() {
                 Remote Only
               </button>
 
+              {/* International Toggle */}
+              <button
+                onClick={handleInternationalToggle}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isInternational
+                    ? "bg-blue-100 text-blue-800 border border-blue-200"
+                    : "bg-[var(--gray-100)] text-[var(--gray-600)] border border-transparent hover:bg-[var(--gray-200)]"
+                }`}
+              >
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    isInternational ? "bg-blue-500" : "bg-[var(--gray-400)]"
+                  }`}
+                />
+                International
+              </button>
+
               {/* Job Count */}
               {pagination && (
                 <span className="text-sm text-[var(--gray-600)]">
-                  {pagination.total} job{pagination.total !== 1 ? "s" : ""}{" "}
+                  {pagination.total} {isInternational ? "international" : "US"} job{pagination.total !== 1 ? "s" : ""}{" "}
                   found
                 </span>
               )}
@@ -311,6 +346,7 @@ export default function JobBoard() {
                   setSelectedCompany("");
                   setRemoteOnly(false);
                   setSelectedMobileFilter("");
+                  setIsInternational(false);
                 }}
                 className="mt-4 text-[#ef562a] hover:underline"
               >

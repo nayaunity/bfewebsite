@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const company = searchParams.get("company");
     const remote = searchParams.get("remote");
     const search = searchParams.get("search");
+    const region = searchParams.get("region") || "us"; // Default to US jobs
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 10);
     const offset = (page - 1) * limit;
@@ -59,32 +60,26 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get total count for pagination
-    const total = await prisma.job.count({ where });
-
-    // Get jobs - fetch more than needed to allow for US prioritization sorting
+    // Get all jobs first, then filter by region
     const allJobs = await prisma.job.findMany({
       where,
       orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
     });
 
-    // Sort to prioritize US jobs first, then by date within each group
-    const sortedJobs = allJobs.sort((a, b) => {
-      const aIsUS = isUSLocation(a.location);
-      const bIsUS = isUSLocation(b.location);
-
-      // If one is US and the other isn't, US comes first
-      if (aIsUS && !bIsUS) return -1;
-      if (!aIsUS && bIsUS) return 1;
-
-      // Within the same group, sort by date (most recent first)
-      const aDate = a.postedAt || a.scrapedAt;
-      const bDate = b.postedAt || b.scrapedAt;
-      return bDate.getTime() - aDate.getTime();
+    // Filter by region
+    const filteredJobs = allJobs.filter((job) => {
+      const jobIsUS = isUSLocation(job.location);
+      if (region === "international") {
+        return !jobIsUS; // Only non-US jobs
+      }
+      return jobIsUS; // Default: only US jobs
     });
 
-    // Apply pagination after sorting
-    const jobs = sortedJobs.slice(offset, offset + limit);
+    // Get total count for pagination (after filtering)
+    const total = filteredJobs.length;
+
+    // Apply pagination
+    const jobs = filteredJobs.slice(offset, offset + limit);
 
     // Transform jobs for the frontend
     const transformedJobs = jobs.map((job) => ({
