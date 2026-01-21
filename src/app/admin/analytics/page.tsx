@@ -249,47 +249,47 @@ export default async function AnalyticsPage() {
   return (
     <div className="pb-20 lg:pb-0">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)]">
           Analytics
         </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-[var(--gray-600)]">
           Site-wide analytics, audience demographics, and engagement metrics
         </p>
       </div>
 
       {/* Site Visitors Overview */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
           Site Visitors
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Active Now</p>
-            <p className="text-3xl font-bold text-green-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Active Now</p>
+            <p className="text-3xl font-bold text-[#ffe500] mt-1">
               {analytics.site.activeNow}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
-            <p className="text-3xl font-bold text-blue-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Today</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.site.today}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">This Week</p>
-            <p className="text-3xl font-bold text-purple-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Week</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.site.week}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">This Month</p>
-            <p className="text-3xl font-bold text-orange-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Month</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.site.month}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">All Time</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">All Time</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.totalVisitors}
             </p>
           </div>
@@ -297,17 +297,17 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Audience & Activity Row */}
-      <div className="grid lg:grid-cols-3 gap-8 mb-8">
+      <div className="grid lg:grid-cols-3 gap-6 mb-8">
         {/* Audience by Country */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
               Audience by Country
             </h3>
           </div>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-80 overflow-y-auto">
+          <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
             {analytics.site.byCountry.length === 0 ? (
-              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
                 No country data yet
               </p>
             ) : (
@@ -317,14 +317,14 @@ export default async function AnalyticsPage() {
                   className="px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs font-medium text-[var(--gray-600)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                    <span className="truncate text-sm text-[var(--foreground)]">
                       {country.countryName}
                     </span>
                   </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">
                     {country.visitors}
                   </span>
                 </div>
@@ -334,15 +334,15 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Traffic by Page */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
               Traffic by Page (7 days)
             </h3>
           </div>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-80 overflow-y-auto">
+          <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
             {analytics.site.byPage.length === 0 ? (
-              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
                 No page data yet
               </p>
             ) : (
@@ -352,14 +352,14 @@ export default async function AnalyticsPage() {
                   className="px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs font-medium text-[var(--gray-600)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                    <span className="truncate text-sm text-[var(--foreground)]">
                       /{page.page}
                     </span>
                   </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">
                     {page.visitors}
                   </span>
                 </div>
@@ -369,40 +369,40 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Community Activity */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
               Community Activity
             </h3>
           </div>
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Registered Users</span>
-              <span className="text-lg font-bold text-gray-900 dark:text-white">{analytics.activity.totalUsers}</span>
+              <span className="text-sm text-[var(--gray-600)]">Registered Users</span>
+              <span className="text-lg font-bold text-[var(--foreground)]">{analytics.activity.totalUsers}</span>
             </div>
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Lesson Completions</p>
+            <div className="border-t border-[var(--card-border)] pt-4">
+              <p className="text-xs text-[var(--gray-600)] mb-2">Lesson Completions</p>
               <div className="flex gap-4">
                 <div>
-                  <p className="text-lg font-bold text-green-600">{analytics.activity.lessonCompletionsToday}</p>
-                  <p className="text-xs text-gray-500">Today</p>
+                  <p className="text-lg font-bold text-[#ffe500]">{analytics.activity.lessonCompletionsToday}</p>
+                  <p className="text-xs text-[var(--gray-600)]">Today</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-blue-600">{analytics.activity.lessonCompletionsWeek}</p>
-                  <p className="text-xs text-gray-500">This Week</p>
+                  <p className="text-lg font-bold text-[#ef562a]">{analytics.activity.lessonCompletionsWeek}</p>
+                  <p className="text-xs text-[var(--gray-600)]">This Week</p>
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Micro Wins Shared</p>
+            <div className="border-t border-[var(--card-border)] pt-4">
+              <p className="text-xs text-[var(--gray-600)] mb-2">Micro Wins Shared</p>
               <div className="flex gap-4">
                 <div>
-                  <p className="text-lg font-bold text-green-600">{analytics.activity.microWinsToday}</p>
-                  <p className="text-xs text-gray-500">Today</p>
+                  <p className="text-lg font-bold text-[#ffe500]">{analytics.activity.microWinsToday}</p>
+                  <p className="text-xs text-[var(--gray-600)]">Today</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-blue-600">{analytics.activity.microWinsWeek}</p>
-                  <p className="text-xs text-gray-500">This Week</p>
+                  <p className="text-lg font-bold text-[#ef562a]">{analytics.activity.microWinsWeek}</p>
+                  <p className="text-xs text-[var(--gray-600)]">This Week</p>
                 </div>
               </div>
             </div>
@@ -412,51 +412,51 @@ export default async function AnalyticsPage() {
 
       {/* Blog Stats */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
           Blog Views
         </h2>
         <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Views</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Total Views</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.blog.total}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
-            <p className="text-3xl font-bold text-green-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Today</p>
+            <p className="text-3xl font-bold text-[#ffe500] mt-1">
               {analytics.blog.today}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">This Week</p>
-            <p className="text-3xl font-bold text-blue-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Week</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.blog.week}
             </p>
           </div>
         </div>
         {analytics.blog.byPost.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold text-gray-900 dark:text-white">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--card-border)]">
+              <h3 className="font-semibold text-[var(--foreground)]">
                 Top Blog Posts
               </h3>
             </div>
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-[var(--card-border)]">
               {analytics.blog.byPost.map((post, index) => (
                 <div
                   key={post.slug}
                   className="px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs font-medium text-[var(--gray-600)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                    <span className="truncate text-sm text-[var(--foreground)]">
                       {post.title}
                     </span>
                   </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">
                     {post.views}
                   </span>
                 </div>
@@ -468,31 +468,31 @@ export default async function AnalyticsPage() {
 
       {/* Link Click Stats */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
           Link Clicks
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Total</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.links.total}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
-            <p className="text-3xl font-bold text-green-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Today</p>
+            <p className="text-3xl font-bold text-[#ffe500] mt-1">
               {analytics.links.today}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">This Week</p>
-            <p className="text-3xl font-bold text-blue-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Week</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.links.week}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">This Month</p>
-            <p className="text-3xl font-bold text-purple-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Month</p>
+            <p className="text-3xl font-bold text-[#ef562a] mt-1">
               {analytics.links.month}
             </p>
           </div>
@@ -501,36 +501,36 @@ export default async function AnalyticsPage() {
 
       {/* Job Click Stats */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
           Job Clicks
         </h2>
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Total</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.jobs.total}
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
-            <p className="text-3xl font-bold text-green-600">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Today</p>
+            <p className="text-3xl font-bold text-[#ffe500] mt-1">
               {analytics.jobs.today}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-6">
         {/* Top Links */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
               Top Links
             </h3>
           </div>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+          <div className="divide-y divide-[var(--card-border)]">
             {analytics.links.byLink.length === 0 ? (
-              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
                 No link clicks yet
               </p>
             ) : (
@@ -540,14 +540,14 @@ export default async function AnalyticsPage() {
                   className="px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs font-medium text-[var(--gray-600)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                    <span className="truncate text-sm text-[var(--foreground)]">
                       {link.linkTitle}
                     </span>
                   </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">
                     {link.clicks}
                   </span>
                 </div>
@@ -557,15 +557,15 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Top Companies (Job Clicks) */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
               Top Companies (Job Clicks)
             </h3>
           </div>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+          <div className="divide-y divide-[var(--card-border)]">
             {analytics.jobs.byCompany.length === 0 ? (
-              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
                 No job clicks yet
               </p>
             ) : (
@@ -575,14 +575,14 @@ export default async function AnalyticsPage() {
                   className="px-4 py-3 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs font-medium text-[var(--gray-600)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                    <span className="truncate text-sm text-[var(--foreground)]">
                       {company.company}
                     </span>
                   </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">
                     {company.clicks}
                   </span>
                 </div>
@@ -593,29 +593,29 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Recent Link Clicks */}
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+      <div className="mt-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--card-border)]">
+          <h3 className="font-semibold text-[var(--foreground)]">
             Recent Link Clicks
           </h3>
         </div>
-        <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+        <div className="divide-y divide-[var(--card-border)] max-h-96 overflow-y-auto">
           {analytics.links.recent.length === 0 ? (
-            <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+            <p className="px-4 py-8 text-center text-[var(--gray-600)]">
               No recent clicks
             </p>
           ) : (
             analytics.links.recent.map((click) => (
               <div key={click.id} className="px-4 py-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  <span className="text-sm font-medium text-[var(--foreground)] truncate">
                     {click.linkTitle}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+                  <span className="text-xs text-[var(--gray-600)] flex-shrink-0 ml-2">
                     {formatTimeAgo(new Date(click.clickedAt))}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
+                <p className="text-xs text-[var(--gray-600)] truncate mt-1">
                   {click.linkUrl}
                 </p>
               </div>

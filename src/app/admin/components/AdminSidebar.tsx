@@ -58,12 +58,12 @@ export default function AdminSidebar() {
     <>
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex min-h-0 flex-1 flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+        <div className="flex min-h-0 flex-1 flex-col bg-[var(--card-bg)] border-r border-[var(--card-border)]">
           <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
             <div className="flex flex-shrink-0 items-center px-4">
               <Link href="/" className="flex items-center gap-2">
                 <span className="font-serif text-xl font-bold">BFE</span>
-                <span className="text-xs bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded">
+                <span className="text-xs bg-[#ffe500] text-black px-2 py-0.5 rounded-full font-medium">
                   Admin
                 </span>
               </Link>
@@ -79,17 +79,17 @@ export default function AdminSidebar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-full transition-colors ${
                       isActive
-                        ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+                        ? "bg-[#ffe500] text-black"
+                        : "text-[var(--gray-600)] hover:bg-[var(--gray-100)] hover:text-[var(--foreground)]"
                     }`}
                   >
                     <span
                       className={`mr-3 ${
                         isActive
-                          ? "text-gray-900 dark:text-white"
-                          : "text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
+                          ? "text-black"
+                          : "text-[var(--gray-600)] group-hover:text-[var(--foreground)]"
                       }`}
                     >
                       {item.icon}
@@ -100,13 +100,13 @@ export default function AdminSidebar() {
               })}
             </nav>
           </div>
-          <div className="flex flex-shrink-0 border-t border-gray-200 dark:border-gray-700 p-4">
+          <div className="flex flex-shrink-0 border-t border-[var(--card-border)] p-4">
             <Link
               href="/"
-              className="group flex items-center text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              className="group flex items-center text-sm font-medium text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
             >
               <svg
-                className="mr-3 w-5 h-5 text-gray-400 group-hover:text-gray-500"
+                className="mr-3 w-5 h-5 text-[var(--gray-600)] group-hover:text-[#ef562a]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -125,7 +125,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Mobile bottom navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[var(--card-bg)] border-t border-[var(--card-border)] z-50">
         <nav className="flex justify-around py-2">
           {navigation.map((item) => {
             const isActive =
@@ -137,10 +137,10 @@ export default function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex flex-col items-center px-3 py-2 text-xs font-medium ${
+                className={`flex flex-col items-center px-3 py-2 text-xs font-medium transition-colors ${
                   isActive
-                    ? "text-black dark:text-white"
-                    : "text-gray-500 dark:text-gray-400"
+                    ? "text-[#ef562a]"
+                    : "text-[var(--gray-600)]"
                 }`}
               >
                 {item.icon}

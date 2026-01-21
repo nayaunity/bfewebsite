@@ -10,12 +10,12 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <header className="sticky top-0 z-40 bg-[var(--card-bg)] border-b border-[var(--card-border)]">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2">
           <span className="font-serif text-xl font-bold">BFE</span>
-          <span className="text-xs bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded">
+          <span className="text-xs bg-[#ffe500] text-black px-2 py-0.5 rounded-full font-medium">
             Admin
           </span>
         </div>
@@ -25,12 +25,12 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
 
         {/* User info and sign out */}
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">
+          <span className="text-sm text-[var(--gray-600)] hidden sm:inline">
             {user.email}
           </span>
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="text-sm text-[var(--foreground)] px-4 py-2 rounded-full border border-[var(--card-border)] hover:border-[#ef562a] hover:text-[#ef562a] transition-colors"
           >
             Sign Out
           </button>

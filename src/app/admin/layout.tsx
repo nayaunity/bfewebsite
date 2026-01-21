@@ -15,7 +15,7 @@ export default async function AdminLayout({
   const session = await requireAdmin();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[var(--gray-50)]">
       <AdminSidebar />
       <div className="lg:pl-64">
         <AdminHeader user={session.user} />
