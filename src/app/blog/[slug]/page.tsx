@@ -5,15 +5,12 @@ import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { BlogViewTracker } from "@/components/BlogViewTracker";
-import { getBlogPost, getAllPostSlugs, getAllPosts } from "@/lib/blog";
+import { getBlogPost, getAllPosts } from "@/lib/blog";
+
+export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
-  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props) {

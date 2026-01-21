@@ -8,6 +8,8 @@ import Community from "@/components/Community";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <>

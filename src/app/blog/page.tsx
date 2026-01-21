@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { getAllPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Blog | The Black Female Engineer",
   description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
