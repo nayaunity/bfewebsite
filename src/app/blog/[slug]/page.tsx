@@ -29,6 +29,38 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
+// Helper to parse inline markdown (bold, italic, links)
+function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let partIndex = 0;
+
+  while (remaining.length > 0) {
+    // Look for **bold** pattern
+    const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+
+    if (boldMatch && boldMatch.index !== undefined) {
+      // Add text before the match
+      if (boldMatch.index > 0) {
+        parts.push(remaining.slice(0, boldMatch.index));
+      }
+      // Add the bold text
+      parts.push(
+        <strong key={`${keyPrefix}-b-${partIndex++}`} className="font-semibold">
+          {boldMatch[1]}
+        </strong>
+      );
+      remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
+    } else {
+      // No more matches, add the rest
+      parts.push(remaining);
+      break;
+    }
+  }
+
+  return parts.length === 1 ? parts[0] : parts;
+}
+
 function renderContent(content: string) {
   const elements: React.ReactNode[] = [];
   const lines = content.split("\n");
@@ -67,22 +99,23 @@ function renderContent(content: string) {
       continue;
     }
 
-    // Handle headings
-    if (trimmed.startsWith("## ")) {
+    // Handle h3 headings FIRST (more specific match)
+    if (trimmed.startsWith("### ")) {
       elements.push(
-        <h2 key={keyIndex++} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
-          {trimmed.replace("## ", "")}
-        </h2>
+        <h3 key={keyIndex++} className="font-serif text-xl md:text-2xl mt-8 mb-3">
+          {trimmed.slice(4)}
+        </h3>
       );
       i++;
       continue;
     }
 
-    if (trimmed.startsWith("### ")) {
+    // Handle h2 headings
+    if (trimmed.startsWith("## ")) {
       elements.push(
-        <h3 key={keyIndex++} className="font-serif text-xl md:text-2xl mt-8 mb-3">
-          {trimmed.replace("### ", "")}
-        </h3>
+        <h2 key={keyIndex++} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
+          {trimmed.slice(3)}
+        </h2>
       );
       i++;
       continue;
@@ -92,7 +125,7 @@ function renderContent(content: string) {
     if (/^\d+\.\s/.test(trimmed)) {
       elements.push(
         <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-decimal">
-          {trimmed.replace(/^\d+\.\s/, "")}
+          {parseInlineMarkdown(trimmed.replace(/^\d+\.\s/, ""), `li-${keyIndex}`)}
         </li>
       );
       i++;
@@ -103,28 +136,17 @@ function renderContent(content: string) {
     if (trimmed.startsWith("- ")) {
       elements.push(
         <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-disc">
-          {trimmed.replace("- ", "")}
+          {parseInlineMarkdown(trimmed.slice(2), `li-${keyIndex}`)}
         </li>
       );
       i++;
       continue;
     }
 
-    // Handle bold text within paragraphs
-    if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-      elements.push(
-        <p key={keyIndex++} className="text-[var(--gray-700)] mb-4 leading-relaxed font-semibold">
-          {trimmed.slice(2, -2)}
-        </p>
-      );
-      i++;
-      continue;
-    }
-
-    // Regular paragraphs
+    // Regular paragraphs with inline markdown support
     elements.push(
       <p key={keyIndex++} className="text-[var(--gray-700)] mb-4 leading-relaxed">
-        {trimmed}
+        {parseInlineMarkdown(trimmed, `p-${keyIndex}`)}
       </p>
     );
     i++;
