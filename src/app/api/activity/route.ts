@@ -31,11 +31,23 @@ export async function GET(request: NextRequest) {
       _count: { visitorId: true },
     });
 
-    // Convert to a map
+    // Convert to a map, aggregating blog/* pages into blog count
     const presenceMap: Record<string, number> = {};
+    let blogTotal = 0;
+
     presenceCounts.forEach((p) => {
-      presenceMap[p.page] = p._count.visitorId;
+      // Count all blog pages (blog and blog/slug) together
+      if (p.page === "blog" || p.page.startsWith("blog/")) {
+        blogTotal += p._count.visitorId;
+      } else {
+        presenceMap[p.page] = p._count.visitorId;
+      }
     });
+
+    // Set aggregated blog count
+    if (blogTotal > 0) {
+      presenceMap["blog"] = blogTotal;
+    }
 
     // Get presence counts by country
     const countryCounts = await prisma.pagePresence.groupBy({
