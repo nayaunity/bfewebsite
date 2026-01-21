@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { BlogViewTracker } from "@/components/BlogViewTracker";
 import { getBlogPost, getAllPostSlugs, getAllPosts } from "@/lib/blog";
 
 interface Props {
@@ -151,6 +152,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <BlogViewTracker slug={post.slug} title={post.title} />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Article Header */}

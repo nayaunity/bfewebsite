@@ -186,3 +186,13 @@ model LinkClick {
   @@index([linkId])
   @@index([clickedAt])
 }
+
+model BlogView {
+  id        String   @id @default(cuid())
+  slug      String
+  title     String
+  viewedAt  DateTime @default(now())
+
+  @@index([slug])
+  @@index([viewedAt])
+}

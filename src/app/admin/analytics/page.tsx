@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getAllPostsMeta } from "@/lib/blog";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,12 @@ async function getAnalytics() {
     totalJobClicks,
     todayJobClicks,
     jobClicksByCompany,
+    // Blog views
+    totalBlogViews,
+    todayBlogViews,
+    weekBlogViews,
+    blogViewsByPost,
+    recentBlogViews,
   ] = await Promise.all([
     // Link clicks
     prisma.linkClick.count(),
@@ -51,7 +58,30 @@ async function getAnalytics() {
       orderBy: { _count: { id: "desc" } },
       take: 10,
     }),
+    // Blog views
+    prisma.blogView.count(),
+    prisma.blogView.count({ where: { viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: weekStart } } }),
+    prisma.blogView.groupBy({
+      by: ["slug", "title"],
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 10,
+    }),
+    prisma.blogView.findMany({
+      orderBy: { viewedAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        viewedAt: true,
+      },
+    }),
   ]);
+
+  // Get all blog posts for the complete list
+  const allBlogPosts = getAllPostsMeta();
 
   return {
     links: {
@@ -73,6 +103,18 @@ async function getAnalytics() {
         company: c.company,
         clicks: c._count.id,
       })),
+    },
+    blog: {
+      total: totalBlogViews,
+      today: todayBlogViews,
+      week: weekBlogViews,
+      byPost: blogViewsByPost.map((v) => ({
+        slug: v.slug,
+        title: v.title,
+        views: v._count.id,
+      })),
+      recent: recentBlogViews,
+      allPosts: allBlogPosts,
     },
   };
 }
@@ -155,6 +197,33 @@ export default async function AnalyticsPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
             <p className="text-3xl font-bold text-green-600">
               {analytics.jobs.today}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Blog Views Stats */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Blog Views
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Total Views</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+              {analytics.blog.total}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Today</p>
+            <p className="text-3xl font-bold text-green-600">
+              {analytics.blog.today}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+            <p className="text-sm text-gray-500 dark:text-gray-400">This Week</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {analytics.blog.week}
             </p>
           </div>
         </div>
@@ -257,6 +326,108 @@ export default async function AnalyticsPage() {
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                   {click.linkUrl}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Blog Analytics Section */}
+      <div className="mt-8 grid lg:grid-cols-2 gap-8">
+        {/* Top Blog Posts */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Top Blog Posts
+            </h3>
+          </div>
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {analytics.blog.byPost.length === 0 ? (
+              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                No blog views yet
+              </p>
+            ) : (
+              analytics.blog.byPost.map((post, index) => (
+                <div
+                  key={post.slug}
+                  className="px-4 py-3 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-xs font-medium text-orange-600 dark:text-orange-300">
+                      {index + 1}
+                    </span>
+                    <span className="truncate text-sm text-gray-900 dark:text-white">
+                      {post.title}
+                    </span>
+                  </div>
+                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    {post.views}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* All Blog Posts */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              All Blog Posts ({analytics.blog.allPosts.length})
+            </h3>
+          </div>
+          <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+            {analytics.blog.allPosts.length === 0 ? (
+              <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                No blog posts yet
+              </p>
+            ) : (
+              analytics.blog.allPosts.map((post) => (
+                <div key={post.slug} className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {post.title}
+                    </span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 flex-shrink-0 ml-2">
+                      {post.category}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {new Date(post.publishedAt).toLocaleDateString()} · {post.readTime}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Blog Views */}
+      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="font-semibold text-gray-900 dark:text-white">
+            Recent Blog Views
+          </h3>
+        </div>
+        <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+          {analytics.blog.recent.length === 0 ? (
+            <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+              No recent views
+            </p>
+          ) : (
+            analytics.blog.recent.map((view) => (
+              <div key={view.id} className="px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    {view.title}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+                    {formatTimeAgo(new Date(view.viewedAt))}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
+                  /blog/{view.slug}
                 </p>
               </div>
             ))
