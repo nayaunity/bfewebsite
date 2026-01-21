@@ -182,26 +182,26 @@ export default async function AdminDashboard() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Blog Views Today</p>
-            <p className="text-2xl font-bold text-[#ef562a] mt-1">
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.todayBlogViews}
             </p>
             <p className="text-xs text-[var(--gray-600)]">{stats.analytics.weekBlogViews} this week</p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Link Clicks Today</p>
-            <p className="text-2xl font-bold text-[#ef562a] mt-1">
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.todayLinkClicks}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Job Clicks Today</p>
-            <p className="text-2xl font-bold text-[#ef562a] mt-1">
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.todayJobClicks}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Visitors Today</p>
-            <p className="text-2xl font-bold text-[#ffe500] mt-1">
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.todayVisitors}
             </p>
           </div>

@@ -271,19 +271,19 @@ export default async function AnalyticsPage() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Today</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.today}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">This Week</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.week}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">This Month</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.month}
             </p>
           </div>
@@ -384,11 +384,11 @@ export default async function AnalyticsPage() {
               <p className="text-xs text-[var(--gray-600)] mb-2">Lesson Completions</p>
               <div className="flex gap-4">
                 <div>
-                  <p className="text-lg font-bold text-[#ffe500]">{analytics.activity.lessonCompletionsToday}</p>
+                  <p className="text-lg font-bold text-[var(--foreground)]">{analytics.activity.lessonCompletionsToday}</p>
                   <p className="text-xs text-[var(--gray-600)]">Today</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-[#ef562a]">{analytics.activity.lessonCompletionsWeek}</p>
+                  <p className="text-lg font-bold text-[var(--foreground)]">{analytics.activity.lessonCompletionsWeek}</p>
                   <p className="text-xs text-[var(--gray-600)]">This Week</p>
                 </div>
               </div>
@@ -397,11 +397,11 @@ export default async function AnalyticsPage() {
               <p className="text-xs text-[var(--gray-600)] mb-2">Micro Wins Shared</p>
               <div className="flex gap-4">
                 <div>
-                  <p className="text-lg font-bold text-[#ffe500]">{analytics.activity.microWinsToday}</p>
+                  <p className="text-lg font-bold text-[var(--foreground)]">{analytics.activity.microWinsToday}</p>
                   <p className="text-xs text-[var(--gray-600)]">Today</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-[#ef562a]">{analytics.activity.microWinsWeek}</p>
+                  <p className="text-lg font-bold text-[var(--foreground)]">{analytics.activity.microWinsWeek}</p>
                   <p className="text-xs text-[var(--gray-600)]">This Week</p>
                 </div>
               </div>
@@ -424,13 +424,13 @@ export default async function AnalyticsPage() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Today</p>
-            <p className="text-3xl font-bold text-[#ffe500] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.blog.today}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">This Week</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.blog.week}
             </p>
           </div>
@@ -480,19 +480,19 @@ export default async function AnalyticsPage() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Today</p>
-            <p className="text-3xl font-bold text-[#ffe500] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.links.today}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">This Week</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.links.week}
             </p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">This Month</p>
-            <p className="text-3xl font-bold text-[#ef562a] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.links.month}
             </p>
           </div>
@@ -513,7 +513,7 @@ export default async function AnalyticsPage() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Today</p>
-            <p className="text-3xl font-bold text-[#ffe500] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.jobs.today}
             </p>
           </div>
