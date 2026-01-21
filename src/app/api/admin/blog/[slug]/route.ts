@@ -20,8 +20,9 @@ export async function GET(request: Request, { params }: Props) {
     return NextResponse.json(post);
   } catch (error) {
     console.error("Failed to get blog post:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Failed to get blog post" },
+      { error: "Failed to get blog post", details: errorMessage },
       { status: 500 }
     );
   }
