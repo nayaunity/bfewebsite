@@ -263,9 +263,9 @@ export default async function AnalyticsPage() {
           Site Visitors
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[#ffe500] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Active Now</p>
-            <p className="text-3xl font-bold text-[#ffe500] mt-1">
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.activeNow}
             </p>
           </div>

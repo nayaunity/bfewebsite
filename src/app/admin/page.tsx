@@ -100,9 +100,9 @@ export default async function AdminDashboard() {
       value: stats.linksCount,
       subtext: `${stats.activeLinksCount} active`,
       href: "/admin/links",
-      color: "bg-[#ef562a]",
+      color: "bg-[var(--gray-100)]",
       icon: (
-        <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-6 w-6 text-[var(--foreground)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
         </svg>
       ),
@@ -168,7 +168,7 @@ export default async function AdminDashboard() {
           </h2>
           <Link
             href="/admin/analytics"
-            className="text-sm text-[#ef562a] hover:underline"
+            className="text-sm text-[var(--foreground)] hover:underline"
           >
             View Full Analytics
           </Link>
