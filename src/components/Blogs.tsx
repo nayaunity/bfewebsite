@@ -2,8 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllPostsMeta } from "@/lib/blog";
 
-export default function Blogs() {
-  const posts = getAllPostsMeta().slice(0, 3);
+export default async function Blogs() {
+  const allPosts = await getAllPostsMeta();
+  const posts = allPosts.slice(0, 3);
 
   return (
     <section id="blog" className="bg-[#1a1a1a] py-20 md:py-28">

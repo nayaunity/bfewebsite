@@ -10,11 +10,13 @@ export const metadata = {
   description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
 };
 
-export default function BlogPage() {
-  const allPosts = getAllPosts();
-  const featuredPosts = getFeaturedPosts();
+export default async function BlogPage() {
+  const [allPosts, featuredPosts, blogCategories] = await Promise.all([
+    getAllPosts(),
+    getFeaturedPosts(),
+    getAllCategories(),
+  ]);
   const recentPosts = allPosts.slice(0, 10);
-  const blogCategories = getAllCategories();
 
   return (
     <>

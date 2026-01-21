@@ -1,8 +1,4 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-
-const BLOG_DIR = path.join(process.cwd(), "content/blog");
+import { prisma } from "./prisma";
 
 export interface BlogPost {
   slug: string;
@@ -15,7 +11,7 @@ export interface BlogPost {
   category: string;
   tags: string[];
   featured?: boolean;
-  image?: string;
+  image?: string | null;
 }
 
 export interface BlogPostMeta {
@@ -28,84 +24,7 @@ export interface BlogPostMeta {
   category: string;
   tags: string[];
   featured?: boolean;
-  image?: string;
-}
-
-/**
- * Get all blog post slugs
- */
-export function getAllPostSlugs(): string[] {
-  if (!fs.existsSync(BLOG_DIR)) {
-    return [];
-  }
-
-  const files = fs.readdirSync(BLOG_DIR);
-  return files
-    .filter((file) => file.endsWith(".md"))
-    .map((file) => file.replace(/\.md$/, ""));
-}
-
-/**
- * Get a single blog post by slug
- */
-export function getBlogPost(slug: string): BlogPost | null {
-  const filePath = path.join(BLOG_DIR, `${slug}.md`);
-
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(fileContent);
-
-  return {
-    slug,
-    title: data.title || "",
-    excerpt: data.excerpt || "",
-    content: content.trim(),
-    author: data.author || "Nyaradzo",
-    publishedAt: data.publishedAt || data.date || "",
-    readTime: data.readTime || calculateReadTime(content),
-    category: data.category || "Uncategorized",
-    tags: data.tags || [],
-    featured: data.featured || false,
-    image: data.image || null,
-  };
-}
-
-/**
- * Get all blog posts with full content
- */
-export function getAllPosts(): BlogPost[] {
-  const slugs = getAllPostSlugs();
-  const posts = slugs
-    .map((slug) => getBlogPost(slug))
-    .filter((post): post is BlogPost => post !== null)
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-
-  return posts;
-}
-
-/**
- * Get all blog post metadata (without content, for listing pages)
- */
-export function getAllPostsMeta(): BlogPostMeta[] {
-  return getAllPosts().map(({ content, ...meta }) => meta);
-}
-
-/**
- * Get featured posts
- */
-export function getFeaturedPosts(): BlogPost[] {
-  return getAllPosts().filter((post) => post.featured);
-}
-
-/**
- * Get posts by category
- */
-export function getPostsByCategory(category: string): BlogPost[] {
-  if (category === "All") return getAllPosts();
-  return getAllPosts().filter((post) => post.category === category);
+  image?: string | null;
 }
 
 /**
@@ -119,19 +38,220 @@ function calculateReadTime(content: string): string {
 }
 
 /**
+ * Transform database record to BlogPost
+ */
+function transformPost(post: {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  publishedAt: Date;
+  category: string;
+  tags: string;
+  featured: boolean;
+  image: string | null;
+}): BlogPost {
+  return {
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    content: post.content,
+    author: post.author,
+    publishedAt: post.publishedAt.toISOString().split("T")[0],
+    readTime: calculateReadTime(post.content),
+    category: post.category,
+    tags: JSON.parse(post.tags),
+    featured: post.featured,
+    image: post.image,
+  };
+}
+
+/**
+ * Get all blog post slugs
+ */
+export async function getAllPostSlugs(): Promise<string[]> {
+  const posts = await prisma.blogPost.findMany({
+    select: { slug: true },
+    orderBy: { publishedAt: "desc" },
+  });
+  return posts.map((p) => p.slug);
+}
+
+/**
+ * Get a single blog post by slug
+ */
+export async function getBlogPost(slug: string): Promise<BlogPost | null> {
+  const post = await prisma.blogPost.findUnique({
+    where: { slug },
+  });
+
+  if (!post) {
+    return null;
+  }
+
+  return transformPost(post);
+}
+
+/**
+ * Get all blog posts with full content
+ */
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { publishedAt: "desc" },
+  });
+
+  return posts.map(transformPost);
+}
+
+/**
+ * Get all blog post metadata (without content, for listing pages)
+ */
+export async function getAllPostsMeta(): Promise<BlogPostMeta[]> {
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { publishedAt: "desc" },
+  });
+
+  return posts.map((post) => {
+    const transformed = transformPost(post);
+    const { content, ...meta } = transformed;
+    return meta;
+  });
+}
+
+/**
+ * Get featured posts
+ */
+export async function getFeaturedPosts(): Promise<BlogPost[]> {
+  const posts = await prisma.blogPost.findMany({
+    where: { featured: true },
+    orderBy: { publishedAt: "desc" },
+  });
+
+  return posts.map(transformPost);
+}
+
+/**
+ * Get posts by category
+ */
+export async function getPostsByCategory(category: string): Promise<BlogPost[]> {
+  if (category === "All") {
+    return getAllPosts();
+  }
+
+  const posts = await prisma.blogPost.findMany({
+    where: { category },
+    orderBy: { publishedAt: "desc" },
+  });
+
+  return posts.map(transformPost);
+}
+
+/**
  * Get all unique categories
  */
-export function getAllCategories(): string[] {
-  const posts = getAllPosts();
-  const categories = new Set(posts.map((post) => post.category));
-  return ["All", ...Array.from(categories).sort()];
+export async function getAllCategories(): Promise<string[]> {
+  const posts = await prisma.blogPost.findMany({
+    select: { category: true },
+    distinct: ["category"],
+  });
+
+  const categories = posts.map((p) => p.category);
+  return ["All", ...categories.sort()];
 }
 
 /**
  * Get all unique tags
  */
-export function getAllTags(): string[] {
-  const posts = getAllPosts();
-  const tags = new Set(posts.flatMap((post) => post.tags));
-  return Array.from(tags).sort();
+export async function getAllTags(): Promise<string[]> {
+  const posts = await prisma.blogPost.findMany({
+    select: { tags: true },
+  });
+
+  const allTags = new Set<string>();
+  posts.forEach((post) => {
+    const tags = JSON.parse(post.tags) as string[];
+    tags.forEach((tag) => allTags.add(tag));
+  });
+
+  return Array.from(allTags).sort();
+}
+
+/**
+ * Create a new blog post
+ */
+export async function createBlogPost(data: {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author?: string;
+  category?: string;
+  tags?: string[];
+  featured?: boolean;
+  image?: string;
+}): Promise<BlogPost> {
+  const post = await prisma.blogPost.create({
+    data: {
+      slug: data.slug,
+      title: data.title,
+      excerpt: data.excerpt,
+      content: data.content,
+      author: data.author || "Nyaradzo",
+      category: data.category || "Career",
+      tags: JSON.stringify(data.tags || []),
+      featured: data.featured || false,
+      image: data.image || null,
+    },
+  });
+
+  return transformPost(post);
+}
+
+/**
+ * Update a blog post
+ */
+export async function updateBlogPost(
+  originalSlug: string,
+  data: {
+    slug?: string;
+    title?: string;
+    excerpt?: string;
+    content?: string;
+    author?: string;
+    category?: string;
+    tags?: string[];
+    featured?: boolean;
+    image?: string | null;
+    publishedAt?: string;
+  }
+): Promise<BlogPost> {
+  const updateData: Record<string, unknown> = {};
+
+  if (data.slug !== undefined) updateData.slug = data.slug;
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.excerpt !== undefined) updateData.excerpt = data.excerpt;
+  if (data.content !== undefined) updateData.content = data.content;
+  if (data.author !== undefined) updateData.author = data.author;
+  if (data.category !== undefined) updateData.category = data.category;
+  if (data.tags !== undefined) updateData.tags = JSON.stringify(data.tags);
+  if (data.featured !== undefined) updateData.featured = data.featured;
+  if (data.image !== undefined) updateData.image = data.image;
+  if (data.publishedAt !== undefined) updateData.publishedAt = new Date(data.publishedAt);
+
+  const post = await prisma.blogPost.update({
+    where: { slug: originalSlug },
+    data: updateData,
+  });
+
+  return transformPost(post);
+}
+
+/**
+ * Delete a blog post
+ */
+export async function deleteBlogPost(slug: string): Promise<void> {
+  await prisma.blogPost.delete({
+    where: { slug },
+  });
 }

@@ -31,8 +31,10 @@ async function getBlogAnalytics() {
 }
 
 export default async function AdminBlogPage() {
-  const posts = getAllPostsMeta();
-  const analytics = await getBlogAnalytics();
+  const [posts, analytics] = await Promise.all([
+    getAllPostsMeta(),
+    getBlogAnalytics(),
+  ]);
 
   return (
     <div className="pb-20 lg:pb-0">

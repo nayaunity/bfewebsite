@@ -1,13 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const BLOG_DIR = path.join(process.cwd(), "content/blog");
-
-// Ensure blog directory exists
-if (!fs.existsSync(BLOG_DIR)) {
-  fs.mkdirSync(BLOG_DIR, { recursive: true });
-}
+import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPost } from "@/lib/blog";
 
 export async function POST(request: Request) {
   try {
@@ -22,30 +14,25 @@ export async function POST(request: Request) {
     }
 
     // Check if slug already exists
-    const filePath = path.join(BLOG_DIR, `${slug}.md`);
-    if (fs.existsSync(filePath)) {
+    const existing = await getBlogPost(slug);
+    if (existing) {
       return NextResponse.json(
         { error: "A post with this slug already exists" },
         { status: 400 }
       );
     }
 
-    // Create frontmatter
-    const frontmatter = `---
-title: "${title.replace(/"/g, '\\"')}"
-excerpt: "${excerpt.replace(/"/g, '\\"')}"
-author: "${author || "Nyaradzo"}"
-publishedAt: "${new Date().toISOString().split("T")[0]}"
-category: "${category || "Career"}"
-tags: [${(tags || []).map((t: string) => `"${t}"`).join(", ")}]
-featured: ${featured || false}
-${image ? `image: "${image}"` : ""}
----
-
-${content}`;
-
-    // Write file
-    fs.writeFileSync(filePath, frontmatter.trim());
+    await createBlogPost({
+      slug,
+      title,
+      excerpt,
+      content,
+      author: author || "Nyaradzo",
+      category: category || "Career",
+      tags: tags || [],
+      featured: featured || false,
+      image: image || undefined,
+    });
 
     return NextResponse.json({ success: true, slug });
   } catch (error) {
@@ -69,11 +56,9 @@ export async function PUT(request: Request) {
       );
     }
 
-    const originalPath = path.join(BLOG_DIR, `${originalSlug}.md`);
-    const newPath = path.join(BLOG_DIR, `${slug}.md`);
-
-    // Check if original file exists
-    if (!fs.existsSync(originalPath)) {
+    // Check if original post exists
+    const originalPost = await getBlogPost(originalSlug);
+    if (!originalPost) {
       return NextResponse.json(
         { error: "Original post not found" },
         { status: 404 }
@@ -81,34 +66,28 @@ export async function PUT(request: Request) {
     }
 
     // If slug changed, check new slug doesn't exist
-    if (originalSlug !== slug && fs.existsSync(newPath)) {
-      return NextResponse.json(
-        { error: "A post with this slug already exists" },
-        { status: 400 }
-      );
-    }
-
-    // Create frontmatter
-    const frontmatter = `---
-title: "${title.replace(/"/g, '\\"')}"
-excerpt: "${excerpt.replace(/"/g, '\\"')}"
-author: "${author || "Nyaradzo"}"
-publishedAt: "${publishedAt || new Date().toISOString().split("T")[0]}"
-category: "${category || "Career"}"
-tags: [${(tags || []).map((t: string) => `"${t}"`).join(", ")}]
-featured: ${featured || false}
-${image ? `image: "${image}"` : ""}
----
-
-${content}`;
-
-    // Delete original if slug changed
     if (originalSlug !== slug) {
-      fs.unlinkSync(originalPath);
+      const existingWithNewSlug = await getBlogPost(slug);
+      if (existingWithNewSlug) {
+        return NextResponse.json(
+          { error: "A post with this slug already exists" },
+          { status: 400 }
+        );
+      }
     }
 
-    // Write file
-    fs.writeFileSync(newPath, frontmatter.trim());
+    await updateBlogPost(originalSlug, {
+      slug,
+      title,
+      excerpt,
+      content,
+      author: author || "Nyaradzo",
+      category: category || "Career",
+      tags: tags || [],
+      featured: featured || false,
+      image: image || null,
+      publishedAt,
+    });
 
     return NextResponse.json({ success: true, slug });
   } catch (error) {
@@ -132,16 +111,15 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const filePath = path.join(BLOG_DIR, `${slug}.md`);
-
-    if (!fs.existsSync(filePath)) {
+    const post = await getBlogPost(slug);
+    if (!post) {
       return NextResponse.json(
         { error: "Post not found" },
         { status: 404 }
       );
     }
 
-    fs.unlinkSync(filePath);
+    await deleteBlogPost(slug);
 
     return NextResponse.json({ success: true });
   } catch (error) {

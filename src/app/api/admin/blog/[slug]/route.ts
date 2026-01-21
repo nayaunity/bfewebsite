@@ -8,7 +8,7 @@ interface Props {
 export async function GET(request: Request, { params }: Props) {
   try {
     const { slug } = await params;
-    const post = getBlogPost(slug);
+    const post = await getBlogPost(slug);
 
     if (!post) {
       return NextResponse.json(
