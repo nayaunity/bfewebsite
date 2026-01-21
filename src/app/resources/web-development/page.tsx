@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import EmailGateSection from "@/components/EmailGateSection";
 import { getCourse } from "@/lib/courses";
 import { notFound } from "next/navigation";
 import CourseProgress from "./_components/CourseProgress";
@@ -148,38 +149,7 @@ export default function WebDevelopmentGuidePage() {
         </section>
 
         {/* Email Gate Preview */}
-        <section className="bg-[var(--gray-50)] py-16 md:py-24 border-t border-[var(--card-border)]">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ffe500] flex items-center justify-center">
-              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h2 className="font-serif text-3xl md:text-4xl mb-4">
-              Unlock the Full Guide
-            </h2>
-            <p className="text-[var(--gray-600)] mb-8">
-              Get access to all {course.stats.lessons} lessons, including hands-on projects
-              and curated resources. Just enter your email to continue.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full focus:outline-none focus:border-[#ef562a]"
-              />
-              <button
-                type="submit"
-                className="bg-[#ef562a] text-white px-8 py-4 rounded-full font-medium hover:bg-[#d94d25] transition-colors"
-              >
-                Get Access
-              </button>
-            </form>
-            <p className="text-xs text-[var(--gray-600)] mt-4">
-              No spam, ever. Unsubscribe anytime.
-            </p>
-          </div>
-        </section>
+        <EmailGateSection totalLessons={course.stats.lessons} courseTag="web-development-guide" />
       </main>
       <Footer />
     </>
