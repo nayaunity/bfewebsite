@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePagePresence } from "@/hooks/usePagePresence";
 
 interface BlogViewTrackerProps {
   slug: string;
@@ -8,8 +9,11 @@ interface BlogViewTrackerProps {
 }
 
 export function BlogViewTracker({ slug, title }: BlogViewTrackerProps) {
+  // Track presence in live activity feed
+  usePagePresence(`blog/${slug}`);
+
   useEffect(() => {
-    // Track view on mount
+    // Track view for analytics
     fetch("/api/blog/view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
