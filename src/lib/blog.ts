@@ -46,19 +46,24 @@ function transformPost(post: {
   excerpt: string;
   content: string;
   author: string;
-  publishedAt: Date;
+  publishedAt: Date | string;
   category: string;
   tags: string;
   featured: boolean;
   image: string | null;
 }): BlogPost {
+  // Handle publishedAt as either Date or string from Turso
+  const publishedDate = post.publishedAt instanceof Date
+    ? post.publishedAt
+    : new Date(post.publishedAt);
+
   return {
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     content: post.content,
     author: post.author,
-    publishedAt: post.publishedAt.toISOString().split("T")[0],
+    publishedAt: publishedDate.toISOString().split("T")[0],
     readTime: calculateReadTime(post.content),
     category: post.category,
     tags: JSON.parse(post.tags),
