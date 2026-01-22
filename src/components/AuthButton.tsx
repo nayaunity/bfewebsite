@@ -67,6 +67,14 @@ export function AuthButton() {
             </p>
           </div>
 
+          {/* Profile link */}
+          <Link
+            href="/profile"
+            className="block w-full text-left px-4 py-2 text-sm text-[var(--gray-600)] hover:bg-[var(--gray-50)] transition-colors"
+          >
+            Profile
+          </Link>
+
           {/* Sign out button */}
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
