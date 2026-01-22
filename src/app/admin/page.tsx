@@ -218,7 +218,7 @@ export default async function AdminDashboard() {
             <Link
               key={stat.name}
               href={stat.href}
-              className="group relative overflow-hidden rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] px-5 py-5 hover:border-[#ef562a] transition-colors"
+              className="group relative overflow-hidden rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] px-5 py-5 hover:border-black transition-colors"
             >
               <div className="flex items-center">
                 <div className={`flex-shrink-0 rounded-full p-3 ${stat.color}`}>
@@ -253,7 +253,7 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/admin/jobs/new"
-            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-[#ef562a] hover:text-[#ef562a] transition-colors"
+            className="flex items-center justify-center px-5 py-3.5 bg-[#ffe500] text-black rounded-full text-sm font-medium hover:bg-[#f5dc00] transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -272,7 +272,7 @@ export default async function AdminDashboard() {
           </Link>
           <Link
             href="/admin/links/new"
-            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-[#ef562a] hover:text-[#ef562a] transition-colors"
+            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-black hover:text-black transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -291,7 +291,7 @@ export default async function AdminDashboard() {
           </Link>
           <Link
             href="/admin/blog/new"
-            className="flex items-center justify-center px-5 py-3.5 bg-[#ffe500] text-black rounded-full text-sm font-medium hover:bg-[#f5dc00] transition-colors"
+            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-black hover:text-black transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -310,7 +310,7 @@ export default async function AdminDashboard() {
           </Link>
           <Link
             href="/admin/analytics"
-            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-[#ef562a] hover:text-[#ef562a] transition-colors"
+            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-black hover:text-black transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"

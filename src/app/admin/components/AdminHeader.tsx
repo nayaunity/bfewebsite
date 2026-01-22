@@ -30,7 +30,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
           </span>
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="text-sm text-[var(--foreground)] px-4 py-2 rounded-full border border-[var(--card-border)] hover:border-[#ef562a] hover:text-[#ef562a] transition-colors"
+            className="text-sm text-[var(--foreground)] px-4 py-2 rounded-full border border-[var(--card-border)] hover:border-black hover:text-black transition-colors"
           >
             Sign Out
           </button>

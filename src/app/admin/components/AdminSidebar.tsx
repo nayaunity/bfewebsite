@@ -112,10 +112,10 @@ export default function AdminSidebar() {
           <div className="flex flex-shrink-0 border-t border-[var(--card-border)] p-4">
             <Link
               href="/"
-              className="group flex items-center text-sm font-medium text-[var(--gray-600)] hover:text-[#ef562a] transition-colors"
+              className="group flex items-center text-sm font-medium text-[var(--gray-600)] hover:text-black transition-colors"
             >
               <svg
-                className="mr-3 w-5 h-5 text-[var(--gray-600)] group-hover:text-[#ef562a]"
+                className="mr-3 w-5 h-5 text-[var(--gray-600)] group-hover:text-black"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
