@@ -178,11 +178,11 @@ export default function NewBlogPostPage() {
               Featured Image URL
             </label>
             <input
-              type="url"
+              type="text"
               value={formData.image}
               onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
-              placeholder="https://example.com/image.jpg"
+              placeholder="/images/blog/image.jpg or https://example.com/image.jpg"
             />
           </div>
 
