@@ -304,6 +304,7 @@ export default async function AnalyticsPage() {
             <h3 className="font-semibold text-[var(--foreground)]">
               Audience by Country
             </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">Unique visitors</p>
           </div>
           <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
             {analytics.site.byCountry.length === 0 ? (
@@ -339,6 +340,7 @@ export default async function AnalyticsPage() {
             <h3 className="font-semibold text-[var(--foreground)]">
               Traffic by Page (7 days)
             </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">Unique visitors per page</p>
           </div>
           <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
             {analytics.site.byPage.length === 0 ? (
@@ -441,6 +443,7 @@ export default async function AnalyticsPage() {
               <h3 className="font-semibold text-[var(--foreground)]">
                 Top Blog Posts
               </h3>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">Total views (includes repeat visits)</p>
             </div>
             <div className="divide-y divide-[var(--card-border)]">
               {analytics.blog.byPost.map((post, index) => (
@@ -527,6 +530,7 @@ export default async function AnalyticsPage() {
             <h3 className="font-semibold text-[var(--foreground)]">
               Top Links
             </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">Total clicks</p>
           </div>
           <div className="divide-y divide-[var(--card-border)]">
             {analytics.links.byLink.length === 0 ? (
@@ -562,6 +566,7 @@ export default async function AnalyticsPage() {
             <h3 className="font-semibold text-[var(--foreground)]">
               Top Companies (Job Clicks)
             </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">Total clicks</p>
           </div>
           <div className="divide-y divide-[var(--card-border)]">
             {analytics.jobs.byCompany.length === 0 ? (
