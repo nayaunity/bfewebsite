@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import deiCompanies from "@/data/dei-companies.json";
 
 interface Job {
@@ -47,6 +49,8 @@ const mobileFilters = [
 ];
 
 export default function JobBoard() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -56,6 +60,14 @@ export default function JobBoard() {
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [selectedMobileFilter, setSelectedMobileFilter] = useState("");
   const [isInternational, setIsInternational] = useState(false);
+
+  const handleSubmitResume = () => {
+    if (session) {
+      router.push("/profile");
+    } else {
+      router.push("/auth/signin?callbackUrl=/profile");
+    }
+  };
 
   const fetchJobs = useCallback(
     async (page = 1, append = false) => {
@@ -186,6 +198,15 @@ export default function JobBoard() {
               Explore roles at companies committed to diversity and inclusion in
               tech.
             </p>
+            <button
+              onClick={handleSubmitResume}
+              className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Submit Your Resume
+            </button>
           </div>
 
           {/* Mobile filter pills */}
