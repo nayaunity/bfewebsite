@@ -84,20 +84,29 @@ export async function GET(request: NextRequest) {
     const jobs = filteredJobs.slice(offset, offset + limit);
 
     // Transform jobs for the frontend with region-aware location display
-    const transformedJobs = jobs.map((job) => ({
-      id: job.id,
-      company: job.company,
-      companySlug: job.companySlug,
-      title: job.title,
-      location: getDisplayLocation(job.location, region),
-      type: job.type,
-      remote: job.remote,
-      salary: job.salary || "",
-      posted: formatPostedDate(job.postedAt || job.scrapedAt),
-      tags: JSON.parse(job.tags) as string[],
-      href: job.applyUrl,
-      category: job.category,
-    }));
+    const transformedJobs = jobs.map((job) => {
+      let parsedTags: string[] = [];
+      try {
+        parsedTags = JSON.parse(job.tags) as string[];
+      } catch {
+        // Handle corrupted tags gracefully
+        parsedTags = [];
+      }
+      return {
+        id: job.id,
+        company: job.company,
+        companySlug: job.companySlug,
+        title: job.title,
+        location: getDisplayLocation(job.location, region),
+        type: job.type,
+        remote: job.remote,
+        salary: job.salary || "",
+        posted: formatPostedDate(job.postedAt || job.scrapedAt),
+        tags: parsedTags,
+        href: job.applyUrl,
+        category: job.category,
+      };
+    });
 
     return NextResponse.json(
       {
@@ -175,7 +184,7 @@ export async function POST(request: NextRequest) {
         remote: job.remote,
         salary: job.salary || "",
         posted: "Just now",
-        tags: JSON.parse(job.tags),
+        tags: (() => { try { return JSON.parse(job.tags); } catch { return []; } })(),
         href: job.applyUrl,
       },
     });
