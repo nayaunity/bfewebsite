@@ -13,6 +13,8 @@ interface Job {
   remote: boolean;
   isActive: boolean;
   scrapedAt: Date;
+  source: string;
+  createdBy?: { email: string } | null;
 }
 
 export default function JobsTable({ jobs }: { jobs: Job[] }) {
@@ -98,6 +100,11 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {job.title}
                 </div>
+                {job.source === "manual" && job.createdBy && (
+                  <div className="text-xs text-purple-600 dark:text-purple-400 mt-0.5">
+                    Added by {job.createdBy.email}
+                  </div>
+                )}
               </td>
               <td className="px-6 py-4">
                 <div className="text-sm text-gray-900 dark:text-white">

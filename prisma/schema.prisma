@@ -20,6 +20,7 @@ model User {
   progress      LessonProgress[]
   microWins     MicroWin[]
   sessions      Session[]
+  createdJobs   Job[]
 }
 
 model Account {
@@ -88,12 +89,15 @@ model Job {
   isActive    Boolean   @default(true)
   scrapedAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  createdById String?
+  createdBy   User?     @relation(fields: [createdById], references: [id])
 
   @@unique([externalId, companySlug])
   @@index([category])
   @@index([remote])
   @@index([isActive])
   @@index([companySlug])
+  @@index([createdById])
 }
 
 model ScrapeLog {

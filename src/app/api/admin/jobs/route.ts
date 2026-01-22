@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
 // POST /api/admin/jobs - Create new job
 export async function POST(request: NextRequest) {
-  const { isAdmin } = await checkAdmin();
+  const { isAdmin, session } = await checkAdmin();
   if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
         tags: body.tags || "[]",
         source: body.source || "manual",
         isActive: body.isActive ?? true,
+        createdById: session?.user?.id || null,
       },
     });
 

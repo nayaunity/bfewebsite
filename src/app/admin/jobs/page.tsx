@@ -31,6 +31,11 @@ export default async function AdminJobsPage({ searchParams }: PageProps) {
       orderBy: { scrapedAt: "desc" },
       skip: offset,
       take: limit,
+      include: {
+        createdBy: {
+          select: { email: true },
+        },
+      },
     }),
     prisma.job.count({ where }),
   ]);
