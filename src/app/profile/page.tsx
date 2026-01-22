@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { ResumeUpload } from "@/components/ResumeUpload";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,9 @@ async function getUserData(userId: string) {
       createdAt: true,
       emailVerified: true,
       role: true,
+      resumeUrl: true,
+      resumeName: true,
+      resumeUpdatedAt: true,
       _count: {
         select: {
           progress: true,
@@ -138,6 +142,15 @@ export default async function ProfilePage() {
               </div>
             )}
           </div>
+
+          {/* Resume Upload */}
+          <ResumeUpload
+            initialResume={{
+              url: user.resumeUrl,
+              name: user.resumeName,
+              updatedAt: user.resumeUpdatedAt,
+            }}
+          />
 
           {/* Admin Link */}
           {user.role === "admin" && (
