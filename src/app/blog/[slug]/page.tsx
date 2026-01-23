@@ -29,32 +29,70 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-// Helper to parse inline markdown (bold, italic, links)
+// Helper to parse inline markdown (bold, italic, links, URLs)
 function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
   const parts: React.ReactNode[] = [];
   let remaining = text;
   let partIndex = 0;
 
   while (remaining.length > 0) {
-    // Look for **bold** pattern
+    // Look for **bold** pattern or markdown links [text](url) or plain URLs
     const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+    const linkMatch = remaining.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    const urlMatch = remaining.match(/https?:\/\/[^\s]+/);
 
-    if (boldMatch && boldMatch.index !== undefined) {
-      // Add text before the match
-      if (boldMatch.index > 0) {
-        parts.push(remaining.slice(0, boldMatch.index));
-      }
-      // Add the bold text
+    // Find the earliest match
+    const matches = [
+      { type: 'bold', match: boldMatch, index: boldMatch?.index ?? Infinity },
+      { type: 'link', match: linkMatch, index: linkMatch?.index ?? Infinity },
+      { type: 'url', match: urlMatch, index: urlMatch?.index ?? Infinity },
+    ].filter(m => m.match !== null).sort((a, b) => a.index - b.index);
+
+    if (matches.length === 0) {
+      parts.push(remaining);
+      break;
+    }
+
+    const earliest = matches[0];
+
+    // Add text before the match
+    if (earliest.index > 0) {
+      parts.push(remaining.slice(0, earliest.index));
+    }
+
+    if (earliest.type === 'bold' && boldMatch) {
       parts.push(
         <strong key={`${keyPrefix}-b-${partIndex++}`} className="font-semibold">
           {boldMatch[1]}
         </strong>
       );
-      remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
-    } else {
-      // No more matches, add the rest
-      parts.push(remaining);
-      break;
+      remaining = remaining.slice(earliest.index + boldMatch[0].length);
+    } else if (earliest.type === 'link' && linkMatch) {
+      parts.push(
+        <a
+          key={`${keyPrefix}-a-${partIndex++}`}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#ef562a] hover:underline"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+      remaining = remaining.slice(earliest.index + linkMatch[0].length);
+    } else if (earliest.type === 'url' && urlMatch) {
+      parts.push(
+        <a
+          key={`${keyPrefix}-u-${partIndex++}`}
+          href={urlMatch[0]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#ef562a] hover:underline break-all"
+        >
+          {urlMatch[0]}
+        </a>
+      );
+      remaining = remaining.slice(earliest.index + urlMatch[0].length);
     }
   }
 
