@@ -355,7 +355,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         {/* Newsletter CTA */}
-        <section className="bg-[var(--cta-bg)] py-16 md:py-24 border-t border-[var(--card-border)]">
+        <section className="bg-[var(--cta-bg)] py-16 md:py-24 mt-16 md:mt-24 border-t border-[var(--card-border)]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl mb-4 text-[var(--cta-text)]">
               Enjoyed this article?
