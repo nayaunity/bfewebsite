@@ -17,17 +17,17 @@ export async function GET() {
       orderBy: { company: "asc" },
     });
 
-    // Deduplicate by company name and normalize slugs (remove trailing dashes)
+    // Deduplicate by company name (trimmed, case-insensitive)
     const seen = new Set<string>();
     const companies = jobs
       .filter((c) => {
-        const key = c.company.toLowerCase();
+        const key = c.company.trim().toLowerCase();
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       })
       .map((c) => ({
-        name: c.company,
+        name: c.company.trim(),
         slug: c.companySlug.replace(/-+$/, ""), // Remove trailing dashes
       }));
 
