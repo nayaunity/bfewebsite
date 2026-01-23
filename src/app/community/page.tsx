@@ -81,7 +81,28 @@ export default function CommunityPage() {
           }}
         />
 
-        {/* Board Header - hidden on mobile */}
+        {/* Mobile Header */}
+        <div className="md:hidden sticky top-20 z-40 border-b border-[var(--card-border)]" style={{ background: 'var(--background)' }}>
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                <h1 className="font-serif text-xl">Micro-Wins Wall</h1>
+              </div>
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-4 py-2 rounded-lg font-medium hover:bg-[#f5dc00] transition-colors shadow-sm text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add a win
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Header */}
         <div className="hidden md:block sticky top-20 md:top-[144px] z-40 border-b border-[var(--card-border)]" style={{ background: 'var(--background)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -252,16 +273,6 @@ export default function CommunityPage() {
             </div>
           </div>
         </div>
-        {/* Mobile FAB - Add Win Button */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="md:hidden fixed bottom-6 right-6 z-50 bg-[#ffe500] text-black p-4 rounded-full shadow-lg hover:bg-[#f5dc00] transition-colors"
-          aria-label="Add a win"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
       </main>
       <Footer />
     </>
