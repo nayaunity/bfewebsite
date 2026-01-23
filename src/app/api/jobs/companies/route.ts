@@ -7,22 +7,31 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     // Get distinct companies from active jobs
-    const companies = await prisma.job.findMany({
+    const jobs = await prisma.job.findMany({
       where: { isActive: true },
       select: {
         company: true,
         companySlug: true,
       },
-      distinct: ["companySlug"],
+      distinct: ["company"],
       orderBy: { company: "asc" },
     });
 
-    return NextResponse.json({
-      companies: companies.map((c) => ({
+    // Deduplicate by company name and normalize slugs (remove trailing dashes)
+    const seen = new Set<string>();
+    const companies = jobs
+      .filter((c) => {
+        const key = c.company.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((c) => ({
         name: c.company,
-        slug: c.companySlug,
-      })),
-    });
+        slug: c.companySlug.replace(/-+$/, ""), // Remove trailing dashes
+      }));
+
+    return NextResponse.json({ companies });
   } catch (error) {
     console.error("Error fetching companies:", error);
     return NextResponse.json(
