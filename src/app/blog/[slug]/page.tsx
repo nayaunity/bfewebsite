@@ -140,7 +140,7 @@ function renderContent(content: string) {
     // Handle h3 headings FIRST (more specific match)
     if (trimmed.startsWith("### ")) {
       elements.push(
-        <h3 key={keyIndex++} className="font-serif text-xl md:text-2xl mt-8 mb-3">
+        <h3 key={keyIndex++} className="font-serif text-xl md:text-2xl mt-8 mb-3 text-[var(--foreground)]">
           {trimmed.slice(4)}
         </h3>
       );
@@ -151,7 +151,7 @@ function renderContent(content: string) {
     // Handle h2 headings
     if (trimmed.startsWith("## ")) {
       elements.push(
-        <h2 key={keyIndex++} className="font-serif text-2xl md:text-3xl mt-12 mb-4">
+        <h2 key={keyIndex++} className="font-serif text-2xl md:text-3xl mt-12 mb-4 text-[var(--foreground)]">
           {trimmed.slice(3)}
         </h2>
       );
