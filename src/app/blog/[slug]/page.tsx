@@ -236,17 +236,17 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
 
           {/* Title */}
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-6">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-6 text-[var(--foreground)]">
             {post.title}
           </h1>
 
           {/* Author & Date */}
           <div className="flex items-center gap-4 mb-8 pb-8 border-b border-[var(--card-border)]">
             <div className="w-12 h-12 rounded-full bg-[var(--gray-200)] flex items-center justify-center">
-              <span className="font-serif text-lg">{post.author.charAt(0)}</span>
+              <span className="font-serif text-lg text-[var(--foreground)]">{post.author.charAt(0)}</span>
             </div>
             <div>
-              <p className="font-medium">{post.author}</p>
+              <p className="font-medium text-[var(--foreground)]">{post.author}</p>
               <p className="text-sm text-[var(--gray-600)]">
                 {new Date(post.publishedAt).toLocaleDateString("en-US", {
                   month: "long",
@@ -271,7 +271,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none">
+          <div className="max-w-none text-[var(--foreground)]">
             {renderContent(post.content)}
           </div>
 
@@ -323,7 +323,7 @@ export default async function BlogPostPage({ params }: Props) {
         {relatedPosts.length > 0 && (
           <section className="bg-[var(--gray-50)] py-16 md:py-24 mt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="font-serif text-2xl md:text-3xl mb-8">Related Articles</h2>
+              <h2 className="font-serif text-2xl md:text-3xl mb-8 text-[var(--foreground)]">Related Articles</h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {relatedPosts.map((relatedPost) => (
                   <Link
@@ -343,7 +343,7 @@ export default async function BlogPostPage({ params }: Props) {
                     )}
                     <div className="p-5">
                       <span className="text-xs text-[var(--gray-600)]">{relatedPost.readTime}</span>
-                      <h3 className="font-serif text-lg mt-2 group-hover:text-[#ef562a] transition-colors line-clamp-2">
+                      <h3 className="font-serif text-lg mt-2 text-[var(--foreground)] group-hover:text-[#ef562a] transition-colors line-clamp-2">
                         {relatedPost.title}
                       </h3>
                     </div>
