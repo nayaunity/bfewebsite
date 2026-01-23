@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import deiCompanies from "@/data/dei-companies.json";
 
 interface Job {
   id: string;
@@ -18,6 +17,11 @@ interface Job {
   tags: string[];
   href: string;
   category: string;
+}
+
+interface Company {
+  name: string;
+  slug: string;
 }
 
 interface Pagination {
@@ -52,6 +56,7 @@ export default function JobBoard() {
   const { data: session } = useSession();
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [pagination, setPagination] = useState<Pagination | null>(null);
@@ -60,6 +65,22 @@ export default function JobBoard() {
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [selectedMobileFilter, setSelectedMobileFilter] = useState("");
   const [isInternational, setIsInternational] = useState(false);
+
+  // Fetch companies on mount
+  useEffect(() => {
+    async function fetchCompanies() {
+      try {
+        const response = await fetch("/api/jobs/companies");
+        const data = await response.json();
+        if (data.companies) {
+          setCompanies(data.companies);
+        }
+      } catch (error) {
+        console.error("Failed to fetch companies:", error);
+      }
+    }
+    fetchCompanies();
+  }, []);
 
   const handleSubmitResume = () => {
     if (session) {
@@ -178,11 +199,6 @@ export default function JobBoard() {
     }
   };
 
-  // Get unique companies from DEI list that have supported ATS
-  const companiesWithJobs = deiCompanies
-    .filter((c) => c.atsType === "greenhouse" || c.atsType === "workday")
-    .sort((a, b) => a.name.localeCompare(b.name));
-
   return (
     <>
       {/* Hero */}
@@ -291,7 +307,7 @@ export default function JobBoard() {
                 className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[#ef562a] focus:border-transparent"
               >
                 <option value="">All Companies</option>
-                {companiesWithJobs.map((company) => (
+                {companies.map((company) => (
                   <option key={company.slug} value={company.slug}>
                     {company.name}
                   </option>
