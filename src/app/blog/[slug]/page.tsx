@@ -162,7 +162,7 @@ function renderContent(content: string) {
     // Handle numbered lists
     if (/^\d+\.\s/.test(trimmed)) {
       elements.push(
-        <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-decimal">
+        <li key={keyIndex++} className="text-[var(--foreground)] ml-6 mb-2 list-decimal">
           {parseInlineMarkdown(trimmed.replace(/^\d+\.\s/, ""), `li-${keyIndex}`)}
         </li>
       );
@@ -173,7 +173,7 @@ function renderContent(content: string) {
     // Handle bullet points
     if (trimmed.startsWith("- ")) {
       elements.push(
-        <li key={keyIndex++} className="text-[var(--gray-700)] ml-6 mb-2 list-disc">
+        <li key={keyIndex++} className="text-[var(--foreground)] ml-6 mb-2 list-disc">
           {parseInlineMarkdown(trimmed.slice(2), `li-${keyIndex}`)}
         </li>
       );
@@ -183,7 +183,7 @@ function renderContent(content: string) {
 
     // Regular paragraphs with inline markdown support
     elements.push(
-      <p key={keyIndex++} className="text-[var(--gray-700)] mb-4 leading-relaxed">
+      <p key={keyIndex++} className="text-[var(--foreground)] mb-4 leading-relaxed">
         {parseInlineMarkdown(trimmed, `p-${keyIndex}`)}
       </p>
     );
