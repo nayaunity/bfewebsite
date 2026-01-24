@@ -46,76 +46,33 @@ function getTodayStartDenver(): Date {
   return new Date(denverMidnight.getTime() - offset);
 }
 
-// Get start of a specific day in Denver timezone (days ago from today)
-function getDayStartDenver(daysAgo: number): Date {
-  const todayStart = getTodayStartDenver();
-  const dayStart = new Date(todayStart);
-  dayStart.setDate(dayStart.getDate() - daysAgo);
-  return dayStart;
-}
+// Get pre-computed daily analytics from database (last N days, excluding today)
+async function getStoredDailyAnalytics(days: number) {
+  const analytics = await prisma.dailyAnalytics.findMany({
+    orderBy: { date: "desc" },
+    take: days,
+  });
 
-// Get daily visitor counts for the last N days (parallel queries)
-async function getDailyVisitors(days: number) {
-  const queries = [];
-  const labels: string[] = [];
+  // Reverse to get chronological order (oldest first)
+  const sorted = analytics.reverse();
 
-  for (let i = days - 1; i >= 0; i--) {
-    const dayStart = getDayStartDenver(i);
-    const dayEnd = getDayStartDenver(i - 1);
-
-    queries.push(
-      prisma.pagePresence.groupBy({
-        by: ["visitorId"],
-        where: {
-          lastSeenAt: {
-            gte: dayStart,
-            lt: i === 0 ? undefined : dayEnd,
-          },
-        },
-        _count: true,
-      }).then(r => r.length)
-    );
-
-    labels.push(dayStart.toLocaleDateString("en-US", {
+  const visitors = sorted.map((a) => ({
+    label: new Date(a.date + "T12:00:00").toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      timeZone: "America/Denver"
-    }));
-  }
+    }),
+    value: a.visitors,
+  }));
 
-  const counts = await Promise.all(queries);
-  return labels.map((label, i) => ({ label, value: counts[i] }));
-}
-
-// Get daily blog views for the last N days (parallel queries)
-async function getDailyBlogViews(days: number) {
-  const queries = [];
-  const labels: string[] = [];
-
-  for (let i = days - 1; i >= 0; i--) {
-    const dayStart = getDayStartDenver(i);
-    const dayEnd = getDayStartDenver(i - 1);
-
-    queries.push(
-      prisma.blogView.count({
-        where: {
-          viewedAt: {
-            gte: dayStart,
-            lt: i === 0 ? undefined : dayEnd,
-          },
-        },
-      })
-    );
-
-    labels.push(dayStart.toLocaleDateString("en-US", {
+  const blogViews = sorted.map((a) => ({
+    label: new Date(a.date + "T12:00:00").toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      timeZone: "America/Denver"
-    }));
-  }
+    }),
+    value: a.blogViews,
+  }));
 
-  const counts = await Promise.all(queries);
-  return labels.map((label, i) => ({ label, value: counts[i] }));
+  return { visitors, blogViews };
 }
 
 async function getAnalytics() {
@@ -253,11 +210,8 @@ async function getAnalytics() {
     }),
   ]);
 
-  // Fetch daily data for charts (last 14 days)
-  const [dailyVisitors, dailyBlogViews] = await Promise.all([
-    getDailyVisitors(14),
-    getDailyBlogViews(14),
-  ]);
+  // Fetch pre-computed daily data for charts (last 14 days, excluding today)
+  const dailyData = await getStoredDailyAnalytics(14);
 
   return {
     site: {
@@ -316,8 +270,8 @@ async function getAnalytics() {
       microWinsWeek: weekMicroWins,
     },
     daily: {
-      visitors: dailyVisitors,
-      blogViews: dailyBlogViews,
+      visitors: dailyData.visitors,
+      blogViews: dailyData.blogViews,
     },
   };
 }
