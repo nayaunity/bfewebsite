@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { LineChart } from "@/components/admin/LineChart";
+import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -75,7 +76,7 @@ async function getStoredDailyAnalytics(days: number) {
   return { visitors, blogViews };
 }
 
-async function getAnalytics() {
+async function getAnalyticsData() {
   const todayStart = getTodayStartDenver();
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
@@ -275,6 +276,13 @@ async function getAnalytics() {
     },
   };
 }
+
+// Cache analytics for 5 minutes to reduce database load
+const getAnalytics = unstable_cache(
+  getAnalyticsData,
+  ["admin-analytics"],
+  { revalidate: 300 } // 5 minutes
+);
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
