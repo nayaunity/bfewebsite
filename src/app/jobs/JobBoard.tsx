@@ -193,9 +193,14 @@ export default function JobBoard() {
       // Silently fail - don't block the user
     });
 
-    // Open the job link in a new tab
+    // Navigate to the job link
     if (job.href) {
-      window.open(job.href, "_blank", "noopener,noreferrer");
+      // Internal links use router navigation, external links open in new tab
+      if (job.href.startsWith("/")) {
+        router.push(job.href);
+      } else {
+        window.open(job.href, "_blank", "noopener,noreferrer");
+      }
     }
   };
 
