@@ -87,7 +87,7 @@ export function ResumeUpload({ initialResume }: ResumeUploadProps) {
 
   return (
     <div className="px-6 py-4 border-t border-[var(--card-border)]">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-1">
         <h3 className="text-sm font-medium text-[var(--foreground)]">Resume</h3>
         {resume?.url && (
           <button
@@ -99,6 +99,9 @@ export function ResumeUpload({ initialResume }: ResumeUploadProps) {
           </button>
         )}
       </div>
+      <p className="text-xs text-[var(--gray-600)] mb-3">
+        By submitting, you agree to have your resume shared with hiring partners.
+      </p>
 
       {error && (
         <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
