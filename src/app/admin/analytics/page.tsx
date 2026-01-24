@@ -1,6 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { LineChart } from "@/components/admin/LineChart";
-import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -47,36 +45,7 @@ function getTodayStartDenver(): Date {
   return new Date(denverMidnight.getTime() - offset);
 }
 
-// Get pre-computed daily analytics from database (last N days, excluding today)
-async function getStoredDailyAnalytics(days: number) {
-  const analytics = await prisma.dailyAnalytics.findMany({
-    orderBy: { date: "desc" },
-    take: days,
-  });
-
-  // Reverse to get chronological order (oldest first)
-  const sorted = analytics.reverse();
-
-  const visitors = sorted.map((a) => ({
-    label: new Date(a.date + "T12:00:00").toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    value: a.visitors,
-  }));
-
-  const blogViews = sorted.map((a) => ({
-    label: new Date(a.date + "T12:00:00").toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    value: a.blogViews,
-  }));
-
-  return { visitors, blogViews };
-}
-
-async function getAnalyticsData() {
+async function getAnalytics() {
   const todayStart = getTodayStartDenver();
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
@@ -211,9 +180,6 @@ async function getAnalyticsData() {
     }),
   ]);
 
-  // Fetch pre-computed daily data for charts (last 14 days, excluding today)
-  const dailyData = await getStoredDailyAnalytics(14);
-
   return {
     site: {
       totalVisitors: totalUniqueVisitors,
@@ -270,19 +236,8 @@ async function getAnalyticsData() {
       microWinsToday: todayMicroWins,
       microWinsWeek: weekMicroWins,
     },
-    daily: {
-      visitors: dailyData.visitors,
-      blogViews: dailyData.blogViews,
-    },
   };
 }
-
-// Cache analytics for 5 minutes to reduce database load
-const getAnalytics = unstable_cache(
-  getAnalyticsData,
-  ["admin-analytics"],
-  { revalidate: 300 } // 5 minutes
-);
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -350,20 +305,6 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Daily Trends Charts */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <LineChart
-          data={analytics.daily.visitors}
-          title="Daily Visitors (14 days)"
-          color="#ffe500"
-        />
-        <LineChart
-          data={analytics.daily.blogViews}
-          title="Daily Blog Views (14 days)"
-          color="#ef562a"
-        />
       </div>
 
       {/* Audience & Activity Row */}

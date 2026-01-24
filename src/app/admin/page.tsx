@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +12,7 @@ function getTodayStartDenver(): Date {
   return new Date(denverMidnight.getTime() - offset);
 }
 
-async function getStatsData() {
+async function getStats() {
   const todayStart = getTodayStartDenver();
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
@@ -87,13 +86,6 @@ async function getStatsData() {
     },
   };
 }
-
-// Cache stats for 5 minutes
-const getStats = unstable_cache(
-  getStatsData,
-  ["admin-dashboard-stats"],
-  { revalidate: 300 }
-);
 
 export default async function AdminDashboard() {
   const stats = await getStats();

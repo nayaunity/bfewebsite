@@ -223,15 +223,3 @@ model BlogPost {
   @@index([category])
   @@index([publishedAt])
 }
-
-model DailyAnalytics {
-  id          String   @id @default(cuid())
-  date        String   @unique // Format: YYYY-MM-DD
-  visitors    Int      @default(0)
-  blogViews   Int      @default(0)
-  linkClicks  Int      @default(0)
-  jobClicks   Int      @default(0)
-  createdAt   DateTime @default(now())
-
-  @@index([date])
-}
