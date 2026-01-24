@@ -19,7 +19,7 @@ export default function PinterestApprenticeship() {
           <div className="mb-8">
             <Link
               href="/jobs"
-              className="text-sm text-[var(--gray-600)] hover:text-[#E60023] transition-colors inline-flex items-center gap-2"
+              className="text-sm text-[var(--gray-600)] hover:text-[#ef562a] transition-colors inline-flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -31,7 +31,7 @@ export default function PinterestApprenticeship() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#E60023] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[#ef562a] text-white rounded-full">
                 Pinterest
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-[#ffe500] text-black rounded-full">
@@ -104,8 +104,8 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">What You&apos;ll Get</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#E60023]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#E60023]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
@@ -115,8 +115,8 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#E60023]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#E60023]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
@@ -126,8 +126,8 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#E60023]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#E60023]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
@@ -137,8 +137,8 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#E60023]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#E60023]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
@@ -155,7 +155,7 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">How to Prepare</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E60023] flex items-center justify-center text-white font-bold">1</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">1</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Update Your Resume</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -164,7 +164,7 @@ export default function PinterestApprenticeship() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E60023] flex items-center justify-center text-white font-bold">2</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">2</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Build Your GitHub Portfolio</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -173,7 +173,7 @@ export default function PinterestApprenticeship() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E60023] flex items-center justify-center text-white font-bold">3</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">3</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Prepare Your Story</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -226,10 +226,10 @@ export default function PinterestApprenticeship() {
                   break into big tech. Sign up above to get notified when applications open!
                 </p>
                 <a
-                  href="https://www.pinterestcareers.com/early-career/apprenticeship-program/"
+                  href="https://www.pinterestcareers.com/early-career/apprenticeships/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#E60023] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#ad081b] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Visit Pinterest Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
