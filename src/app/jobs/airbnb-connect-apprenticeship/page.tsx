@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import ReminderForm from "./ReminderForm";
 
 export const metadata = {
   title: "Airbnb Connect Engineering Apprenticeship | The Black Female Engineer",
@@ -75,6 +76,9 @@ export default function AirbnbConnectApprenticeship() {
                 real projects that enhance experiences for Airbnb&apos;s guests and hosts worldwide.
               </p>
             </section>
+
+            {/* Reminder Signup */}
+            <ReminderForm />
 
             {/* Eligibility */}
             <section>
@@ -171,6 +175,9 @@ export default function AirbnbConnectApprenticeship() {
                 </div>
               </div>
             </section>
+
+            {/* Reminder Signup */}
+            <ReminderForm />
 
             {/* Location Restrictions */}
             <section>
