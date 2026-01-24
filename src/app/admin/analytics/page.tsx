@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { LineChart } from "@/components/admin/LineChart";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,75 @@ function getTodayStartDenver(): Date {
   // Calculate the offset between Denver midnight and UTC
   const offset = denverTime.getTime() - now.getTime();
   return new Date(denverMidnight.getTime() - offset);
+}
+
+// Get start of a specific day in Denver timezone (days ago from today)
+function getDayStartDenver(daysAgo: number): Date {
+  const todayStart = getTodayStartDenver();
+  const dayStart = new Date(todayStart);
+  dayStart.setDate(dayStart.getDate() - daysAgo);
+  return dayStart;
+}
+
+// Get daily visitor counts for the last N days
+async function getDailyVisitors(days: number) {
+  const dailyData: { label: string; value: number }[] = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const dayStart = getDayStartDenver(i);
+    const dayEnd = getDayStartDenver(i - 1);
+
+    const count = await prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: {
+        lastSeenAt: {
+          gte: dayStart,
+          lt: i === 0 ? undefined : dayEnd,
+        },
+      },
+      _count: true,
+    }).then(r => r.length);
+
+    // Format date label
+    const label = dayStart.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Denver"
+    });
+
+    dailyData.push({ label, value: count });
+  }
+
+  return dailyData;
+}
+
+// Get daily blog views for the last N days
+async function getDailyBlogViews(days: number) {
+  const dailyData: { label: string; value: number }[] = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const dayStart = getDayStartDenver(i);
+    const dayEnd = getDayStartDenver(i - 1);
+
+    const count = await prisma.blogView.count({
+      where: {
+        viewedAt: {
+          gte: dayStart,
+          lt: i === 0 ? undefined : dayEnd,
+        },
+      },
+    });
+
+    const label = dayStart.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Denver"
+    });
+
+    dailyData.push({ label, value: count });
+  }
+
+  return dailyData;
 }
 
 async function getAnalytics() {
@@ -180,6 +250,12 @@ async function getAnalytics() {
     }),
   ]);
 
+  // Fetch daily data for charts (last 14 days)
+  const [dailyVisitors, dailyBlogViews] = await Promise.all([
+    getDailyVisitors(14),
+    getDailyBlogViews(14),
+  ]);
+
   return {
     site: {
       totalVisitors: totalUniqueVisitors,
@@ -235,6 +311,10 @@ async function getAnalytics() {
       lessonCompletionsWeek: weekLessonCompletions,
       microWinsToday: todayMicroWins,
       microWinsWeek: weekMicroWins,
+    },
+    daily: {
+      visitors: dailyVisitors,
+      blogViews: dailyBlogViews,
     },
   };
 }
@@ -305,6 +385,20 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Daily Trends Charts */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <LineChart
+          data={analytics.daily.visitors}
+          title="Daily Visitors (14 days)"
+          color="#ffe500"
+        />
+        <LineChart
+          data={analytics.daily.blogViews}
+          title="Daily Blog Views (14 days)"
+          color="#ef562a"
+        />
       </div>
 
       {/* Audience & Activity Row */}
