@@ -33,9 +33,20 @@ function getCountryName(code: string): string {
   return countryNames[code] || code;
 }
 
-async function getAnalytics() {
+// Get start of today in Denver timezone (Mountain Time)
+function getTodayStartDenver(): Date {
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // Get current time in Denver
+  const denverTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  // Create start of day in Denver, then convert back to UTC for database queries
+  const denverMidnight = new Date(denverTime.getFullYear(), denverTime.getMonth(), denverTime.getDate());
+  // Calculate the offset between Denver midnight and UTC
+  const offset = denverTime.getTime() - now.getTime();
+  return new Date(denverMidnight.getTime() - offset);
+}
+
+async function getAnalytics() {
+  const todayStart = getTodayStartDenver();
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
   const monthStart = new Date(todayStart);

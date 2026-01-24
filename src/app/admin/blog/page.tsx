@@ -4,9 +4,17 @@ import { getAllPostsMeta } from "@/lib/blog";
 
 export const dynamic = "force-dynamic";
 
-async function getBlogAnalytics() {
+// Get start of today in Denver timezone (Mountain Time)
+function getTodayStartDenver(): Date {
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const denverTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  const denverMidnight = new Date(denverTime.getFullYear(), denverTime.getMonth(), denverTime.getDate());
+  const offset = denverTime.getTime() - now.getTime();
+  return new Date(denverMidnight.getTime() - offset);
+}
+
+async function getBlogAnalytics() {
+  const todayStart = getTodayStartDenver();
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
 
