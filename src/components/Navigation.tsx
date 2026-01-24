@@ -38,7 +38,7 @@ export default function Navigation() {
     { href: "/jobs", label: "JOB BOARD" },
     { href: "/community", label: "COMMUNITY" },
     { href: "/blog", label: "BLOG" },
-    { href: "/work-with-us", label: "WORK WITH US" },
+    { href: "/work-with-us", label: "WORK WITH ME" },
   ];
 
   const mobileNavLinks = [
