@@ -54,65 +54,68 @@ function getDayStartDenver(daysAgo: number): Date {
   return dayStart;
 }
 
-// Get daily visitor counts for the last N days
+// Get daily visitor counts for the last N days (parallel queries)
 async function getDailyVisitors(days: number) {
-  const dailyData: { label: string; value: number }[] = [];
+  const queries = [];
+  const labels: string[] = [];
 
   for (let i = days - 1; i >= 0; i--) {
     const dayStart = getDayStartDenver(i);
     const dayEnd = getDayStartDenver(i - 1);
 
-    const count = await prisma.pagePresence.groupBy({
-      by: ["visitorId"],
-      where: {
-        lastSeenAt: {
-          gte: dayStart,
-          lt: i === 0 ? undefined : dayEnd,
+    queries.push(
+      prisma.pagePresence.groupBy({
+        by: ["visitorId"],
+        where: {
+          lastSeenAt: {
+            gte: dayStart,
+            lt: i === 0 ? undefined : dayEnd,
+          },
         },
-      },
-      _count: true,
-    }).then(r => r.length);
+        _count: true,
+      }).then(r => r.length)
+    );
 
-    // Format date label
-    const label = dayStart.toLocaleDateString("en-US", {
+    labels.push(dayStart.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       timeZone: "America/Denver"
-    });
-
-    dailyData.push({ label, value: count });
+    }));
   }
 
-  return dailyData;
+  const counts = await Promise.all(queries);
+  return labels.map((label, i) => ({ label, value: counts[i] }));
 }
 
-// Get daily blog views for the last N days
+// Get daily blog views for the last N days (parallel queries)
 async function getDailyBlogViews(days: number) {
-  const dailyData: { label: string; value: number }[] = [];
+  const queries = [];
+  const labels: string[] = [];
 
   for (let i = days - 1; i >= 0; i--) {
     const dayStart = getDayStartDenver(i);
     const dayEnd = getDayStartDenver(i - 1);
 
-    const count = await prisma.blogView.count({
-      where: {
-        viewedAt: {
-          gte: dayStart,
-          lt: i === 0 ? undefined : dayEnd,
+    queries.push(
+      prisma.blogView.count({
+        where: {
+          viewedAt: {
+            gte: dayStart,
+            lt: i === 0 ? undefined : dayEnd,
+          },
         },
-      },
-    });
+      })
+    );
 
-    const label = dayStart.toLocaleDateString("en-US", {
+    labels.push(dayStart.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       timeZone: "America/Denver"
-    });
-
-    dailyData.push({ label, value: count });
+    }));
   }
 
-  return dailyData;
+  const counts = await Promise.all(queries);
+  return labels.map((label, i) => ({ label, value: counts[i] }));
 }
 
 async function getAnalytics() {
