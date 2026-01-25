@@ -422,7 +422,7 @@ export default function LessonContent({
           </div>
           <h2 className="font-serif text-2xl mb-4 text-[var(--foreground)]">Content Coming Soon</h2>
           <p className="text-[var(--gray-600)] max-w-md mx-auto">
-            We&apos;re working on this lesson. Check back soon or explore other available lessons.
+            This lesson is being worked on. Check back soon or explore other available lessons.
           </p>
           <Link
             href="/resources/gaining-experience"

@@ -3,8 +3,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Contact Us | The Black Female Engineer",
-  description: "Get in touch with The Black Female Engineer team. We'd love to hear from you.",
+  title: "Contact Me | The Black Female Engineer",
+  description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
 };
 
 export default function ContactPage() {
@@ -20,7 +20,7 @@ export default function ContactPage() {
                 Get in <span className="italic text-[#ef562a]">touch</span>
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
-                Have a question, collaboration idea, or just want to say hello? We&apos;d love to hear from you.
+                Have a question, collaboration idea, or just want to say hello? I&apos;d love to hear from you.
               </p>
             </div>
           </div>
@@ -37,7 +37,7 @@ export default function ContactPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h2 className="font-serif text-2xl md:text-3xl mb-4">Email Us</h2>
+                <h2 className="font-serif text-2xl md:text-3xl mb-4">Email Me</h2>
                 <p className="text-[var(--gray-600)] mb-6">
                   For general inquiries, questions, or to start a conversation, reach out via email.
                 </p>
@@ -59,9 +59,9 @@ export default function ContactPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h2 className="font-serif text-2xl md:text-3xl mb-4">Partner With Us</h2>
+                <h2 className="font-serif text-2xl md:text-3xl mb-4">Partner With Me</h2>
                 <p className="text-[var(--gray-600)] mb-6">
-                  Interested in collaborating, sponsorships, or business opportunities? Check out our partnership page.
+                  Interested in collaborating, sponsorships, or business opportunities? Check out my partnership page.
                 </p>
                 <Link
                   href="/work-with-us"

@@ -52,7 +52,7 @@ export default function Community() {
                   disabled={isLoading}
                   className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
                 >
-                  {isLoading ? "..." : "Join Us"}
+                  {isLoading ? "..." : "Join"}
                 </button>
               </div>
               {error && (

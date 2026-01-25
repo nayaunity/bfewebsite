@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${lessonInfo.lesson.title} | System Design Guide | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive System Design Guide.`,
+    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive System Design Guide.`,
   };
 }
 

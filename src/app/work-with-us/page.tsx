@@ -4,7 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Work With Us | The Black Female Engineer",
+  title: "Work With Me | The Black Female Engineer",
   description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
 };
 
@@ -28,7 +28,7 @@ export default function WorkWithUsPage() {
     },
     {
       title: "Job Board Advertising",
-      description: "Reach 200K+ engaged tech professionals actively looking for their next opportunity. Our audience includes software engineers, data scientists, product managers, and more.",
+      description: "Reach 200K+ engaged tech professionals actively looking for their next opportunity. My audience includes software engineers, data scientists, product managers, and more.",
       features: [
         "Featured job listings with premium placement",
         "Newsletter inclusion to 50K+ subscribers",
@@ -45,7 +45,7 @@ export default function WorkWithUsPage() {
     },
     {
       title: "Sponsored Content",
-      description: "Authentic brand partnerships that resonate with our community. I create engaging content that introduces your product or service to an audience that trusts my recommendations.",
+      description: "Authentic brand partnerships that resonate with my community. I create engaging content that introduces your product or service to an audience that trusts my recommendations.",
       features: [
         "Instagram posts and stories",
         "TikTok and YouTube content",
@@ -136,7 +136,7 @@ export default function WorkWithUsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="font-serif text-3xl md:text-4xl">
-                <span className="italic">how we can</span> WORK TOGETHER
+                <span className="italic">how I can</span> HELP
               </h2>
               <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto">
                 Whether you&apos;re looking to upskill your team, hire diverse talent, or reach an engaged tech audience, I have solutions tailored for your business.
@@ -270,7 +270,7 @@ export default function WorkWithUsPage() {
               Ready to get started?
             </h2>
             <p className="text-[var(--cta-text-muted)] mb-8 text-lg">
-              Let&apos;s discuss how we can work together to achieve your goals.
+              Let&apos;s discuss how I can help you achieve your goals.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a

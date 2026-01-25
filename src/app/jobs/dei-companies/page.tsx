@@ -143,7 +143,7 @@ export default function DEICompaniesPage() {
                 Know a DEI-committed company?
               </h2>
               <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto">
-                Help us grow this directory by suggesting companies that are
+                Help me grow this directory by suggesting companies that are
                 making real strides in diversity, equity, and inclusion.
               </p>
               <a

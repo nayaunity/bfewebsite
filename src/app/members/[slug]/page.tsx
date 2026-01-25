@@ -262,7 +262,7 @@ export default async function MemberPage({ params }: PageProps) {
         <section className="bg-[var(--cta-bg)] py-16 md:py-24 border-t border-[var(--card-border)]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4 text-[var(--cta-text)]">
-              Join our community
+              Join the community
             </h2>
             <p className="text-[var(--cta-text-muted)] mb-8 text-lg">
               Connect with amazing engineers and grow your career.

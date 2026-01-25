@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${lessonInfo.lesson.title} | Resume & LinkedIn | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to resumes and LinkedIn.`,
+    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to resumes and LinkedIn.`,
   };
 }
 

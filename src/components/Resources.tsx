@@ -25,8 +25,8 @@ export default function Resources() {
       items: [
         { name: "Meet the Community", href: "/community" },
         { name: "Job Board", href: "/jobs" },
-        { name: "Work With Us", href: "/work-with-us" },
-        { name: "Contact Us", href: "/contact" },
+        { name: "Work With Me", href: "/work-with-us" },
+        { name: "Contact Me", href: "/contact" },
       ],
     },
   ];
@@ -37,7 +37,7 @@ export default function Resources() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl">
-            <span className="italic">what</span> OUR RESOURCES
+            <span className="italic">what</span> THE RESOURCES
             <br />
             <span className="italic">can help you</span> ACHIEVE
           </h2>

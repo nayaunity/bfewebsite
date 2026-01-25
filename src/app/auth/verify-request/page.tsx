@@ -29,7 +29,7 @@ export default function VerifyRequestPage() {
 
           {/* Description */}
           <p className="text-[var(--gray-600)] mb-6">
-            We sent you a sign-in link. Click the link in your email to continue.
+            A sign-in link has been sent. Click the link in your email to continue.
           </p>
 
           {/* Tips */}

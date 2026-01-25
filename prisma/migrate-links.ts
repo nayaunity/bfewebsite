@@ -54,7 +54,7 @@ const links = [
   },
   {
     id: "work-with-us",
-    title: "Work With Us",
+    title: "Work With Me",
     description: "Partnership and collaboration opportunities",
     url: "/work-with-us",
     category: "Business",

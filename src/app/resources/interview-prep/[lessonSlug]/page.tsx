@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${lessonInfo.lesson.title} | Interview Prep | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to mastering tech interviews.`,
+    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to mastering tech interviews.`,
   };
 }
 

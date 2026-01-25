@@ -141,7 +141,7 @@ export default async function LinksPage() {
               Want more resources?
             </h2>
             <p className="text-[var(--cta-text-muted)] mb-8 text-lg">
-              Explore our full resource hub for guides, templates, and learning paths.
+              Explore the full resource hub for guides, templates, and learning paths.
             </p>
             <Link
               href="/resources"

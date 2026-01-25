@@ -63,7 +63,7 @@ export default function SubmitJobPage() {
             </div>
             <h1 className="font-serif text-4xl md:text-5xl mb-4">Inquiry Received!</h1>
             <p className="text-[var(--gray-600)] text-lg mb-8">
-              Thanks for your interest in partnering with us. We&apos;ll review your inquiry and get back to you within 2-3 business days to discuss featured job placement options.
+              Thanks for your interest in partnering with me. I&apos;ll review your inquiry and get back to you within 2-3 business days to discuss featured job placement options.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
@@ -100,7 +100,7 @@ export default function SubmitJobPage() {
               Post a <span className="italic text-[#ef562a]">featured job</span>
             </h1>
             <p className="mt-4 text-[var(--gray-600)] text-lg">
-              Get your open roles in front of 200K+ engaged tech professionals. Fill out this form and we&apos;ll follow up to discuss featured placement options.
+              Get your open roles in front of 200K+ engaged tech professionals. Fill out this form and I&apos;ll follow up to discuss featured placement options.
             </p>
           </div>
 
@@ -112,13 +112,13 @@ export default function SubmitJobPage() {
                 <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
-                <span className="text-[var(--gray-600)]">Premium placement at the top of our job board</span>
+                <span className="text-[var(--gray-600)]">Premium placement at the top of the job board</span>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
-                <span className="text-[var(--gray-600)]">Social media amplification across our platforms</span>
+                <span className="text-[var(--gray-600)]">Social media amplification across my platforms</span>
               </li>
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -328,13 +328,13 @@ export default function SubmitJobPage() {
             {/* Additional Info */}
             <div>
               <label htmlFor="message" className="block text-sm font-medium mb-2">
-                Anything else we should know? <span className="text-[var(--gray-600)]">(optional)</span>
+                Anything else I should know? <span className="text-[var(--gray-600)]">(optional)</span>
               </label>
               <textarea
                 id="message"
                 name="message"
                 rows={4}
-                placeholder="Tell us about your hiring goals, timeline, or any specific requirements..."
+                placeholder="Tell me about your hiring goals, timeline, or any specific requirements..."
                 className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors resize-none bg-[var(--card-bg)]"
               />
             </div>
@@ -349,7 +349,7 @@ export default function SubmitJobPage() {
                 {isSubmitting ? "Submitting..." : "Submit Inquiry"}
               </button>
               <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
-                We&apos;ll respond within 2-3 business days
+                I&apos;ll respond within 2-3 business days
               </p>
             </div>
           </form>

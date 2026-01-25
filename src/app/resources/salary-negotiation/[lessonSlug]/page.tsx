@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${lessonInfo.lesson.title} | Salary Negotiation | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to salary negotiation.`,
+    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to salary negotiation.`,
   };
 }
 

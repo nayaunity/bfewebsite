@@ -71,7 +71,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* What We Believe */}
+        {/* What I Believe */}
         <section className="bg-[var(--background)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
@@ -83,7 +83,7 @@ export default function AboutPage() {
                   Young professionals and tech enthusiasts are eager to make their mark in tech and corporate. These driven individuals are looking for actionable advice on career growth, hands-on projects, and practical tech applications within everyday life.
                 </p>
                 <p className="mt-4 text-[var(--gray-600)] text-lg leading-relaxed">
-                  We believe in inspiring, educating, and entertaining through relatable storytelling, valuable resources, and thought-provoking discussions. We believe in empowering underrepresented communities in tech and inspiring the next generation of innovators.
+                  I believe in inspiring, educating, and entertaining through relatable storytelling, valuable resources, and thought-provoking discussions. I believe in empowering underrepresented communities in tech and inspiring the next generation of innovators.
                 </p>
               </div>
               <div className="relative rounded-3xl aspect-square overflow-hidden">

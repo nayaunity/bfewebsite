@@ -136,7 +136,7 @@ export default function SignInPage() {
 
           {/* Info text */}
           <p className="mt-6 text-center text-sm text-[var(--gray-600)]">
-            We&apos;ll send you a magic link to sign in. No password needed.
+            A magic link will be sent to sign you in. No password needed.
           </p>
         </div>
 

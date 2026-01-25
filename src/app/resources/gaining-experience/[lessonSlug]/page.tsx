@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${lessonInfo.lesson.title} | Gaining Experience | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in our comprehensive guide to gaining experience without traditional experience.`,
+    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to gaining experience without traditional experience.`,
   };
 }
 

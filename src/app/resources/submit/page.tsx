@@ -61,7 +61,7 @@ export default function SubmitResourcePage() {
             </div>
             <h1 className="font-serif text-4xl md:text-5xl mb-4">Resource Submitted!</h1>
             <p className="text-[var(--gray-600)] text-lg mb-8">
-              Thanks for sharing your knowledge with our community. We&apos;ll review your submission and reach out if we have any questions.
+              Thanks for sharing your knowledge with the community. I&apos;ll review your submission and reach out if I have any questions.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
@@ -102,9 +102,9 @@ export default function SubmitResourcePage() {
             </p>
           </div>
 
-          {/* What We're Looking For */}
+          {/* What I'm Looking For */}
           <div className="mb-12 p-6 bg-[var(--gray-50)] rounded-2xl">
-            <h3 className="font-medium mb-4">What we&apos;re looking for</h3>
+            <h3 className="font-medium mb-4">What I&apos;m looking for</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -168,7 +168,7 @@ export default function SubmitResourcePage() {
                   className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
                 />
                 <p className="mt-1 text-sm text-[var(--gray-600)]">
-                  We&apos;ll only use this to follow up about your submission
+                  I&apos;ll only use this to follow up about your submission
                 </p>
               </div>
             </div>
@@ -302,7 +302,7 @@ export default function SubmitResourcePage() {
                   name="description"
                   rows={4}
                   required
-                  placeholder="Tell us what makes this resource valuable and how it helped you..."
+                  placeholder="Tell me what makes this resource valuable and how it helped you..."
                   className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors resize-none bg-[var(--card-bg)]"
                 />
                 <p className="mt-1 text-sm text-[var(--gray-600)]">
@@ -314,7 +314,7 @@ export default function SubmitResourcePage() {
             {/* Additional Info */}
             <div>
               <label htmlFor="additional_info" className="block text-sm font-medium mb-2">
-                Anything else we should know? <span className="text-[var(--gray-600)]">(optional)</span>
+                Anything else I should know? <span className="text-[var(--gray-600)]">(optional)</span>
               </label>
               <textarea
                 id="additional_info"
@@ -335,7 +335,7 @@ export default function SubmitResourcePage() {
                 {isSubmitting ? "Submitting..." : "Submit Resource"}
               </button>
               <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
-                We review all submissions and will add approved resources to our collection
+                I review all submissions and will add approved resources to the collection
               </p>
             </div>
           </form>
