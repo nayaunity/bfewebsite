@@ -163,6 +163,9 @@ export default function PinterestApprenticeship() {
                     <p className="text-sm text-[var(--gray-600)] mt-1">
                       Showcase your tech projects, skills, and highlight your non-traditional journey
                     </p>
+                    <Link href="/resources/resume-linkedin" className="inline-flex items-center gap-1 text-sm text-[#ef562a] hover:underline mt-2">
+                      Get resume tips →
+                    </Link>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
