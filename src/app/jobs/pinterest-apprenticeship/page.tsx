@@ -2,6 +2,7 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ReminderForm from "./ReminderForm";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
 export const metadata = {
   title: "Pinterest Apprenticeship Program | The Black Female Engineer",
@@ -12,6 +13,7 @@ export const metadata = {
 export default function PinterestApprenticeship() {
   return (
     <>
+      <PagePresenceTracker page="pinterest-apprenticeship" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
