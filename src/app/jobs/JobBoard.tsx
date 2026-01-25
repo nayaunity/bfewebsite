@@ -401,7 +401,7 @@ export default function JobBoard() {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#ef562a]">Get Reminded →</span>
+                <span className="text-sm font-medium text-[#ef562a]">Learn More →</span>
               </div>
             </div>
           </button>
