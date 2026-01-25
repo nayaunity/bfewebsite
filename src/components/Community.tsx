@@ -150,7 +150,7 @@ export default function Community() {
       <div className="bg-[var(--background)] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-16">
-            <span className="italic">what</span> OUR COMMUNITY*
+            <span className="italic">what</span> THIS COMMUNITY
             <br />
             <span className="italic">has been</span> UP TO
           </h2>
