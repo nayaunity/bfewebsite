@@ -251,7 +251,7 @@ function formatTimeAgo(date: Date): string {
   const diffDays = Math.floor(diffHours / 24);
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
+  return date.toLocaleDateString("en-US", { timeZone: "America/Denver" });
 }
 
 export default async function AnalyticsPage() {
@@ -265,6 +265,7 @@ export default async function AnalyticsPage() {
         </h1>
         <p className="mt-2 text-[var(--gray-600)]">
           Site-wide analytics, audience demographics, and engagement metrics
+          <span className="ml-2 text-xs bg-[var(--gray-100)] px-2 py-1 rounded-full">Mountain Time</span>
         </p>
       </div>
 
