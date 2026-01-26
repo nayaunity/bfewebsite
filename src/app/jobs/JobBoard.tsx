@@ -489,7 +489,13 @@ export default function JobBoard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {jobs.map((job) => (
+              {jobs
+                .filter((job) => {
+                  // Filter out jobs that are shown in the featured section
+                  if (job.company === "JPMorgan" && job.title.includes("Emerging Talent")) return false;
+                  return true;
+                })
+                .map((job) => (
                 <button
                   key={job.id}
                   onClick={() => handleJobClick(job)}
