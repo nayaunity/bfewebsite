@@ -175,24 +175,6 @@ export default function JPMorganEmergingTalent() {
               </div>
             </section>
 
-            {/* Salary */}
-            <section>
-              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Compensation</h2>
-              <div className="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[var(--foreground)] text-2xl">$95,000 - $125,000</p>
-                    <p className="text-[var(--gray-600)]">Full-time salary with benefits</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
             {/* How to Prepare */}
             <section>
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">How to Prepare</h2>
@@ -266,19 +248,6 @@ export default function JPMorganEmergingTalent() {
                 </a>
               </div>
             </section>
-
-            {/* Location */}
-            <section>
-              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Location</h2>
-              <div className="p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                <p className="text-[var(--foreground)]">
-                  Positions are available across <strong>multiple locations in North America</strong>. Only locations where the program is currently open will be displayed in the application.
-                </p>
-              </div>
-            </section>
-
-            {/* Reminder Signup */}
-            <ReminderForm />
           </div>
         </div>
       </main>
