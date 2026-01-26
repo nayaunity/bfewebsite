@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getAllPostsMeta } from "@/lib/blog";
+import FeaturedToggle from "./FeaturedToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -158,7 +159,8 @@ export default async function AdminBlogPage() {
                         <span>{views} views</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <FeaturedToggle slug={post.slug} initialFeatured={post.featured} />
                       <Link
                         href={`/blog/${post.slug}`}
                         target="_blank"
