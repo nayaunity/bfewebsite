@@ -160,7 +160,7 @@ export default async function AdminBlogPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
-                      <FeaturedToggle slug={post.slug} initialFeatured={post.featured} />
+                      <FeaturedToggle slug={post.slug} initialFeatured={post.featured ?? false} />
                       <Link
                         href={`/blog/${post.slug}`}
                         target="_blank"
