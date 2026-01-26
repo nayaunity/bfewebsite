@@ -368,9 +368,10 @@ export default function JobBoard() {
       </section>
 
 
-      {/* Featured Coming Soon Job */}
+      {/* Featured Apprenticeship Jobs */}
       <section className="bg-[var(--background)] pb-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+          {/* Pinterest Apprenticeship */}
           <button
             onClick={() => router.push("/jobs/pinterest-apprenticeship")}
             className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
@@ -398,6 +399,39 @@ export default function JobBoard() {
                 </div>
                 <p className="mt-3 text-sm text-[var(--gray-600)]">
                   Perfect for career changers and non-traditional backgrounds. Get notified when applications open.
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-[#ef562a]">Learn More →</span>
+              </div>
+            </div>
+          </button>
+
+          {/* JPMorgan Emerging Talent */}
+          <button
+            onClick={() => router.push("/jobs/jpmorgan-emerging-talent")}
+            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-[#ef562a] font-medium">JPMorgan Chase</span>
+                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
+                    Apprenticeship
+                  </span>
+                </div>
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                  Emerging Talent Software Engineer
+                </h3>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
+                  <span>North America (Multiple Locations)</span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
+                  <span>Full-time</span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
+                  <span>$95k - $125k</span>
+                </div>
+                <p className="mt-3 text-sm text-[var(--gray-600)]">
+                  No CS degree required. Perfect for bootcamp grads and career changers ready to build their tech career.
                 </p>
               </div>
               <div className="flex items-center gap-4">
