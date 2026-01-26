@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Get start of today in Denver timezone (Mountain Time)
+function getTodayStartDenver(): Date {
+  const now = new Date();
+  const denverTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Denver" }));
+  const denverMidnight = new Date(denverTime.getFullYear(), denverTime.getMonth(), denverTime.getDate());
+  const offset = denverTime.getTime() - now.getTime();
+  return new Date(denverMidnight.getTime() - offset);
+}
+
 // GET /api/activity - Fetch recent activity for the feed
 export async function GET(request: NextRequest) {
   try {
@@ -67,34 +76,34 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Get recent completions count (last 24 hours)
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    // Get today's stats (Mountain Time)
+    const todayStart = getTodayStartDenver();
     const recentCompletions = await prisma.lessonProgress.count({
       where: {
         completed: true,
-        completedAt: { gte: oneDayAgo },
+        completedAt: { gte: todayStart },
       },
     });
 
-    // Get recent micro-wins count (last 24 hours)
+    // Get today's micro-wins (Mountain Time)
     const recentMicroWins = await prisma.microWin.count({
       where: {
         status: "approved",
-        createdAt: { gte: oneDayAgo },
+        createdAt: { gte: todayStart },
       },
     });
 
-    // Get recent job clicks (last 24 hours)
+    // Get today's job clicks (Mountain Time)
     const recentJobClicks = await prisma.jobClick.count({
       where: {
-        clickedAt: { gte: oneDayAgo },
+        clickedAt: { gte: todayStart },
       },
     });
 
-    // Get recent link clicks (last 24 hours)
+    // Get today's link clicks (Mountain Time)
     const recentLinkClicks = await prisma.linkClick.count({
       where: {
-        clickedAt: { gte: oneDayAgo },
+        clickedAt: { gte: todayStart },
       },
     });
 
