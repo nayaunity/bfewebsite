@@ -419,6 +419,9 @@ export default function JobBoard() {
                   <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
                     Apprenticeship
                   </span>
+                  <span className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">
+                    Closes Feb 9
+                  </span>
                 </div>
                 <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
                   Emerging Talent Software Engineer

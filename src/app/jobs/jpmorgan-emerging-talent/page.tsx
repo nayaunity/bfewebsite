@@ -67,6 +67,12 @@ export default function JPMorganEmergingTalent() {
                 $95k - $125k
               </span>
             </div>
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Applications close February 9, 2026
+            </div>
           </div>
 
           {/* Content */}
@@ -253,9 +259,12 @@ export default function JPMorganEmergingTalent() {
             <section className="pt-8 border-t border-[var(--card-border)]">
               <div className="text-center">
                 <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Ready to Apply?</h2>
-                <p className="text-[var(--gray-600)] mb-6 max-w-2xl mx-auto">
+                <p className="text-[var(--gray-600)] mb-4 max-w-2xl mx-auto">
                   This is an incredible opportunity for career changers and bootcamp graduates to break into
                   big tech at one of the world&apos;s leading financial institutions.
+                </p>
+                <p className="text-red-600 dark:text-red-400 font-medium mb-6">
+                  Applications close February 9, 2026 - don&apos;t miss out!
                 </p>
                 <a
                   href="https://www.jpmorganchase.com/careers/explore-opportunities/programs/emerging-talent-software-engineers-fulltime"
