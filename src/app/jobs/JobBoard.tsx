@@ -381,6 +381,9 @@ export default function JobBoard() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-[#ef562a] font-medium">Pinterest</span>
                   <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
+                    Apprenticeship
+                  </span>
+                  <span className="text-xs px-2 py-1 bg-orange-100 text-orange-700 rounded-full">
                     Coming Soon
                   </span>
                   <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
