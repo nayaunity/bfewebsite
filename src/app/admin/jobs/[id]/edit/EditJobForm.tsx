@@ -4,6 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const COMMON_TAGS = [
+  "Apprenticeship",
+  "Entry Level",
+  "No Degree Required",
+  "Bootcamp Friendly",
+  "Visa Sponsorship",
+  "Career Changer Friendly",
+];
+
 interface Job {
   id: string;
   title: string;
@@ -19,10 +28,24 @@ interface Job {
   isActive: boolean;
 }
 
+function parseExistingTags(tagsJson: string): { selected: string[]; custom: string } {
+  try {
+    const parsed = JSON.parse(tagsJson) as string[];
+    const selected = parsed.filter((t) => COMMON_TAGS.includes(t));
+    const custom = parsed.filter((t) => !COMMON_TAGS.includes(t)).join(", ");
+    return { selected, custom };
+  } catch {
+    return { selected: [], custom: "" };
+  }
+}
+
 export default function EditJobForm({ job }: { job: Job }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const { selected: initialSelected, custom: initialCustom } = parseExistingTags(job.tags);
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialSelected);
+  const [customTags, setCustomTags] = useState(initialCustom);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +54,13 @@ export default function EditJobForm({ job }: { job: Job }) {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
+
+    // Combine selected tags with custom tags
+    const customTagsArray = customTags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    const allTags = [...selectedTags, ...customTagsArray];
 
     const data = {
       title: formData.get("title"),
@@ -44,7 +74,7 @@ export default function EditJobForm({ job }: { job: Job }) {
       salary: formData.get("salary") || null,
       applyUrl: formData.get("applyUrl"),
       category: formData.get("category"),
-      tags: formData.get("tags") || "[]",
+      tags: JSON.stringify(allTags),
       isActive: formData.get("isActive") === "on",
     };
 
@@ -196,14 +226,40 @@ export default function EditJobForm({ job }: { job: Job }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Tags (JSON array)
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Tags
             </label>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {COMMON_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => {
+                    setSelectedTags((prev) =>
+                      prev.includes(tag)
+                        ? prev.filter((t) => t !== tag)
+                        : [...prev, tag]
+                    );
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    selectedTags.includes(tag)
+                      ? "bg-black text-white"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  {selectedTags.includes(tag) && (
+                    <span className="mr-1">✓</span>
+                  )}
+                  {tag}
+                </button>
+              ))}
+            </div>
             <input
               type="text"
-              name="tags"
-              defaultValue={job.tags}
+              value={customTags}
+              onChange={(e) => setCustomTags(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-black focus:border-transparent"
+              placeholder="Additional tags (comma-separated): React, TypeScript"
             />
           </div>
 
