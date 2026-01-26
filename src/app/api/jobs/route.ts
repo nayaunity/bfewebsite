@@ -267,7 +267,7 @@ function hasUSLocation(location: string): boolean {
   const loc = location.toUpperCase();
 
   // Check for explicit US indicators
-  if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US")) {
+  if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US") || loc.includes("NORTH AMERICA")) {
     return true;
   }
 
