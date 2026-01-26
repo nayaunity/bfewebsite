@@ -242,19 +242,6 @@ export default function JPMorganEmergingTalent() {
               </div>
             </section>
 
-            {/* Reminder Signup */}
-            <ReminderForm />
-
-            {/* Location */}
-            <section>
-              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Location</h2>
-              <div className="p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                <p className="text-[var(--foreground)]">
-                  Positions are available across <strong>multiple locations in North America</strong>. Only locations where the program is currently open will be displayed in the application.
-                </p>
-              </div>
-            </section>
-
             {/* CTA */}
             <section className="pt-8 border-t border-[var(--card-border)]">
               <div className="text-center">
@@ -279,6 +266,19 @@ export default function JPMorganEmergingTalent() {
                 </a>
               </div>
             </section>
+
+            {/* Location */}
+            <section>
+              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Location</h2>
+              <div className="p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
+                <p className="text-[var(--foreground)]">
+                  Positions are available across <strong>multiple locations in North America</strong>. Only locations where the program is currently open will be displayed in the application.
+                </p>
+              </div>
+            </section>
+
+            {/* Reminder Signup */}
+            <ReminderForm />
           </div>
         </div>
       </main>
