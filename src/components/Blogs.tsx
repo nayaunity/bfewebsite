@@ -4,7 +4,8 @@ import { getAllPostsMeta } from "@/lib/blog";
 
 export default async function Blogs() {
   const allPosts = await getAllPostsMeta();
-  const posts = allPosts.slice(0, 3);
+  // Show only featured posts on the home page
+  const posts = allPosts.filter(post => post.featured).slice(0, 3);
 
   return (
     <section id="blog" className="bg-[#1a1a1a] py-20 md:py-28">
