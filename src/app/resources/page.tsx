@@ -32,7 +32,7 @@ export default function ResourcesPage() {
         { name: "Resume & LinkedIn", description: "Stand out to recruiters and hiring managers", tag: "Essential", href: "/resources/resume-linkedin" },
         { name: "Personal Branding", description: "Build your reputation in the tech industry", tag: "Growth", href: "/resources/personal-branding" },
         { name: "Gaining Experience Without Experience", description: "Build your portfolio through projects, open source, and more", tag: "Beginner", href: "/resources/gaining-experience" },
-        { name: "Salary Negotiation", description: "Get the compensation you deserve", tag: "Essential", href: "/resources/salary-negotiation" },
+        { name: "GitHub Essentials", description: "Optimize your GitHub for recruiters, not developers", tag: "Essential", href: "/resources/github-essentials" },
       ],
     },
     // {

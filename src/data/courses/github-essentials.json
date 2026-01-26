@@ -1,0 +1,144 @@
+{
+  "id": "github-essentials",
+  "title": "GitHub Essentials",
+  "subtitle": "Optimize your GitHub for recruiters",
+  "description": "Your GitHub is often the first thing recruiters see after your resume. Learn how to structure your repositories, write compelling READMEs, and showcase your skills in a way that lands interviews.",
+  "tag": "Essential",
+  "tagColor": "green",
+  "stats": {
+    "modules": 4,
+    "lessons": 12,
+    "freeLessons": 4
+  },
+  "features": [
+    "Recruiter-optimized README templates",
+    "Project showcase strategies",
+    "Stand out from other candidates"
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "GitHub for Job Seekers",
+      "description": "Understand why GitHub matters and who you're really optimizing for.",
+      "lessons": [
+        {
+          "id": "1.1",
+          "slug": "why-github-matters",
+          "title": "Why GitHub Matters for Your Career",
+          "duration": "8 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1.2",
+          "slug": "optimize-for-recruiters",
+          "title": "Optimize for Recruiters, Not Developers",
+          "duration": "10 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "1.3",
+          "slug": "profile-setup",
+          "title": "Setting Up a Professional Profile",
+          "duration": "12 min",
+          "type": "article",
+          "free": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Creating Standout READMEs",
+      "description": "Master the art of writing READMEs that make recruiters want to learn more.",
+      "lessons": [
+        {
+          "id": "2.1",
+          "slug": "readme-structure",
+          "title": "Table of Contents & General Info",
+          "duration": "12 min",
+          "type": "article",
+          "free": true
+        },
+        {
+          "id": "2.2",
+          "slug": "walkthrough-videos",
+          "title": "Walkthrough Videos That Impress",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "2.3",
+          "slug": "technologies-setup",
+          "title": "Technologies & Setup Instructions",
+          "duration": "14 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Showcasing Your Skills",
+      "description": "Demonstrate your capabilities through strategic code examples and feature documentation.",
+      "lessons": [
+        {
+          "id": "3.1",
+          "slug": "code-examples",
+          "title": "Code Examples That Impress",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3.2",
+          "slug": "app-features",
+          "title": "Documenting App Features",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "3.3",
+          "slug": "status-contact",
+          "title": "Project Status & Contact Info",
+          "duration": "8 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Advanced GitHub Strategies",
+      "description": "Take your GitHub presence to the next level with these advanced techniques.",
+      "lessons": [
+        {
+          "id": "4.1",
+          "slug": "pinning-projects",
+          "title": "Pinning Your Best Projects",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4.2",
+          "slug": "contribution-activity",
+          "title": "Contribution Graphs & Activity",
+          "duration": "12 min",
+          "type": "article",
+          "free": false
+        },
+        {
+          "id": "4.3",
+          "slug": "portfolio-integration",
+          "title": "GitHub as Part of Your Portfolio",
+          "duration": "10 min",
+          "type": "article",
+          "free": false
+        }
+      ]
+    }
+  ]
+}

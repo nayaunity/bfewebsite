@@ -66,6 +66,8 @@ import resumeLinkedInCourse from "@/data/courses/resume-linkedin.json";
 import resumeLinkedInLessons from "@/data/courses/resume-linkedin-lessons.json";
 import salaryNegotiationCourse from "@/data/courses/salary-negotiation.json";
 import salaryNegotiationLessons from "@/data/courses/salary-negotiation-lessons.json";
+import githubEssentialsCourse from "@/data/courses/github-essentials.json";
+import githubEssentialsLessons from "@/data/courses/github-essentials-lessons.json";
 import interviewPrepCourse from "@/data/courses/interview-prep.json";
 import interviewPrepLessons from "@/data/courses/interview-prep-lessons.json";
 import gainingExperienceCourse from "@/data/courses/gaining-experience.json";
@@ -92,6 +94,8 @@ export function getCourse(courseId: string): Course | null {
       return interviewPrepCourse as Course;
     case "gaining-experience":
       return gainingExperienceCourse as Course;
+    case "github-essentials":
+      return githubEssentialsCourse as Course;
     default:
       return null;
   }
@@ -130,6 +134,9 @@ export function getLessonContent(
       break;
     case "gaining-experience":
       lessons = gainingExperienceLessons as Record<string, LessonContent>;
+      break;
+    case "github-essentials":
+      lessons = githubEssentialsLessons as Record<string, LessonContent>;
       break;
     default:
       return null;

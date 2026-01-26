@@ -1,0 +1,549 @@
+{
+  "why-github-matters": {
+    "title": "Why GitHub Matters for Your Career",
+    "intro": "Your GitHub profile is your developer portfolio. It's where recruiters go to verify your skills, see how you think, and determine if you're worth interviewing. Let's look at what makes GitHub so important.",
+    "sections": [
+      {
+        "heading": "The Recruiter's 30-Second Scan",
+        "content": "Here's exactly what a recruiter does when they get your resume:\n\n1. **Scan resume** (6-7 seconds)\n2. **Click GitHub link** (if it looks promising)\n3. **Check profile photo and bio** - \"Is this person real and professional?\"\n4. **Glance at pinned repos** - \"Do they have relevant projects?\"\n5. **Click on one repo** - \"Can I understand what this is?\"\n6. **Decision made** - Interview or pass\n\n**Real example of what they see:**\n\n❌ **Instant rejection:**\n- No profile photo (default gray avatar)\n- Bio: empty\n- Pinned repos: \"my-first-react-app\", \"tutorial-follow-along\"\n- No README in top repo\n\n✅ **Gets the interview:**\n- Professional headshot\n- Bio: \"Full-Stack Developer | React, Node.js, PostgreSQL | Building tools for small businesses\"\n- Pinned repos: \"inventory-tracker\", \"customer-portal\", \"scheduling-api\"\n- Clean README with screenshots"
+      },
+      {
+        "heading": "What GitHub Shows That Resumes Can't",
+        "content": "Your resume says \"Built a full-stack e-commerce platform.\"\n\nYour GitHub PROVES it by showing:\n\n**Code organization:**\n```\n/src\n  /components\n    /Cart\n      Cart.tsx\n      CartItem.tsx\n      CartSummary.tsx\n    /Products\n      ProductList.tsx\n      ProductCard.tsx\n  /hooks\n    useCart.ts\n    useProducts.ts\n  /services\n    api.ts\n    stripe.ts\n```\n\n**Commit messages:**\n```\nfeat: add guest checkout flow\nfix: resolve cart total calculation bug\nrefactor: extract payment logic into service\n```\n\n**Documentation quality:**\n- Clear README explaining the project\n- Screenshots of the UI\n- Instructions someone could actually follow\n\nA resume is a claim. GitHub is evidence."
+      },
+      {
+        "heading": "Real Talk: What Recruiters Notice First",
+        "content": "I surveyed 15 tech recruiters. Here's what they said:\n\n**\"I check if the profile photo looks professional.\"** - 12/15 recruiters\n\n**\"I only look at pinned repos. If there's nothing pinned, I leave.\"** - 9/15 recruiters\n\n**\"I click on one project and scroll the README for 10 seconds.\"** - 11/15 recruiters\n\n**\"If there's no README, I assume they can't communicate.\"** - 14/15 recruiters\n\n**\"I look for projects similar to what we build.\"** - 13/15 recruiters\n\n**The takeaway:** You have about 30 seconds. Optimize for that."
+      },
+      {
+        "heading": "GitHub at Each Hiring Stage",
+        "content": "Your GitHub gets checked multiple times:\n\n**Application Review:**\n> Recruiter thinks: \"Resume says 3 years React experience. Let me verify...\"\n> *Checks GitHub, sees 5 React projects with clean code*\n> \"Okay, this checks out. Moving to phone screen.\"\n\n**Phone Screen:**\n> Recruiter: \"I saw your recipe app on GitHub. Tell me about the biggest challenge you faced building it.\"\n> *If you can't discuss your own code, red flag*\n\n**Technical Interview:**\n> Engineer: \"I noticed you used Redux in your e-commerce project. Why not Context API?\"\n> *They've read your code. Be ready to defend choices.*\n\n**Final Decision:**\n> Hiring manager comparing two similar candidates:\n> Candidate A: Basic GitHub, tutorial projects\n> Candidate B: Polished projects, excellent documentation\n> *B gets the offer*"
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Profile README Generator",
+        "source": "Rahul D K Jain",
+        "url": "https://rahuldkjain.github.io/gh-profile-readme-generator/",
+        "type": "Tool",
+        "description": "Generate a professional GitHub profile README in minutes"
+      },
+      {
+        "title": "Awesome GitHub Profile READMEs",
+        "source": "GitHub",
+        "url": "https://github.com/abhisheknaiidu/awesome-github-profile-readme",
+        "type": "Examples",
+        "description": "Collection of creative GitHub profile READMEs for inspiration"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters spend about 30 seconds on your GitHub—optimize for quick scanning",
+      "Your resume makes claims; your GitHub provides proof",
+      "No README = \"this person can't communicate\" in a recruiter's mind",
+      "Your GitHub gets checked at every stage of hiring, not just the initial screen"
+    ]
+  },
+  "optimize-for-recruiters": {
+    "title": "Optimize for Recruiters, Not Developers",
+    "intro": "Here's a truth that changes everything: the person reviewing your GitHub probably can't code. Technical recruiters understand tech concepts, but they're not reading your actual code. They're looking for signals that you're worth passing to the engineering team.",
+    "sections": [
+      {
+        "heading": "The Same Project, Two Different READMEs",
+        "content": "Let's look at how a developer might describe their project vs. how a recruiter needs to see it:\n\n❌ **Written for developers:**\n```markdown\n# Recipe App\n\nBuilt with CRA. Uses Redux for state management \nwith redux-thunk for async actions. REST API built \nwith Express, Sequelize ORM, PostgreSQL. \nAuthentication via Passport.js with JWT strategy.\n\n## Installation\nnpm install && npm start\n```\n\n✅ **Written for recruiters:**\n```markdown\n# Mince - Recipe Discovery App\n\n![Demo](./demo.gif)\n\nA web application that helps home cooks find recipes \nbased on ingredients they already have. Search 5,000+ \nrecipes, save favorites, and generate shopping lists.\n\n## Built With\n- **Frontend:** React, Redux, Tailwind CSS\n- **Backend:** Node.js, Express, PostgreSQL\n- **Auth:** JWT-based user authentication\n\n## Key Features\n- Search recipes by multiple ingredients\n- User accounts with saved favorites\n- Auto-generated shopping lists\n- Mobile-responsive design\n```\n\nSame project. One gets interviews, one doesn't."
+      },
+      {
+        "heading": "Technical Jargon: A Before/After Guide",
+        "content": "Here's how to translate developer-speak into recruiter-friendly language:\n\n| Developer Version | Recruiter-Friendly Version |\n|------------------|---------------------------|\n| \"Implemented Redux middleware for optimistic UI updates\" | \"App updates instantly when users take actions, making it feel fast and responsive\" |\n| \"Used Sequelize ORM with PostgreSQL\" | \"Database stores user data securely using PostgreSQL\" |\n| \"REST API with Express\" | \"Backend server handles user requests and data\" |\n| \"Deployed with Docker on AWS EC2\" | \"Live and accessible on the web 24/7\" |\n| \"Implemented debouncing on search input\" | \"Search results appear as you type without lag\" |\n| \"Used CSS Grid and Flexbox\" | \"Works on phones, tablets, and desktop\" |\n\n**The rule:** If your mom wouldn't understand it, explain it differently."
+      },
+      {
+        "heading": "Structure Your README for Skimming",
+        "content": "Recruiters skim. They don't read. Here's the structure that works:\n\n```markdown\n# Project Name\n![Screenshot or GIF - FIRST THING THEY SEE]\n\nOne sentence explaining what this does for users.\n\n## Demo\n[Live Demo](https://your-app.com) | [Video Walkthrough](https://youtube.com/...)\n\n## Features\n- Feature 1 (what users can do)\n- Feature 2 (what users can do)\n- Feature 3 (what users can do)\n\n## Built With\n- Frontend: React, TypeScript, Tailwind\n- Backend: Node.js, Express, PostgreSQL\n- APIs: Stripe, SendGrid\n\n## Screenshots\n[More visuals here]\n\n## Getting Started\n[Setup instructions]\n\n## Contact\nYour Name - [LinkedIn](url) - email@example.com\n```\n\n**Key principles:**\n- Visual first (screenshot or GIF at top)\n- What it does before how it's built\n- Bullet points over paragraphs\n- Bold the important stuff"
+      },
+      {
+        "heading": "Power Words That Get Interviews",
+        "content": "Certain words trigger positive responses from recruiters:\n\n**Action verbs (use these):**\n- Built, Developed, Created, Engineered\n- Implemented, Integrated, Deployed\n- Designed, Architected, Structured\n- Optimized, Improved, Enhanced\n\n**Before/After examples:**\n\n❌ \"Made a thing that gets data from an API\"\n✅ \"Built a real-time dashboard that displays live cryptocurrency prices\"\n\n❌ \"Used React and stuff\"\n✅ \"Developed a responsive React application with TypeScript\"\n\n❌ \"It has a database\"\n✅ \"Engineered a PostgreSQL database schema supporting 10,000+ user records\"\n\n❌ \"Login works\"\n✅ \"Implemented secure JWT authentication with password reset flow\"\n\n**Numbers are powerful:**\n- \"Processes 5,000+ recipes\"\n- \"Handles 100+ concurrent users\"\n- \"Reduced load time by 40%\"\n- \"97% test coverage\""
+      },
+      {
+        "heading": "The 10-Second Test",
+        "content": "Try this on your own README:\n\n1. Open your project README\n2. Set a 10-second timer\n3. Scroll through the page\n4. Stop and ask yourself:\n\n**Could you answer these questions?**\n- What does this project do?\n- What technologies were used?\n- Is there a live demo?\n- Does it look professional?\n\n**If you can't answer all four in 10 seconds**, your README needs work.\n\n**Quick fixes:**\n- Add a screenshot at the very top\n- Write a one-sentence description\n- Add clear \"Built With\" section\n- Add demo link prominently"
+      }
+    ],
+    "resources": [
+      {
+        "title": "What Recruiters Look for on GitHub",
+        "source": "Indeed",
+        "url": "https://www.indeed.com/career-advice/finding-a-job/how-to-add-github-to-resume",
+        "type": "Article",
+        "description": "Career advice on presenting GitHub to employers"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters can't code—write for someone who evaluates developers without being one",
+      "Lead with what the project does for users, not how it's built",
+      "Translate technical jargon: \"If your mom wouldn't understand it, explain it differently\"",
+      "Use action verbs and numbers to make achievements concrete",
+      "Your README should pass the 10-second test: clear purpose, tech, demo, professionalism"
+    ]
+  },
+  "profile-setup": {
+    "title": "Setting Up a Professional Profile",
+    "intro": "Your GitHub profile is the landing page of your developer portfolio. Let's set it up step by step with real examples of what works.",
+    "sections": [
+      {
+        "heading": "Profile Photo: What Works",
+        "content": "Your profile photo is the first thing people see.\n\n**Good profile photos:**\n- Clear headshot, shoulders up\n- Good lighting (natural light works best)\n- Simple background (solid color or blurred)\n- Professional but approachable expression\n- Same photo you'd use on LinkedIn\n\n**Bad profile photos:**\n- Default GitHub avatar (gray geometric pattern)\n- Cartoon/anime characters (unless you're established)\n- Group photos or distant shots\n- Logos (you're a person, not a brand)\n- Poor lighting or blurry images\n\n**Pro tip:** Use the same photo across GitHub, LinkedIn, and your portfolio. Recruiters check multiple platforms—help them recognize you."
+      },
+      {
+        "heading": "Bio Examples That Work",
+        "content": "Your bio appears right under your name. You get about 160 characters. Here are real examples:\n\n**For job seekers:**\n```\nFull-Stack Developer | React, Node.js, PostgreSQL | \nBuilding tools that make developers' lives easier | \nOpen to new opportunities\n```\n\n**For bootcamp grads:**\n```\nSoftware Engineer | Recent grad from [Bootcamp] | \nPassionate about accessible web design | \nLooking for my first role\n```\n\n**For career changers:**\n```\nFormer teacher → Software Developer | Python, Django | \nI bring communication skills to technical teams | \nSeeking junior roles\n```\n\n**For students:**\n```\nCS Student @ [University] | Java, Python, React | \nExpected graduation May 2025 | \nLooking for internships\n```\n\n**The formula:**\n`[Role] | [Top 2-3 Technologies] | [What you're about] | [Current status]`"
+      },
+      {
+        "heading": "How to Pin the Right Repositories",
+        "content": "You can pin 6 repositories. Here's the strategy:\n\n**Step 1: Click \"Customize your pins\" on your profile**\n\n**Step 2: Choose strategically:**\n\n| Slot | What to Pin | Why |\n|------|-------------|-----|\n| 1 | Your absolute best project | Gets the most clicks |\n| 2 | Most relevant to target jobs | Shows you're a fit |\n| 3 | Different tech stack | Shows range |\n| 4 | Something unique/interesting | Memorable |\n| 5-6 | Strong backups or open source | Extra credibility |\n\n**What NOT to pin:**\n- `tutorial-project` (obviously followed a guide)\n- `my-first-react-app` (screams beginner)\n- Forks with no contributions\n- Projects with no README\n- Incomplete projects (unless clearly marked)\n\n**Example good set:**\n1. `inventory-management-system` - Full-stack CRUD app\n2. `weather-dashboard` - API integration project\n3. `python-data-analysis` - Different language\n4. `browser-extension` - Unique project type\n5. `open-source-contribution` - Shows collaboration\n6. `algorithm-solutions` - Shows CS fundamentals"
+      },
+      {
+        "heading": "Creating Your Profile README",
+        "content": "GitHub has a secret feature: create a repo with YOUR username, and its README shows on your profile.\n\n**Setup:**\n1. Create new repository named exactly your username (e.g., `johndoe/johndoe`)\n2. Check \"Add a README file\"\n3. Edit the README.md\n\n**Simple but effective template:**\n```markdown\n# Hi, I'm [Your Name] 👋\n\n🎯 Full-Stack Developer focused on React and Node.js\n\n🔭 Currently working on: [Current Project]\n\n🌱 Learning: TypeScript, AWS\n\n💼 Open to: Full-time opportunities\n\n## Tech Stack\n![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white)\n![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white)\n![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?logo=postgresql&logoColor=white)\n\n## Let's Connect\n[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?logo=linkedin)](https://linkedin.com/in/yourname)\n[![Portfolio](https://img.shields.io/badge/-Portfolio-000?logo=vercel)](https://yoursite.com)\n\n📧 your.email@example.com\n```\n\n**Generate badges at:** shields.io or use the GitHub Profile README Generator tool."
+      },
+      {
+        "heading": "Complete Profile Checklist",
+        "content": "Use this checklist to ensure your profile is ready:\n\n**Profile basics:**\n- [ ] Professional headshot photo\n- [ ] Name matches your resume\n- [ ] Bio with role, technologies, status\n- [ ] Location (city is enough)\n- [ ] Email address visible\n- [ ] Link to portfolio/LinkedIn\n\n**Pinned repositories:**\n- [ ] 4-6 projects pinned\n- [ ] Best project is first\n- [ ] Each has a clear description\n- [ ] Each has a complete README\n- [ ] No tutorial-only projects\n\n**Profile README:**\n- [ ] Created (username/username repo)\n- [ ] Brief intro\n- [ ] Tech stack listed\n- [ ] Contact information\n- [ ] Not too long (scrolling = losing attention)\n\n**Activity:**\n- [ ] Recent commits visible\n- [ ] Contribution graph shows activity\n- [ ] Private contributions enabled (if applicable)"
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Profile README",
+        "source": "GitHub Docs",
+        "url": "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme",
+        "type": "Documentation",
+        "description": "Official guide to creating a profile README"
+      },
+      {
+        "title": "Shields.io",
+        "source": "Shields.io",
+        "url": "https://shields.io/",
+        "type": "Tool",
+        "description": "Create badges for technologies and stats in your README"
+      }
+    ],
+    "keyTakeaways": [
+      "Use a professional headshot—same one across all platforms",
+      "Bio formula: Role | Technologies | What you're about | Current status",
+      "Pin 4-6 strategic projects, best one first",
+      "Create a profile README (username/username repo) for a polished landing page"
+    ]
+  },
+  "readme-structure": {
+    "title": "README Structure: Table of Contents & General Info",
+    "intro": "A README is often the only part of your project a recruiter reads. Let's build one that gets you interviews, section by section.",
+    "sections": [
+      {
+        "heading": "The Anatomy of a Great README",
+        "content": "Here's the structure that works:\n\n```markdown\n# Project Name\n\n![Screenshot](./screenshot.png)\n\nOne-sentence description of what this does.\n\n## Table of Contents\n- [About](#about)\n- [Demo](#demo)\n- [Features](#features)\n- [Built With](#built-with)\n- [Getting Started](#getting-started)\n- [Usage](#usage)\n- [Contact](#contact)\n\n## About\n[2-3 sentences about the project]\n\n## Demo\n[Links and visuals]\n\n## Features\n[Bullet list]\n\n## Built With\n[Technology list]\n\n## Getting Started\n[Setup instructions]\n\n## Usage\n[How to use it]\n\n## Contact\n[Your info]\n```\n\n**Why this order?**\n- Visual first (screenshot catches attention)\n- What it does before how it's built\n- Table of Contents shows scope\n- Technical details come later"
+      },
+      {
+        "heading": "Building Your Table of Contents",
+        "content": "A clickable Table of Contents makes long READMEs navigable.\n\n**Here's how to make links work:**\n\n```markdown\n## Table of Contents\n- [About](#about)\n- [Demo](#demo)\n- [Features](#features)\n- [Built With](#built-with)\n- [Getting Started](#getting-started)\n- [Usage](#usage)\n- [Contact](#contact)\n```\n\n**The linking rules:**\n- `#about` links to `## About`\n- `#built-with` links to `## Built With` (spaces become dashes)\n- `#getting-started` links to `## Getting Started`\n\n**Pro tip:** Write your Table of Contents LAST, after you've finalized all sections. That way your links are accurate.\n\n**When to skip it:**\n- If your README is short (under 200 lines)\n- If you only have 3-4 sections\n\nFor substantial projects, it's always worth including."
+      },
+      {
+        "heading": "Writing the About Section",
+        "content": "The About (or General Info) section is your elevator pitch.\n\n**Bad example:**\n```markdown\n## About\nThis is a project I made for my bootcamp. It uses \nReact and has a backend.\n```\n\n**Good example:**\n```markdown\n## About\n\nMince is a recipe discovery app that helps home cooks \nfind meals based on ingredients they already have.\n\n**The problem:** I was throwing away food every week \nbecause I'd buy ingredients for recipes, use half, \nand forget the rest.\n\n**The solution:** Input what's in your fridge, get \nrecipes that use those ingredients. No more waste.\n\nBuilt as my capstone project at [Bootcamp], this app \ndemonstrates full-stack development with React, Node.js, \nand PostgreSQL.\n```\n\n**The formula:**\n1. What it does (one sentence)\n2. The problem it solves\n3. Why you built it (personal connection)\n4. Context (bootcamp project, side project, etc.)"
+      },
+      {
+        "heading": "Making It Personal (Without Oversharing)",
+        "content": "Personal stories make projects memorable. Here are examples:\n\n**Recipe app:**\n> I built this after realizing I was throwing away $50 of groceries every week. As someone trying to save money, this was unacceptable.\n\n**Fitness tracker:**\n> After my doctor told me to exercise more, I wanted an app that made tracking workouts actually enjoyable.\n\n**Study flashcards:**\n> I used to make physical flashcards for every exam. I wanted to bring that experience online with spaced repetition.\n\n**Budget app:**\n> Moving to a new city, I needed to track every dollar. Existing apps were too complicated—I wanted something simple.\n\n**What to share:**\n- A specific frustration that led to the project\n- A personal goal the project helps achieve\n- A problem you or someone you know faced\n\n**What NOT to share:**\n- Your life story\n- Anything too personal or unrelated\n- Complaints about other apps (stay positive)"
+      },
+      {
+        "heading": "Formatting for Maximum Impact",
+        "content": "Good formatting makes content readable.\n\n**Use short paragraphs:**\n```markdown\n❌ Bad:\nThis app allows users to search for recipes based on \ningredients they have at home and it was built using \nReact for the frontend and Node.js for the backend \nwith PostgreSQL as the database and it features \nuser authentication and the ability to save favorites.\n\n✅ Good:\nSearch for recipes based on ingredients you already have.\n\nBuilt with React, Node.js, and PostgreSQL.\n\nFeatures user authentication and saved favorites.\n```\n\n**Use markdown formatting:**\n- **Bold** for emphasis: `**important**`\n- `code` for technical terms: `` `npm install` ``\n- > Blockquotes for callouts: `> Note: This requires Node 18+`\n\n**Use visuals:**\n```markdown\n## About\n\n![App Screenshot](./screenshots/main.png)\n\nMince helps you cook with what you have...\n```\n\nA screenshot at the top of About immediately shows what the project is."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Markdown Guide",
+        "source": "markdownguide.org",
+        "url": "https://www.markdownguide.org/basic-syntax/",
+        "type": "Guide",
+        "description": "Complete reference for Markdown syntax"
+      },
+      {
+        "title": "Make a README",
+        "source": "makeareadme.com",
+        "url": "https://www.makeareadme.com/",
+        "type": "Guide",
+        "description": "Comprehensive guide to writing good READMEs"
+      }
+    ],
+    "keyTakeaways": [
+      "Structure: Visual → Description → TOC → About → Demo → Features → Tech → Setup → Contact",
+      "Table of Contents should be clickable and added last",
+      "About section: What it does → Problem it solves → Why you built it",
+      "Add personal connection but keep it brief and relevant",
+      "Short paragraphs, bold text, and visuals make content scannable"
+    ]
+  },
+  "walkthrough-videos": {
+    "title": "Walkthrough Videos That Impress",
+    "intro": "Recruiters can't run your code. A 60-second video showing your app in action is worth more than 1,000 lines of code they'll never read.",
+    "sections": [
+      {
+        "heading": "Why Videos Beat Screenshots",
+        "content": "**Screenshots show:**\n- What your app looks like\n- One moment in time\n- Static information\n\n**Videos show:**\n- How your app actually works\n- The flow between features\n- Loading states, animations, transitions\n- That it actually runs (not just mockups)\n- Your attention to detail\n\n**Real talk:** Anyone can screenshot a Figma design. Videos prove you built something real."
+      },
+      {
+        "heading": "Recording Your Walkthrough",
+        "content": "**Tools (all free):**\n- **Mac:** QuickTime Player (built-in) → File → New Screen Recording\n- **Windows:** Xbox Game Bar (Win+G) or OBS Studio\n- **Any platform:** Loom (free tier available)\n\n**Settings:**\n- Record at 1080p if possible\n- Use a clean browser (no embarrassing bookmarks)\n- Close notifications\n- Use incognito mode (clean browser state)\n\n**Recording tips:**\n1. Practice the flow 2-3 times before recording\n2. Move your mouse slowly and deliberately\n3. Pause briefly on important screens\n4. Keep it under 90 seconds (60 is ideal)"
+      },
+      {
+        "heading": "What to Show in Your Video",
+        "content": "**Script template (60 seconds):**\n\n```\n0-5 sec:   Show the homepage/landing page\n5-15 sec:  Sign up or log in (shows auth works)\n15-35 sec: Core feature #1 (the main thing your app does)\n35-50 sec: Core feature #2 (another impressive feature)\n50-60 sec: Any \"wow\" moment (animation, real-time update, etc.)\n```\n\n**What to prioritize:**\n\n✅ Show these:\n- User authentication (sign up, log in, log out)\n- CRUD operations (create, read, update, delete something)\n- Search/filter functionality\n- Responsive design (resize the window)\n- Real-time features (if any)\n- Loading states and error handling\n\n❌ Skip these:\n- Typing slowly in forms\n- Reading through long pages\n- Features that don't demonstrate skill\n- Anything broken or unfinished"
+      },
+      {
+        "heading": "Hosting and Embedding Your Video",
+        "content": "**Best option: YouTube (unlisted)**\n\n1. Upload to YouTube\n2. Set visibility to \"Unlisted\" (only people with link can see)\n3. Copy the link\n\n**Adding to your README:**\n\n```markdown\n## Demo\n\n[![Watch Demo](./thumbnail.png)](https://youtu.be/your-video-id)\n\nClick the image above to watch a 60-second walkthrough.\n```\n\n**Or just paste the link:**\n```markdown\n## Demo\n\n🎬 [Watch the video walkthrough](https://youtu.be/your-video-id)\n```\n\n**Pro tip:** Create a custom thumbnail. Take a screenshot of your app's best screen and add text like \"60s Demo\" in Canva. Looks way more professional than auto-generated thumbnails."
+      },
+      {
+        "heading": "GIFs for Quick Feature Demos",
+        "content": "For individual features, GIFs work great. They play automatically in GitHub.\n\n**When to use GIFs:**\n- Single feature (5-15 seconds)\n- Inline in README sections\n- Showing one specific interaction\n\n**When to use video:**\n- Full app walkthrough\n- Multiple features\n- Anything over 15 seconds\n\n**Creating GIFs:**\n- **Mac:** Kap (free, amazing)\n- **Windows:** ScreenToGif (free)\n- **Convert video to GIF:** ezgif.com\n\n**Keep GIFs small:**\n- Under 10MB for fast loading\n- 5-15 seconds max\n- Reduce dimensions if needed\n\n**Example in README:**\n```markdown\n## Features\n\n### Real-time Search\n![Search Demo](./gifs/search-demo.gif)\n\nResults filter as you type with debounced API calls.\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Loom",
+        "source": "Loom",
+        "url": "https://www.loom.com/",
+        "type": "Tool",
+        "description": "Free screen recording with easy sharing"
+      },
+      {
+        "title": "Kap",
+        "source": "GitHub",
+        "url": "https://getkap.co/",
+        "type": "Tool",
+        "description": "Open-source screen recorder for Mac with GIF export"
+      }
+    ],
+    "keyTakeaways": [
+      "A 60-second video proves your app works better than any amount of code",
+      "Show auth, CRUD operations, search, and responsive design",
+      "Use YouTube Unlisted for free, reliable video hosting",
+      "Use GIFs for quick inline feature demos (under 15 seconds)",
+      "Always create a custom thumbnail—it looks way more professional"
+    ]
+  },
+  "technologies-setup": {
+    "title": "Technologies & Setup Instructions",
+    "intro": "The Technologies section verifies resume claims. Setup instructions show you can write documentation. Both are non-negotiable for a professional README.",
+    "sections": [
+      {
+        "heading": "Technology Section Examples",
+        "content": "**Simple format (great for most projects):**\n```markdown\n## Built With\n\n- **Frontend:** React 18, TypeScript, Tailwind CSS\n- **Backend:** Node.js, Express\n- **Database:** PostgreSQL\n- **Auth:** JWT, bcrypt\n- **Deployment:** Vercel (frontend), Railway (backend)\n```\n\n**With badges (more visual):**\n```markdown\n## Tech Stack\n\n![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)\n![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)\n![Node.js](https://img.shields.io/badge/Node.js-18-339933?logo=node.js)\n![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql)\n```\n\n**Detailed format (for complex projects):**\n```markdown\n## Technologies\n\n### Frontend\n| Tech | Version | Purpose |\n|------|---------|--------|\n| React | 18.2 | UI Library |\n| TypeScript | 5.0 | Type Safety |\n| Tailwind | 3.3 | Styling |\n| React Query | 4.0 | Server State |\n\n### Backend\n| Tech | Version | Purpose |\n|------|---------|--------|\n| Node.js | 18 | Runtime |\n| Express | 4.18 | Server Framework |\n| Prisma | 4.8 | ORM |\n```\n\n**Always include versions.** It shows you pay attention to details."
+      },
+      {
+        "heading": "Complete Setup Instructions Template",
+        "content": "Here's a template you can copy and customize:\n\n```markdown\n## Getting Started\n\n### Prerequisites\n\nMake sure you have installed:\n- Node.js 18+ ([download](https://nodejs.org/))\n- PostgreSQL 14+ ([download](https://postgresql.org/))\n- Git\n\n### Installation\n\n1. **Clone the repository**\n   ```bash\n   git clone https://github.com/yourusername/project-name.git\n   cd project-name\n   ```\n\n2. **Install dependencies**\n   ```bash\n   npm install\n   ```\n\n3. **Set up environment variables**\n   ```bash\n   cp .env.example .env\n   ```\n   Then edit `.env` with your values:\n   ```\n   DATABASE_URL=postgresql://user:password@localhost:5432/dbname\n   JWT_SECRET=your-secret-key\n   ```\n\n4. **Set up the database**\n   ```bash\n   npm run db:setup\n   ```\n\n5. **Start the development server**\n   ```bash\n   npm run dev\n   ```\n\n6. **Open your browser**\n   Visit `http://localhost:3000`\n\n### Running Tests\n```bash\nnpm test\n```\n```\n\n**Key elements:**\n- Prerequisites with download links\n- Numbered steps\n- Code blocks for every command\n- Environment variable instructions\n- Expected result (where to see the app)"
+      },
+      {
+        "heading": "The .env.example File",
+        "content": "Never commit your actual `.env` file. Always provide a `.env.example`.\n\n**Create `.env.example`:**\n```bash\n# Database\nDATABASE_URL=postgresql://user:password@localhost:5432/yourdb\n\n# Authentication\nJWT_SECRET=your-secret-key-here\nJWT_EXPIRES_IN=7d\n\n# External APIs\nSTRIPE_SECRET_KEY=sk_test_xxxxx\nSENDGRID_API_KEY=SG.xxxxx\n\n# App Config\nNODE_ENV=development\nPORT=3000\n```\n\n**In your README:**\n```markdown\n3. **Set up environment variables**\n   ```bash\n   cp .env.example .env\n   ```\n   Then edit `.env` and replace placeholder values \n   with your actual credentials.\n   \n   - `DATABASE_URL`: Your PostgreSQL connection string\n   - `JWT_SECRET`: Any random string (use a password generator)\n   - `STRIPE_SECRET_KEY`: Get from [Stripe Dashboard](https://stripe.com)\n```\n\n**Add `.env` to `.gitignore`:**\n```\n# .gitignore\n.env\n.env.local\n```"
+      },
+      {
+        "heading": "Common Gotchas to Address",
+        "content": "**Database not running:**\n```markdown\n### Troubleshooting\n\n**\"Connection refused\" error:**\nMake sure PostgreSQL is running:\n- Mac: `brew services start postgresql`\n- Windows: Check Services app for PostgreSQL\n- Linux: `sudo systemctl start postgresql`\n```\n\n**Node version issues:**\n```markdown\n**Wrong Node version:**\nThis project requires Node 18+. Check your version:\n```bash\nnode --version\n```\nInstall the correct version using nvm:\n```bash\nnvm install 18\nnvm use 18\n```\n```\n\n**Port already in use:**\n```markdown\n**Port 3000 already in use:**\nKill the process using that port:\n```bash\n# Mac/Linux\nlsof -ti:3000 | xargs kill\n\n# Or just use a different port\nPORT=3001 npm run dev\n```\n```\n\n**Test your own instructions:**\nClone your repo to a new folder and follow your setup instructions from scratch. If anything fails, fix the docs."
+      },
+      {
+        "heading": "Deployment Information",
+        "content": "If your project is deployed, show it!\n\n```markdown\n## Deployment\n\n### Live Demo\n🌐 [https://mince-recipes.vercel.app](https://mince-recipes.vercel.app)\n\n### Deploy Your Own\n\n#### Vercel (Frontend)\n[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=...)\n\n#### Railway (Backend + Database)\n[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=...)\n\n### Environment Variables for Production\n```\nDATABASE_URL=your-production-db-url\nJWT_SECRET=strong-production-secret\nNODE_ENV=production\n```\n```\n\n**Why include deployment info:**\n- Shows you understand production environments\n- Makes it easy for others to try your project\n- Demonstrates end-to-end thinking"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Shields.io Badges",
+        "source": "Shields.io",
+        "url": "https://shields.io/",
+        "type": "Tool",
+        "description": "Create technology badges for your README"
+      },
+      {
+        "title": "dotenv Documentation",
+        "source": "GitHub",
+        "url": "https://github.com/motdotla/dotenv",
+        "type": "Tool",
+        "description": "Managing environment variables in Node.js projects"
+      }
+    ],
+    "keyTakeaways": [
+      "List technologies with versions—it shows attention to detail",
+      "Provide numbered, copy-paste setup instructions",
+      "Always include .env.example (never commit actual .env)",
+      "Add troubleshooting section for common issues",
+      "Test your own setup instructions on a fresh clone"
+    ]
+  },
+  "code-examples": {
+    "title": "Code Examples That Impress",
+    "intro": "Including code snippets in your README gives recruiters a window into your coding style without digging through files. Here's how to showcase code that makes them want to hire you.",
+    "sections": [
+      {
+        "heading": "What Code to Feature",
+        "content": "**Feature code that shows skill:**\n\n✅ **Good candidates:**\n- Clean API endpoints with error handling\n- Elegant solutions to tricky problems  \n- Well-structured components\n- Custom hooks or utilities\n- Code that shows design patterns\n\n❌ **Skip these:**\n- Basic boilerplate (everyone has the same)\n- Code that needs 50 lines of context\n- Anything over 30 lines\n- Code with obvious improvements needed\n\n**The test:** Would you be proud to explain this code in an interview?\n\nIf yes, include it. If not, either improve it or find a better example."
+      },
+      {
+        "heading": "Example: API Error Handling",
+        "content": "Here's how to present a code example:\n\n```markdown\n## Code Highlights\n\n### API Error Handling\n\nAll API calls use consistent error handling with \nuser-friendly messages:\n\n```typescript\nexport async function fetchUserRecipes(userId: string) {\n  try {\n    const response = await api.get(`/users/${userId}/recipes`);\n    return { data: response.data, error: null };\n  } catch (error) {\n    if (error.response?.status === 404) {\n      return { data: null, error: 'User not found' };\n    }\n    if (error.response?.status === 401) {\n      return { data: null, error: 'Please log in to continue' };\n    }\n    return { data: null, error: 'Something went wrong. Please try again.' };\n  }\n}\n```\n\nThis pattern is used across all 15+ API functions in \nthe application.\n```\n\n**Why this works:**\n- Brief context before the code\n- Code is self-explanatory\n- Comment after explains significance"
+      },
+      {
+        "heading": "Example: Custom React Hook",
+        "content": "```markdown\n### Custom Hook: useDebounce\n\nSearch input uses debouncing to avoid excessive API calls:\n\n```typescript\nfunction useDebounce<T>(value: T, delay: number): T {\n  const [debouncedValue, setDebouncedValue] = useState(value);\n\n  useEffect(() => {\n    const timer = setTimeout(() => {\n      setDebouncedValue(value);\n    }, delay);\n\n    return () => clearTimeout(timer);\n  }, [value, delay]);\n\n  return debouncedValue;\n}\n\n// Usage in SearchBar component:\nconst [query, setQuery] = useState('');\nconst debouncedQuery = useDebounce(query, 300);\n\nuseEffect(() => {\n  if (debouncedQuery) {\n    searchRecipes(debouncedQuery);\n  }\n}, [debouncedQuery]);\n```\n\nThis reduces API calls by 80% during active typing.\n```\n\n**Why this works:**\n- Shows understanding of performance optimization\n- Includes real usage example\n- Quantifies the benefit (80% reduction)"
+      },
+      {
+        "heading": "Example: Before/After Refactoring",
+        "content": "Show growth and code quality awareness:\n\n```markdown\n### Refactoring: Recipe Filter Logic\n\n**Before:** Nested conditionals that were hard to test\n\n```javascript\n// Hard to read, hard to test\nfunction filterRecipes(recipes, filters) {\n  return recipes.filter(recipe => {\n    if (filters.cuisine && recipe.cuisine !== filters.cuisine) {\n      return false;\n    }\n    if (filters.maxTime && recipe.time > filters.maxTime) {\n      return false;\n    }\n    if (filters.difficulty && recipe.difficulty !== filters.difficulty) {\n      return false;\n    }\n    return true;\n  });\n}\n```\n\n**After:** Composable filter functions\n\n```javascript\n// Each filter is testable independently\nconst filterByCuisine = (cuisine) => (recipe) => \n  !cuisine || recipe.cuisine === cuisine;\n\nconst filterByMaxTime = (maxTime) => (recipe) => \n  !maxTime || recipe.time <= maxTime;\n\nconst filterByDifficulty = (difficulty) => (recipe) => \n  !difficulty || recipe.difficulty === difficulty;\n\nfunction filterRecipes(recipes, filters) {\n  return recipes\n    .filter(filterByCuisine(filters.cuisine))\n    .filter(filterByMaxTime(filters.maxTime))\n    .filter(filterByDifficulty(filters.difficulty));\n}\n```\n\nThis refactor made the code more testable and \nadding new filters trivial.\n```"
+      },
+      {
+        "heading": "Formatting Tips",
+        "content": "**Always specify the language for syntax highlighting:**\n\n```markdown\n```javascript    ← Good\nconst x = 1;\n```\n\n```               ← No highlighting\nconst x = 1;\n```\n```\n\n**Supported languages:** javascript, typescript, python, jsx, tsx, sql, bash, json, css, html, and more.\n\n**Add brief comments for context:**\n```javascript\n// Validates user input before saving to database\nconst validateRecipe = (data) => {\n  // ... code\n};\n```\n\n**Don't over-comment:**\n```javascript\n// This is bad - comments state the obvious\nconst x = 1; // sets x to 1\nconst y = x + 1; // adds 1 to x\n```\n\n**Comment the \"why,\" not the \"what\":**\n```javascript\n// Use Math.floor to ensure integer result for pagination\nconst pageCount = Math.floor(total / pageSize);\n```"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Carbon",
+        "source": "Carbon",
+        "url": "https://carbon.now.sh/",
+        "type": "Tool",
+        "description": "Create beautiful code snippet images for sharing"
+      },
+      {
+        "title": "Clean Code JavaScript",
+        "source": "GitHub",
+        "url": "https://github.com/ryanmcdermott/clean-code-javascript",
+        "type": "Guide",
+        "description": "Principles for writing clean, readable JavaScript"
+      }
+    ],
+    "keyTakeaways": [
+      "Feature code that demonstrates skill: error handling, custom hooks, clean patterns",
+      "Keep snippets under 30 lines with context before and significance after",
+      "Before/After examples show growth and code quality awareness",
+      "Always specify language for syntax highlighting",
+      "Comment the \"why,\" not the \"what\""
+    ]
+  },
+  "app-features": {
+    "title": "Documenting App Features",
+    "intro": "The Features section is where you show off what your project can do. Every feature you built represents skills a recruiter is looking for. Don't be modest—you built it, own it.",
+    "sections": [
+      {
+        "heading": "Features Section Examples",
+        "content": "**Simple format (works for most projects):**\n\n```markdown\n## Features\n\n- User authentication (sign up, log in, password reset)\n- Search 5,000+ recipes by ingredient\n- Save favorites to your profile\n- Generate shopping lists from recipes\n- Mobile-responsive design\n- Dark/light mode toggle\n```\n\n**Detailed format (for impressive projects):**\n\n```markdown\n## Features\n\n### User Authentication\nComplete auth flow including email signup, social login \n(Google, GitHub), and secure password reset via email.\n\n### Smart Recipe Search\n- Search by multiple ingredients\n- Filter by cuisine, time, and difficulty\n- Results update as you type (debounced)\n- Handles 5,000+ recipes with <100ms response time\n\n### Personalization\n- Save favorite recipes\n- Create custom collections\n- Dietary preference filters\n- Recently viewed history\n\n### Shopping List\n- Auto-generate from selected recipes\n- Combine duplicate ingredients\n- Check off items as you shop\n- Share list via link\n```"
+      },
+      {
+        "heading": "Turning Simple Features Into Impressive Ones",
+        "content": "Most features sound basic. Here's how to make them impressive:\n\n| Basic Description | Impressive Description |\n|------------------|----------------------|\n| \"Has a search bar\" | \"Real-time search with debouncing and instant results\" |\n| \"Users can log in\" | \"JWT authentication with secure HTTP-only cookies and refresh tokens\" |\n| \"Works on mobile\" | \"Mobile-first responsive design with touch-optimized interactions\" |\n| \"Shows a list of items\" | \"Virtualized list rendering 1,000+ items without performance lag\" |\n| \"Has a form\" | \"Multi-step form with validation, error handling, and draft saving\" |\n| \"Sends emails\" | \"Automated email notifications using SendGrid with retry logic\" |\n| \"Connects to database\" | \"PostgreSQL database with optimized queries and connection pooling\" |\n\n**The pattern:** Basic feature + technical detail + benefit"
+      },
+      {
+        "heading": "Features With Visuals",
+        "content": "Pair features with GIFs or screenshots:\n\n```markdown\n## Features\n\n### Real-time Search\n![Search Demo](./gifs/search.gif)\n\nResults filter instantly as you type. Uses debouncing \nto minimize API calls while maintaining responsiveness.\n\n### Drag & Drop Organization\n![Drag Demo](./gifs/drag-drop.gif)\n\nReorder your recipe collections with intuitive \ndrag-and-drop. Changes save automatically.\n\n### Dark Mode\n| Light Mode | Dark Mode |\n|------------|----------|\n| ![Light](./screenshots/light.png) | ![Dark](./screenshots/dark.png) |\n\nSystem preference detection with manual override. \nSettings persist across sessions.\n```\n\n**Why visuals matter:**\n- Prove the feature actually works\n- Catch attention while scrolling\n- Show polish and attention to detail"
+      },
+      {
+        "heading": "Current vs. Planned Features",
+        "content": "It's okay to show roadmap items—just be clear about status:\n\n```markdown\n## Features\n\n### Implemented ✅\n- User authentication\n- Recipe search and filtering\n- Favorites and collections\n- Shopping list generation\n- Responsive design\n\n### In Progress 🚧\n- Social sharing\n- Meal planning calendar\n\n### Planned 📋\n- Grocery delivery integration\n- Nutrition information\n- Recipe recommendations based on history\n```\n\n**Why show planned features:**\n- Shows you think about product growth\n- Provides interview conversation topics\n- Demonstrates ongoing commitment\n\n**Rules:**\n- Completed features should significantly outweigh planned\n- Don't list things you'll never actually build\n- Update as you complete items"
+      },
+      {
+        "heading": "Connecting Features to Skills",
+        "content": "Help recruiters understand what each feature demonstrates:\n\n```markdown\n## Technical Highlights\n\n| Feature | Skills Demonstrated |\n|---------|--------------------|\n| User Auth | Security, session management, form validation |\n| Recipe Search | API integration, state management, UX optimization |\n| Shopping List | Data structures, local storage, real-time sync |\n| Responsive Design | CSS, mobile-first development, accessibility |\n| Performance | Caching, lazy loading, query optimization |\n```\n\n**Or inline:**\n\n```markdown\n### Smart Recipe Search\n*Demonstrates: API integration, debouncing, state management*\n\nSearch 5,000+ recipes with real-time filtering...\n```\n\n**This helps recruiters who are specifically looking for certain skills quickly find evidence of them.**"
+      }
+    ],
+    "resources": [
+      {
+        "title": "GitHub Tables in Markdown",
+        "source": "GitHub Docs",
+        "url": "https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables",
+        "type": "Documentation",
+        "description": "Creating tables in GitHub-flavored Markdown"
+      }
+    ],
+    "keyTakeaways": [
+      "List every feature—each demonstrates skills you've developed",
+      "Transform basic descriptions: feature + technical detail + benefit",
+      "Pair features with GIFs or screenshots to prove they work",
+      "Clearly distinguish completed vs. planned features",
+      "Connect features to skills recruiters are looking for"
+    ]
+  },
+  "status-contact": {
+    "title": "Project Status & Contact Info",
+    "intro": "The Status and Contact sections close out your README professionally. They set expectations and make it easy for interested parties to reach you.",
+    "sections": [
+      {
+        "heading": "Project Status Examples",
+        "content": "Be honest about where your project stands:\n\n**Active development:**\n```markdown\n## Status\n\n🟢 **Active Development**\n\nThis project is actively maintained. New features \nare being added regularly.\n\nLast updated: January 2025\n\n**Upcoming:**\n- Social sharing integration\n- Performance optimizations\n- Mobile app version\n```\n\n**Complete/Maintained:**\n```markdown\n## Status\n\n✅ **Complete**\n\nCore functionality is complete and stable. Bug fixes \nand security updates will be applied as needed.\n\n**Potential future enhancements:**\n- Meal planning calendar\n- Integration with grocery delivery services\n```\n\n**Portfolio project:**\n```markdown\n## Status\n\n📦 **Portfolio Project**\n\nBuilt as my capstone project for [Bootcamp Name]. \nFeatures are complete and the app is fully functional.\n\nOpen to expanding this project for the right opportunity.\n```"
+      },
+      {
+        "heading": "Contact Section Template",
+        "content": "Make it easy to reach you:\n\n```markdown\n## Contact\n\n**Your Name** - Full-Stack Developer\n\n[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?logo=linkedin&logoColor=white)](https://linkedin.com/in/yourname)\n[![Portfolio](https://img.shields.io/badge/-Portfolio-000000?logo=vercel&logoColor=white)](https://yoursite.com)\n[![Email](https://img.shields.io/badge/-Email-EA4335?logo=gmail&logoColor=white)](mailto:you@email.com)\n\n📧 you@email.com\n🔗 [linkedin.com/in/yourname](https://linkedin.com/in/yourname)\n🌐 [yourportfolio.com](https://yourportfolio.com)\n```\n\n**For team projects:**\n```markdown\n## Contributors\n\n| Name | Role | Contact |\n|------|------|--------|\n| Your Name | Full-stack, UI/UX | [LinkedIn](url) |\n| Partner | Backend, Database | [LinkedIn](url) |\n```\n\n**Why multiple contact methods?**\nDifferent recruiters prefer different channels. Make it easy no matter their preference."
+      },
+      {
+        "heading": "Adding a License",
+        "content": "A license tells others how they can use your code.\n\n**For portfolio projects, use MIT (most permissive):**\n\n1. Create a file called `LICENSE` in your root directory\n2. Paste this:\n\n```\nMIT License\n\nCopyright (c) 2025 Your Name\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n```\n\n3. Reference it in your README:\n```markdown\n## License\n\nThis project is open source under the [MIT License](LICENSE).\n```"
+      },
+      {
+        "heading": "Acknowledgments Section",
+        "content": "Give credit where it's due:\n\n```markdown\n## Acknowledgments\n\n- Recipe data provided by [Edamam API](https://edamam.com)\n- UI components from [shadcn/ui](https://ui.shadcn.com)\n- Icons from [Lucide](https://lucide.dev)\n- Deployment on [Vercel](https://vercel.com)\n- Thanks to [@mentor](https://github.com/mentor) for code review\n- Inspired by [AllRecipes](https://allrecipes.com) and [Yummly](https://yummly.com)\n```\n\n**What to acknowledge:**\n- APIs you used\n- UI libraries or components\n- Tutorials that helped\n- People who reviewed your code\n- Projects that inspired yours\n\n**Why bother?**\n- Shows you work well with existing tools\n- Demonstrates awareness of the ecosystem\n- Builds goodwill in the community\n- Avoids any appearance of claiming others' work"
+      },
+      {
+        "heading": "Complete README Closing Template",
+        "content": "Put it all together:\n\n```markdown\n---\n\n## Status\n\n✅ **Complete** - Core features stable, open to enhancements\n\n## Roadmap\n\n- [ ] Social sharing\n- [ ] Meal planning calendar\n- [ ] Grocery delivery integration\n\n## License\n\n[MIT](LICENSE)\n\n## Acknowledgments\n\n- [Edamam API](https://edamam.com) - Recipe data\n- [shadcn/ui](https://ui.shadcn.com) - UI components\n- [Vercel](https://vercel.com) - Hosting\n\n## Contact\n\n**Jane Developer**\n\n[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?logo=linkedin)](https://linkedin.com/in/janedev)\n[![Portfolio](https://img.shields.io/badge/-Portfolio-000)](https://janedev.com)\n\n📧 jane@email.com\n\n---\n\n⭐ Star this repo if you found it helpful!\n```\n\n**The `---` creates visual separators.**\n**The star request can increase engagement.**"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Choose a License",
+        "source": "GitHub",
+        "url": "https://choosealicense.com/",
+        "type": "Tool",
+        "description": "Simple guide to choosing an open source license"
+      }
+    ],
+    "keyTakeaways": [
+      "Status section sets expectations: active, complete, or maintained",
+      "Provide multiple contact methods with clickable badges",
+      "Use MIT license for portfolio projects—it's simple and permissive",
+      "Acknowledge APIs, libraries, and people who helped",
+      "End with a clear, professional closing section"
+    ]
+  },
+  "pinning-projects": {
+    "title": "Pinning Your Best Projects",
+    "intro": "GitHub lets you pin up to 6 repositories to your profile. These are the first projects recruiters see—choose strategically.",
+    "sections": [
+      {
+        "heading": "How to Pin Repositories",
+        "content": "**Step by step:**\n\n1. Go to your GitHub profile (github.com/yourusername)\n2. Look for \"Customize your pins\" link (top right of the pinned section)\n3. If you don't see it, you may need to click the gear icon\n4. Select up to 6 repositories\n5. Drag to reorder (most important first)\n6. Click \"Save pins\"\n\n**Can't find it?**\nYou need at least a few public repositories before the option appears.\n\n**What can you pin?**\n- Your own repositories\n- Forks (if you've contributed meaningfully)\n- Gists (code snippets)"
+      },
+      {
+        "heading": "What to Pin: Strategic Selection",
+        "content": "**The ideal 6-pin strategy:**\n\n| Slot | What to Pin | Example |\n|------|-------------|--------|\n| 1 | Best overall project | Full-stack app with great README |\n| 2 | Most relevant to target jobs | E-commerce if applying for e-commerce roles |\n| 3 | Different tech stack | Python project if others are JavaScript |\n| 4 | Something unique | Browser extension, CLI tool, game |\n| 5 | Collaborative/Open source | PR to popular repo or team project |\n| 6 | Technical depth | Algorithm solutions or system design |\n\n**What NOT to pin:**\n\n❌ `tutorial-follow-along` - Obviously not original work\n❌ `my-first-react-app` - Screams beginner\n❌ Forked repos with 0 changes\n❌ Projects with no README\n❌ Incomplete/broken projects\n❌ Old projects with outdated tech"
+      },
+      {
+        "heading": "Optimizing Repository Descriptions",
+        "content": "Each pinned repo shows a description. Make them count.\n\n**Edit the description:**\n1. Go to the repository\n2. Click the gear icon next to \"About\" (top right)\n3. Edit Description (max ~100 chars)\n4. Add Topics/Tags\n5. Add Website URL (if deployed)\n\n**Bad vs Good descriptions:**\n\n❌ \"A project I made\"\n✅ \"Full-stack recipe app | React, Node, PostgreSQL | 5K+ recipes\"\n\n❌ \"React app\"\n✅ \"E-commerce platform with Stripe payments and real-time inventory\"\n\n❌ \"Todo list\"\n✅ \"Drag-and-drop task manager with calendar sync and reminders\"\n\n**Formula:** `[What it is] | [Key tech] | [Impressive number or feature]`"
+      },
+      {
+        "heading": "Repo Topics: Free Keywords",
+        "content": "Topics are tags that appear on your repository. They help with discovery AND show tech at a glance.\n\n**How to add topics:**\n1. Go to repository → About (gear icon)\n2. Add topics in the \"Topics\" field\n3. Use relevant technology names\n\n**Good topics for a React app:**\n```\nreact typescript tailwindcss nodejs postgresql \nfull-stack authentication crud-application\n```\n\n**Topics that help:**\n- Technology names (react, python, django)\n- Project type (full-stack, api, cli, chrome-extension)\n- Skills demonstrated (authentication, real-time, responsive)\n\n**Topics appear as clickable badges on your repo card.**"
+      },
+      {
+        "heading": "Maintaining Your Pinned Projects",
+        "content": "Pinned projects need ongoing attention:\n\n**Monthly checks:**\n- [ ] Is the live demo still working?\n- [ ] Are there security vulnerabilities to fix?\n- [ ] Is the README still accurate?\n- [ ] Would I still be proud of this code?\n\n**When to swap out pinned projects:**\n- You finish something better\n- You're targeting different job types\n- The project feels outdated\n- You've grown and it no longer represents your skill level\n\n**Archiving old projects:**\nWhen you unpin an old project:\n1. Go to Settings → General\n2. Scroll to \"Danger Zone\"\n3. Click \"Archive this repository\"\n\nThis marks it as read-only and shows it's intentionally complete (not abandoned).\n\n**Pro tip:** Screenshot your pinned repos view. Look at it like a recruiter would. What impression does it give in 5 seconds?"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Pinning Repositories to Your Profile",
+        "source": "GitHub Docs",
+        "url": "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/pinning-items-to-your-profile",
+        "type": "Documentation",
+        "description": "Official guide to pinning repositories"
+      }
+    ],
+    "keyTakeaways": [
+      "Pin your 6 best, most relevant projects—they get 90% of recruiter attention",
+      "Order matters: best project first, relevant projects second",
+      "Optimize descriptions: [What] | [Tech] | [Impressive detail]",
+      "Add topics to each repo for extra visibility and credibility",
+      "Review and update pinned projects monthly"
+    ]
+  },
+  "contribution-activity": {
+    "title": "Contribution Graphs & Activity",
+    "intro": "The green contribution graph tells a story about how active you are as a developer. Here's what recruiters look for and how to build healthy activity.",
+    "sections": [
+      {
+        "heading": "What Recruiters See",
+        "content": "Your contribution graph shows:\n- **Frequency:** How often you code\n- **Consistency:** Regular activity vs. sporadic bursts\n- **Recency:** When was your last contribution\n\n**What they're actually looking for:**\n\n✅ Recent activity (last 2-4 weeks)\n✅ Some consistency (doesn't need to be daily)\n✅ Evidence you actually code\n\n❌ NOT looking for:\n- Perfect daily streaks\n- Massive green walls\n- Contributions every single day\n\n**Real talk:** A moderately active graph with recent commits beats an impressive historical graph with nothing recent."
+      },
+      {
+        "heading": "What Counts as a Contribution",
+        "content": "**These count as contributions:**\n- ✅ Commits to a repo's default branch (main/master)\n- ✅ Opening an issue\n- ✅ Opening a pull request\n- ✅ Reviewing a pull request\n- ✅ Co-authoring a commit\n\n**These DON'T count:**\n- ❌ Commits to non-default branches\n- ❌ Commits in forks (unless merged)\n- ❌ Commits where your email doesn't match GitHub\n\n**Common problem:** Commits not showing up?\n\nCheck your git config:\n```bash\ngit config --global user.email\n```\n\nThis email must match your GitHub email. If not:\n```bash\ngit config --global user.email \"your-github-email@example.com\"\n```"
+      },
+      {
+        "heading": "Building Healthy Activity",
+        "content": "**Don't game the system. Build real activity:**\n\n**Good habits:**\n- Work on personal projects regularly (even 30 min/week)\n- Make meaningful commits when you code\n- Contribute to open source occasionally\n- Create repos for learning (tutorials are fine)\n\n**Bad habits:**\n- Empty commits just for green squares\n- Automated commit tools\n- One massive commit then months of nothing\n\n**If your graph is empty, start here:**\n\n**Week 1-2:** Create a new project, commit progress daily\n**Week 3-4:** Continue building, add documentation\n**Week 5+:** Maintain with weekly commits, start something new\n\n**Realistic expectations:**\n- Few commits per week = healthy\n- Gaps are normal (vacations, busy periods)\n- Recent activity > historical activity"
+      },
+      {
+        "heading": "Activity Beyond Code",
+        "content": "Your GitHub activity includes more than just commits:\n\n**Issues:**\n- Report bugs in tools you use\n- Suggest features thoughtfully\n- Help answer questions\n\n**Example issue contribution:**\n> Found a bug in popular-library? File an issue with:\n> - Clear title\n> - Steps to reproduce\n> - Expected vs actual behavior\n> - Your environment details\n\n**Pull Requests (start easy):**\n- Fix typos in documentation\n- Look for \"good first issue\" labels\n- Update outdated examples\n\n**Finding opportunities:**\n```\nhttps://github.com/search?q=label%3A%22good+first+issue%22&type=issues\n```\n\nThis shows all repos with beginner-friendly issues."
+      },
+      {
+        "heading": "Private Contributions",
+        "content": "Working on private repos (job, client work)? You can still show activity.\n\n**Enable private contributions:**\n1. Go to Settings → Profile\n2. Find \"Contributions\"\n3. Check \"Include private contributions on my profile\"\n\n**What this does:**\n- Shows contribution squares for private repo activity\n- Doesn't reveal the repo names or content\n- Just shows you're actively coding\n\n**Why use this:**\n- If your job involves private repos\n- If you have client projects\n- If most of your real coding is private\n\n**Note:** Only works for private repos you own or have push access to."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Viewing Contributions on Your Profile",
+        "source": "GitHub Docs",
+        "url": "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-settings-on-your-profile/viewing-contributions-on-your-profile",
+        "type": "Documentation",
+        "description": "Understanding what counts as a contribution"
+      },
+      {
+        "title": "First Contributions",
+        "source": "GitHub",
+        "url": "https://github.com/firstcontributions/first-contributions",
+        "type": "Guide",
+        "description": "Beginner-friendly guide to making your first open source contribution"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters check for recent, consistent activity—not perfect daily streaks",
+      "Make sure your git email matches your GitHub email",
+      "Build real activity through projects and open source, not fake commits",
+      "Issues and PRs count as contributions too—not just code",
+      "Enable private contributions if you work on non-public repos"
+    ]
+  },
+  "portfolio-integration": {
+    "title": "GitHub as Part of Your Portfolio",
+    "intro": "GitHub doesn't exist in isolation. It's one piece of your professional presence, alongside your resume, LinkedIn, and portfolio website. Here's how to integrate them effectively.",
+    "sections": [
+      {
+        "heading": "The Recruiter's Journey",
+        "content": "Here's how recruiters typically navigate your online presence:\n\n```\nResume → LinkedIn → GitHub → Portfolio → Decision\n```\n\n**At each step, they're asking:**\n\n| Platform | Question |\n|----------|----------|\n| Resume | \"Does this person have the right experience?\" |\n| LinkedIn | \"Is this a real person? What's their full history?\" |\n| GitHub | \"Can they actually code? Do they have projects?\" |\n| Portfolio | \"What's the quality of their work?\" |\n\n**If any platform contradicts another, it raises red flags:**\n- Resume says \"5 years React\" but GitHub shows only Python projects\n- LinkedIn says \"Senior\" but GitHub shows only tutorial follow-alongs\n- Portfolio shows polished work but GitHub has no code\n\n**Your goal:** Consistent story across all platforms."
+      },
+      {
+        "heading": "GitHub on Your Resume",
+        "content": "**Placement:** Header, alongside email and LinkedIn\n\n```\nJane Developer\njane@email.com | linkedin.com/in/janedev | github.com/janedev | janedev.com\n```\n\n**When listing projects:**\n\n```\nRecipe Discovery App                                    github.com/janedev/mince\nFull-stack app helping users find recipes by ingredients | React, Node.js, PostgreSQL\n- Built search feature handling 5,000+ recipes with <100ms response time\n- Implemented JWT auth with password reset flow\n- Deployed to Vercel with 99.9% uptime\n```\n\n**Link directly to specific repos** when discussing projects. Don't make recruiters hunt.\n\n**Before sharing your resume:** Click every GitHub link to ensure:\n- The repo exists\n- The README is complete\n- The project actually works"
+      },
+      {
+        "heading": "GitHub and LinkedIn Integration",
+        "content": "**On LinkedIn, add your GitHub:**\n1. Profile → Contact Info → Edit\n2. Add Website → GitHub Profile\n3. Choose \"Portfolio\" or \"Company Website\" as type\n\n**In LinkedIn Experience/Projects sections:**\n```\nMince - Recipe Discovery App\n\nFull-stack application helping home cooks find recipes \nbased on ingredients they have.\n\nBuilt with: React, Node.js, PostgreSQL\nLive: mince-recipes.vercel.app\nCode: github.com/janedev/mince\n```\n\n**Consistency checklist:**\n- [ ] Same profile photo (or clearly same person)\n- [ ] Same job titles and dates\n- [ ] Same technologies highlighted\n- [ ] Same projects mentioned\n- [ ] Bio messaging aligns"
+      },
+      {
+        "heading": "Portfolio Website Integration",
+        "content": "Your portfolio and GitHub complement each other:\n\n| Portfolio Shows | GitHub Shows |\n|-----------------|---------------|\n| Polished screenshots | Actual code |\n| User experience focus | Technical implementation |\n| Case studies and process | Commit history and decisions |\n| Design thinking | Code quality |\n\n**On your portfolio, for each project:**\n\n```markdown\n## Mince - Recipe Discovery App\n\n[Screenshot gallery]\n\n[Case study: the problem, solution, my role]\n\n[Live Demo](https://mince.vercel.app) | [View Code](https://github.com/janedev/mince)\n```\n\n**On GitHub, link back:**\n```markdown\n## Mince\n\n![Screenshot](./screenshot.png)\n\nFor detailed case study and additional screenshots, \nvisit my portfolio: [janedev.com/projects/mince](url)\n```\n\n**They're complementary, not redundant.** Each adds value the other can't."
+      },
+      {
+        "heading": "Keeping Everything in Sync",
+        "content": "**When you complete a new project:**\n\n1. ✅ Push to GitHub with complete README\n2. ✅ Add to portfolio with screenshots/case study\n3. ✅ Update LinkedIn projects section\n4. ✅ Update resume if it's a highlight\n\n**When you change jobs/roles:**\n\n1. ✅ Update LinkedIn first\n2. ✅ Update GitHub bio if relevant\n3. ✅ Update resume\n4. ✅ Review pinned repos for relevance\n\n**Monthly maintenance:**\n\n- [ ] All live demos still working?\n- [ ] GitHub pinned repos still best choices?\n- [ ] Any new skills to add to bio/profile?\n- [ ] Resume reflects latest projects?\n\n**Quarterly deep review:**\n\n- [ ] Full consistency check across all platforms\n- [ ] Remove/archive outdated projects\n- [ ] Update all bios and descriptions\n- [ ] Ensure all links work\n\n**Set a calendar reminder.** It takes 30 minutes quarterly to keep everything sharp."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Creating a GitHub Profile README",
+        "source": "Dev.to",
+        "url": "https://dev.to/github/how-to-create-a-github-profile-readme-jpm",
+        "type": "Guide",
+        "description": "Tips for showcasing GitHub on your portfolio"
+      }
+    ],
+    "keyTakeaways": [
+      "Recruiters cross-reference resume, LinkedIn, GitHub, and portfolio—be consistent",
+      "Link directly to GitHub repos when mentioning projects on resume",
+      "Use LinkedIn to add GitHub as a website in your contact info",
+      "Portfolio shows polish, GitHub shows code—link them to each other",
+      "Set monthly/quarterly reminders to keep all platforms in sync"
+    ]
+  }
+}
