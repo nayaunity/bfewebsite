@@ -84,14 +84,10 @@ export async function GET() {
   try {
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
-    // Clean up stale presence records (older than 5 minutes)
-    await prisma.pagePresence.deleteMany({
-      where: {
-        lastSeenAt: { lt: fiveMinutesAgo },
-      },
-    });
+    // NOTE: We no longer delete old records here to preserve historical analytics data
+    // The query below already filters for active users (last 5 minutes)
 
-    // Get counts by page
+    // Get counts by page (only active users)
     const presenceCounts = await prisma.pagePresence.groupBy({
       by: ["page"],
       where: {
