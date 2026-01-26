@@ -8,6 +8,11 @@ const AUTO_ADMIN_EMAILS = [
   "obiajuluonyinye1@gmail.com",
 ];
 
+// Emails that should automatically be granted contributor access on first sign-in
+const AUTO_CONTRIBUTOR_EMAILS = [
+  "ashlyncmitm@gmail.com",
+];
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -35,6 +40,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         await prisma.user.update({
           where: { id: user.id },
           data: { role: "admin" },
+        });
+      }
+      // Auto-promote certain emails to contributor on first sign-in
+      if (user.email && AUTO_CONTRIBUTOR_EMAILS.includes(user.email.toLowerCase())) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { role: "contributor" },
         });
       }
     },

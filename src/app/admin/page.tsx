@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -88,6 +89,7 @@ async function getStats() {
 }
 
 export default async function AdminDashboard() {
+  await requireFullAdmin();
   const stats = await getStats();
 
   const contentCards = [

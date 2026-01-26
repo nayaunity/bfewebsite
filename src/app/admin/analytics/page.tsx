@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -255,6 +256,7 @@ function formatTimeAgo(date: Date): string {
 }
 
 export default async function AnalyticsPage() {
+  await requireFullAdmin();
   const analytics = await getAnalytics();
 
   return (

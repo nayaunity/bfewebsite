@@ -12,13 +12,13 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await requireAdmin();
+  const { user, role } = await requireAdmin();
 
   return (
     <div className="min-h-screen bg-[var(--gray-50)]">
-      <AdminSidebar />
+      <AdminSidebar role={role} />
       <div className="lg:pl-64">
-        <AdminHeader user={session.user} />
+        <AdminHeader user={user} />
         <main className="py-6 px-4 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>

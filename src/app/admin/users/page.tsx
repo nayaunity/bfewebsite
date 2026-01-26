@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ async function getUsers() {
 }
 
 export default async function UsersPage() {
+  await requireFullAdmin();
   const users = await getUsers();
 
   return (
