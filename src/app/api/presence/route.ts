@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// Allowed page names for presence tracking
-const ALLOWED_PAGES = ["home", "jobs", "resources", "community", "blog", "links"];
+// Allowed page name patterns for presence tracking
+// Includes main pages and any custom landing pages (apprenticeships, job pages, etc.)
+const ALLOWED_PAGE_PATTERNS = [
+  "home", "jobs", "resources", "community", "blog", "links",
+  "pinterest-apprenticeship", "jpmorgan-emerging-talent",
+];
+
+function isValidPage(page: string): boolean {
+  // Allow exact matches
+  if (ALLOWED_PAGE_PATTERNS.includes(page)) return true;
+  // Allow blog/* pages
+  if (page.startsWith("blog/")) return true;
+  // Allow any page that looks like a slug (letters, numbers, hyphens)
+  // This covers future landing pages without code changes
+  if (/^[a-z0-9-]+$/.test(page)) return true;
+  return false;
+}
 
 // POST /api/presence - Update presence (heartbeat)
 export async function POST(request: NextRequest) {
@@ -21,9 +36,8 @@ export async function POST(request: NextRequest) {
     const sanitizedVisitorId = String(visitorId).slice(0, 100);
     const sanitizedPage = String(page).slice(0, 100);
 
-    // Validate page is allowed (allow exact matches or blog/* patterns)
-    const isValidPage = ALLOWED_PAGES.includes(sanitizedPage) || sanitizedPage.startsWith("blog/");
-    if (!isValidPage) {
+    // Validate page is allowed
+    if (!isValidPage(sanitizedPage)) {
       return NextResponse.json(
         { error: "Invalid page" },
         { status: 400 }
