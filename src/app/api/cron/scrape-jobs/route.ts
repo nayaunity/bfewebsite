@@ -5,11 +5,11 @@ export const runtime = "nodejs";
 export const maxDuration = 300; // 5 minutes max for Vercel
 
 export async function GET(request: NextRequest) {
-  // Verify cron secret in production
+  // Verify cron secret - require it in production
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

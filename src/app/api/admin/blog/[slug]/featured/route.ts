@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { checkAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const session = await auth();
-
-  if (!session?.user?.email || session.user.email !== "theblackfemaleengineer@gmail.com") {
+  const { isAdmin } = await checkAdmin();
+  if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

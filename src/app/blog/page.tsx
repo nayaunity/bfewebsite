@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { getAllPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // Revalidate every 5 minutes
 
 export const metadata = {
   title: "Blog | The Black Female Engineer",

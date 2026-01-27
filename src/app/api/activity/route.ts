@@ -135,6 +135,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Allowed activity types
+const ALLOWED_ACTIVITY_TYPES = ["micro_win", "lesson_complete", "job_click", "link_click", "blog_view"];
+
 // POST /api/activity - Record a new activity event
 export async function POST(request: NextRequest) {
   try {
@@ -148,10 +151,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate activity type
+    if (!ALLOWED_ACTIVITY_TYPES.includes(type)) {
+      return NextResponse.json(
+        { error: "Invalid activity type" },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize message length
+    const sanitizedMessage = String(message).slice(0, 500);
+
     const activity = await prisma.activity.create({
       data: {
         type,
-        message,
+        message: sanitizedMessage,
         metadata: metadata ? JSON.stringify(metadata) : null,
       },
     });

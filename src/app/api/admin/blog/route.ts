@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPost } from "@/lib/blog";
+import { checkAdmin } from "@/lib/admin";
 
 export async function POST(request: Request) {
+  const { isAdmin } = await checkAdmin();
+  if (!isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const data = await request.json();
     const { title, slug, excerpt, category, author, featured, image, tags, content } = data;
@@ -45,6 +51,11 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const { isAdmin } = await checkAdmin();
+  if (!isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const data = await request.json();
     const { originalSlug, title, slug, excerpt, category, author, featured, image, tags, content, publishedAt } = data;
@@ -100,6 +111,11 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const { isAdmin } = await checkAdmin();
+  if (!isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");

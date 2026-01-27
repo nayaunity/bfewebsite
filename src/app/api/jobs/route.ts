@@ -60,10 +60,11 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get all jobs first, then filter by region
+    // Get all jobs first, then filter by region (with hard limit to prevent memory issues)
     const allJobs = await prisma.job.findMany({
       where,
       orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
+      take: 1000,
     });
 
     // Filter by region - jobs with both US and international locations appear in both filters
@@ -127,17 +128,8 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error fetching jobs:", error);
-    const dbUrl = process.env.DATABASE_URL || "";
     return NextResponse.json(
-      {
-        error: "Failed to fetch jobs",
-        detail: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack?.split("\n").slice(0, 3) : undefined,
-        dbUrl: dbUrl.substring(0, 35) + "...",
-        dbUrlLen: dbUrl.length,
-        hasAuthToken: !!process.env.DATABASE_AUTH_TOKEN,
-        authTokenLen: process.env.DATABASE_AUTH_TOKEN?.length || 0,
-      },
+      { error: "Failed to fetch jobs" },
       { status: 500 }
     );
   }

@@ -101,9 +101,12 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
 /**
  * Get all blog posts with full content
  */
-export async function getAllPosts(): Promise<BlogPost[]> {
+export async function getAllPosts(options?: { limit?: number; offset?: number }): Promise<BlogPost[]> {
+  const { limit = 50, offset = 0 } = options || {};
   const posts = await prisma.blogPost.findMany({
     orderBy: { publishedAt: "desc" },
+    take: limit,
+    skip: offset,
   });
 
   return posts.map(transformPost);
@@ -112,9 +115,12 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 /**
  * Get all blog post metadata (without content, for listing pages)
  */
-export async function getAllPostsMeta(): Promise<BlogPostMeta[]> {
+export async function getAllPostsMeta(options?: { limit?: number; offset?: number }): Promise<BlogPostMeta[]> {
+  const { limit = 50, offset = 0 } = options || {};
   const posts = await prisma.blogPost.findMany({
     orderBy: { publishedAt: "desc" },
+    take: limit,
+    skip: offset,
   });
 
   return posts.map((post) => {

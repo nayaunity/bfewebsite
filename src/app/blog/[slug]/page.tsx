@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { BlogViewTracker } from "@/components/BlogViewTracker";
 import { getBlogPost, getAllPosts } from "@/lib/blog";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // Revalidate every 5 minutes
 
 interface Props {
   params: Promise<{ slug: string }>;
