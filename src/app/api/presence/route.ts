@@ -60,39 +60,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE /api/presence - Remove presence when leaving page
-export async function DELETE(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { visitorId, page } = body;
-
-    if (!visitorId) {
-      return NextResponse.json(
-        { error: "visitorId is required" },
-        { status: 400 }
-      );
-    }
-
-    if (page) {
-      // Remove presence for specific page
-      await prisma.pagePresence.deleteMany({
-        where: { visitorId, page },
-      });
-    } else {
-      // Remove all presence for this visitor
-      await prisma.pagePresence.deleteMany({
-        where: { visitorId },
-      });
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error removing presence:", error);
-    return NextResponse.json(
-      { error: "Failed to remove presence" },
-      { status: 500 }
-    );
-  }
+// DELETE /api/presence - No longer deletes records to preserve historical analytics
+// The "Active Now" metric filters by lastSeenAt, so old records don't affect it
+export async function DELETE() {
+  // Intentionally do nothing - preserve records for analytics
+  // Old records naturally become "inactive" when lastSeenAt ages out
+  return NextResponse.json({ success: true });
 }
 
 // GET /api/presence - Get presence counts

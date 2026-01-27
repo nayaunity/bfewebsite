@@ -38,24 +38,6 @@ export function usePagePresence(page: string) {
     }
   }, [page]);
 
-  const removePresence = useCallback(async () => {
-    if (!visitorIdRef.current || !page) return;
-
-    try {
-      await fetch("/api/presence", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          visitorId: visitorIdRef.current,
-          page,
-        }),
-      });
-    } catch (error) {
-      // Silently fail
-      console.debug("Presence removal failed:", error);
-    }
-  }, [page]);
-
   useEffect(() => {
     visitorIdRef.current = getOrCreateVisitorId();
 
@@ -73,32 +55,15 @@ export function usePagePresence(page: string) {
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Handle beforeunload to remove presence
-    const handleBeforeUnload = () => {
-      // Use sendBeacon for reliable delivery on page unload
-      if (navigator.sendBeacon && visitorIdRef.current) {
-        navigator.sendBeacon(
-          "/api/presence",
-          JSON.stringify({
-            visitorId: visitorIdRef.current,
-            page,
-            _action: "delete",
-          })
-        );
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // Cleanup
+    // Cleanup - no longer removes presence to preserve historical analytics
+    // Old records naturally age out of "Active Now" via lastSeenAt filter
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      removePresence();
     };
-  }, [page, sendHeartbeat, removePresence]);
+  }, [page, sendHeartbeat]);
 
   return { visitorId: visitorIdRef.current };
 }
