@@ -23,17 +23,17 @@ export default function Hero() {
           {/* Left Content */}
           <div>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Make tech
+              Making tech
               <br />
               <span className="italic text-[#ef562a]">accessible</span>.
               <br />
-              Make it
+              Making it
               <br />
               <span className="italic text-[#ef562a]">actionable</span>.
             </h1>
 
             <p className="mt-8 text-lg text-[var(--gray-600)] max-w-md">
-              Join 200K+ young professionals and tech-minded creatives getting the tools and inspiration to make an impact.
+              Join 200K+ engineers, career switchers, and builders getting the jobs, skills, and confidence to thrive in tech.
             </p>
 
             {/* Email Signup */}
