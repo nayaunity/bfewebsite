@@ -28,7 +28,7 @@ export default function WorkWithUsPage() {
     },
     {
       title: "Job Board Advertising",
-      description: "Reach 200K+ engaged tech professionals actively looking for their next opportunity. My audience includes software engineers, data scientists, product managers, and more.",
+      description: "Connect with talented professionals who are ready for their next chapter. My job board helps companies find great people while helping my community discover roles at companies that value them.",
       features: [
         "Featured job listings with premium placement",
         "Newsletter inclusion to 50K+ subscribers",
