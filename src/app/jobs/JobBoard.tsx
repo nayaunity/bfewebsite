@@ -41,6 +41,13 @@ const categories = [
   "Design",
 ];
 
+// Map external URLs to internal detail pages
+const internalJobPages: Record<string, string> = {
+  "opp/1389": "/jobs/nomura-risk-technology-analyst",
+  "opp/1390": "/jobs/nomura-client-services-summer-analyst",
+  "opp/1279": "/jobs/nomura-summer-analyst-program",
+};
+
 const mobileFilters = [
   { label: "All", value: "" },
   { label: "Full Stack", value: "software engineer,software developer" },
@@ -192,6 +199,16 @@ export default function JobBoard() {
     }).catch(() => {
       // Silently fail - don't block the user
     });
+
+    // Check if this job has an internal detail page
+    const internalPage = Object.entries(internalJobPages).find(([urlPattern]) =>
+      job.href?.includes(urlPattern)
+    )?.[1];
+
+    if (internalPage) {
+      router.push(internalPage);
+      return;
+    }
 
     // Navigate to the job link
     if (job.href) {
