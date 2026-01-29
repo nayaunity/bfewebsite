@@ -62,7 +62,7 @@ The blog renderer supports:
 
 ## Adding Jobs
 
-Use the `/add-jobs` skill to add new job listings. See `.claude/commands/add-jobs.md` for full instructions.
+Use the `/add-jobs` skill to add new job listings. See `.claude/skills/add-jobs/SKILL.md` for full instructions.
 
 **Quick reference for adding jobs to production:**
 
