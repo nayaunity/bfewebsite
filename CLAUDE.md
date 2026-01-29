@@ -60,6 +60,71 @@ The blog renderer supports:
 - Markdown links `[text](url)`
 - Code blocks with triple backticks
 
+## Adding Jobs
+
+Use the `/add-jobs` skill to add new job listings. See `.claude/commands/add-jobs.md` for full instructions.
+
+**Quick reference for adding jobs to production:**
+
+```bash
+DATABASE_URL=$(grep DATABASE_URL .env.production | cut -d'"' -f2) \
+DATABASE_AUTH_TOKEN=$(grep DATABASE_AUTH_TOKEN .env.production | cut -d'"' -f2) \
+npx tsx -e "
+import { PrismaClient } from '@prisma/client';
+import { PrismaLibSQL } from '@prisma/adapter-libsql';
+
+const adapter = new PrismaLibSQL({
+  url: process.env.DATABASE_URL,
+  authToken: process.env.DATABASE_AUTH_TOKEN,
+  intMode: 'number'
+});
+
+const prisma = new PrismaClient({ adapter });
+
+async function main() {
+  const job = await prisma.job.create({
+    data: {
+      externalId: 'company-unique-id',
+      company: 'Company Name',
+      companySlug: 'company-name',
+      title: 'Job Title',
+      location: 'City, State',
+      type: 'Full-time',
+      remote: false,
+      salary: '\$XX,XXX - \$XX,XXX',
+      postedAt: new Date(),  // IMPORTANT: Always set this!
+      applyUrl: 'https://application-url',
+      category: 'Software Engineering',
+      tags: JSON.stringify(['tag1', 'tag2']),
+      source: 'manual',
+      isActive: true,
+    },
+  });
+  console.log('Created:', job.title);
+}
+
+main().finally(() => prisma.\$disconnect());
+"
+```
+
+**IMPORTANT:** Always set `postedAt: new Date()` when creating jobs. Jobs without `postedAt` appear at the bottom of the list since jobs are sorted by `postedAt` descending.
+
+### Creating Job Detail Pages
+
+To create a dedicated page for a job:
+
+1. Create directory: `src/app/jobs/{company-job-slug}/`
+2. Add `page.tsx` and `ReminderForm.tsx` (use existing job pages as templates)
+3. Update `src/app/jobs/JobBoard.tsx` to add the URL-to-page mapping in `internalJobPages`
+
+### Job Categories
+
+- `Software Engineering`
+- `Data Science`
+- `Product Management`
+- `DevOps / SRE`
+- `Design`
+
 ## Deployment
 
 Deploy to production with Vercel:
