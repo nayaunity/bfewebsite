@@ -1,0 +1,184 @@
+import Link from "next/link";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { getCourse } from "@/lib/courses";
+import { notFound } from "next/navigation";
+import CourseProgress from "./_components/CourseProgress";
+import ModuleLessons from "./_components/ModuleLessons";
+import WebinarSection from "./_components/WebinarSection";
+
+export const metadata = {
+  title: "Claude Code 101 | The Black Female Engineer",
+  description:
+    "Your beginner's guide to building with AI in the terminal. Stop copying and pasting. Start building.",
+};
+
+export default function ClaudeCode101Page() {
+  const course = getCourse("claude-code-101");
+  if (!course) notFound();
+
+  const firstLesson = course.modules[0]?.lessons[0];
+
+  return (
+    <>
+      <Navigation />
+      <main className="pt-28 md:pt-32">
+        {/* Hero */}
+        <section className="py-12 md:py-16 border-b border-[var(--card-border)]" style={{ background: 'linear-gradient(to bottom, var(--hero-gradient-from), var(--background))' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
+              <Link href="/resources" className="hover:text-[#ef562a]">
+                Resources
+              </Link>
+              <span>/</span>
+              <span>Claude Code 101</span>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8 items-start">
+              <div className="lg:col-span-2">
+                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)] mb-4">
+                  {course.tag}
+                </span>
+                <h1 className="font-serif text-4xl md:text-5xl leading-tight">
+                  Claude Code{" "}
+                  <span className="italic text-[#ef562a]">
+                    101
+                  </span>
+                </h1>
+                <p className="mt-4 text-lg text-[var(--gray-600)] max-w-2xl">
+                  {course.subtitle}. {course.description}
+                </p>
+
+                <div className="mt-6 flex flex-wrap items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-[var(--gray-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span>{course.stats.modules} Module</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-[var(--gray-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span>{course.stats.lessons} Lessons</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                    </svg>
+                    <span>All {course.stats.freeLessons} Free</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Start Card */}
+              <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-6 shadow-sm">
+                <h3 className="font-medium text-lg mb-4">Start Learning</h3>
+                <div className="space-y-3 mb-6">
+                  {course.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3 text-sm">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        index === 0 ? "bg-[var(--accent-green-bg)]" : index === 1 ? "bg-[var(--accent-purple-bg)]" : "bg-[var(--accent-blue-bg)]"
+                      }`}>
+                        <svg className={`w-4 h-4 ${
+                          index === 0 ? "text-[var(--accent-green-text)]" : index === 1 ? "text-[var(--accent-purple-text)]" : "text-[var(--accent-blue-text)]"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                {firstLesson && (
+                  <Link
+                    href={`/resources/claude-code-101/${firstLesson.slug}`}
+                    className="block w-full bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-center"
+                  >
+                    Start Learning &rarr;
+                  </Link>
+                )}
+                <p className="text-xs text-[var(--gray-600)] text-center mt-3">
+                  All lessons are free - no signup required
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Webinar Section */}
+        <WebinarSection />
+
+        {/* Course Content */}
+        <section className="py-8 md:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex gap-8">
+              {/* Sidebar */}
+              <CourseSidebar course={course} />
+
+              {/* Main Content - Course Overview */}
+              <div className="flex-1 min-w-0 w-full overflow-hidden">
+                <h2 className="font-serif text-2xl md:text-3xl mb-8">Course Overview</h2>
+
+                {/* Progress Bar */}
+                <CourseProgress course={course} />
+
+                {/* Module Cards */}
+                <div className="space-y-6">
+                  {course.modules.map((module) => (
+                    <div
+                      key={module.id}
+                      id={`module-${module.id}`}
+                      className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow scroll-mt-40 overflow-hidden"
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div className="min-w-0 flex-1">
+                          <span className="text-xs text-[var(--gray-600)]">Module {module.id}</span>
+                          <h3 className="font-serif text-xl mt-1">{module.title}</h3>
+                          <p className="text-[var(--gray-600)] text-sm mt-1">{module.description}</p>
+                        </div>
+                        <span className="text-sm text-[var(--gray-600)] flex-shrink-0">
+                          {module.lessons.length} lessons
+                        </span>
+                      </div>
+
+                      <ModuleLessons module={module} coursePath="/resources/claude-code-101" courseId="claude-code-101" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+function CourseSidebar({ course }: { course: ReturnType<typeof getCourse> }) {
+  if (!course) return null;
+
+  return (
+    <aside className="w-80 flex-shrink-0 hidden lg:block">
+      <div className="sticky top-36">
+        <h3 className="font-medium mb-4">Course Content</h3>
+        <div className="space-y-2">
+          {course.modules.map((module) => (
+            <a
+              key={module.id}
+              href={`#module-${module.id}`}
+              className="block border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#ffe500] transition-colors"
+            >
+              <div className="p-4 bg-[var(--gray-50)] hover:bg-[var(--gray-100)] transition-colors">
+                <span className="text-xs text-[var(--gray-600)]">Module {module.id}</span>
+                <h4 className="font-medium text-sm">{module.title}</h4>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+}

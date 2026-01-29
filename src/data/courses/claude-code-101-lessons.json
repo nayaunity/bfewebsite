@@ -1,0 +1,313 @@
+{
+  "what-makes-claude-code-different": {
+    "title": "What Makes Claude Code Different?",
+    "intro": "If you've been using ChatGPT or Claude in your browser, you already know how powerful AI can be. But here's the thing—every time Claude gives you code, you still have to copy it, paste it into a file, save it, and figure out where everything goes. What if Claude could just... do it for you?",
+    "sections": [
+      {
+        "heading": "The Browser Experience vs. Claude Code",
+        "content": "When you use Claude in the browser, it's like having a really smart advisor. You ask a question, it gives you an answer. You need code, it writes code. But you're still the one doing all the manual work—creating files, organizing folders, running commands.\n\n**Claude Code flips the script.** It operates directly in your terminal, which means it can:\n\n- **Create files** on your behalf\n- **Edit code** across your entire project\n- **Run scripts** and terminal commands\n- **Build entire projects** through natural language\n\nYou're no longer coding *with* Claude—you're coding *through* natural language."
+      },
+      {
+        "heading": "What This Looks Like in Practice",
+        "content": "Think about it: instead of asking \"Can you write me a React component?\" and then spending 10 minutes figuring out where to put the files, you just say:\n\n```\nBuild me a React component for a login form\n```\n\nAnd watch it happen in real-time. Claude creates the files, writes the code, and even sets up the folder structure. You just describe what you want."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Documentation",
+        "url": "https://docs.anthropic.com/en/docs/claude-code",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Official documentation for Claude Code features and capabilities."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude Code operates in your terminal, not a browser",
+      "It can create files, edit code, and run commands for you",
+      "You describe what you want in plain English and watch it build"
+    ]
+  },
+  "terminal-refresher": {
+    "title": "A Quick Terminal Refresher",
+    "intro": "If you've never used a terminal before, don't stress. Here are the only commands you need to know to get started with Claude Code.",
+    "sections": [
+      {
+        "heading": "The Three Commands You Need",
+        "content": "That's right—just three:\n\n**`ls`** — Lists everything in your current folder\n\n**`cd [folder name]`** — Changes directory (moves you into a folder)\n\n**`mkdir [folder name]`** — Makes a new directory (creates a folder)\n\nThat's it. Seriously."
+      },
+      {
+        "heading": "Putting It Together",
+        "content": "Here's how it works in practice:\n\n```bash\nls                    # See what's in your current location\ncd Documents          # Move into your Documents folder\nmkdir my-project      # Create a new folder called \"my-project\"\ncd my-project         # Move into that new folder\nls                    # Should be empty since you just created it\n```\n\nOnce you're inside the folder where you want to work, you're ready to start Claude."
+      },
+      {
+        "heading": "Understanding Sessions",
+        "content": "**One important thing to understand:** Each Claude Code session is independent. When you close your terminal or type `exit`, that session ends.\n\nThe next time you run `claude`, it's a fresh start—Claude won't remember your previous conversation or the permissions you granted.\n\nYour *files* persist (they're saved on your computer), but the conversation context doesn't. This is actually helpful—each session is a clean slate."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Command Line Crash Course",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Understanding_client-side_tools/Command_line",
+        "type": "Tutorial",
+        "source": "MDN",
+        "description": "A beginner-friendly introduction to using the command line."
+      }
+    ],
+    "keyTakeaways": [
+      "You only need three commands: ls, cd, and mkdir",
+      "Navigate to your project folder before starting Claude",
+      "Each Claude session is independent—files persist but conversation doesn't"
+    ]
+  },
+  "starting-claude-code": {
+    "title": "Starting Claude Code",
+    "intro": "With your terminal open and navigated to your project folder, you're just one command away from building with AI.",
+    "sections": [
+      {
+        "heading": "The Magic Command",
+        "content": "Type:\n\n```bash\nclaude\n```\n\nHit enter, and you should see something like:\n\n```\nWelcome back! Using model: [your model]\nPlan: [your plan type]\n```\n\nThat's it—you're in. Claude is now ready to receive instructions and start building."
+      },
+      {
+        "heading": "What Happens Next",
+        "content": "When Claude starts, it automatically scans your current directory to understand your project structure. If you're in an empty folder, it knows you're starting fresh. If you're in an existing project, it understands the codebase.\n\nYou'll see a prompt where you can type your requests. Think of it as a conversation—you describe what you want, and Claude figures out how to build it."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Quick Start",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/quickstart",
+        "type": "Tutorial",
+        "source": "Anthropic",
+        "description": "Official quick start guide for Claude Code."
+      }
+    ],
+    "keyTakeaways": [
+      "Just type 'claude' in your terminal to start",
+      "Claude automatically understands your project structure",
+      "You communicate through natural language, not code"
+    ]
+  },
+  "building-portfolio-part-1": {
+    "title": "Your First Project: Finding Inspiration",
+    "intro": "Let's build something real. For this tutorial, we're creating a personal portfolio website—and we're going to use visual inspiration to guide Claude.",
+    "sections": [
+      {
+        "heading": "Step 1: Find Your Inspiration",
+        "content": "Here's a pro tip: Claude isn't a designer, and honestly, neither am I. So before we start prompting, let's find a website we actually like.\n\n- Go browse some portfolio sites\n- Look at personal websites from people in your industry\n- Find one that resonates with you—something where you think \"I want my site to feel like *that*\"\n\nFor this example, let's say you found a clean, modern portfolio with scrollable sections, a strong hero image, and clear calls-to-action."
+      },
+      {
+        "heading": "Step 2: Screenshot Everything",
+        "content": "This is where it gets good. Take screenshots of every section of the site you like.\n\n**On Mac:** `Command + Shift + 4`, then drag to select the area\n\n**On Windows:** `Windows + Shift + S` to use Snipping Tool\n\nScreenshot the header. Screenshot the about section. Screenshot the portfolio grid. Screenshot the footer. Get everything.\n\n**Why screenshots?** Claude can't browse live websites, but it *can* analyze images you provide. By giving it screenshots, Claude can understand the layout, structure, and visual hierarchy—then use that as a template for what it builds for you.\n\nThis screenshot workflow is your way of showing Claude what you want."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Awwwards - Portfolio Inspiration",
+        "url": "https://www.awwwards.com/websites/portfolio/",
+        "type": "Inspiration",
+        "source": "Awwwards",
+        "description": "Award-winning portfolio websites for design inspiration."
+      }
+    ],
+    "keyTakeaways": [
+      "Find visual inspiration before you start prompting",
+      "Screenshot every section of designs you like",
+      "Claude can analyze images to understand your vision"
+    ]
+  },
+  "building-portfolio-part-2": {
+    "title": "Your First Project: Writing Prompts & Permissions",
+    "intro": "Now that you have your inspiration screenshots, let's write your first prompt and handle Claude's permission system.",
+    "sections": [
+      {
+        "heading": "Step 3: Write Your First Prompt",
+        "content": "Back in Claude Code, let's write a prompt. Here's a framework that works:\n\n```\nI need a personal/professional website to act as my portfolio, housing my work, \nmy career background, and showcasing me in a good light.\n\nPlease build this out using the screenshots I provide as a template.\n\nAnywhere a picture is needed for now, just put a placeholder.\n```\n\nNotice a few things about this prompt:\n\n1. **It's high-level.** We're not micromanaging every detail yet.\n2. **It states the goal clearly.** Claude knows this is a portfolio site.\n3. **It anticipates problems.** We don't have photos ready, so we tell Claude to use placeholders."
+      },
+      {
+        "heading": "Step 4: Add Your Screenshots",
+        "content": "Here's the magic part. Find your screenshots (they're probably on your Desktop or in Recent files), select all of them, and literally **drag them into your terminal window**.\n\nYes, really. Just drag and drop.\n\nYou'll see the file paths appear in your prompt. Now hit enter."
+      },
+      {
+        "heading": "Step 5: Handle the Permission Prompts",
+        "content": "Claude Code respects your privacy. It's going to ask for permission before it reads files or makes changes. You'll see prompts like:\n\n```\nDo you want to proceed?\n1. Yes\n2. Yes, allow reading from [folder] during this session\n3. No\n```\n\n**Always pick option 2.** This tells Claude \"yes, and don't ask me again for this type of action during our session.\" Otherwise, you'll be clicking \"yes\" every 30 seconds.\n\n**Important:** These permissions are session-level only. If you close your terminal and start a new `claude` session, it'll ask for permissions again. Nothing persists between sessions.\n\nSame goes for editing files—pick the option that auto-allows edits during the session."
+      },
+      {
+        "heading": "Step 6: Watch It Work",
+        "content": "Now sit back and watch Claude do its thing. You'll see it:\n\n- Create a to-do list for itself\n- Check off items as it completes them\n- Generate HTML, CSS, and JavaScript files\n- Build out the structure section by section\n\nWhen it's done, it'll typically ask if you want to open the site in your browser. Say yes. See what you've got."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Commands Reference",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/commands",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Complete list of slash commands and keyboard shortcuts."
+      }
+    ],
+    "keyTakeaways": [
+      "Write high-level prompts that state your goal clearly",
+      "Drag and drop images directly into the terminal",
+      "Pick session-level permissions to avoid repetitive confirmations"
+    ]
+  },
+  "plan-mode": {
+    "title": "Leveling Up: Plan Mode",
+    "intro": "Plan Mode is one of the most powerful features in Claude Code, and it's what separates quick prototypes from quality work.",
+    "sections": [
+      {
+        "heading": "What Is Plan Mode?",
+        "content": "Think about writing an essay. You don't just start writing and hope for the best. You outline first. You draft. You revise.\n\nPlan Mode makes Claude do the same thing. Instead of just diving into code, it:\n\n1. Creates an architecture\n2. Maps out every step\n3. Asks clarifying questions\n4. *Then* builds\n\nThe result? Better code, fewer errors, and a structure that actually makes sense."
+      },
+      {
+        "heading": "How to Activate Plan Mode",
+        "content": "Hold **Shift** and press **Tab**. You'll see the mode indicator change to \"plan mode on.\"\n\nYou can also cycle through modes by pressing Shift+Tab multiple times:\n- Accept edits\n- Plan mode on\n- Other settings"
+      },
+      {
+        "heading": "When to Use Plan Mode",
+        "content": "Use plan mode when:\n\n- Starting a new project from scratch\n- Building something complex\n- Working on features that require strategic thinking\n- Dealing with anything that involves psychology, persuasion, or user experience\n\nFor example, if you wanted to optimize your portfolio to convert visitors into clients, you might prompt:\n\n```\nThis looks fantastic. However, I really need people to feel a large amount of trust \nin me after they view my website. It's important that people feel the urge to work \nwith me after going through these sections.\n\nIf they are a decision maker, I need them to feel confident in my abilities.\nIf they are a consumer, I need them to feel connected to my story.\n\nPlease edit the content accordingly.\n```\n\nIn plan mode, Claude will think through the psychological principles involved, create a strategy, possibly ask you clarifying questions, and *then* execute."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Memory",
+        "url": "https://docs.anthropic.com/en/docs/claude-code/memory",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "How to use CLAUDE.md and other memory features."
+      }
+    ],
+    "keyTakeaways": [
+      "Plan Mode makes Claude outline before building",
+      "Activate with Shift + Tab",
+      "Use for complex projects, strategic thinking, and UX work"
+    ]
+  },
+  "adding-real-content": {
+    "title": "Adding Real Content",
+    "intro": "Once you have your basic structure, it's time to make it yours with real content and images.",
+    "sections": [
+      {
+        "heading": "Pulling From Your Online Presence",
+        "content": "Claude can read public websites to learn about you. Try a prompt like:\n\n```\nThis is fantastic. Now let's work on filling in the page with my actual information.\n\nPlease use these links to do this:\n- https://linkedin.com/in/yourprofile\n- https://instagram.com/yourhandle  \n- https://yourwebsite.com\n```\n\nClaude will pull relevant information—your bio, your work history, your projects—and populate your portfolio accordingly.\n\n**Note:** Some sites like LinkedIn may block scraping. If that happens, Claude will let you know and work with what it can access."
+      },
+      {
+        "heading": "Adding Your Images",
+        "content": "Want to add your actual photos? Same process as before—find the images on your computer and drag them into the terminal:\n\n```\nThis is great. Please now input photos using the images I provide.\n\n[drag images here]\n```\n\nClaude will place them in the appropriate sections, resize as needed, and update the code."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Unsplash - Free Images",
+        "url": "https://unsplash.com",
+        "type": "Tool",
+        "source": "Unsplash",
+        "description": "Beautiful, free images for placeholders or final designs."
+      }
+    ],
+    "keyTakeaways": [
+      "Claude can pull content from your public profiles",
+      "Drag and drop images to add them to your project",
+      "Some sites may block scraping—Claude will adapt"
+    ]
+  },
+  "pro-tips": {
+    "title": "Pro Tips for Better Results",
+    "intro": "These tips will help you get better results faster and avoid common frustrations.",
+    "sections": [
+      {
+        "heading": "Give Positive Feedback",
+        "content": "This isn't just being nice—it actually helps. When you tell Claude \"This is fantastic\" or \"Great work so far,\" you're confirming that the approach was correct and signaling what you value.\n\nWithin your session, this helps Claude understand it's on the right track and should continue in that direction.\n\n```\nThis is fantastic. Now let's...\n```\n\n**Note:** This doesn't \"train\" Claude or persist across sessions—each new session starts fresh. But in the moment, it's like giving a collaborator real-time feedback so they know what's working."
+      },
+      {
+        "heading": "Start High-Level, Then Get Specific",
+        "content": "Don't dump every requirement into your first prompt. Start with the big picture, let Claude build something, then iterate with specific feedback:\n\n1. **First prompt:** \"Build me a portfolio website using these screenshots\"\n2. **Second prompt:** \"Make the navigation sticky at the top\"\n3. **Third prompt:** \"Change the hero section headline to...\"\n\nThis iterative approach often gets better results than trying to specify everything upfront."
+      },
+      {
+        "heading": "Watch the Token Count",
+        "content": "Claude uses tokens to process your requests. Tokens are sub-word units—a word like \"portfolio\" might be 2-3 tokens, while common words like \"the\" are typically one token.\n\nThe key thing to know: the longer your conversation, the more tokens it uses. You might see a colored indicator (orange, blue, pink) showing your usage.\n\nIf Claude asks to \"clear context,\" **say yes**. This compacts your conversation history to save tokens without losing the important context. It's like hitting \"summarize\" on your chat history so you can keep working without hitting limits."
+      },
+      {
+        "heading": "Keep an Eye on Changes",
+        "content": "As Claude works, scroll through your terminal to see what it's changing. You'll see red (removed) and green (added) text showing exactly what's being modified.\n\nThis helps you:\n\n- Understand your own project structure\n- Catch anything you don't want\n- Learn how the code actually works"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Prompt Engineering Guide",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Comprehensive guide to writing effective prompts for Claude."
+      }
+    ],
+    "keyTakeaways": [
+      "Positive feedback helps Claude understand what's working",
+      "Start broad, then iterate with specific requests",
+      "Say yes to 'clear context' to save tokens and keep working"
+    ]
+  },
+  "permissions-and-troubleshooting": {
+    "title": "Permissions & Troubleshooting",
+    "intro": "Understanding permission messages and knowing how to troubleshoot common issues will save you time and frustration.",
+    "sections": [
+      {
+        "heading": "Common Permission Messages",
+        "content": "**\"Do you want to proceed?\"**\nClaude wants to do something (read a file, make an edit). Pick option 2 to auto-allow that type of action for the session.\n\n**\"Clear context and auto accept edits?\"**\nYour conversation is getting long. Clearing context compresses the history to save tokens. Say yes.\n\n**\"Open in browser?\"**\nClaude wants to show you the result. Click tab to auto-complete the command, then enter."
+      },
+      {
+        "heading": "Troubleshooting Common Issues",
+        "content": "**Claude isn't making changes I can see:**\nTry refreshing your browser. Changes might be saved but not reflected yet.\n\n**The layout looks wrong:**\nDescribe specifically what's wrong: \"The images are overlapping the text\" or \"I want all sections on one scrollable page, not separate pages.\"\n\n**Claude stopped in the middle of something:**\nJust prompt it to continue: \"Please continue\" or \"Keep going.\"\n\n**I'm out of tokens:**\nYou've hit your usage limit for the period. Depending on your plan, this resets after a certain time. Consider upgrading if you're building a lot."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code GitHub Issues",
+        "url": "https://github.com/anthropics/claude-code/issues",
+        "type": "Repository",
+        "source": "GitHub",
+        "description": "Report issues and find solutions from the community."
+      }
+    ],
+    "keyTakeaways": [
+      "Always pick session-level permissions to avoid repetitive prompts",
+      "Say yes to clear context when Claude asks",
+      "Describe problems specifically for better fixes"
+    ]
+  },
+  "what-you-can-build": {
+    "title": "What You Can Build",
+    "intro": "Once you get comfortable with Claude Code, the possibilities are genuinely impressive. Here's what you can create.",
+    "sections": [
+      {
+        "heading": "Beyond Portfolio Websites",
+        "content": "Once you get comfortable, the possibilities are wild:\n\n- **Full websites** with multiple pages\n- **Web applications** with databases\n- **Data analysis pipelines**\n- **Automation scripts**\n- **APIs and backends**\n- **Literally anything** you can describe\n\nI've had Claude Code sessions where a single Claude worked for **40+ minutes straight**, debugging deployment issues, fixing databases, and iterating until everything was perfect."
+      },
+      {
+        "heading": "The Bottom Line",
+        "content": "Claude Code isn't just a fancier chatbot. It's a fundamental shift in how we build things. You're no longer learning syntax and debugging semicolons—you're describing what you want and watching it materialize.\n\nIs it perfect? No. Sometimes the design needs work. Sometimes you need to clarify what you meant. But the iteration cycle is *so fast* that it doesn't matter. You can go from idea to working prototype in the time it used to take to just set up your development environment.\n\nSo open that terminal. Type `claude`. And start building."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Claude Code Documentation",
+        "url": "https://docs.anthropic.com/en/docs/claude-code",
+        "type": "Documentation",
+        "source": "Anthropic",
+        "description": "Complete Claude Code documentation and guides."
+      },
+      {
+        "title": "Claude Code GitHub",
+        "url": "https://github.com/anthropics/claude-code",
+        "type": "Repository",
+        "source": "GitHub",
+        "description": "Source code and issue tracking for Claude Code."
+      }
+    ],
+    "keyTakeaways": [
+      "You can build full applications, APIs, automation, and more",
+      "Claude Code fundamentally changes how you approach building",
+      "The fast iteration cycle means you can prototype quickly"
+    ]
+  }
+}

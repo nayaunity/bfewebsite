@@ -16,7 +16,7 @@ export default function ResourcesPage() {
       items: [
         { name: "Web Development", description: "HTML, CSS, JavaScript, and modern frameworks", tag: "Beginner", href: "/resources/web-development" },
         { name: "System Design Guide", description: "Learn to design scalable systems from scratch", tag: "Advanced", href: "/resources/system-design" },
-        { name: "Claude Code", description: "Build faster with AI-powered coding assistance", tag: "New", href: "/resources/claude-code" },
+        { name: "Claude Code 101", description: "Your beginner's guide to building with AI in the terminal", tag: "Beginner", href: "/resources/claude-code-101" },
         // { name: "Coding Tutorials", description: "Step-by-step guides for building real projects", tag: "Popular" },
         // { name: "App Development", description: "Build your next big app from idea to launch", tag: "Trending" },
         // { name: "Cloud & DevOps", description: "Get hands-on with AWS, GCP, and deployment", tag: "In-Demand" },
