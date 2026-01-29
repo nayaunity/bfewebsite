@@ -46,6 +46,7 @@ const internalJobPages: Record<string, string> = {
   "opp/1389": "/jobs/nomura-risk-technology-analyst",
   "opp/1390": "/jobs/nomura-client-services-summer-analyst",
   "opp/1279": "/jobs/nomura-summer-analyst-program",
+  "jobId=43140": "/jobs/ibm-software-engineer-apprentice",
 };
 
 const mobileFilters = [
