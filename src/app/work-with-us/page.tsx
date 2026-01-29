@@ -45,7 +45,7 @@ export default function WorkWithUsPage() {
     },
     {
       title: "Sponsored Content",
-      description: "Authentic brand partnerships that resonate with my community. I create engaging content that introduces your product or service to an audience that trusts my recommendations.",
+      description: "I only partner with brands I genuinely use and believe in. Together, we create content that helps my community discover tools and resources that can actually make a difference in their lives.",
       features: [
         "Instagram posts and stories",
         "TikTok and YouTube content",
