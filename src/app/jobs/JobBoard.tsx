@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Job {
   id: string;
@@ -62,16 +62,33 @@ const mobileFilters = [
 export default function JobBoard() {
   const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Initialize state from URL params
   const [jobs, setJobs] = useState<Job[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [pagination, setPagination] = useState<Pagination | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState("All Jobs");
-  const [selectedCompany, setSelectedCompany] = useState("");
-  const [remoteOnly, setRemoteOnly] = useState(false);
-  const [selectedMobileFilter, setSelectedMobileFilter] = useState("");
-  const [isInternational, setIsInternational] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All Jobs");
+  const [selectedCompany, setSelectedCompany] = useState(searchParams.get("company") || "");
+  const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remote") === "true");
+  const [selectedMobileFilter, setSelectedMobileFilter] = useState(searchParams.get("search") || "");
+  const [isInternational, setIsInternational] = useState(searchParams.get("region") === "international");
+
+  // Sync filters to URL
+  const updateURL = useCallback((updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === "" || value === "All Jobs" || value === "false") {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+    const newURL = params.toString() ? `/jobs?${params.toString()}` : "/jobs";
+    router.replace(newURL, { scroll: false });
+  }, [searchParams, router]);
 
   // Fetch companies on mount
   useEffect(() => {
@@ -166,22 +183,29 @@ export default function JobBoard() {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
+    updateURL({ category });
   };
 
   const handleCompanyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCompany(e.target.value);
+    const company = e.target.value;
+    setSelectedCompany(company);
+    updateURL({ company });
   };
 
   const handleRemoteToggle = () => {
-    setRemoteOnly((prev) => !prev);
+    const newValue = !remoteOnly;
+    setRemoteOnly(newValue);
+    updateURL({ remote: newValue ? "true" : null });
   };
 
   const handleMobileFilterChange = (filter: string) => {
     setSelectedMobileFilter(filter);
+    updateURL({ search: filter || null });
   };
 
-  const handleInternationalToggle = () => {
-    setIsInternational((prev) => !prev);
+  const handleInternationalToggle = (international: boolean) => {
+    setIsInternational(international);
+    updateURL({ region: international ? "international" : null });
   };
 
   const handleJobClick = (job: Job) => {
@@ -274,7 +298,7 @@ export default function JobBoard() {
                 Remote
               </button>
               <button
-                onClick={() => setIsInternational(false)}
+                onClick={() => handleInternationalToggle(false)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
                     ? "bg-[#ffe500] text-black"
@@ -284,7 +308,7 @@ export default function JobBoard() {
                 US
               </button>
               <button
-                onClick={() => setIsInternational(true)}
+                onClick={() => handleInternationalToggle(true)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
                     ? "bg-[#ffe500] text-black"
@@ -350,7 +374,7 @@ export default function JobBoard() {
 
               {/* US Toggle */}
               <button
-                onClick={() => setIsInternational(false)}
+                onClick={() => handleInternationalToggle(false)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
                     ? "bg-[#ffe500] text-black"
@@ -362,7 +386,7 @@ export default function JobBoard() {
 
               {/* International Toggle */}
               <button
-                onClick={() => setIsInternational(true)}
+                onClick={() => handleInternationalToggle(true)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
                     ? "bg-[#ffe500] text-black"
@@ -498,6 +522,7 @@ export default function JobBoard() {
                   setRemoteOnly(false);
                   setSelectedMobileFilter("");
                   setIsInternational(false);
+                  router.replace("/jobs", { scroll: false });
                 }}
                 className="mt-4 text-[#ef562a] hover:underline"
               >
