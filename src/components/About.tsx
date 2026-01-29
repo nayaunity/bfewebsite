@@ -62,7 +62,7 @@ export default function About() {
       <div className="py-16 md:py-20 border-t border-[var(--card-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm tracking-widest mb-12">
-            WE&apos;VE PARTNERED WITH SOME PRETTY GREAT COMPANIES
+            I&apos;VE PARTNERED WITH SOME PRETTY GREAT COMPANIES
           </p>
 
           {/* Partner Logos as Text - Row 1 */}
@@ -90,9 +90,9 @@ export default function About() {
           </div>
 
           <p className="text-center mt-12 text-sm">
-            WANT TO PARTNER WITH US?{" "}
+            WANT TO PARTNER WITH ME?{" "}
             <a href="/work-with-us" className="underline hover:text-[#ef562a]">
-              LET US KNOW
+              LET ME KNOW
             </a>
           </p>
         </div>
