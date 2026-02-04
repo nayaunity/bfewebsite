@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ReminderForm from "./ReminderForm";
 import BackToJobs from "../BackToJobs";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
 export const metadata = {
   title: "Airbnb Connect Engineering Apprenticeship | The Black Female Engineer",
@@ -12,6 +13,7 @@ export const metadata = {
 export default function AirbnbConnectApprenticeship() {
   return (
     <>
+      <PagePresenceTracker page="airbnb-connect-apprenticeship" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
