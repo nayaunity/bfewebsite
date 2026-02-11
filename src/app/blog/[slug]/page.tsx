@@ -63,7 +63,7 @@ function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
     if (earliest.type === 'bold' && boldMatch) {
       parts.push(
         <strong key={`${keyPrefix}-b-${partIndex++}`} className="font-semibold">
-          {boldMatch[1]}
+          {parseInlineMarkdown(boldMatch[1], `${keyPrefix}-bi-${partIndex}`)}
         </strong>
       );
       remaining = remaining.slice(earliest.index + boldMatch[0].length);
