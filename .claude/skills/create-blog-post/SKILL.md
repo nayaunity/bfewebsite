@@ -47,6 +47,14 @@ If the user provides full content:
    - `- Bullet lists` for unordered items
    - `1. Numbered lists` for sequential steps
    - Plain URLs (they auto-link)
+   - `[link text](https://url)` for markdown links
+
+3. **Links** — Ensure all links work correctly:
+   - Always use full URLs with `https://` (e.g., `https://ocw.mit.edu` not `ocw.mit.edu`)
+   - Use markdown link syntax `[display text](https://full-url)` for cleaner presentation
+   - If the user provides bare domains (e.g., `example.com`), convert them to full URLs with `https://`
+   - Verify that URLs are well-formed and point to real destinations (no typos, no broken paths)
+   - When content references the same URL multiple times, ensure all instances are consistently linked
 
 3. **Content structure**:
    - Opening: Personal hook or attention-grabbing statement (1-2 paragraphs)
