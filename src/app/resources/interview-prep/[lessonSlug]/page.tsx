@@ -35,9 +35,13 @@ export async function generateMetadata({ params }: PageProps) {
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) return {};
 
+  const title = `${lessonInfo.lesson.title} | Interview Prep | The Black Female Engineer`;
+  const description = `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to mastering tech interviews.`;
   return {
-    title: `${lessonInfo.lesson.title} | Interview Prep | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to mastering tech interviews.`,
+    title,
+    description,
+    openGraph: { title, description, url: `/resources/interview-prep/${lessonSlug}`, type: "article" },
+    twitter: { card: "summary_large_image" as const, title, description },
   };
 }
 

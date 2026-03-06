@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import ReminderForm from "./ReminderForm";
 import BackToJobs from "../BackToJobs";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
@@ -13,6 +14,18 @@ export const metadata = {
 export default function AirbnbConnectApprenticeship() {
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          title: "Connect Engineering Apprenticeship",
+          hiringOrganization: { "@type": "Organization", name: "Airbnb", sameAs: "https://www.airbnb.com" },
+          jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "San Francisco", addressRegion: "CA", addressCountry: "US" } },
+          employmentType: "OTHER",
+          datePosted: "2026-03-06",
+          description: "5-month engineering apprenticeship at Airbnb for candidates from non-traditional backgrounds.",
+        }}
+      />
       <PagePresenceTracker page="airbnb-connect-apprenticeship" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">

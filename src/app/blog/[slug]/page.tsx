@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { BlogViewTracker } from "@/components/BlogViewTracker";
 import { getBlogPost, getAllPosts } from "@/lib/blog";
 
@@ -26,6 +27,22 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: `${post.title} | The Black Female Engineer`,
     description: post.excerpt,
+    openGraph: {
+      title: `${post.title} | The Black Female Engineer`,
+      description: post.excerpt,
+      url: `/blog/${slug}`,
+      type: "article",
+      publishedTime: post.publishedAt,
+      authors: [post.author],
+      tags: post.tags,
+      ...(post.image && { images: [{ url: post.image, alt: post.title }] }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | The Black Female Engineer`,
+      description: post.excerpt,
+      ...(post.image && { images: [post.image] }),
+    },
   };
 }
 
@@ -209,6 +226,52 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              headline: post.title,
+              description: post.excerpt,
+              datePublished: post.publishedAt,
+              author: {
+                "@type": "Person",
+                name: post.author,
+              },
+              publisher: {
+                "@id": "https://theblackfemaleengineer.com/#organization",
+              },
+              mainEntityOfPage: `https://theblackfemaleengineer.com/blog/${post.slug}`,
+              ...(post.image && { image: post.image }),
+              articleSection: post.category,
+              keywords: post.tags.join(", "),
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://theblackfemaleengineer.com",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Blog",
+                  item: "https://theblackfemaleengineer.com/blog",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: post.title,
+                },
+              ],
+            },
+          ],
+        }}
+      />
       <BlogViewTracker slug={post.slug} title={post.title} />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">

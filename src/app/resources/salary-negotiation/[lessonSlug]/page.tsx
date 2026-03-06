@@ -35,9 +35,13 @@ export async function generateMetadata({ params }: PageProps) {
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) return {};
 
+  const title = `${lessonInfo.lesson.title} | Salary Negotiation | The Black Female Engineer`;
+  const description = `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to salary negotiation.`;
   return {
-    title: `${lessonInfo.lesson.title} | Salary Negotiation | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to salary negotiation.`,
+    title,
+    description,
+    openGraph: { title, description, url: `/resources/salary-negotiation/${lessonSlug}`, type: "article" },
+    twitter: { card: "summary_large_image" as const, title, description },
   };
 }
 

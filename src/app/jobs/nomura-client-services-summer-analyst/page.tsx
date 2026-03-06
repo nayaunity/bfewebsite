@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import ReminderForm from "./ReminderForm";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import BackToJobs from "../BackToJobs";
@@ -13,6 +14,19 @@ export const metadata = {
 export default function NomuraClientServicesSummerAnalyst() {
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          title: "2026 IT Summer Analyst - Client Services Technology",
+          hiringOrganization: { "@type": "Organization", name: "Nomura", sameAs: "https://www.nomura.com" },
+          jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "New York", addressRegion: "NY", addressCountry: "US" } },
+          employmentType: "INTERN",
+          datePosted: "2026-03-06",
+          baseSalary: { "@type": "MonetaryAmount", currency: "USD", value: { "@type": "QuantitativeValue", minValue: 95000, maxValue: 105000, unitText: "YEAR" } },
+          description: "10-week summer internship at Nomura in Client Services Technology. Work with Global Markets, Investment Banking, and Research teams.",
+        }}
+      />
       <PagePresenceTracker page="nomura-client-services-summer-analyst" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">

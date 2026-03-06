@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import ReminderForm from "./ReminderForm";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import BackToJobs from "../BackToJobs";
@@ -14,6 +15,18 @@ export const metadata = {
 export default function IBMSoftwareEngineerApprentice() {
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          title: "Software Engineer Apprentice",
+          hiringOrganization: { "@type": "Organization", name: "IBM", sameAs: "https://www.ibm.com" },
+          jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressCountry: "US" } },
+          employmentType: "OTHER",
+          datePosted: "2026-03-06",
+          description: "12-month DOL-registered apprenticeship at IBM. No degree required - learn software development, cloud computing, and DevOps.",
+        }}
+      />
       <PagePresenceTracker page="ibm-software-engineer-apprentice" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">

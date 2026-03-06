@@ -35,9 +35,13 @@ export async function generateMetadata({ params }: PageProps) {
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) return {};
 
+  const title = `${lessonInfo.lesson.title} | Personal Branding | The Black Female Engineer`;
+  const description = `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to building your personal brand.`;
   return {
-    title: `${lessonInfo.lesson.title} | Personal Branding | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to building your personal brand.`,
+    title,
+    description,
+    openGraph: { title, description, url: `/resources/personal-branding/${lessonSlug}`, type: "article" },
+    twitter: { card: "summary_large_image" as const, title, description },
   };
 }
 

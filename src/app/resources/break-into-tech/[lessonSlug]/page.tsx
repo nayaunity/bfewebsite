@@ -35,9 +35,13 @@ export async function generateMetadata({ params }: PageProps) {
   const lessonInfo = getLessonBySlug(course, lessonSlug);
   if (!lessonInfo) return {};
 
+  const title = `${lessonInfo.lesson.title} | Break Into Tech | The Black Female Engineer`;
+  const description = `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to breaking into software engineering.`;
   return {
-    title: `${lessonInfo.lesson.title} | Break Into Tech | The Black Female Engineer`,
-    description: `Learn about ${lessonInfo.lesson.title} in this comprehensive guide to breaking into software engineering.`,
+    title,
+    description,
+    openGraph: { title, description, url: `/resources/break-into-tech/${lessonSlug}`, type: "article" },
+    twitter: { card: "summary_large_image" as const, title, description },
   };
 }
 

@@ -27,6 +27,17 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: `${member.name} | The Black Female Engineer`,
     description: member.bio,
+    openGraph: {
+      title: `${member.name} | The Black Female Engineer`,
+      description: member.bio,
+      url: `/members/${slug}`,
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${member.name} | The Black Female Engineer`,
+      description: member.bio,
+    },
   };
 }
 

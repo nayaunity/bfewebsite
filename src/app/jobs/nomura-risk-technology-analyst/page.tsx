@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import ReminderForm from "./ReminderForm";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import BackToJobs from "../BackToJobs";
@@ -13,6 +14,19 @@ export const metadata = {
 export default function NomuraRiskTechnologyAnalyst() {
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          title: "2026 IT Full-Time Analyst - Risk Technology",
+          hiringOrganization: { "@type": "Organization", name: "Nomura", sameAs: "https://www.nomura.com" },
+          jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "New York", addressRegion: "NY", addressCountry: "US" } },
+          employmentType: "FULL_TIME",
+          datePosted: "2026-03-06",
+          baseSalary: { "@type": "MonetaryAmount", currency: "USD", value: { "@type": "QuantitativeValue", minValue: 95000, maxValue: 105000, unitText: "YEAR" } },
+          description: "Full-time analyst position at Nomura in Risk Technology. Develop applications for business stakeholders with a 2-year global cohort program.",
+        }}
+      />
       <PagePresenceTracker page="nomura-risk-technology-analyst" />
       <Navigation />
       <main className="min-h-screen pt-32 md:pt-40 pb-20 bg-[var(--background)]">
