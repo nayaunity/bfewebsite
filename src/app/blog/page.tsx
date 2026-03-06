@@ -10,6 +10,17 @@ export const revalidate = 300; // Revalidate every 5 minutes
 export const metadata = {
   title: "Blog | The Black Female Engineer",
   description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+  openGraph: {
+    title: "Blog | The Black Female Engineer",
+    description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+    url: "/blog",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Blog | The Black Female Engineer",
+    description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+  },
 };
 
 export default async function BlogPage() {
@@ -73,6 +84,7 @@ export default async function BlogPage() {
                           src={post.image}
                           alt={post.title}
                           fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
@@ -160,6 +172,7 @@ export default async function BlogPage() {
                           src={post.image}
                           alt={post.title}
                           fill
+                          sizes="(max-width: 768px) 100vw, 320px"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>

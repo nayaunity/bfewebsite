@@ -6,6 +6,17 @@ import Footer from "@/components/Footer";
 export const metadata = {
   title: "About | The Black Female Engineer",
   description: "Making technology accessible and actionable for young professionals.",
+  openGraph: {
+    title: "About | The Black Female Engineer",
+    description: "Making technology accessible and actionable for young professionals.",
+    url: "/about",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "About | The Black Female Engineer",
+    description: "Making technology accessible and actionable for young professionals.",
+  },
 };
 
 export default function AboutPage() {
@@ -91,6 +102,7 @@ export default function AboutPage() {
                   src="/images/nyaradzo.jpg"
                   alt="Nyaradzo"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>

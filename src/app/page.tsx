@@ -8,7 +8,7 @@ import Community from "@/components/Community";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default function Home() {
   return (

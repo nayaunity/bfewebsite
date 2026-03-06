@@ -11,6 +11,17 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Links | The Black Female Engineer",
   description: "All the important links and resources from The Black Female Engineer in one place.",
+  openGraph: {
+    title: "Links | The Black Female Engineer",
+    description: "All the important links and resources from The Black Female Engineer in one place.",
+    url: "/links",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Links | The Black Female Engineer",
+    description: "All the important links and resources from The Black Female Engineer in one place.",
+  },
 };
 
 function SocialIcon({ icon }: { icon: string }) {

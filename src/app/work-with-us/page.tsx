@@ -6,6 +6,17 @@ import Footer from "@/components/Footer";
 export const metadata = {
   title: "Work With Me | The Black Female Engineer",
   description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
+  openGraph: {
+    title: "Work With Me | The Black Female Engineer",
+    description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
+    url: "/work-with-us",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Work With Me | The Black Female Engineer",
+    description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
+  },
 };
 
 export default function WorkWithUsPage() {
@@ -256,6 +267,7 @@ export default function WorkWithUsPage() {
                   src="/images/work-with-us.jpg"
                   alt="Nyaradzo being interviewed"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>

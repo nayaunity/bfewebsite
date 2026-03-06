@@ -5,6 +5,17 @@ import Footer from "@/components/Footer";
 export const metadata = {
   title: "Contact Me | The Black Female Engineer",
   description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
+  openGraph: {
+    title: "Contact Me | The Black Female Engineer",
+    description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
+    url: "/contact",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Contact Me | The Black Female Engineer",
+    description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
+  },
 };
 
 export default function ContactPage() {

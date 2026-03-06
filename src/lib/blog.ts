@@ -7,6 +7,7 @@ export interface BlogPost {
   content: string;
   author: string;
   publishedAt: string;
+  updatedAt: string;
   readTime: string;
   category: string;
   tags: string[];
@@ -20,6 +21,7 @@ export interface BlogPostMeta {
   excerpt: string;
   author: string;
   publishedAt: string;
+  updatedAt: string;
   readTime: string;
   category: string;
   tags: string[];
@@ -47,6 +49,7 @@ function transformPost(post: {
   content: string;
   author: string;
   publishedAt: Date | string;
+  updatedAt: Date | string;
   category: string;
   tags: string;
   featured: boolean;
@@ -57,6 +60,10 @@ function transformPost(post: {
     ? post.publishedAt
     : new Date(post.publishedAt);
 
+  const updatedDate = post.updatedAt instanceof Date
+    ? post.updatedAt
+    : new Date(post.updatedAt);
+
   return {
     slug: post.slug,
     title: post.title,
@@ -64,6 +71,7 @@ function transformPost(post: {
     content: post.content,
     author: post.author,
     publishedAt: publishedDate.toISOString().split("T")[0],
+    updatedAt: updatedDate.toISOString().split("T")[0],
     readTime: calculateReadTime(post.content),
     category: post.category,
     tags: JSON.parse(post.tags),

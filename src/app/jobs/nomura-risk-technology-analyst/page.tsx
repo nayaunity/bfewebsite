@@ -25,6 +25,7 @@ export default function NomuraRiskTechnologyAnalyst() {
           datePosted: "2026-03-06",
           baseSalary: { "@type": "MonetaryAmount", currency: "USD", value: { "@type": "QuantitativeValue", minValue: 95000, maxValue: 105000, unitText: "YEAR" } },
           description: "Full-time analyst position at Nomura in Risk Technology. Develop applications for business stakeholders with a 2-year global cohort program.",
+          validThrough: "2026-12-31T23:59:59Z",
         }}
       />
       <PagePresenceTracker page="nomura-risk-technology-analyst" />

@@ -235,14 +235,16 @@ export default async function BlogPostPage({ params }: Props) {
               headline: post.title,
               description: post.excerpt,
               datePublished: post.publishedAt,
+              dateModified: post.updatedAt || post.publishedAt,
               author: {
                 "@type": "Person",
                 name: post.author,
+                url: "https://www.theblackfemaleengineer.com/about",
               },
               publisher: {
-                "@id": "https://theblackfemaleengineer.com/#organization",
+                "@id": "https://www.theblackfemaleengineer.com/#organization",
               },
-              mainEntityOfPage: `https://theblackfemaleengineer.com/blog/${post.slug}`,
+              mainEntityOfPage: `https://www.theblackfemaleengineer.com/blog/${post.slug}`,
               ...(post.image && { image: post.image }),
               articleSection: post.category,
               keywords: post.tags.join(", "),
@@ -254,13 +256,13 @@ export default async function BlogPostPage({ params }: Props) {
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://theblackfemaleengineer.com",
+                  item: "https://www.theblackfemaleengineer.com",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: "Blog",
-                  item: "https://theblackfemaleengineer.com/blog",
+                  item: "https://www.theblackfemaleengineer.com/blog",
                 },
                 {
                   "@type": "ListItem",
@@ -327,6 +329,7 @@ export default async function BlogPostPage({ params }: Props) {
                 src={post.image}
                 alt={post.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 768px"
                 className="object-cover"
                 priority
               />
@@ -359,7 +362,7 @@ export default async function BlogPostPage({ params }: Props) {
             <p className="text-sm text-[var(--gray-600)] mb-4">Share this article</p>
             <div className="flex gap-3">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://theblackfemaleengineer.com/blog/${post.slug}`)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors group"
@@ -369,7 +372,7 @@ export default async function BlogPostPage({ params }: Props) {
                 </svg>
               </a>
               <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://theblackfemaleengineer.com/blog/${post.slug}`)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#ffe500] hover:bg-[#ffe500] transition-colors group"
@@ -400,6 +403,7 @@ export default async function BlogPostPage({ params }: Props) {
                           src={relatedPost.image}
                           alt={relatedPost.title}
                           fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>

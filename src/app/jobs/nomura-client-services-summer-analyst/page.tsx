@@ -25,6 +25,7 @@ export default function NomuraClientServicesSummerAnalyst() {
           datePosted: "2026-03-06",
           baseSalary: { "@type": "MonetaryAmount", currency: "USD", value: { "@type": "QuantitativeValue", minValue: 95000, maxValue: 105000, unitText: "YEAR" } },
           description: "10-week summer internship at Nomura in Client Services Technology. Work with Global Markets, Investment Banking, and Research teams.",
+          validThrough: "2026-12-31T23:59:59Z",
         }}
       />
       <PagePresenceTracker page="nomura-client-services-summer-analyst" />

@@ -6,6 +6,17 @@ import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 export const metadata = {
   title: "Resources | The Black Female Engineer",
   description: "Free resources on tech, coding, career growth, and finance for young professionals making their mark.",
+  openGraph: {
+    title: "Resources | The Black Female Engineer",
+    description: "Free resources on tech, coding, career growth, and finance for young professionals making their mark.",
+    url: "/resources",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Resources | The Black Female Engineer",
+    description: "Free resources on tech, coding, career growth, and finance for young professionals making their mark.",
+  },
 };
 
 export default function ResourcesPage() {

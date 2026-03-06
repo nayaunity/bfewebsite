@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
-import { getAllPostSlugs } from "@/lib/blog";
+import { getAllPostsMeta } from "@/lib/blog";
 import { getCourse } from "@/lib/courses";
 import { getAllMemberSlugs } from "@/data/communityMembers";
 
-const BASE_URL = "https://theblackfemaleengineer.com";
+const BASE_URL = "https://www.theblackfemaleengineer.com";
 
 const COURSE_IDS = [
   "break-into-tech",
@@ -42,10 +42,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Blog posts (dynamic from DB)
   let blogEntries: MetadataRoute.Sitemap = [];
   try {
-    const slugs = await getAllPostSlugs();
-    blogEntries = slugs.map((slug) => ({
-      url: `${BASE_URL}/blog/${slug}`,
-      lastModified: new Date(),
+    const posts = await getAllPostsMeta();
+    blogEntries = posts.map((post) => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt || post.publishedAt),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));

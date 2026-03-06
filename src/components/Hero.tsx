@@ -84,6 +84,7 @@ export default function Hero() {
                 src="/images/hero-community.png"
                 alt="Black women engineers collaborating"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 priority
               />

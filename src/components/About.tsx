@@ -12,6 +12,7 @@ export default function About() {
             src="/images/bfeimage2.png"
             alt="Person working at computer with headphones"
             fill
+            sizes="(max-width: 768px) 100vw, 25vw"
             className="object-cover"
           />
         </div>

@@ -9,6 +9,17 @@ export const metadata = {
   title: "Job Board | The Black Female Engineer",
   description:
     "Find tech jobs and opportunities to accelerate your career in innovative industries.",
+  openGraph: {
+    title: "Job Board | The Black Female Engineer",
+    description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
+    url: "/jobs",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Job Board | The Black Female Engineer",
+    description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
+  },
 };
 
 export default function JobsPage() {

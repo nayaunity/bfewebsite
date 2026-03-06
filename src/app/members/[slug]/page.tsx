@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { getMemberBySlug, getAllMemberSlugs, communityMembers } from "@/data/communityMembers";
 
 interface PageProps {
@@ -52,8 +53,29 @@ export default async function MemberPage({ params }: PageProps) {
   // Get other members for the "More Community Members" section
   const otherMembers = communityMembers.filter(m => m.slug !== slug).slice(0, 3);
 
+  const sameAs = [
+    member.linkedinUrl,
+    member.twitterUrl,
+    member.websiteUrl,
+  ].filter(Boolean);
+
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: member.name,
+          jobTitle: member.role,
+          description: member.bio,
+          worksFor: {
+            "@type": "Organization",
+            name: member.company,
+          },
+          url: `https://www.theblackfemaleengineer.com/members/${slug}`,
+          ...(sameAs.length > 0 && { sameAs }),
+        }}
+      />
       <Navigation />
       <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero Section */}

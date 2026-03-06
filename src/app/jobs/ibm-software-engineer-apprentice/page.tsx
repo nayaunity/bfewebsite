@@ -25,6 +25,7 @@ export default function IBMSoftwareEngineerApprentice() {
           employmentType: "OTHER",
           datePosted: "2026-03-06",
           description: "12-month DOL-registered apprenticeship at IBM. No degree required - learn software development, cloud computing, and DevOps.",
+          validThrough: "2026-12-31T23:59:59Z",
         }}
       />
       <PagePresenceTracker page="ibm-software-engineer-apprentice" />

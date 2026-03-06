@@ -24,6 +24,7 @@ export default function AirbnbConnectApprenticeship() {
           employmentType: "OTHER",
           datePosted: "2026-03-06",
           description: "5-month engineering apprenticeship at Airbnb for candidates from non-traditional backgrounds.",
+          validThrough: "2026-12-31T23:59:59Z",
         }}
       />
       <PagePresenceTracker page="airbnb-connect-apprenticeship" />

@@ -25,6 +25,7 @@ export default function NomuraSummerAnalystProgram() {
           datePosted: "2026-03-06",
           baseSalary: { "@type": "MonetaryAmount", currency: "USD", value: { "@type": "QuantitativeValue", minValue: 95000, maxValue: 105000, unitText: "YEAR" } },
           description: "10-week summer internship at Nomura across Global Markets Technology, Risk and Capital Technology, Production Services, and Infrastructure.",
+          validThrough: "2026-12-31T23:59:59Z",
         }}
       />
       <PagePresenceTracker page="nomura-summer-analyst-program" />

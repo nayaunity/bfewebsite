@@ -16,7 +16,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://theblackfemaleengineer.com"),
+  metadataBase: new URL("https://www.theblackfemaleengineer.com"),
+  alternates: { canonical: "/" },
   title: "The Black Female Engineer | Resources, Jobs & Community",
   description:
     "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
@@ -52,10 +53,10 @@ export default function RootLayout({
             "@graph": [
               {
                 "@type": "Organization",
-                "@id": "https://theblackfemaleengineer.com/#organization",
+                "@id": "https://www.theblackfemaleengineer.com/#organization",
                 name: "The Black Female Engineer",
-                url: "https://theblackfemaleengineer.com",
-                logo: "https://theblackfemaleengineer.com/images/bfeimage2.png",
+                url: "https://www.theblackfemaleengineer.com",
+                logo: "https://www.theblackfemaleengineer.com/images/bfeimage2.png",
                 description:
                   "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
                 sameAs: [
@@ -67,11 +68,11 @@ export default function RootLayout({
               },
               {
                 "@type": "WebSite",
-                "@id": "https://theblackfemaleengineer.com/#website",
+                "@id": "https://www.theblackfemaleengineer.com/#website",
                 name: "The Black Female Engineer",
-                url: "https://theblackfemaleengineer.com",
+                url: "https://www.theblackfemaleengineer.com",
                 publisher: {
-                  "@id": "https://theblackfemaleengineer.com/#organization",
+                  "@id": "https://www.theblackfemaleengineer.com/#organization",
                 },
               },
             ],

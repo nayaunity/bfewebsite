@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/", "/auth/", "/profile/"],
       },
     ],
-    sitemap: "https://theblackfemaleengineer.com/sitemap.xml",
+    sitemap: "https://www.theblackfemaleengineer.com/sitemap.xml",
   };
 }
