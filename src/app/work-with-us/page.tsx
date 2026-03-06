@@ -11,11 +11,13 @@ export const metadata = {
     description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
     url: "/work-with-us",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "Work With Me | The Black Female Engineer",
     description: "Partner with The Black Female Engineer for AI training, job board advertising, sponsored content, and corporate workshops.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 

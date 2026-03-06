@@ -15,11 +15,13 @@ export const metadata = {
     description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
     url: "/blog",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "Blog | The Black Female Engineer",
     description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 

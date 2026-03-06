@@ -17,7 +17,6 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.theblackfemaleengineer.com"),
-  alternates: { canonical: "/" },
   title: "The Black Female Engineer | Resources, Jobs & Community",
   description:
     "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",

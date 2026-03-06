@@ -16,11 +16,13 @@ export const metadata = {
     description: "All the important links and resources from The Black Female Engineer in one place.",
     url: "/links",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "Links | The Black Female Engineer",
     description: "All the important links and resources from The Black Female Engineer in one place.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 

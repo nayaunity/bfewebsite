@@ -11,11 +11,13 @@ export const metadata = {
     description: "Making technology accessible and actionable for young professionals.",
     url: "/about",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "About | The Black Female Engineer",
     description: "Making technology accessible and actionable for young professionals.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 

@@ -14,11 +14,13 @@ export const metadata = {
     description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
     url: "/jobs",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "Job Board | The Black Female Engineer",
     description: "Find tech jobs and opportunities to accelerate your career in innovative industries.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 

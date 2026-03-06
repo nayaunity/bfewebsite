@@ -10,11 +10,13 @@ export const metadata = {
     description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
     url: "/contact",
     type: "website",
+    images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "Contact Me | The Black Female Engineer",
     description: "Get in touch with The Black Female Engineer. I'd love to hear from you.",
+    images: ["/images/bfeimage2.png"],
   },
 };
 
