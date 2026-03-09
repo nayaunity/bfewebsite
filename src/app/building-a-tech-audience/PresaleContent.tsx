@@ -19,7 +19,7 @@ function CTAButton() {
       href="YOUR_STRIPE_LINK"
       className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-lg"
     >
-      Claim Your VIP Seat
+      Secure Your Spot
       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
       </svg>
@@ -185,6 +185,7 @@ export default function PresaleContent() {
                 <span className="text-white/40 line-through text-xl">$2,999</span>
                 <span className="font-serif text-3xl md:text-4xl text-[#ffe500]">$2,499</span>
               </div>
+              <p className="text-white/40 text-sm mt-2">or 3 x $899/mo</p>
             </div>
           </div>
         </div>
@@ -344,11 +345,12 @@ export default function PresaleContent() {
           <p className="text-white/60 mb-2 text-lg">
             Only {seatsRemaining} of {totalSeats} VIP founding member seats left.
           </p>
-          <p className="text-white/40 mb-8">
+          <p className="text-white/40 mb-2">
             <span className="line-through">$2,999</span>{" "}
             <span className="text-[#ffe500] font-serif text-2xl">$2,499</span>
-            <span className="text-white/40 text-sm ml-2">&middot; 100% money-back guarantee</span>
+            <span className="text-white/40 text-sm ml-2">or 3 x $899/mo</span>
           </p>
+          <p className="text-white/40 text-sm mb-8">100% money-back guarantee</p>
           <CTAButton />
         </div>
       </section>
