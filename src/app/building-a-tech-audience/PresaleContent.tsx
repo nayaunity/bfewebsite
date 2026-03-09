@@ -27,6 +27,53 @@ function CTAButton() {
   );
 }
 
+const courseModules = [
+  {
+    title: "Why Building an Audience Matters",
+    description: "SaaS products, corporate leverage, speaking opportunities, and income that doesn\u2019t depend on a corporate job\u2014especially critical in this economy.",
+  },
+  {
+    title: "Picking Your Niche",
+    description: "Find your dream role, identify your differentiator, define your audience, and learn exactly what to post about.",
+  },
+  {
+    title: "Choosing Your Platform",
+    description: "YouTube, LinkedIn, Instagram, TikTok, Twitter\u2014how to pick the right one (or two) for your goals and stick with it.",
+  },
+  {
+    title: "Growth Strategy & Cadence",
+    description: "How often to post, what to post, how to write hooks that stop the scroll, and how to actually grow without burning out.",
+  },
+  {
+    title: "Instagram Deep Dive",
+    description: "Reels, carousels, single posts, Stories, and bio optimization\u2014the playbook for the platform that converts followers into customers.",
+  },
+  {
+    title: "Measuring What Matters",
+    description: "Likes, comments, saves, shares, reposts\u2014which engagement metrics actually matter and how to use them to refine your strategy.",
+  },
+  {
+    title: "Workflows & Tools",
+    description: "ManyChat automations, Claude AI skills for turning 1 piece of content into 10, content repurposing strategy, email lists (non-negotiable), and CapCut editing.",
+  },
+  {
+    title: "Monetization",
+    description: "Brand deals, building a product, consulting, and speaking\u2014the four revenue streams every creator should be working toward.",
+  },
+  {
+    title: "Mindset & Identity",
+    description: "Overcoming imposter syndrome as a technical person, why you don\u2019t need to be an expert (just one step ahead), and how to handle slow growth without quitting.",
+  },
+  {
+    title: "Being a Beginner in Public",
+    description: "How to get past the fear of being wrong online and turn vulnerability into your biggest growth advantage.",
+  },
+  {
+    title: "30-Day Capstone Challenge",
+    description: "Post publicly every day for 30 days using the system you\u2019ve built. You finish with proof of work, a real portfolio, and momentum that compounds.",
+  },
+];
+
 export default function PresaleContent() {
   const targetDate = useRef<number>(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const [timeLeft, setTimeLeft] = useState({ days: 7, hours: 0, minutes: 0, seconds: 0 });
@@ -58,7 +105,7 @@ export default function PresaleContent() {
   const faqs = [
     {
       question: "When does it start?",
-      answer: "We begin within 2 weeks of your enrollment. You\u2019ll receive a welcome email with a scheduling link to book your first coaching call at a time that works for you.",
+      answer: "We begin within 2 weeks of your enrollment. You\u2019ll receive a welcome email with a scheduling link to book your first coaching call at a time that works for you. The recorded course modules are available immediately so you can start learning on day one.",
     },
     {
       question: "What do the content audits include?",
@@ -66,7 +113,7 @@ export default function PresaleContent() {
     },
     {
       question: "What\u2019s the refund policy?",
-      answer: "Because this is a high-touch, limited-seat program, all sales are final once your first coaching session is scheduled. If you have questions before purchasing, DM me on Instagram @theblackfemaleengineer and I\u2019m happy to chat.",
+      answer: "I offer a 100% refund if you\u2019re unhappy with your results. I\u2019m that confident in this program. If you have questions before purchasing, DM me on Instagram @theblackfemaleengineer and I\u2019m happy to chat.",
     },
   ];
 
@@ -85,7 +132,7 @@ export default function PresaleContent() {
               from 0
             </h1>
             <p className="mt-6 text-xl text-[var(--gray-600)]">
-              By Naya, founder of @theblackfemaleengineer. A VIP coaching program for tech professionals who want to build a personal brand, grow an engaged audience, and turn their expertise into influence.
+              By Naya, founder of @theblackfemaleengineer. Stop waiting for permission to share what you know. This VIP program gives you the strategy, coaching, and recorded curriculum to build a real audience, monetize your expertise, and create income that doesn&apos;t depend on a single employer.
             </p>
             <div className="mt-8">
               <CTAButton />
@@ -158,6 +205,15 @@ export default function PresaleContent() {
                 <li className="flex items-start gap-3">
                   <CheckIcon />
                   <div>
+                    <span className="font-medium">Full recorded course curriculum (11 modules)</span>
+                    <p className="text-[var(--gray-600)] text-sm mt-1">
+                      Hours of self-paced video covering everything from picking your niche to monetization to the 30-day capstone challenge. Available immediately so you can start learning on your own schedule.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <div>
                     <span className="font-medium">4 x 1-hour private coaching calls</span>
                     <p className="text-[var(--gray-600)] text-sm mt-1">
                       One-on-one strategy sessions tailored to your goals, niche, and stage of growth. We cover content strategy, platform selection, monetization, and more.
@@ -173,14 +229,54 @@ export default function PresaleContent() {
                     </p>
                   </div>
                 </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <div>
+                    <span className="font-medium">100% money-back guarantee</span>
+                    <p className="text-[var(--gray-600)] text-sm mt-1">
+                      If you&apos;re unhappy with your results, you get a full refund. No hoops, no fine print.
+                    </p>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Who This Is For */}
+      {/* Course Curriculum */}
       <section className="bg-[var(--gray-50)] py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl md:text-4xl">
+              <span className="italic">the</span> CURRICULUM
+            </h2>
+            <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto">
+              11 recorded modules covering every stage of building a tech audience\u2014from your first post to your first paycheck.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto grid gap-4">
+            {courseModules.map((module, i) => (
+              <div
+                key={i}
+                className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl px-6 py-5 flex gap-4 items-start"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center flex-shrink-0">
+                  <span className="font-serif font-bold text-black text-sm">{i + 1}</span>
+                </div>
+                <div>
+                  <h3 className="font-medium">{module.title}</h3>
+                  <p className="text-[var(--gray-600)] text-sm mt-1">{module.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who This Is For */}
+      <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
             <h2 className="font-serif text-3xl md:text-4xl text-center mb-12">
@@ -190,8 +286,9 @@ export default function PresaleContent() {
               {[
                 "Tech professionals who want to build a personal brand but don\u2019t know where to start",
                 "Engineers, designers, and PMs who have expertise to share but struggle with consistency",
+                "Anyone who\u2019s terrified of being wrong online\u2014we tackle that head-on",
+                "People who want income streams beyond their 9-to-5, especially in an unstable job market",
                 "Career changers who want to stand out and attract opportunities through content",
-                "Anyone in tech who\u2019s ready to go from lurker to thought leader",
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <CheckIcon />
@@ -204,7 +301,7 @@ export default function PresaleContent() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 md:py-24">
+      <section className="bg-[var(--gray-50)] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
             <h2 className="font-serif text-3xl md:text-4xl text-center mb-12">
@@ -250,6 +347,7 @@ export default function PresaleContent() {
           <p className="text-white/40 mb-8">
             <span className="line-through">$2,999</span>{" "}
             <span className="text-[#ffe500] font-serif text-2xl">$2,499</span>
+            <span className="text-white/40 text-sm ml-2">&middot; 100% money-back guarantee</span>
           </p>
           <CTAButton />
         </div>
