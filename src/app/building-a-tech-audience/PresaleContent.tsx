@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 const seatsRemaining = 3;
 const totalSeats = 5;
@@ -122,20 +123,32 @@ export default function PresaleContent() {
       {/* Hero */}
       <section className="pb-16 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-sm tracking-widest text-[#ef562a] mb-4">VIP FOUNDING MEMBER</p>
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Build in Public:
-              <br />
-              <span className="italic text-[#ef562a]">Grow a Tech Audience</span>
-              <br />
-              from 0
-            </h1>
-            <p className="mt-6 text-xl text-[var(--gray-600)]">
-              By Naya, founder of @theblackfemaleengineer. Stop waiting for permission to share what you know. This VIP program gives you the strategy, coaching, and recorded curriculum to build a real audience, monetize your expertise, and create income that doesn&apos;t depend on a single employer.
-            </p>
-            <div className="mt-8">
-              <CTAButton />
+          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div>
+              <p className="text-sm tracking-widest text-[#ef562a] mb-4">VIP FOUNDING MEMBER</p>
+              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
+                Build in Public:
+                <br />
+                <span className="italic text-[#ef562a]">Grow a Tech Audience</span>
+                <br />
+                from 0
+              </h1>
+              <p className="mt-6 text-xl text-[var(--gray-600)]">
+                By Naya, founder of @theblackfemaleengineer. Stop waiting for permission to share what you know. This VIP program gives you the strategy, coaching, and recorded curriculum to build a real audience, monetize your expertise, and create income that doesn&apos;t depend on a single employer.
+              </p>
+              <div className="mt-8">
+                <CTAButton />
+              </div>
+            </div>
+            <div className="relative rounded-3xl overflow-hidden aspect-square">
+              <Image
+                src="/images/work-with-us.jpg"
+                alt="Naya, founder of The Black Female Engineer"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
         </div>
