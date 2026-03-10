@@ -78,6 +78,17 @@ export default function WebinarSection() {
             href="http://clau.de/theblackfemaleengineer"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {
+              fetch("/api/links/click", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  linkId: "claude-code-cta",
+                  linkTitle: "Start Using Claude Code Today",
+                  linkUrl: "http://clau.de/theblackfemaleengineer",
+                }),
+              }).catch(() => {});
+            }}
             className="inline-block mt-4 text-xl md:text-2xl font-serif text-[#ef562a] hover:text-[#d44a22] transition-colors underline underline-offset-4"
           >
             Start Using Claude Code Today &rarr;
