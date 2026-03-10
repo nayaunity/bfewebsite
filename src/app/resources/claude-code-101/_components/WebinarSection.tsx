@@ -74,6 +74,14 @@ export default function WebinarSection() {
               : "Get the complete Claude Code 101 webinar recording where I walk through building a portfolio website from scratch using Claude Code."
             }
           </p>
+          <a
+            href="http://clau.de/theblackfemaleengineer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-4 text-xl md:text-2xl font-serif text-[#ef562a] hover:text-[#d44a22] transition-colors underline underline-offset-4"
+          >
+            Start Using Claude Code Today &rarr;
+          </a>
         </div>
 
         {hasAccess ? (
