@@ -519,12 +519,12 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </div>
-        <div className="mt-4 bg-[#ef562a]/5 border border-[#ef562a]/20 rounded-xl p-4 flex items-center justify-between">
+        <div className="mt-4 bg-[#ffe500]/10 border border-[#ffe500]/40 rounded-xl p-4 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-[#ef562a]">Claude Code CTA</p>
+            <p className="text-sm font-medium text-[var(--foreground)]">Claude Code CTA</p>
             <p className="text-xs text-[var(--gray-600)] mt-0.5">clau.de/theblackfemaleengineer</p>
           </div>
-          <p className="text-3xl font-bold text-[#ef562a]">
+          <p className="text-3xl font-bold text-[var(--foreground)]">
             {analytics.links.claudeCodeCta}
           </p>
         </div>
