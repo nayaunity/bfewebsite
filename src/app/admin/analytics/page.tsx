@@ -75,6 +75,8 @@ async function getAnalytics() {
     monthLinkClicks,
     linkClicksByLink,
     recentLinkClicks,
+    // Claude Code CTA clicks
+    claudeCodeCtaClicks,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -156,6 +158,8 @@ async function getAnalytics() {
         clickedAt: true,
       },
     }),
+    // Claude Code CTA clicks
+    prisma.linkClick.count({ where: { linkId: "claude-code-cta" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -221,6 +225,7 @@ async function getAnalytics() {
         clicks: c._count.id,
       })),
       recent: recentLinkClicks,
+      claudeCodeCta: claudeCodeCtaClicks,
     },
     jobs: {
       total: totalJobClicks,
@@ -513,6 +518,15 @@ export default async function AnalyticsPage() {
               {analytics.links.month}
             </p>
           </div>
+        </div>
+        <div className="mt-4 bg-[#ef562a]/5 border border-[#ef562a]/20 rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-[#ef562a]">Claude Code CTA</p>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">clau.de/theblackfemaleengineer</p>
+          </div>
+          <p className="text-3xl font-bold text-[#ef562a]">
+            {analytics.links.claudeCodeCta}
+          </p>
         </div>
       </div>
 
