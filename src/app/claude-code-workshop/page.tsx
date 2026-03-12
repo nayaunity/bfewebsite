@@ -80,8 +80,9 @@ export default function ClaudeCodeWorkshopPage() {
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
                   I&apos;m Nyaradzo, engineer, educator, and Anthropic partner.
-                  I&apos;ve trained engineering teams at Microsoft, HP, and AMD to
-                  ship production code with Claude Code.
+                  I&apos;ve spent 5+ years making technology accessible to over
+                  200K professionals, and now I teach teams how to ship
+                  faster with Claude Code.
                 </p>
               </div>
               <div className="relative rounded-3xl aspect-square overflow-hidden">
