@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import BookCallCTA from "./BookCallCTA";
@@ -51,7 +52,7 @@ const pricingTiers = [
   {
     name: "2-Day Sprint",
     duration: "2 full days",
-    price: "$25K",
+    price: "$30K",
     features: [
       "Full curriculum + live project sprint",
       "Engineers ship real features with Claude Code",
@@ -69,18 +70,29 @@ export default function ClaudeCodeWorkshopPage() {
         {/* Hero — Who I Am */}
         <section className="bg-[var(--background)] pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                Your team&apos;s{" "}
-                <span className="italic text-[#ef562a]">Claude Code</span>
-                <br />
-                workshop instructor
-              </h1>
-              <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
-                I&apos;m Nyaradzo — engineer, educator, and Anthropic partner.
-                I&apos;ve trained engineering teams at Microsoft, HP, and AMD to
-                ship production code with Claude Code.
-              </p>
+            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+              <div>
+                <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
+                  Your team&apos;s{" "}
+                  <span className="italic text-[#ef562a]">Claude Code</span>
+                  <br />
+                  workshop instructor
+                </h1>
+                <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
+                  I&apos;m Nyaradzo — engineer, educator, and Anthropic partner.
+                  I&apos;ve trained engineering teams at Microsoft, HP, and AMD to
+                  ship production code with Claude Code.
+                </p>
+              </div>
+              <div className="relative rounded-3xl aspect-square overflow-hidden">
+                <Image
+                  src="/images/nyaradzo.jpg"
+                  alt="Nyaradzo"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
         </section>
