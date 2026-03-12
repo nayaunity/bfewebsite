@@ -28,36 +28,36 @@ export const metadata = {
 
 const pricingTiers = [
   {
-    name: "Half-Day",
-    duration: "4 hours",
+    name: "Starter",
+    duration: "Half-day (4 hrs)",
     price: "$15K",
     features: [
       "Foundations of Claude Code for your stack",
-      "Hands-on pair programming session",
+      "Hands-on slides + exercises",
+      "Resource guide included",
       "Up to 20 engineers",
     ],
   },
   {
-    name: "Full-Day",
-    duration: "8 hours",
+    name: "Core",
+    duration: "Full-day (8 hrs)",
     price: "$20K",
     popular: true,
     features: [
       "Deep-dive into advanced workflows",
-      "Team-specific use case buildout",
-      "Custom playbook for your codebase",
-      "Up to 20 engineers",
+      "Custom workflow integration for your codebase",
+      "Up to 30 engineers",
     ],
   },
   {
-    name: "2-Day Sprint",
-    duration: "2 full days",
-    price: "$30K",
+    name: "Sprint",
+    duration: "2 days",
+    price: "$35K",
     features: [
       "Full curriculum + live project sprint",
-      "Engineers ship real features with Claude Code",
-      "Post-workshop async support",
-      "Up to 20 engineers",
+      "Custom curriculum tailored to your team",
+      "Manager briefing session",
+      "Up to 40 engineers",
     ],
   },
 ];
