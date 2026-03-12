@@ -166,7 +166,7 @@ export default function ClaudeCodeWorkshopPage() {
               <p className="text-sm tracking-widest mb-8">
                 TRUSTED BY TEAMS AT
               </p>
-              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-400)]">
+              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>ANTHROPIC</span>
                 <span className="text-[#ef562a]">MICROSOFT</span>
                 <span>HP</span>
