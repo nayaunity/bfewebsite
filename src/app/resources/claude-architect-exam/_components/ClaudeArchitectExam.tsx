@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 interface DomainInfo {
   name: string;
@@ -687,7 +689,36 @@ const SCENARIO_QUESTIONS = SCENARIOS.map((s) =>
 );
 
 export default function ClaudeArchitectExam() {
-  const [phase, setPhase] = useState<"intro" | "exam" | "results">("intro");
+  const [hasAccess, setHasAccess] = useState(false);
+  const [gateEmail, setGateEmail] = useState("");
+  const { status } = useSession();
+  const { isLoading: isSubmitting, error: subscribeError, subscribe } = useSubscribe();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (status === "authenticated") {
+      setHasAccess(true);
+    } else {
+      const unlocked = localStorage.getItem("bfe-course-access");
+      setHasAccess(unlocked === "true");
+    }
+  }, [status]);
+
+  const handleUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gateEmail) return;
+    await subscribe(gateEmail, {
+      tags: ["bfewebsite", "claude-architect-exam"],
+      onSuccess: () => {
+        localStorage.setItem("bfe-course-access", "true");
+        localStorage.setItem("bfe-user-email", gateEmail);
+        setHasAccess(true);
+        setPhase("exam");
+      },
+    });
+  };
+
+  const [phase, setPhase] = useState<"intro" | "gate" | "exam" | "results">("intro");
   const [scenIdx, setScenIdx] = useState(0);
   const [qIdx, setQIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -766,6 +797,14 @@ export default function ClaudeArchitectExam() {
   const timerColor =
     timeLeft < 600 ? "text-red-600" : timeLeft < 1800 ? "text-amber-600" : "text-emerald-600";
 
+  const handleBeginExam = () => {
+    if (hasAccess) {
+      setPhase("exam");
+    } else {
+      setPhase("gate");
+    }
+  };
+
   // -- INTRO --
   if (phase === "intro") {
     return (
@@ -826,11 +865,54 @@ export default function ClaudeArchitectExam() {
         </div>
 
         <button
-          onClick={() => setPhase("exam")}
+          onClick={handleBeginExam}
           className="w-full py-3.5 bg-[#ef562a] hover:bg-[#d94d24] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
         >
           Begin Exam
         </button>
+      </div>
+    );
+  }
+
+  // -- EMAIL GATE --
+  if (phase === "gate") {
+    return (
+      <div className="p-8 max-w-[720px] mx-auto bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)] text-center">
+        <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-[#ffe500] flex items-center justify-center">
+          <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h2 className="font-serif text-2xl md:text-3xl mb-3">
+          Enter your email to begin
+        </h2>
+        <p className="text-[var(--gray-600)] mb-8 max-w-md mx-auto">
+          Unlock the full 48-question practice exam. No spam, ever.
+        </p>
+        <form onSubmit={handleUnlock} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <input
+            type="email"
+            value={gateEmail}
+            onChange={(e) => setGateEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+            disabled={isSubmitting}
+            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-[#ef562a] disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-[#ef562a] text-white px-8 py-4 rounded-full font-medium hover:bg-[#d94d25] transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? "..." : "Get Access"}
+          </button>
+        </form>
+        {subscribeError && (
+          <p className="text-sm text-red-600 mt-3">{subscribeError}</p>
+        )}
+        <p className="text-xs text-[var(--gray-600)] mt-4">
+          No spam, ever. Unsubscribe anytime.
+        </p>
       </div>
     );
   }
