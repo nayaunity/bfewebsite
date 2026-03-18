@@ -323,22 +323,22 @@ export default function CertificationPage() {
                   <span className="italic">your</span> INSTRUCTOR
                 </h2>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  I&apos;m Nyaradzo: engineer, educator, and{" "}
-                  <strong className="text-[var(--foreground)]">
-                    Anthropic Claude Ambassador
-                  </strong>
-                  . I&apos;ve spent 5+ years making technology accessible to
-                  over 200K professionals.
+                  I&apos;m Nyaradzo: engineer, educator, and one of the few
+                  people in this space who has actually built a career in tech
+                  from scratch and taught hundreds of thousands of others to do
+                  the same.
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  I&apos;ve delivered Claude Code workshops for teams at
-                  Anthropic, Microsoft, HP, and AMD. This course is the
-                  productized version of that expertise, built to give career
-                  switchers the same structured, hands-on training.
+                  I went from Finance grad to software engineer in 6 months. No
+                  CS degree. No connections. Just the right tools, the right
+                  mindset, and a refusal to wait for permission. 5 years later,
+                  I made another career switch, Software Engineer to AI Engineer
+                  and Educator.
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed">
-                  No fluff. No toy demos. Real skills, real projects, real
-                  results.
+                  I&apos;ve since worked with companies like Anthropic, HP,
+                  Microsoft, and others to help professionals understand, adopt,
+                  and build with the tools that are reshaping the industry.
                 </p>
               </div>
               <div className="relative rounded-3xl aspect-square overflow-hidden">

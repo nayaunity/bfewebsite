@@ -24,7 +24,7 @@ const faqs = [
   {
     question: "When does the course start?",
     answer:
-      "Immediately after enrollment. All content is available on day one. No waiting for a cohort to begin.",
+      "The full course opens on April 15th, 2026. This is a presale, so by enrolling now you lock in the lowest price and get access as soon as it launches.",
   },
   {
     question: "Will there be more seats after the founding class fills?",
@@ -34,7 +34,7 @@ const faqs = [
   {
     question: "Do I need a paid Claude subscription?",
     answer:
-      "Module 1 walks you through everything you need to set up, including Claude Code access. We'll cover exactly what you need and how to get started.",
+      "Yes, you will need a paid Claude subscription to use Claude Code. Module 1 walks you through everything you need to set up, including Claude Code access. We'll cover exactly what you need and how to get started.",
   },
   {
     question: "What will I have at the end of the course?",
