@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/community",
     "/contact",
     "/work-with-us",
-    "/certification",
+    "/claude-code-cohort",
     "/links",
     "/privacy",
     "/terms",

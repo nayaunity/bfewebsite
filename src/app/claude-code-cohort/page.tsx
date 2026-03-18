@@ -15,7 +15,7 @@ export const metadata = {
       "Build with Claude Code | The Black Female Engineer",
     description:
       "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 30 seats at $399.",
-    url: "/certification",
+    url: "/claude-code-cohort",
     type: "website",
     images: [
       { url: "/images/bfeimage2.png", alt: "Build with Claude Code" },
