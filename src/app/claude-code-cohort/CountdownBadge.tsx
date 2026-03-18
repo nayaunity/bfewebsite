@@ -31,25 +31,18 @@ export function CountdownBar() {
   if (expired) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#ef562a] text-white py-2.5 px-4 text-center">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 text-sm sm:text-base font-medium">
-        <span>
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#1a1a1a] text-white py-3 px-4 text-center border-b border-white/10">
+      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 font-serif text-sm sm:text-base tracking-wide">
+        <span className="italic">
           Presale closes in{" "}
-          <span className="inline-flex items-center gap-1">
-            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
-              {timeLeft.days}d
-            </span>
-            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
-              {timeLeft.hours}h
-            </span>
-            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
-              {timeLeft.minutes}m
-            </span>
+          <span className="not-italic font-bold">
+            {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
           </span>
         </span>
-        <span className="hidden sm:inline text-white/60">|</span>
+        <span className="text-[#ffe500]">·</span>
         <span>
-          <strong>{TOTAL_SPOTS}</strong> spots remaining
+          <strong className="text-[#ffe500]">{TOTAL_SPOTS}</strong>{" "}
+          <span className="italic">spots remaining</span>
         </span>
       </div>
     </div>
