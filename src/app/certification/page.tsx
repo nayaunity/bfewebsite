@@ -369,7 +369,7 @@ export default function CertificationPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
-                <span className="italic">what attendees</span> SAY
+                <span className="italic">what students</span> SAY
               </h2>
               <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
             </div>
