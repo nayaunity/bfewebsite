@@ -353,7 +353,7 @@ export default function CertificationPage() {
             </div>
             <div className="text-center mt-16">
               <p className="text-sm tracking-widest mb-8">
-                TRAINED TEAMS AT
+                PREVIOUS PARTNERSHIPS
               </p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>ANTHROPIC</span>
