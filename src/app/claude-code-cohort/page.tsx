@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import EnrollCTA from "./EnrollCTA";
 import FAQAccordion from "./FAQAccordion";
-import CountdownBadge from "./CountdownBadge";
+import CountdownBadge, { CountdownBar } from "./CountdownBadge";
 
 export const metadata = {
   title: "Build with Claude Code | The Black Female Engineer",
@@ -144,6 +144,7 @@ const pricingFeatures = [
 export default function CertificationPage() {
   return (
     <>
+      <CountdownBar />
       <Navigation />
       <JsonLd
         data={{
@@ -165,7 +166,7 @@ export default function CertificationPage() {
           },
         }}
       />
-      <main className="pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
+      <main className="pt-42 md:pt-50 bg-[var(--background)] text-[var(--foreground)]">
         {/* Hero */}
         <section className="bg-[var(--background)] pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -177,13 +178,11 @@ export default function CertificationPage() {
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Build with{" "}
                   <span className="italic text-[#ef562a]">Claude Code</span>.
-                  <br />
-                  Get hired.
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
                   The first structured course for career switchers who
-                  want to build, deploy, and get hired using the fastest-growing
-                  AI development tool. Self-paced. Hands-on. Portfolio-ready.
+                  want to build and deploy using the fastest-growing AI
+                  development tool. Self-paced. Hands-on. Portfolio-ready.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <EnrollCTA />

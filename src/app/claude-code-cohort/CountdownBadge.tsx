@@ -8,10 +8,52 @@ const TOTAL_SPOTS = 30;
 function getTimeLeft() {
   const now = new Date();
   const diff = PRESALE_END.getTime() - now.getTime();
-  if (diff <= 0) return { days: 0, hours: 0 };
+  if (diff <= 0) return { days: 0, hours: 0, minutes: 0 };
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  return { days, hours };
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return { days, hours, minutes };
+}
+
+export function CountdownBar() {
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(getTimeLeft());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const expired =
+    timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0;
+
+  if (expired) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#ef562a] text-white py-2.5 px-4 text-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 text-sm sm:text-base font-medium">
+        <span>
+          Presale closes in{" "}
+          <span className="inline-flex items-center gap-1">
+            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
+              {timeLeft.days}d
+            </span>
+            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
+              {timeLeft.hours}h
+            </span>
+            <span className="bg-white/20 rounded px-1.5 py-0.5 font-bold tabular-nums">
+              {timeLeft.minutes}m
+            </span>
+          </span>
+        </span>
+        <span className="hidden sm:inline text-white/60">|</span>
+        <span>
+          <strong>{TOTAL_SPOTS}</strong> spots remaining
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function CountdownBadge() {
@@ -20,11 +62,12 @@ export default function CountdownBadge() {
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(getTimeLeft());
-    }, 60000); // update every minute
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  const expired = timeLeft.days === 0 && timeLeft.hours === 0;
+  const expired =
+    timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0;
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-sm">
@@ -34,7 +77,7 @@ export default function CountdownBadge() {
           <span className="text-[var(--gray-600)]">
             Presale ends in{" "}
             <strong className="text-[var(--foreground)]">
-              {timeLeft.days}d {timeLeft.hours}h
+              {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
             </strong>
           </span>
         </div>
@@ -44,7 +87,8 @@ export default function CountdownBadge() {
           <span className="inline-block w-2 h-2 rounded-full bg-[#ef562a] animate-pulse" />
         )}
         <span className="text-[var(--gray-600)]">
-          <strong className="text-[var(--foreground)]">{TOTAL_SPOTS}</strong> spots remaining
+          <strong className="text-[var(--foreground)]">{TOTAL_SPOTS}</strong>{" "}
+          spots remaining
         </span>
       </div>
     </div>
