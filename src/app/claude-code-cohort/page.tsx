@@ -343,7 +343,7 @@ export default function CertificationPage() {
               </div>
               <div className="relative rounded-3xl aspect-square overflow-hidden">
                 <Image
-                  src="/images/nyaradzo.jpg"
+                  src="/images/naya-yellow-headshot.jpg"
                   alt="Nyaradzo"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
