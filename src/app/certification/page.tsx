@@ -7,26 +7,26 @@ import FAQAccordion from "./FAQAccordion";
 import CountdownBadge from "./CountdownBadge";
 
 export const metadata = {
-  title: "BFE Certification: Build with Claude Code | The Black Female Engineer",
+  title: "Build with Claude Code | The Black Female Engineer",
   description:
-    "The first structured Claude Code certification for career switchers. 6 modules, 40+ hands-on lessons, a deployed portfolio app, and a verifiable digital badge. Founding class: $399 (50 seats).",
+    "The first structured Claude Code course for career switchers. 6 modules, a deployed portfolio app, and a verifiable digital badge. Presale: $399 (30 seats).",
   openGraph: {
     title:
-      "BFE Certification: Build with Claude Code | The Black Female Engineer",
+      "Build with Claude Code | The Black Female Engineer",
     description:
-      "The first structured Claude Code certification for career switchers. Self-paced. Hands-on. Portfolio-ready. Founding class limited to 50 seats at $399.",
+      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 30 seats at $399.",
     url: "/certification",
     type: "website",
     images: [
-      { url: "/images/bfeimage2.png", alt: "BFE Claude Code Certification" },
+      { url: "/images/bfeimage2.png", alt: "Build with Claude Code" },
     ],
   },
   twitter: {
     card: "summary_large_image" as const,
     title:
-      "BFE Certification: Build with Claude Code | The Black Female Engineer",
+      "Build with Claude Code | The Black Female Engineer",
     description:
-      "The first structured Claude Code certification for career switchers. Self-paced. Hands-on. Portfolio-ready. Founding class limited to 50 seats at $399.",
+      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 30 seats at $399.",
     images: ["/images/bfeimage2.png"],
   },
 };
@@ -105,7 +105,7 @@ const deliverables = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.745 3.745 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
       </svg>
     ),
-    title: "BFE Claude Code Certified Badge",
+    title: "BFE Digital Badge",
     description:
       "A verifiable digital credential for your LinkedIn and resume.",
   },
@@ -125,14 +125,14 @@ const deliverables = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
       </svg>
     ),
-    title: "40+ Hands-On Lessons",
+    title: "6 Hands-On Modules",
     description:
-      "6 modules, each with a project you build from start to finish.",
+      "Each module includes a project you build from start to finish.",
   },
 ];
 
 const pricingFeatures = [
-  "6 modules, 40+ lessons",
+  "6 modules with hands-on projects",
   "Self-paced, lifetime access",
   "Deployed portfolio app",
   "Verifiable BFE digital badge",
@@ -148,9 +148,9 @@ export default function CertificationPage() {
         data={{
           "@context": "https://schema.org",
           "@type": "Course",
-          name: "Build with Claude Code: The BFE Certification",
+          name: "Build with Claude Code",
           description:
-            "The first structured Claude Code certification for career switchers. 6 modules, 40+ hands-on lessons, a deployed portfolio app, and a verifiable digital badge.",
+            "The first structured Claude Code course for career switchers. 6 modules, a deployed portfolio app, and a verifiable digital badge.",
           provider: {
             "@type": "Organization",
             name: "The Black Female Engineer",
@@ -171,16 +171,16 @@ export default function CertificationPage() {
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
               <div>
                 <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#ffe500] text-black mb-6 tracking-wide">
-                  PRESALE &mdash; ONLY 30 SEATS
+                  PRESALE · ONLY 30 SEATS
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Build with{" "}
                   <span className="italic text-[#ef562a]">Claude Code</span>.
                   <br />
-                  Get certified.
+                  Get hired.
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
-                  The first structured certification for career switchers who
+                  The first structured course for career switchers who
                   want to build, deploy, and get hired using the fastest-growing
                   AI development tool. Self-paced. Hands-on. Portfolio-ready.
                 </p>
@@ -194,7 +194,7 @@ export default function CertificationPage() {
               <div className="relative rounded-3xl aspect-square overflow-hidden">
                 <Image
                   src="/images/nyaradzo.jpg"
-                  alt="Nyaradzo — BFE Certification Instructor"
+                  alt="Nyaradzo, BFE Course Instructor"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
@@ -214,7 +214,7 @@ export default function CertificationPage() {
             <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
             <div className="space-y-8 text-left max-w-2xl mx-auto">
               {[
-                "Claude Code is the fastest-growing AI development tool on the market — and there is no structured, beginner-accessible course for it. Until now.",
+                "Claude Code is the fastest-growing AI development tool on the market, and there is no structured, beginner-accessible course for it. Until now.",
                 "Career switchers who can build and deploy with AI are getting hired over candidates who can\u2019t. This is the skill gap that matters right now.",
                 "This course gives you the portfolio project, the credential, and the hands-on skills to prove you belong in the room.",
               ].map((item, i) => (
@@ -322,7 +322,7 @@ export default function CertificationPage() {
                   <span className="italic">your</span> INSTRUCTOR
                 </h2>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  I&apos;m Nyaradzo &mdash; engineer, educator, and{" "}
+                  I&apos;m Nyaradzo: engineer, educator, and{" "}
                   <strong className="text-[var(--foreground)]">
                     Anthropic Claude Ambassador
                   </strong>
@@ -331,9 +331,9 @@ export default function CertificationPage() {
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
                   I&apos;ve delivered Claude Code workshops for teams at
-                  Anthropic, Microsoft, HP, and AMD. This certification is the
-                  productized version of that expertise &mdash; built to give
-                  career switchers the same structured, hands-on training.
+                  Anthropic, Microsoft, HP, and AMD. This course is the
+                  productized version of that expertise, built to give career
+                  switchers the same structured, hands-on training.
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed">
                   No fluff. No toy demos. Real skills, real projects, a real

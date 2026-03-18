@@ -14,8 +14,8 @@ export default function EnrollCTA({ className }: { className?: string }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            linkId: "certification-enroll-cta",
-            linkTitle: "Enroll - BFE Certification Founding Class",
+            linkId: "course-enroll-cta",
+            linkTitle: "Enroll - BFE Claude Code Course Presale",
             linkUrl: ENROLL_URL,
           }),
         }).catch(() => {});
@@ -25,7 +25,7 @@ export default function EnrollCTA({ className }: { className?: string }) {
         "inline-flex items-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-lg"
       }
     >
-      Enroll Now &mdash; $399
+      Enroll Now <span className="line-through opacity-60">$499</span> $399
       <svg
         className="w-5 h-5"
         fill="none"

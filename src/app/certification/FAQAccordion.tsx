@@ -4,7 +4,7 @@ const faqs = [
   {
     question: "Do I need coding experience?",
     answer:
-      "Yes — basic coding knowledge is expected (variables, functions, HTML/CSS). This is not a learn-to-code course. It's designed for career switchers who have foundational skills and want to level up with AI-powered development.",
+      "Yes, basic coding knowledge is expected (variables, functions, HTML/CSS). This is not a learn-to-code course. It's designed for career switchers who have foundational skills and want to level up with AI-powered development.",
   },
   {
     question: "Is this self-paced?",
@@ -12,7 +12,7 @@ const faqs = [
       "Yes, fully self-paced with lifetime access. Work through the modules on your own schedule. All content is available immediately after enrollment.",
   },
   {
-    question: "What is the BFE Claude Code Certified badge?",
+    question: "What is the BFE digital badge?",
     answer:
       "A verifiable digital credential you earn after completing all 6 modules and your capstone project. Add it to your LinkedIn profile, resume, and portfolio to signal your skills to employers.",
   },
@@ -24,12 +24,12 @@ const faqs = [
   {
     question: "When does the course start?",
     answer:
-      "Immediately after enrollment. All content is available on day one — no waiting for a cohort to begin.",
+      "Immediately after enrollment. All content is available on day one. No waiting for a cohort to begin.",
   },
   {
     question: "Will there be more seats after the founding class fills?",
     answer:
-      "Yes, but the next round will be at the regular price of $499. The founding class is the only time you'll see $399 — and it's limited to 50 seats.",
+      "Yes, but the next round will be at the regular price of $499. The presale is the only time you'll see $399, and it's limited to 30 seats.",
   },
   {
     question: "Do I need a paid Claude subscription?",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "What will I have at the end of the course?",
     answer:
-      "A deployed, portfolio-ready AI-powered application you built from scratch, plus a verifiable BFE Claude Code Certified digital badge. You'll also have hands-on experience with the Anthropic API and developer-grade prompting skills.",
+      "A deployed, portfolio-ready AI-powered application you built from scratch, plus a verifiable BFE digital badge. You'll also have hands-on experience with the Anthropic API and developer-grade prompting skills.",
   },
 ];
 
