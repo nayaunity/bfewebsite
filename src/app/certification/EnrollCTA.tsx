@@ -1,7 +1,6 @@
 "use client";
 
-// TODO: Replace with real payment link (Stripe Payment Link, Gumroad, etc.) before launch
-const ENROLL_URL = "#enroll";
+const ENROLL_URL = "https://buy.stripe.com/5kQeVcfop7f91y36Ni1VK00";
 
 export default function EnrollCTA({ className }: { className?: string }) {
   return (
