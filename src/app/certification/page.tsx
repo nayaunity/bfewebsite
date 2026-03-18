@@ -138,6 +138,7 @@ const pricingFeatures = [
   "Verifiable BFE digital badge",
   "Hands-on project every module",
   "Founding member exclusive access",
+  "14-day full refund guarantee",
 ];
 
 export default function CertificationPage() {
@@ -446,6 +447,9 @@ export default function CertificationPage() {
                 <div className="mt-4 flex justify-center">
                   <CountdownBadge />
                 </div>
+                <p className="mt-4 text-xs text-[var(--gray-600)]">
+                  14-day money-back guarantee. Full refund, no questions asked.
+                </p>
               </div>
             </div>
           </div>
