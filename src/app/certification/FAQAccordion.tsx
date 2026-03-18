@@ -67,7 +67,7 @@ export default function FAQAccordion() {
               />
             </svg>
           </summary>
-          <div className="px-6 pb-5 text-white/70 leading-relaxed">
+          <div className="px-6 pt-2 pb-6 text-white/70 leading-relaxed">
             {faq.answer}
           </div>
         </details>
