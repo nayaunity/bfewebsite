@@ -328,9 +328,10 @@ export default function CertificationPage() {
                   the same.
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  I went from Finance grad to software engineer in 6 months. No
-                  CS degree. No connections. Just the right tools, the right
-                  mindset, and a refusal to wait for permission. 5 years later,
+                  I went from Finance grad to software engineer in 6 months. I didn't have
+                  a CS degree nor did I have connections. But I made sure to equip
+                  myself with the right tools, mindset, and environment to 
+                  help me succeed. 5 years later,
                   I made another career switch, Software Engineer to AI Engineer
                   and Educator.
                 </p>
