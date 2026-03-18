@@ -125,6 +125,21 @@ To create a dedicated page for a job:
 - `DevOps / SRE`
 - `Design`
 
+## Theme & Styling
+
+All new pages, components, and assets **must** follow the site's theme system. Never use hardcoded colors or inline styles for colors/backgrounds/borders.
+
+- **Use CSS variables** for all colors: `var(--background)`, `var(--foreground)`, `var(--card-bg)`, `var(--card-border)`, `var(--gray-50)`, `var(--gray-100)`, `var(--gray-200)`, `var(--gray-600)`, `var(--gray-800)`, accent variables like `var(--accent-blue-bg)`, etc.
+- **Use Tailwind classes** for layout, spacing, and typography rather than inline styles.
+- **Primary accent**: `#ef562a` (orange) for CTAs, highlights, active states, and hover effects.
+- **Secondary accent**: `#ffe500` (yellow) for badges, CTAs on dark backgrounds.
+- **Headings**: Use `font-serif` class (Playfair Display). Body text inherits Inter.
+- **Cards**: `bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl`
+- **Dark mode**: The site supports light/dark via `data-theme` attribute on `<html>`. CSS variables automatically switch. Never hardcode light-only colors like `#ffffff` or `#111827`.
+- **Page structure**: Navigation + hero section + content sections + Footer. Hero uses serif headings with orange italic accent span.
+
+See `src/app/globals.css` for the full variable list.
+
 ## Deployment
 
 Deploy to production with Vercel:

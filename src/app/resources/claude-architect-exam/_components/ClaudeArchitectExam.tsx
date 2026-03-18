@@ -764,177 +764,61 @@ export default function ClaudeArchitectExam() {
     scenIdx === SCENARIOS.length - 1 && qIdx === currentQList.length - 1;
   const isFirst = scenIdx === 0 && qIdx === 0;
   const timerColor =
-    timeLeft < 600 ? "#DC2626" : timeLeft < 1800 ? "#D97706" : "#059669";
+    timeLeft < 600 ? "text-red-600" : timeLeft < 1800 ? "text-amber-600" : "text-emerald-600";
 
   // -- INTRO --
   if (phase === "intro") {
     return (
-      <div style={{ padding: "2rem", maxWidth: "720px", margin: "0 auto", background: "#ffffff", borderRadius: "16px", color: "#111827" }}>
-        <div
-          style={{
-            borderBottom: "0.5px solid #E5E7EB",
-            paddingBottom: "1.5rem",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginBottom: "8px",
-            }}
-          >
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "8px",
-                background: "#7C3AED",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "15px",
-                fontWeight: "600",
-              }}
-            >
+      <div className="p-8 max-w-[720px] mx-auto bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)]">
+        <div className="border-b border-[var(--card-border)] pb-6 mb-6">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-9 h-9 rounded-lg bg-[#ef562a] flex items-center justify-center text-white text-[15px] font-semibold">
               C
             </div>
-            <span
-              style={{
-                fontSize: "11px",
-                color: "#6B7280",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontWeight: "500",
-              }}
-            >
+            <span className="text-[11px] text-[var(--gray-600)] tracking-wider uppercase font-medium">
               Anthropic &middot; Community Mock Exam
             </span>
           </div>
-          <h1
-            style={{
-              fontSize: "20px",
-              fontWeight: "600",
-              margin: "0 0 4px",
-              color: "#111827",
-            }}
-          >
+          <h2 className="font-serif text-xl font-semibold text-[var(--foreground)] mb-1">
             Claude Certified Architect &mdash; Foundations
-          </h1>
-          <p style={{ fontSize: "14px", color: "#6B7280", margin: 0 }}>
+          </h2>
+          <p className="text-sm text-[var(--gray-600)]">
             Full-length practice exam &middot; 48 questions &middot; 90 minutes
           </p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "10px",
-            marginBottom: "1.5rem",
-          }}
-        >
+        <div className="grid grid-cols-4 gap-2.5 mb-6">
           {([
             ["48", "Questions"],
             ["90 min", "Time limit"],
             ["720", "Passing score"],
             ["6", "Scenarios"],
           ] as const).map(([v, l]) => (
-            <div
-              key={l}
-              style={{
-                background: "#F9FAFB",
-                borderRadius: "8px",
-                padding: "14px 10px",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  color: "#111827",
-                }}
-              >
-                {v}
-              </div>
-              <div
-                style={{
-                  fontSize: "11px",
-                  color: "#6B7280",
-                  marginTop: "2px",
-                }}
-              >
-                {l}
-              </div>
+            <div key={l} className="bg-[var(--gray-50)] rounded-lg py-3.5 px-2.5 text-center">
+              <div className="text-xl font-semibold text-[var(--foreground)]">{v}</div>
+              <div className="text-[11px] text-[var(--gray-600)] mt-0.5">{l}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ marginBottom: "1.5rem" }}>
-          <p
-            style={{
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#374151",
-              marginBottom: "10px",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-            }}
-          >
+        <div className="mb-6">
+          <p className="text-xs font-semibold text-[var(--foreground)] mb-2.5 uppercase tracking-wide">
             Domain weights
           </p>
           {Object.entries(DOMAINS).map(([id, d]) => (
-            <div
-              key={id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "8px",
-              }}
-            >
-              <div
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: d.color,
-                  flexShrink: 0,
-                }}
-              />
-              <div style={{ fontSize: "13px", color: "#374151", flex: 1 }}>
+            <div key={id} className="flex items-center gap-2.5 mb-2">
+              <div className="w-2 h-2 rounded-full shrink-0" style={{ background: d.color }} />
+              <div className="text-[13px] text-[var(--gray-600)] flex-1">
                 Domain {id}: {d.name}
               </div>
-              <div
-                style={{
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  color: d.color,
-                  minWidth: "32px",
-                  textAlign: "right",
-                }}
-              >
+              <div className="text-[13px] font-semibold min-w-[32px] text-right" style={{ color: d.color }}>
                 {Math.round(d.w * 100)}%
               </div>
             </div>
           ))}
         </div>
 
-        <div
-          style={{
-            background: "#FFFBEB",
-            border: "0.5px solid #FCD34D",
-            borderRadius: "8px",
-            padding: "12px 14px",
-            marginBottom: "1.5rem",
-            fontSize: "12px",
-            color: "#92400E",
-            lineHeight: "1.6",
-          }}
-        >
+        <div className="bg-[var(--accent-yellow-bg)] border border-[var(--accent-yellow-text)]/30 rounded-lg px-3.5 py-3 mb-6 text-xs text-[var(--accent-yellow-text)] leading-relaxed">
           <strong>Note:</strong> The real exam presents 4 of 6 scenarios
           randomly. This mock exam includes all 6 for maximum preparation
           coverage. Unanswered questions count as incorrect &mdash; no penalty for
@@ -943,17 +827,7 @@ export default function ClaudeArchitectExam() {
 
         <button
           onClick={() => setPhase("exam")}
-          style={{
-            width: "100%",
-            padding: "13px",
-            background: "#7C3AED",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "14px",
-            fontWeight: "600",
-            cursor: "pointer",
-          }}
+          className="w-full py-3.5 bg-[#ef562a] hover:bg-[#d94d24] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
         >
           Begin Exam
         </button>
@@ -973,43 +847,16 @@ export default function ClaudeArchitectExam() {
         : QUESTIONS.filter((q) => flagged.has(q.id));
 
     return (
-      <div style={{ padding: "1.5rem", maxWidth: "760px", margin: "0 auto", background: "#ffffff", borderRadius: "16px", color: "#111827" }}>
+      <div className="p-6 max-w-[760px] mx-auto bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)]">
         {/* Score card */}
-        <div
-          style={{
-            background: pass ? "#F0FDF4" : "#FEF2F2",
-            border: `1px solid ${pass ? "#86EFAC" : "#FCA5A5"}`,
-            borderRadius: "12px",
-            padding: "2rem",
-            textAlign: "center",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: pass ? "#166534" : "#991B1B",
-              marginBottom: "6px",
-              fontWeight: "600",
-            }}
-          >
+        <div className={`rounded-xl p-8 text-center mb-6 border ${pass ? "bg-[var(--accent-green-bg)] border-[var(--accent-green-text)]/30" : "bg-red-50 border-red-300 dark:bg-red-950 dark:border-red-800"}`}>
+          <div className={`text-[11px] tracking-widest uppercase font-semibold mb-1.5 ${pass ? "text-[var(--accent-green-text)]" : "text-red-700 dark:text-red-400"}`}>
             {pass ? "\u2713 Passing score" : "\u2717 Below passing threshold"}
           </div>
-          <div
-            style={{
-              fontSize: "72px",
-              fontWeight: "700",
-              color: pass ? "#16A34A" : "#DC2626",
-              lineHeight: 1,
-            }}
-          >
+          <div className={`text-7xl font-bold leading-none ${pass ? "text-[var(--accent-green-text)]" : "text-red-600 dark:text-red-400"}`}>
             {scaled}
           </div>
-          <div
-            style={{ fontSize: "13px", color: "#6B7280", marginTop: "6px" }}
-          >
+          <div className="text-[13px] text-[var(--gray-600)] mt-1.5">
             {correct} of {QUESTIONS.length} correct (
             {Math.round((correct / QUESTIONS.length) * 100)}%) &middot; Minimum
             passing: 720
@@ -1017,17 +864,8 @@ export default function ClaudeArchitectExam() {
         </div>
 
         {/* Domain breakdown */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <p
-            style={{
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#374151",
-              marginBottom: "12px",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-            }}
-          >
+        <div className="mb-6">
+          <p className="text-xs font-semibold text-[var(--foreground)] mb-3 uppercase tracking-wide">
             Domain breakdown
           </p>
           {Object.entries(DOMAINS).map(([id, d]) => {
@@ -1035,43 +873,15 @@ export default function ClaudeArchitectExam() {
             const pct = ds.total > 0 ? Math.round((ds.correct / ds.total) * 100) : 0;
             const barColor = pct >= 72 ? d.color : "#DC2626";
             return (
-              <div key={id} style={{ marginBottom: "12px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "4px",
-                  }}
-                >
-                  <span style={{ fontSize: "12px", color: "#374151" }}>
-                    {d.name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      color: barColor,
-                    }}
-                  >
+              <div key={id} className="mb-3">
+                <div className="flex justify-between mb-1">
+                  <span className="text-xs text-[var(--gray-600)]">{d.name}</span>
+                  <span className="text-xs font-semibold" style={{ color: barColor }}>
                     {ds.correct}/{ds.total} ({pct}%)
                   </span>
                 </div>
-                <div
-                  style={{
-                    height: "6px",
-                    borderRadius: "3px",
-                    background: "#E5E7EB",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: pct + "%",
-                      background: barColor,
-                      borderRadius: "3px",
-                    }}
-                  />
+                <div className="h-1.5 rounded-full bg-[var(--gray-200)] overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: pct + "%", background: barColor }} />
                 </div>
               </div>
             );
@@ -1080,44 +890,20 @@ export default function ClaudeArchitectExam() {
 
         {/* Review section */}
         <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "12px",
-            }}
-          >
-            <p
-              style={{
-                fontSize: "12px",
-                fontWeight: "600",
-                color: "#374151",
-                margin: 0,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wide m-0">
               Review questions
             </p>
-            <div style={{ display: "flex", gap: "6px" }}>
+            <div className="flex gap-1.5">
               {(["all", "wrong", "flagged"] as const).map((f) => (
                 <button
                   key={f}
-                  onClick={() => {
-                    setReviewFilter(f);
-                    setShowReview(true);
-                  }}
-                  style={{
-                    fontSize: "11px",
-                    padding: "4px 10px",
-                    borderRadius: "5px",
-                    border: `0.5px solid ${reviewFilter === f && showReview ? "#7C3AED" : "#D1D5DB"}`,
-                    background: reviewFilter === f && showReview ? "#EDE9FE" : "transparent",
-                    color: reviewFilter === f && showReview ? "#5B21B6" : "#6B7280",
-                    cursor: "pointer",
-                    fontWeight: reviewFilter === f && showReview ? "600" : "400",
-                  }}
+                  onClick={() => { setReviewFilter(f); setShowReview(true); }}
+                  className={`text-[11px] px-2.5 py-1 rounded border cursor-pointer transition-colors ${
+                    reviewFilter === f && showReview
+                      ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a] font-semibold"
+                      : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
+                  }`}
                 >
                   {f === "all" ? `All (${QUESTIONS.length})` : f === "wrong" ? `Missed (${QUESTIONS.filter(q => answers[q.id] !== q.correct).length})` : `Flagged (${flagged.size})`}
                 </button>
@@ -1131,101 +917,43 @@ export default function ClaudeArchitectExam() {
             return (
               <div
                 key={q.id}
-                style={{
-                  border: `0.5px solid #E5E7EB`,
-                  borderLeft: `3px solid ${isCorrect ? "#16A34A" : ua === undefined ? "#9CA3AF" : "#DC2626"}`,
-                  borderRadius: "8px",
-                  padding: "14px 16px",
-                  marginBottom: "10px",
-                }}
+                className="border border-[var(--card-border)] rounded-lg p-3.5 mb-2.5"
+                style={{ borderLeftWidth: "3px", borderLeftColor: isCorrect ? "#16A34A" : ua === undefined ? "#9CA3AF" : "#DC2626" }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "6px",
-                    marginBottom: "8px",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      padding: "2px 7px",
-                      borderRadius: "4px",
-                      background: DOMAINS[q.domain].bg,
-                      color: DOMAINS[q.domain].text,
-                      fontWeight: "600",
-                    }}
-                  >
+                <div className="flex gap-1.5 mb-2 flex-wrap items-center">
+                  <span className="text-[11px] px-2 py-0.5 rounded font-semibold" style={{ background: DOMAINS[q.domain].bg, color: DOMAINS[q.domain].text }}>
                     D{q.domain}
                   </span>
-                  <span style={{ fontSize: "11px", color: "#6B7280" }}>
+                  <span className="text-[11px] text-[var(--gray-600)]">
                     Scenario {q.scenario} &middot; Q{q.id}
                   </span>
                   {flagged.has(q.id) && (
-                    <span style={{ fontSize: "11px", color: "#D97706" }}>
-                      &#x2691; flagged
-                    </span>
+                    <span className="text-[11px] text-amber-600">&#x2691; flagged</span>
                   )}
                   {ua === undefined && (
-                    <span style={{ fontSize: "11px", color: "#9CA3AF" }}>
-                      not answered
-                    </span>
+                    <span className="text-[11px] text-[var(--gray-600)]">not answered</span>
                   )}
                 </div>
-                <p
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    color: "#111827",
-                    margin: "0 0 10px",
-                    lineHeight: "1.55",
-                  }}
-                >
+                <p className="text-[13px] font-medium text-[var(--foreground)] mb-2.5 leading-relaxed">
                   {q.q}
                 </p>
                 {q.options.map((opt, i) => {
                   const isC = i === q.correct;
                   const isU = i === ua;
-                  let bg = "transparent", border = "#E5E7EB", color = "#6B7280";
-                  if (isC) { bg = "#F0FDF4"; border = "#86EFAC"; color = "#166534"; }
-                  else if (isU && !isC) { bg = "#FEF2F2"; border = "#FCA5A5"; color = "#991B1B"; }
+                  const optClass = isC
+                    ? "bg-[var(--accent-green-bg)] border-[var(--accent-green-text)]/40 text-[var(--accent-green-text)]"
+                    : isU && !isC
+                    ? "bg-red-50 border-red-300 text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-400"
+                    : "bg-transparent border-[var(--card-border)] text-[var(--gray-600)]";
                   return (
-                    <div
-                      key={i}
-                      style={{
-                        padding: "7px 10px",
-                        borderRadius: "6px",
-                        marginBottom: "4px",
-                        border: `0.5px solid ${border}`,
-                        background: bg,
-                        fontSize: "12px",
-                        color,
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <span style={{ fontWeight: "700", minWidth: "14px", flexShrink: 0 }}>
-                        {String.fromCharCode(65 + i)}
-                      </span>
+                    <div key={i} className={`py-1.5 px-2.5 rounded-md mb-1 border text-xs flex gap-2 items-start ${optClass}`}>
+                      <span className="font-bold min-w-[14px] shrink-0">{String.fromCharCode(65 + i)}</span>
                       <span>{opt}</span>
                     </div>
                   );
                 })}
-                <div
-                  style={{
-                    marginTop: "10px",
-                    padding: "10px 12px",
-                    background: "#F9FAFB",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    color: "#374151",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  <strong style={{ color: "#111827" }}>Explanation: </strong>
+                <div className="mt-2.5 p-2.5 bg-[var(--gray-50)] rounded-md text-xs text-[var(--gray-600)] leading-relaxed">
+                  <strong className="text-[var(--foreground)]">Explanation: </strong>
                   {q.explanation}
                 </div>
               </div>
@@ -1239,84 +967,34 @@ export default function ClaudeArchitectExam() {
   // -- EXAM --
   const progress = globalIdx + 1;
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", paddingBottom: "2rem", background: "#ffffff", borderRadius: "16px", color: "#111827" }}>
+    <div className="max-w-[800px] mx-auto pb-8 bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)]">
       {/* Sticky header */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          background: "white",
-          borderBottom: "0.5px solid #E5E7EB",
-          padding: "10px 1.5rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          borderRadius: "16px 16px 0 0",
-        }}
-      >
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: "11px", color: "#6B7280", marginBottom: "4px" }}>
+      <div className="sticky top-0 z-10 bg-[var(--card-bg)] border-b border-[var(--card-border)] px-6 py-2.5 flex items-center gap-3 rounded-t-2xl">
+        <div className="flex-1">
+          <div className="text-[11px] text-[var(--gray-600)] mb-1">
             Q{progress} of {QUESTIONS.length} &middot; {totalAnswered} answered
           </div>
-          <div
-            style={{
-              height: "4px",
-              borderRadius: "2px",
-              background: "#E5E7EB",
-              overflow: "hidden",
-            }}
-          >
+          <div className="h-1 rounded-full bg-[var(--gray-200)] overflow-hidden">
             <div
-              style={{
-                height: "100%",
-                width: (progress / QUESTIONS.length) * 100 + "%",
-                background: "#7C3AED",
-                borderRadius: "2px",
-                transition: "width 0.2s",
-              }}
+              className="h-full rounded-full bg-[#ef562a] transition-all duration-200"
+              style={{ width: (progress / QUESTIONS.length) * 100 + "%" }}
             />
           </div>
         </div>
-        <div
-          style={{
-            fontSize: "17px",
-            fontWeight: "700",
-            color: timerColor,
-            fontVariantNumeric: "tabular-nums",
-            minWidth: "52px",
-            textAlign: "right",
-          }}
-        >
+        <div className={`text-[17px] font-bold tabular-nums min-w-[52px] text-right ${timerColor}`}>
           {formatTime(timeLeft)}
         </div>
         <button
           onClick={submitExam}
-          style={{
-            fontSize: "12px",
-            padding: "6px 12px",
-            borderRadius: "6px",
-            border: "0.5px solid #DC2626",
-            color: "#DC2626",
-            background: "transparent",
-            cursor: "pointer",
-            fontWeight: "500",
-          }}
+          className="text-xs px-3 py-1.5 rounded-md border border-red-500 text-red-500 bg-transparent cursor-pointer font-medium hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
         >
           Submit
         </button>
       </div>
 
-      <div style={{ padding: "1rem 1.5rem 0" }}>
+      <div className="px-6 pt-4">
         {/* Scenario tabs */}
-        <div
-          style={{
-            display: "flex",
-            gap: "5px",
-            overflowX: "auto",
-            paddingBottom: "10px",
-          }}
-        >
+        <div className="flex gap-1.5 overflow-x-auto pb-2.5">
           {SCENARIOS.map((sc, i) => {
             const done = SCENARIO_QUESTIONS[i].filter(
               (q) => answers[q.id] !== undefined
@@ -1327,17 +1005,11 @@ export default function ClaudeArchitectExam() {
               <button
                 key={i}
                 onClick={() => { setScenIdx(i); setQIdx(0); }}
-                style={{
-                  flexShrink: 0,
-                  fontSize: "11px",
-                  padding: "5px 10px",
-                  borderRadius: "6px",
-                  border: `0.5px solid ${active ? "#7C3AED" : "#D1D5DB"}`,
-                  background: active ? "#EDE9FE" : "transparent",
-                  color: active ? "#5B21B6" : "#6B7280",
-                  cursor: "pointer",
-                  fontWeight: active ? "600" : "400",
-                }}
+                className={`shrink-0 text-[11px] px-2.5 py-1 rounded-md border cursor-pointer transition-colors ${
+                  active
+                    ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a] font-semibold"
+                    : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
+                }`}
               >
                 S{i + 1} {done === total ? "\u2713" : `${done}/${total}`}
               </button>
@@ -1346,40 +1018,14 @@ export default function ClaudeArchitectExam() {
         </div>
 
         {/* Scenario context */}
-        <div
-          style={{
-            border: "0.5px solid #E5E7EB",
-            borderRadius: "8px",
-            padding: "10px 12px",
-            marginBottom: "12px",
-            fontSize: "12px",
-            color: "#6B7280",
-            lineHeight: "1.6",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: showCtx ? "6px" : 0,
-            }}
-          >
-            <span
-              style={{ fontWeight: "600", color: "#111827", fontSize: "12px" }}
-            >
+        <div className="border border-[var(--card-border)] rounded-lg p-3 mb-3 text-xs text-[var(--gray-600)] leading-relaxed">
+          <div className="flex justify-between items-center" style={{ marginBottom: showCtx ? "6px" : 0 }}>
+            <span className="font-semibold text-[var(--foreground)] text-xs">
               Scenario {currentScen.id}: {currentScen.title}
             </span>
             <button
               onClick={() => setShowCtx(!showCtx)}
-              style={{
-                fontSize: "11px",
-                border: "none",
-                background: "none",
-                cursor: "pointer",
-                color: "#6B7280",
-                padding: 0,
-              }}
+              className="text-[11px] border-none bg-transparent cursor-pointer text-[var(--gray-600)] p-0 hover:text-[#ef562a] transition-colors"
             >
               {showCtx ? "hide" : "show context"}
             </button>
@@ -1388,65 +1034,27 @@ export default function ClaudeArchitectExam() {
         </div>
 
         {/* Question card */}
-        <div
-          style={{
-            border: "0.5px solid #E5E7EB",
-            borderRadius: "10px",
-            padding: "1.25rem",
-            marginBottom: "12px",
-          }}
-        >
+        <div className="border border-[var(--card-border)] rounded-xl p-5 mb-3">
           {/* Domain badge + flag */}
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              marginBottom: "12px",
-              alignItems: "center",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "11px",
-                padding: "3px 8px",
-                borderRadius: "4px",
-                background: DOMAINS[currentQ.domain].bg,
-                color: DOMAINS[currentQ.domain].text,
-                fontWeight: "600",
-              }}
-            >
+          <div className="flex gap-2 mb-3 items-center">
+            <span className="text-[11px] px-2 py-0.5 rounded font-semibold" style={{ background: DOMAINS[currentQ.domain].bg, color: DOMAINS[currentQ.domain].text }}>
               Domain {currentQ.domain}
             </span>
-            <span style={{ fontSize: "11px", color: "#9CA3AF" }}>
+            <span className="text-[11px] text-[var(--gray-600)]">
               {DOMAINS[currentQ.domain].name}
             </span>
             <button
               onClick={toggleFlag}
-              style={{
-                marginLeft: "auto",
-                fontSize: "11px",
-                border: "none",
-                background: "none",
-                cursor: "pointer",
-                color: flagged.has(currentQ.id) ? "#D97706" : "#9CA3AF",
-                padding: 0,
-                fontWeight: flagged.has(currentQ.id) ? "600" : "400",
-              }}
+              className={`ml-auto text-[11px] border-none bg-transparent cursor-pointer p-0 transition-colors ${
+                flagged.has(currentQ.id) ? "text-amber-600 font-semibold" : "text-[var(--gray-600)]"
+              }`}
             >
               {flagged.has(currentQ.id) ? "\u2691 flagged" : "\u2690 flag"}
             </button>
           </div>
 
           {/* Question text */}
-          <p
-            style={{
-              fontSize: "14px",
-              color: "#111827",
-              lineHeight: "1.65",
-              margin: "0 0 16px",
-              fontWeight: "500",
-            }}
-          >
+          <p className="text-sm text-[var(--foreground)] leading-relaxed mb-4 font-medium">
             {currentQ.q}
           </p>
 
@@ -1457,33 +1065,13 @@ export default function ClaudeArchitectExam() {
               <button
                 key={i}
                 onClick={() => selectAnswer(i)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "11px 14px",
-                  borderRadius: "7px",
-                  marginBottom: "6px",
-                  border: selected
-                    ? `1.5px solid #7C3AED`
-                    : "0.5px solid #E5E7EB",
-                  background: selected ? "#EDE9FE" : "transparent",
-                  color: selected ? "#5B21B6" : "#374151",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "flex-start",
-                  lineHeight: "1.5",
-                }}
+                className={`w-full text-left py-2.5 px-3.5 rounded-lg mb-1.5 cursor-pointer text-[13px] flex gap-2.5 items-start leading-normal border transition-colors ${
+                  selected
+                    ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a]"
+                    : "border-[var(--card-border)] bg-transparent text-[var(--foreground)] hover:border-[var(--gray-600)]"
+                }`}
               >
-                <span
-                  style={{
-                    fontWeight: "700",
-                    minWidth: "16px",
-                    flexShrink: 0,
-                    color: selected ? "#7C3AED" : "#9CA3AF",
-                  }}
-                >
+                <span className={`font-bold min-w-[16px] shrink-0 ${selected ? "text-[#ef562a]" : "text-[var(--gray-600)]"}`}>
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span>{opt}</span>
@@ -1493,14 +1081,7 @@ export default function ClaudeArchitectExam() {
         </div>
 
         {/* Q navigator (current scenario) */}
-        <div
-          style={{
-            display: "flex",
-            gap: "4px",
-            flexWrap: "wrap",
-            marginBottom: "12px",
-          }}
-        >
+        <div className="flex gap-1 flex-wrap mb-3">
           {currentQList.map((q, i) => {
             const done = answers[q.id] !== undefined;
             const isCurrent = i === qIdx;
@@ -1509,17 +1090,15 @@ export default function ClaudeArchitectExam() {
               <button
                 key={i}
                 onClick={() => setQIdx(i)}
-                style={{
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "5px",
-                  border: `0.5px solid ${isCurrent ? "#7C3AED" : isFlag ? "#D97706" : done ? "#D1FAE5" : "#E5E7EB"}`,
-                  background: isCurrent ? "#7C3AED" : isFlag ? "#FEF3C7" : done ? "#F0FDF4" : "transparent",
-                  color: isCurrent ? "white" : isFlag ? "#92400E" : done ? "#166534" : "#9CA3AF",
-                  fontSize: "11px",
-                  fontWeight: isCurrent ? "700" : "500",
-                  cursor: "pointer",
-                }}
+                className={`w-7 h-7 rounded text-[11px] cursor-pointer border transition-colors ${
+                  isCurrent
+                    ? "bg-[#ef562a] border-[#ef562a] text-white font-bold"
+                    : isFlag
+                    ? "bg-[var(--accent-yellow-bg)] border-amber-500 text-[var(--accent-yellow-text)] font-medium"
+                    : done
+                    ? "bg-[var(--accent-green-bg)] border-[var(--accent-green-text)]/30 text-[var(--accent-green-text)] font-medium"
+                    : "bg-transparent border-[var(--card-border)] text-[var(--gray-600)]"
+                }`}
               >
                 {i + 1}
               </button>
@@ -1528,55 +1107,27 @@ export default function ClaudeArchitectExam() {
         </div>
 
         {/* Prev / Next */}
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div className="flex gap-2">
           <button
             onClick={goPrev}
             disabled={isFirst}
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "7px",
-              border: "0.5px solid #D1D5DB",
-              background: "transparent",
-              color: isFirst ? "#D1D5DB" : "#374151",
-              cursor: isFirst ? "not-allowed" : "pointer",
-              fontSize: "13px",
-              fontWeight: "500",
-            }}
+            className={`flex-1 py-2.5 rounded-lg border border-[var(--card-border)] bg-transparent text-[13px] font-medium transition-colors ${
+              isFirst ? "text-[var(--gray-200)] cursor-not-allowed" : "text-[var(--foreground)] cursor-pointer hover:border-[var(--gray-600)]"
+            }`}
           >
             &larr; Previous
           </button>
           {isLast ? (
             <button
               onClick={submitExam}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "7px",
-                border: "none",
-                background: "#7C3AED",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}
+              className="flex-1 py-2.5 rounded-lg border-none bg-[#ef562a] hover:bg-[#d94d24] text-white cursor-pointer text-[13px] font-semibold transition-colors"
             >
               Submit exam
             </button>
           ) : (
             <button
               onClick={goNext}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "7px",
-                border: "0.5px solid #D1D5DB",
-                background: "transparent",
-                color: "#374151",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: "500",
-              }}
+              className="flex-1 py-2.5 rounded-lg border border-[var(--card-border)] bg-transparent text-[var(--foreground)] cursor-pointer text-[13px] font-medium hover:border-[var(--gray-600)] transition-colors"
             >
               Next &rarr;
             </button>
