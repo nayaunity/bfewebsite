@@ -364,6 +364,45 @@ export default function CertificationPage() {
           </div>
         </section>
 
+        {/* Testimonials */}
+        <section className="bg-[#1a1a1a] py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl text-white">
+                <span className="italic">what attendees</span> SAY
+              </h2>
+              <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {[
+                { quote: "The walkthrough was super easy and beneficial! I've watched videos on Youtube but this hands-on experience was much more fun!", name: "Priya M.", title: "Software Engineer" },
+                { quote: "The real-time walk-through was very informative. It was a helpful and practical example, and Naya was very personable and engaged.", name: "Jesus O.", title: "Operations" },
+                { quote: "I loved the clear explanation and also the slow flow to make sure everyone stays at same point.", name: "Samuel C.", title: "Backend Engineer" },
+                { quote: "The near-immediate feedback was really helpful for my learning!", name: "David T.", title: "Full-Stack Engineer" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="border border-white/10 rounded-2xl p-8"
+                >
+                  <svg
+                    className="w-8 h-8 text-[#ffe500] mb-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                  <p className="text-white/80 font-serif italic text-lg mb-4">
+                    {item.quote}
+                  </p>
+                  <p className="text-white/60 text-sm">
+                    <span className="text-white/90 font-medium">{item.name}</span> &middot; {item.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Pricing */}
         <section className="bg-[var(--gray-50)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
