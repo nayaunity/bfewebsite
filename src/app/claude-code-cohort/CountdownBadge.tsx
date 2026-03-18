@@ -31,17 +31,18 @@ export function CountdownBar() {
   if (expired) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#1a1a1a] text-white py-3 px-4 text-center border-b border-white/10">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 font-serif text-sm sm:text-base tracking-wide">
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#ef562a] text-white py-3 px-4 text-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 font-serif text-base sm:text-lg tracking-wide">
+        <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#ffe500] animate-pulse" />
         <span className="italic">
           Presale closes in{" "}
           <span className="not-italic font-bold">
             {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
           </span>
         </span>
-        <span className="text-[#ffe500]">·</span>
+        <span className="opacity-40">|</span>
         <span>
-          <strong className="text-[#ffe500]">{TOTAL_SPOTS}</strong>{" "}
+          <strong className="text-white text-xl sm:text-2xl font-bold">{TOTAL_SPOTS}</strong>{" "}
           <span className="italic">spots remaining</span>
         </span>
       </div>

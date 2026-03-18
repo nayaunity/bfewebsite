@@ -142,6 +142,8 @@ See `src/app/globals.css` for the full variable list.
 
 ## Deployment
 
+**IMPORTANT**: NEVER commit, push, merge, or deploy unless the user explicitly asks you to. Do not chain these actions together automatically. Wait for explicit instructions for each step.
+
 Deploy to production with Vercel:
 ```bash
 vercel --prod
