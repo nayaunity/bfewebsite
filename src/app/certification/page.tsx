@@ -171,7 +171,7 @@ export default function CertificationPage() {
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
               <div>
                 <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#ffe500] text-black mb-6 tracking-wide">
-                  FOUNDING CLASS &mdash; ONLY 50 SEATS
+                  PRESALE &mdash; ONLY 30 SEATS
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Build with{" "}
@@ -471,8 +471,8 @@ export default function CertificationPage() {
               Secure your founding seat
             </h2>
             <p className="text-white/60 mb-8 text-lg max-w-2xl mx-auto">
-              50 seats. $399 founding price. Once they&apos;re gone, the price
-              goes to $499.
+              30 presale seats. $399 presale price. Once they&apos;re gone, the
+              price goes to $499.
             </p>
             <EnrollCTA />
           </div>
