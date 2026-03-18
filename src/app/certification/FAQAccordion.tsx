@@ -12,9 +12,9 @@ const faqs = [
       "Yes, fully self-paced with lifetime access. Work through the modules on your own schedule. All content is available immediately after enrollment.",
   },
   {
-    question: "What is the BFE digital badge?",
+    question: "What will my portfolio project look like?",
     answer:
-      "A verifiable digital credential you earn after completing all 6 modules and your capstone project. Add it to your LinkedIn profile, resume, and portfolio to signal your skills to employers.",
+      "You'll build and deploy 3 real AI-powered projects from scratch. These are things you can demo in interviews and link on your resume to show employers what you can do.",
   },
   {
     question: "What if I'm not satisfied?",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "What will I have at the end of the course?",
     answer:
-      "A deployed, portfolio-ready AI-powered application you built from scratch, plus a verifiable BFE digital badge. You'll also have hands-on experience with the Anthropic API and developer-grade prompting skills.",
+      "Three deployed, portfolio-ready projects you built from scratch. You'll also have hands-on experience with the Anthropic API and developer-grade prompting skills.",
   },
 ];
 
