@@ -125,6 +125,19 @@ To create a dedicated page for a job:
 - `DevOps / SRE`
 - `Design`
 
+## Page Analytics Tracking
+
+**IMPORTANT**: Whenever you create a new page (`page.tsx`), you MUST add analytics tracking so it appears in the admin panel. Follow the full instructions in `.claude/skills/add-page-tracking/SKILL.md`. Quick summary:
+
+1. Add `<PagePresenceTracker page="<slug>" />` from `@/components/PagePresenceTracker`
+2. Create a `PageViewTracker.tsx` client component that POSTs to `/api/blog/view` with the page slug and title
+3. Add both components to the page JSX
+4. Filter the slug out of blog analytics queries in `src/app/admin/analytics/page.tsx`
+5. Add dedicated queries + UI section to the admin analytics page
+6. Optionally add a quick-stat card to the admin dashboard (`src/app/admin/page.tsx`)
+
+Do NOT skip this step. Every new page must be trackable from `/admin/analytics`.
+
 ## Theme & Styling
 
 All new pages, components, and assets **must** follow the site's theme system. Never use hardcoded colors or inline styles for colors/backgrounds/borders.
