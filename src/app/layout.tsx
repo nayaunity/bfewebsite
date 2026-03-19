@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import { SessionProvider } from "@/providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import JsonLd from "@/components/JsonLd";
+import PresaleBanner from "@/components/PresaleBanner";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -78,6 +79,7 @@ export default function RootLayout({
           }}
         />
         <ThemeProvider>
+          <PresaleBanner />
           <SessionProvider>{children}</SessionProvider>
         </ThemeProvider>
       </body>
