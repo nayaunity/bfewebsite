@@ -6,7 +6,7 @@ import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import PageViewTracker from "./PageViewTracker";
 import EnrollCTA from "./EnrollCTA";
 import FAQAccordion from "./FAQAccordion";
-import CountdownBadge, { CountdownBar } from "./CountdownBadge";
+import CountdownBadge from "./CountdownBadge";
 
 export const metadata = {
   title: "Build with Claude Code | The Black Female Engineer",
@@ -148,7 +148,6 @@ export default function CertificationPage() {
     <>
       <PagePresenceTracker page="claudecode" />
       <PageViewTracker />
-      <CountdownBar />
       <Navigation />
       <JsonLd
         data={{
