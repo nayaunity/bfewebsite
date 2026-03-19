@@ -9,13 +9,13 @@ import CountdownBadge, { CountdownBar } from "./CountdownBadge";
 export const metadata = {
   title: "Build with Claude Code | The Black Female Engineer",
   description:
-    "The first structured Claude Code course for career switchers. 6 modules and 3 deployed portfolio projects. Presale: $399 (30 seats).",
+    "The first structured Claude Code course for career switchers. 6 modules and 3 deployed portfolio projects. Presale: $399 (19 seats).",
   openGraph: {
     title:
       "Build with Claude Code | The Black Female Engineer",
     description:
-      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 30 seats at $399.",
-    url: "/claude-code-cohort",
+      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 19 seats at $399.",
+    url: "/claudecode",
     type: "website",
     images: [
       { url: "/images/bfeimage2.png", alt: "Build with Claude Code" },
@@ -26,7 +26,7 @@ export const metadata = {
     title:
       "Build with Claude Code | The Black Female Engineer",
     description:
-      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 30 seats at $399.",
+      "The first structured Claude Code course for career switchers. Self-paced. Hands-on. Portfolio-ready. Presale limited to 19 seats at $399.",
     images: ["/images/bfeimage2.png"],
   },
 };
@@ -475,7 +475,7 @@ export default function CertificationPage() {
               Secure your founding seat
             </h2>
             <p className="text-white/60 mb-8 text-lg max-w-2xl mx-auto">
-              30 presale seats. $399 presale price. Once they&apos;re gone, the
+              19 presale seats. $399 presale price. Once they&apos;re gone, the
               price goes to $499.
             </p>
             <EnrollCTA />

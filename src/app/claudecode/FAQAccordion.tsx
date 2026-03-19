@@ -29,7 +29,7 @@ const faqs = [
   {
     question: "Will there be more seats after the founding class fills?",
     answer:
-      "Yes, but the next round will be at the regular price of $499. The presale is the only time you'll see $399, and it's limited to 30 seats.",
+      "Yes, but the next round will be at the regular price of $499. The presale is the only time you'll see $399, and it's limited to 19 seats.",
   },
   {
     question: "Do I need a paid Claude subscription?",

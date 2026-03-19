@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 const PRESALE_END = new Date("2026-03-25T08:00:00-06:00"); // March 25, 2026 at 8am MT
-const TOTAL_SPOTS = 30;
+const TOTAL_SPOTS = 19;
 
 function getTimeLeft() {
   const now = new Date();
