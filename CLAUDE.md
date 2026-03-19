@@ -157,6 +157,8 @@ See `src/app/globals.css` for the full variable list.
 
 **IMPORTANT**: NEVER commit, push, merge, or deploy unless the user explicitly asks you to. Do not chain these actions together automatically. Wait for explicit instructions for each step.
 
+When merging to main or pushing to main, always switch back to the previous working branch immediately after. Do not stay on main.
+
 Deploy to production with Vercel:
 ```bash
 vercel --prod
