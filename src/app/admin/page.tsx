@@ -35,6 +35,9 @@ async function getStats() {
     todayLinkClicks,
     todayJobClicks,
     usersCount,
+    // Claude Code presale
+    presaleVisitorsToday,
+    presaleCtaToday,
   ] = await Promise.all([
     prisma.job.count(),
     prisma.job.count({ where: { isActive: true } }),
@@ -66,6 +69,15 @@ async function getStats() {
     prisma.linkClick.count({ where: { clickedAt: { gte: todayStart } } }),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
     prisma.user.count(),
+    // Claude Code presale
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "claudecode", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.linkClick.count({
+      where: { linkId: "course-enroll-cta", clickedAt: { gte: todayStart } },
+    }),
   ]);
 
   return {
@@ -84,6 +96,8 @@ async function getStats() {
       todayLinkClicks,
       todayJobClicks,
       usersCount,
+      presaleVisitorsToday,
+      presaleCtaToday,
     },
   };
 }
@@ -183,7 +197,7 @@ export default async function AdminDashboard() {
             View Full Analytics
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Registered Users</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
@@ -214,6 +228,13 @@ export default async function AdminDashboard() {
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.todayVisitors}
             </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border-2 border-[#ffe500] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Presale Visitors</p>
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+              {stats.analytics.presaleVisitorsToday}
+            </p>
+            <p className="text-xs text-[var(--gray-600)]">{stats.analytics.presaleCtaToday} CTA clicks</p>
           </div>
         </div>
       </div>

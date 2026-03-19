@@ -75,8 +75,19 @@ async function getAnalytics() {
     monthLinkClicks,
     linkClicksByLink,
     recentLinkClicks,
-    // Claude Code CTA clicks
+    // Claude Code CTA clicks (legacy - kept for links section)
     claudeCodeCtaClicks,
+    // Claude Code presale metrics
+    ccUniqueToday,
+    ccUniqueWeek,
+    ccUniqueAllTime,
+    ccViewsToday,
+    ccViewsWeek,
+    ccViewsAllTime,
+    ccCtaToday,
+    ccCtaWeek,
+    ccCtaAllTime,
+    ccByCountry,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -127,12 +138,13 @@ async function getAnalytics() {
       orderBy: { _count: { visitorId: "desc" } },
       take: 15,
     }),
-    // Blog metrics
-    prisma.blogView.count(),
-    prisma.blogView.count({ where: { viewedAt: { gte: todayStart } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: weekStart } } }),
+    // Blog metrics (exclude claudecode page views)
+    prisma.blogView.count({ where: { slug: { not: "claudecode" } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { not: "claudecode" } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { not: "claudecode" } } }),
     prisma.blogView.groupBy({
       by: ["slug", "title"],
+      where: { slug: { not: "claudecode" } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
       take: 10,
@@ -158,8 +170,37 @@ async function getAnalytics() {
         clickedAt: true,
       },
     }),
-    // Claude Code CTA clicks
-    prisma.linkClick.count({ where: { linkId: "claude-code-cta" } }),
+    // Claude Code CTA clicks (legacy - kept for links section)
+    prisma.linkClick.count({ where: { linkId: "course-enroll-cta" } }),
+    // Claude Code presale metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "claudecode", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "claudecode", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "claudecode" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "claudecode", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "claudecode", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "claudecode" } }),
+    prisma.linkClick.count({ where: { linkId: "course-enroll-cta", clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: "course-enroll-cta", clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: "course-enroll-cta" } }),
+    prisma.pagePresence.groupBy({
+      by: ["country"],
+      where: { page: "claudecode", country: { not: null } },
+      _count: { visitorId: true },
+      orderBy: { _count: { visitorId: "desc" } },
+      take: 10,
+    }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -242,6 +283,25 @@ async function getAnalytics() {
       microWinsToday: todayMicroWins,
       microWinsWeek: weekMicroWins,
     },
+    claudeCode: {
+      uniqueToday: ccUniqueToday,
+      uniqueWeek: ccUniqueWeek,
+      uniqueAllTime: ccUniqueAllTime,
+      viewsToday: ccViewsToday,
+      viewsWeek: ccViewsWeek,
+      viewsAllTime: ccViewsAllTime,
+      ctaToday: ccCtaToday,
+      ctaWeek: ccCtaWeek,
+      ctaAllTime: ccCtaAllTime,
+      conversionRate: ccUniqueAllTime > 0 ? Math.round((ccCtaAllTime / ccUniqueAllTime) * 100) : 0,
+      byCountry: ccByCountry
+        .filter((c) => c.country)
+        .map((c) => ({
+          country: c.country as string,
+          countryName: getCountryName(c.country as string),
+          visitors: c._count.visitorId,
+        })),
+    },
   };
 }
 
@@ -312,6 +372,102 @@ export default async function AnalyticsPage() {
               {analytics.site.totalVisitors}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Claude Code Presale */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Claude Code Presale
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#ffe500] text-black">
+            PRESALE
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">CTA Clicks</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.ctaToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.ctaWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.claudeCode.ctaAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[#ffe500]/10 border border-[#ffe500]/40 rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">CTA clicks / unique visitors</p>
+            </div>
+            <p className="text-3xl font-bold text-[var(--foreground)]">
+              {analytics.claudeCode.conversionRate}%
+            </p>
+          </div>
+          {analytics.claudeCode.byCountry.length > 0 && (
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--card-border)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)]">Presale Visitors by Country</h3>
+              </div>
+              <div className="divide-y divide-[var(--card-border)] max-h-48 overflow-y-auto">
+                {analytics.claudeCode.byCountry.map((country, index) => (
+                  <div key={country.country} className="px-4 py-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs text-[var(--gray-600)]">
+                        {index + 1}
+                      </span>
+                      <span className="truncate text-sm text-[var(--foreground)]">{country.countryName}</span>
+                    </div>
+                    <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">{country.visitors}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -522,7 +678,7 @@ export default async function AnalyticsPage() {
         <div className="mt-4 bg-[#ffe500]/10 border border-[#ffe500]/40 rounded-xl p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-[var(--foreground)]">Claude Code CTA</p>
-            <p className="text-xs text-[var(--gray-600)] mt-0.5">clau.de/theblackfemaleengineer</p>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">Course enrollment button</p>
           </div>
           <p className="text-3xl font-bold text-[var(--foreground)]">
             {analytics.links.claudeCodeCta}

@@ -2,6 +2,8 @@ import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import { PagePresenceTracker } from "@/components/PagePresenceTracker";
+import PageViewTracker from "./PageViewTracker";
 import EnrollCTA from "./EnrollCTA";
 import FAQAccordion from "./FAQAccordion";
 import CountdownBadge, { CountdownBar } from "./CountdownBadge";
@@ -144,6 +146,8 @@ const pricingFeatures = [
 export default function CertificationPage() {
   return (
     <>
+      <PagePresenceTracker page="claudecode" />
+      <PageViewTracker />
       <CountdownBar />
       <Navigation />
       <JsonLd
