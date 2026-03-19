@@ -157,6 +157,8 @@ See `src/app/globals.css` for the full variable list.
 
 **IMPORTANT**: NEVER commit, push, merge, or deploy unless the user explicitly asks you to. Do not chain these actions together automatically. Wait for explicit instructions for each step.
 
+**Shortcut**: If the user says just **"deploy"**, that means the full chain: commit all changes, push, merge to main (if not already on main), push main, deploy with `vercel --prod`, then switch back to the working branch.
+
 When merging to main or pushing to main, always switch back to the previous working branch immediately after. Do not stay on main.
 
 Deploy to production with Vercel:

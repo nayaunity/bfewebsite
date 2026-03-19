@@ -52,6 +52,9 @@ export default function PresaleBanner() {
           <strong className="text-white text-xl sm:text-2xl font-bold">{TOTAL_SPOTS}</strong>{" "}
           <span className="italic">spots remaining</span>
         </span>
+        <span className="bg-[#ffe500] text-black text-sm font-medium px-4 py-1.5 rounded-full hover:bg-[#f5dc00] transition-colors">
+          Learn More
+        </span>
       </div>
     </Link>
   );
