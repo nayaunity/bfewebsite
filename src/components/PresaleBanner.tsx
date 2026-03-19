@@ -42,7 +42,7 @@ export default function PresaleBanner() {
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 font-serif text-base sm:text-lg tracking-wide">
         <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#ffe500] animate-pulse" />
         <span className="italic">
-          Presale closes in{" "}
+          Build With Claude Code Presale closes in{" "}
           <span className="not-italic font-bold">
             {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
           </span>
