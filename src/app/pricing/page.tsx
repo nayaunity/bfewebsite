@@ -19,10 +19,10 @@ export default async function PricingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)]">
+    <main className="min-h-screen pt-32 md:pt-40 bg-[var(--background)] text-[var(--foreground)]">
       <Navigation />
 
-      <div className="max-w-5xl mx-auto px-4 pt-40 pb-20">
+      <div className="max-w-5xl mx-auto px-4 pb-20">
         {/* Hero */}
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
