@@ -217,10 +217,29 @@ async function extractJobListings(
       const words = role
         .toLowerCase()
         .split(/[\s\-\/,]+/)
-        .filter((w) => w.length > 1);
+        .filter((w) => w.length > 2); // Min 3 chars to avoid "ai" matching inside other words
       const coreWords = words.filter((w) => !fillers.has(w));
       return { role, coreWords };
     });
+
+    // Check if a word appears as a whole word (not inside another word)
+    function hasWholeWord(text: string, word: string): boolean {
+      const regex = new RegExp(`\\b${word}\\b`, "i");
+      return regex.test(text);
+    }
+
+    // URL patterns that indicate job listing pages
+    const jobUrlPatterns = [
+      "/positions/", "/jobs/", "/job/", "/careers/", "/openings/",
+      "/apply/", "/requisition/", "/posting/", "/role/", "/opportunity/",
+      "lever.co/", "greenhouse.io/", "workday.com/",
+      "jobId=", "job_id=", "requisitionId=",
+    ];
+
+    function looksLikeJobUrl(href: string): boolean {
+      const lower = href.toLowerCase();
+      return jobUrlPatterns.some((p) => lower.includes(p));
+    }
 
     const matched: { title: string; applyUrl: string }[] = [];
     let candidateCount = 0;
@@ -234,21 +253,21 @@ async function extractJobListings(
       if (!href || href === "#" || href.startsWith("javascript:")) continue;
       if (href === window.location.href) continue;
 
+      // Only consider links that look like job pages
+      if (!looksLikeJobUrl(href)) continue;
+
       candidateCount++;
       const lowerText = text.toLowerCase();
 
-      // Check if this link matches ANY role
+      // Check if this link matches ANY role using whole-word matching
       let isMatch = false;
       for (const { coreWords } of roleMatchers) {
         if (coreWords.length === 0) continue;
 
-        const matchCount = coreWords.filter((w) => lowerText.includes(w)).length;
+        const matchCount = coreWords.filter((w) => hasWholeWord(lowerText, w)).length;
 
-        // Match if: ALL core words present, OR at least half AND has 2+ matches
-        if (
-          matchCount >= coreWords.length ||
-          (matchCount >= Math.ceil(coreWords.length / 2) && matchCount >= 1)
-        ) {
+        // Match if at least half of core words match as whole words
+        if (matchCount >= Math.ceil(coreWords.length / 2) && matchCount >= 1) {
           isMatch = true;
           break;
         }
