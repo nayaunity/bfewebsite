@@ -228,7 +228,7 @@ async function extractJobListings(
       const words = role
         .toLowerCase()
         .split(/[\s\-\/,]+/)
-        .filter((w) => w.length > 2); // Min 3 chars to avoid "ai" matching inside other words
+        .filter((w) => w.length > 1); // Min 2 chars — whole-word regex handles false positives
       const coreWords = words.filter((w) => !fillers.has(w));
       return { role, coreWords };
     });
@@ -271,8 +271,27 @@ async function extractJobListings(
         window.location.pathname.includes("/openings");
       if (!looksLikeJobUrl(href) && !isOnCareerPage) continue;
 
-      // For long texts (SPA pages like Meta), extract just the first line/title portion
-      const text = rawText.length > 200 ? rawText.slice(0, rawText.search(/[A-Z][a-z]+,\s*[A-Z]{2}|⋅|Multiple Locations|Posted|Remote|United States/)) || rawText.slice(0, 150) : rawText;
+      // For long texts (SPA pages like Meta), extract just the job title portion
+      let text = rawText;
+      if (rawText.length > 120) {
+        // Try to find where the title ends and metadata begins
+        const cutPatterns = [
+          /[A-Z][a-z]+,\s*[A-Z]{2}\b/,  // "Menlo Park, CA"
+          /⋅/,                              // Meta separator
+          /Multiple Locations/,
+          /Posted \d/,
+          /Remote/,
+          /United States/,
+          /\d+ locations/,
+          /Singapore|London|Toronto|New York, NY|Sunnyvale|Redmond/,
+        ];
+        let cutIndex = rawText.length;
+        for (const pattern of cutPatterns) {
+          const match = rawText.search(pattern);
+          if (match > 10 && match < cutIndex) cutIndex = match;
+        }
+        text = rawText.slice(0, cutIndex).trim();
+      }
       if (text.length < 5) continue;
 
       candidateCount++;
@@ -285,8 +304,9 @@ async function extractJobListings(
 
         const matchCount = coreWords.filter((w) => hasWholeWord(lowerText, w)).length;
 
-        // Match if at least half of core words match as whole words
-        if (matchCount >= Math.ceil(coreWords.length / 2) && matchCount >= 1) {
+        // Match if at least half of core words match, minimum 2 matches when possible
+        const threshold = coreWords.length <= 2 ? coreWords.length : Math.ceil(coreWords.length / 2);
+        if (matchCount >= threshold) {
           isMatch = true;
           break;
         }
