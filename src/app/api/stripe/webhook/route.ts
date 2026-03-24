@@ -31,7 +31,17 @@ export async function POST(request: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
         const tier = session.metadata?.tier;
-        if (!userId || !tier) break;
+        if (!userId || !tier) {
+          console.error("Webhook: missing metadata in checkout.session.completed", {
+            sessionId: session.id,
+            userId,
+            tier,
+          });
+          return NextResponse.json(
+            { error: "Missing required metadata" },
+            { status: 400 }
+          );
+        }
 
         // Get subscription details
         const subscription = await stripe.subscriptions.retrieve(

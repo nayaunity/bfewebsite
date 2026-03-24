@@ -179,7 +179,7 @@ export function ResumeManager({
               type="file"
               accept=".pdf"
               onChange={handleUpload}
-              disabled={uploading || !newName.trim()}
+              disabled={uploading}
               className="hidden"
             />
           </label>
