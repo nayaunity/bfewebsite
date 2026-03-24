@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import BackToJobs from "../BackToJobs";
+import EmailSignupBanner from "./EmailSignupBanner";
 
 export const metadata = {
   title: "Pinterest Apprentice Engineer | The Black Female Engineer",
@@ -79,23 +80,9 @@ export default function PinterestApprenticeship() {
             </div>
           </div>
 
-          {/* Apply CTA Banner */}
-          <div className="mb-10 p-6 bg-[#ffe500]/20 border-2 border-[#ffe500] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-[var(--foreground)] text-lg">Applications may close March 27, 2026 at 5:00 PM PDT</p>
-              <p className="text-[var(--gray-600)] text-sm mt-1">Program starts July 27, 2026</p>
-            </div>
-            <a
-              href="https://www.pinterestcareers.com/jobs/7558536/apprentice-engineer/?gh_jid=7558536"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
-            >
-              Apply Now
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
+          {/* Email Signup Banner */}
+          <div className="mb-10">
+            <EmailSignupBanner />
           </div>
 
           {/* Content */}
@@ -244,6 +231,9 @@ export default function PinterestApprenticeship() {
                     <p className="text-sm text-[var(--gray-600)] mt-1">
                       Pinterest emphasizes AI in their workflow. Be ready to show how you use AI as a coding partner and productivity tool
                     </p>
+                    <a href="/resources/claude-code-101" className="inline-flex items-center gap-1 text-sm text-[#ef562a] hover:underline mt-2">
+                      Watch our Claude Code Webinar →
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
