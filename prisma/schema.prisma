@@ -22,16 +22,27 @@ model User {
   usState           String?
   workAuthorized    Boolean?
   needsSponsorship  Boolean?
-  countryOfResidence String?
-  createdAt        DateTime         @default(now())
-  accounts         Account[]
-  progress         LessonProgress[]
-  microWins        MicroWin[]
-  sessions         Session[]
-  createdJobs      Job[]
-  jobApplications  JobApplication[]
+  countryOfResidence  String?
+  stripeCustomerId    String?          @unique
+  subscriptionTier    String           @default("free")
+  subscriptionStatus  String           @default("inactive")
+  stripeSubscriptionId String?         @unique
+  currentPeriodEnd    DateTime?
+  monthlyAppCount     Int              @default(0)
+  monthlyAppResetAt   DateTime         @default(now())
+  createdAt           DateTime         @default(now())
+  accounts            Account[]
+  progress            LessonProgress[]
+  microWins           MicroWin[]
+  sessions            Session[]
+  createdJobs         Job[]
+  jobApplications     JobApplication[]
+  resumes             UserResume[]
+  applyQueue          ApplyQueue[]
 
   @@index([role])
+  @@index([stripeCustomerId])
+  @@index([subscriptionTier])
 }
 
 model Account {
@@ -104,6 +115,7 @@ model Job {
   createdBy   User?     @relation(fields: [createdById], references: [id])
 
   applications    JobApplication[]
+  applyQueue      ApplyQueue[]
 
   @@unique([externalId, companySlug])
   @@index([category])
@@ -152,6 +164,45 @@ model AutoApplyRun {
 
   @@index([userId])
   @@index([startedAt])
+}
+
+model UserResume {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  fileName   String
+  blobUrl    String
+  keywords   String   @default("[]")
+  isFallback Boolean  @default(false)
+  uploadedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ApplyQueue {
+  id            String    @id @default(cuid())
+  userId        String
+  jobId         String
+  status        String    @default("queued")
+  priority      Int       @default(0)
+  resumeUrl     String
+  resumeName    String
+  applicantData String
+  workerNote    String?
+  errorMessage  String?
+  createdAt     DateTime  @default(now())
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  @@unique([userId, jobId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId])
 }
 
 model ScrapeLog {

@@ -4,6 +4,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ResumeUpload } from "@/components/ResumeUpload";
 import { AutoApplyProfile } from "@/components/AutoApplyProfile";
+import { SubscriptionBadge } from "@/components/SubscriptionBadge";
+import { UsageMeter } from "@/components/UsageMeter";
+import { ResumeManager } from "@/components/ResumeManager";
+import { ManageSubscriptionLink } from "@/components/ManageSubscriptionLink";
+import { TIER_LIMITS } from "@/lib/stripe";
+import { canApply } from "@/lib/subscription";
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +38,24 @@ async function getUserData(userId: string) {
       workAuthorized: true,
       needsSponsorship: true,
       countryOfResidence: true,
+      subscriptionTier: true,
+      subscriptionStatus: true,
+      stripeCustomerId: true,
       resumeUrl: true,
       resumeName: true,
       resumeUpdatedAt: true,
+      resumes: {
+        orderBy: { uploadedAt: "desc" as const },
+        select: {
+          id: true,
+          name: true,
+          fileName: true,
+          blobUrl: true,
+          keywords: true,
+          isFallback: true,
+          uploadedAt: true,
+        },
+      },
       _count: {
         select: {
           progress: true,
@@ -60,6 +81,10 @@ export default async function ProfilePage() {
     redirect("/auth/signin");
   }
 
+  const tier = user.subscriptionTier || "free";
+  const tierLimits = TIER_LIMITS[tier] || TIER_LIMITS.free;
+  const usage = await canApply(session.user.id);
+
   return (
     <main className="min-h-screen bg-[var(--background)]">
       <div className="max-w-2xl mx-auto px-4 py-12">
@@ -76,9 +101,12 @@ export default async function ProfilePage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)]">
-            Your Profile
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)]">
+              Your Profile
+            </h1>
+            <SubscriptionBadge tier={tier} />
+          </div>
           <p className="mt-2 text-[var(--gray-600)]">
             Manage your account information
           </p>
@@ -161,6 +189,18 @@ export default async function ProfilePage() {
             }}
           />
 
+          {/* Multi-Resume Manager */}
+          <ResumeManager
+            initialResumes={user.resumes}
+            maxResumes={tierLimits.maxResumes}
+            tier={tier}
+          />
+
+          {/* Usage Meter */}
+          <div className="px-6 py-4 border-t border-[var(--card-border)]">
+            <UsageMeter used={usage.used} limit={usage.limit} />
+          </div>
+
           {/* Auto-Apply Profile */}
           <AutoApplyProfile
             initialData={{
@@ -187,6 +227,19 @@ export default async function ProfilePage() {
               </svg>
               View Application History
             </Link>
+          </div>
+
+          {/* Subscription Links */}
+          <div className="px-6 py-3 border-t border-[var(--card-border)] flex gap-4">
+            <Link
+              href="/pricing"
+              className="text-sm text-[#ef562a] hover:underline"
+            >
+              {tier === "free" ? "Upgrade Plan" : "Change Plan"}
+            </Link>
+            {user.stripeCustomerId && (
+              <ManageSubscriptionLink />
+            )}
           </div>
 
           {/* Admin Link */}

@@ -261,3 +261,55 @@ ALTER TABLE "User" ADD COLUMN "usState" TEXT;
 ALTER TABLE "User" ADD COLUMN "workAuthorized" BOOLEAN;
 ALTER TABLE "User" ADD COLUMN "needsSponsorship" BOOLEAN;
 ALTER TABLE "User" ADD COLUMN "countryOfResidence" TEXT;
+
+-- Add subscription fields to User
+ALTER TABLE "User" ADD COLUMN "stripeCustomerId" TEXT;
+ALTER TABLE "User" ADD COLUMN "subscriptionTier" TEXT DEFAULT 'free';
+ALTER TABLE "User" ADD COLUMN "subscriptionStatus" TEXT DEFAULT 'inactive';
+ALTER TABLE "User" ADD COLUMN "stripeSubscriptionId" TEXT;
+ALTER TABLE "User" ADD COLUMN "currentPeriodEnd" DATETIME;
+ALTER TABLE "User" ADD COLUMN "monthlyAppCount" INTEGER DEFAULT 0;
+ALTER TABLE "User" ADD COLUMN "monthlyAppResetAt" DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+CREATE UNIQUE INDEX IF NOT EXISTS "User_stripeCustomerId_key" ON "User"("stripeCustomerId");
+CREATE UNIQUE INDEX IF NOT EXISTS "User_stripeSubscriptionId_key" ON "User"("stripeSubscriptionId");
+CREATE INDEX IF NOT EXISTS "User_subscriptionTier_idx" ON "User"("subscriptionTier");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "UserResume" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "fileName" TEXT NOT NULL,
+    "blobUrl" TEXT NOT NULL,
+    "keywords" TEXT NOT NULL DEFAULT '[]',
+    "isFallback" BOOLEAN NOT NULL DEFAULT false,
+    "uploadedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "UserResume_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS "UserResume_userId_idx" ON "UserResume"("userId");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "ApplyQueue" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "jobId" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'queued',
+    "priority" INTEGER NOT NULL DEFAULT 0,
+    "resumeUrl" TEXT NOT NULL,
+    "resumeName" TEXT NOT NULL,
+    "applicantData" TEXT NOT NULL,
+    "workerNote" TEXT,
+    "errorMessage" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "startedAt" DATETIME,
+    "completedAt" DATETIME,
+    CONSTRAINT "ApplyQueue_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "ApplyQueue_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "ApplyQueue_userId_jobId_key" ON "ApplyQueue"("userId", "jobId");
+CREATE INDEX IF NOT EXISTS "ApplyQueue_status_idx" ON "ApplyQueue"("status");
+CREATE INDEX IF NOT EXISTS "ApplyQueue_createdAt_idx" ON "ApplyQueue"("createdAt");
+CREATE INDEX IF NOT EXISTS "ApplyQueue_userId_idx" ON "ApplyQueue"("userId");
