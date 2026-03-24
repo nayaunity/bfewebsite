@@ -176,25 +176,45 @@ function renderContent(content: string) {
       continue;
     }
 
-    // Handle numbered lists
+    // Handle numbered lists (group consecutive items into <ol>)
     if (/^\d+\.\s/.test(trimmed)) {
+      const items: React.ReactElement[] = [];
+      let itemNum = 1;
+      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+        const line = lines[i].trim();
+        items.push(
+          <li key={keyIndex++} value={itemNum} className="text-[var(--foreground)] mb-2">
+            {parseInlineMarkdown(line.replace(/^\d+\.\s/, ""), `li-${keyIndex}`)}
+          </li>
+        );
+        itemNum++;
+        i++;
+      }
       elements.push(
-        <li key={keyIndex++} className="text-[var(--foreground)] ml-6 mb-2 list-decimal">
-          {parseInlineMarkdown(trimmed.replace(/^\d+\.\s/, ""), `li-${keyIndex}`)}
-        </li>
+        <ol key={keyIndex++} start={1} className="list-decimal ml-6 mb-4">
+          {items}
+        </ol>
       );
-      i++;
       continue;
     }
 
-    // Handle bullet points
+    // Handle bullet points (group consecutive items into <ul>)
     if (trimmed.startsWith("- ")) {
+      const items: React.ReactElement[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("- ")) {
+        const line = lines[i].trim();
+        items.push(
+          <li key={keyIndex++} className="text-[var(--foreground)] mb-2">
+            {parseInlineMarkdown(line.slice(2), `li-${keyIndex}`)}
+          </li>
+        );
+        i++;
+      }
       elements.push(
-        <li key={keyIndex++} className="text-[var(--foreground)] ml-6 mb-2 list-disc">
-          {parseInlineMarkdown(trimmed.slice(2), `li-${keyIndex}`)}
-        </li>
+        <ul key={keyIndex++} className="list-disc ml-6 mb-4">
+          {items}
+        </ul>
       );
-      i++;
       continue;
     }
 
