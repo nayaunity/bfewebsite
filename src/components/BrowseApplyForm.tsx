@@ -196,6 +196,17 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
             </div>
           )}
 
+          {/* Validation hint */}
+          {(!targetRole.trim() || selected.size === 0) && (
+            <p className="text-xs text-[var(--gray-600)]">
+              {!targetRole.trim() && selected.size === 0
+                ? "Enter a target role and select at least one company to start."
+                : !targetRole.trim()
+                  ? "Enter a target role above to start."
+                  : "Select at least one company to start."}
+            </p>
+          )}
+
           {/* Start Button */}
           <button
             onClick={handleStart}
@@ -206,7 +217,11 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           >
             {starting
               ? "Starting..."
-              : `Start Applying to ${selected.size} Companies`}
+              : !targetRole.trim()
+                ? "Enter a Target Role to Start"
+                : selected.size === 0
+                  ? "Select Companies to Start"
+                  : `Start Applying to ${selected.size} ${selected.size === 1 ? "Company" : "Companies"}`}
           </button>
         </div>
       )}
