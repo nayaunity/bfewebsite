@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BrowseApplyForm } from "@/components/BrowseApplyForm";
 
 interface Application {
   id: string;
@@ -40,10 +41,18 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+interface Company {
+  name: string;
+  careersUrl: string;
+  notes: string;
+}
+
 export default function ApplicationsDashboard({
   initialApplications,
+  companies,
 }: {
   initialApplications: Application[];
+  companies: Company[];
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [applying, setApplying] = useState(false);
@@ -96,7 +105,10 @@ export default function ApplicationsDashboard({
 
   return (
     <div>
-      {/* Action bar */}
+      {/* Browse & Apply Form */}
+      <BrowseApplyForm companies={companies} />
+
+      {/* Filter bar */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
           {["all", "submitted", "skipped", "failed"].map((s) => (
@@ -113,21 +125,7 @@ export default function ApplicationsDashboard({
             </button>
           ))}
         </div>
-
-        <button
-          onClick={handleApplyNow}
-          disabled={applying}
-          className="px-4 py-2 text-sm font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-        >
-          {applying ? "Applying..." : "Apply to New Jobs"}
-        </button>
       </div>
-
-      {message && (
-        <div className="mb-4 p-3 bg-[var(--gray-50)] border border-[var(--card-border)] rounded-lg text-sm text-[var(--foreground)]">
-          {message}
-        </div>
-      )}
 
       {/* Applications table */}
       {filtered.length === 0 ? (
