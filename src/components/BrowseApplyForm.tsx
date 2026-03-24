@@ -378,35 +378,42 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           {discoveries.length > 0 && isDone && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wide">
-                Jobs Discovered
+                Jobs Discovered ({discoveries.length})
               </p>
-              <div className="space-y-1 max-h-64 overflow-y-auto">
+              <div className="space-y-1 max-h-80 overflow-y-auto">
                 {discoveries.map((d) => (
                   <div
                     key={d.id}
-                    className="flex items-center justify-between py-1.5 px-2 bg-[var(--gray-50)] rounded text-sm"
+                    className="py-1.5 px-2 bg-[var(--gray-50)] rounded text-sm"
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[var(--foreground)] truncate">
-                        {d.jobTitle}
-                      </p>
-                      <p className="text-xs text-[var(--gray-600)]">
-                        {d.company}
-                      </p>
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[var(--foreground)] truncate">
+                          {d.jobTitle}
+                        </p>
+                        <p className="text-xs text-[var(--gray-600)]">
+                          {d.company}
+                        </p>
+                      </div>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
+                          d.status === "applied"
+                            ? "bg-green-100 text-green-700"
+                            : d.status === "failed"
+                              ? "bg-red-100 text-red-700"
+                              : d.status === "skipped"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {d.status}
+                      </span>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
-                        d.status === "applied"
-                          ? "bg-green-100 text-green-700"
-                          : d.status === "failed"
-                            ? "bg-red-100 text-red-700"
-                            : d.status === "skipped"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {d.status}
-                    </span>
+                    {d.errorMessage && (
+                      <p className="text-[10px] text-red-500 mt-0.5 truncate">
+                        {d.errorMessage}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
