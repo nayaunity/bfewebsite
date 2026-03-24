@@ -11,6 +11,26 @@ export interface DiscoveryLog {
 }
 
 /**
+ * Parse target role input into individual roles.
+ * "AI Engineer, Software Engineer" → ["AI Engineer", "Software Engineer"]
+ */
+function parseRoles(targetRole: string): string[] {
+  return targetRole
+    .split(/[,;]+/)
+    .map((r) => r.trim())
+    .filter((r) => r.length > 0);
+}
+
+/**
+ * Get a simple search term from the target roles for URL/input search.
+ * Uses the first role, simplified (e.g. "AI Engineer" → "engineer").
+ */
+function getSearchTerms(roles: string[]): string[] {
+  // Return each role as a separate search term
+  return roles.map((r) => r.trim());
+}
+
+/**
  * Search for the target role on a career page.
  * Tries URL params, search inputs, and fallback scan.
  * Returns discovered jobs AND a detailed log of what happened.
@@ -20,69 +40,76 @@ export async function discoverJobs(
   targetRole: string
 ): Promise<{ jobs: DiscoveredJob[]; log: DiscoveryLog }> {
   const log: DiscoveryLog = { steps: [] };
+  const roles = parseRoles(targetRole);
+  log.steps.push(`Parsed roles: ${JSON.stringify(roles)}`);
+
   const b = await getBrowser();
   const context = await b.newContext();
   const page = await context.newPage();
+  const allJobs: DiscoveredJob[] = [];
 
   try {
-    // Try URL-based search first
-    const searchUrl = appendSearchParam(careersUrl, targetRole);
-    log.steps.push(`Original URL: ${careersUrl}`);
-    log.steps.push(`Search URL: ${searchUrl}`);
-    log.steps.push(searchUrl !== careersUrl ? "Added search param to URL" : "No search param added — will try search input");
+    // Search with each role separately, collect all results
+    const searchTerms = getSearchTerms(roles);
 
-    await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-    await page.waitForTimeout(3000);
+    for (const term of searchTerms) {
+      log.steps.push(`--- Searching for: "${term}" ---`);
 
-    const pageTitle = await page.title();
-    const currentUrl = page.url();
-    log.steps.push(`Page loaded — title: "${pageTitle}"`);
-    log.steps.push(`Final URL after load: ${currentUrl}`);
+      const searchUrl = appendSearchParam(careersUrl, term);
+      log.steps.push(`Search URL: ${searchUrl}`);
 
-    // If URL didn't have a search param, try finding a search input
-    if (searchUrl === careersUrl) {
-      const searchFound = await trySearchInput(page, targetRole, log);
-      if (!searchFound) {
-        log.steps.push("No search input found — will scan all visible links");
+      await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.waitForTimeout(3000);
+
+      const pageTitle = await page.title();
+      log.steps.push(`Page loaded — title: "${pageTitle}"`);
+
+      // If URL didn't have a search param, try finding a search input
+      if (searchUrl === careersUrl) {
+        const searchFound = await trySearchInput(page, term, log);
+        if (!searchFound) {
+          log.steps.push("No search input found — will scan all visible links");
+        }
       }
-    }
 
-    // Count total links on page for debugging
-    const totalLinks = await page.evaluate(() =>
-      document.querySelectorAll("a[href]").length
-    );
-    log.steps.push(`Total links on page: ${totalLinks}`);
+      // Count total links on page
+      const totalLinks = await page.evaluate(() =>
+        document.querySelectorAll("a[href]").length
+      );
+      log.steps.push(`Total links on page: ${totalLinks}`);
 
-    // Extract job listings from the page
-    const { jobs, allCandidates } = await extractJobListings(page, targetRole);
-    log.steps.push(`Links with text 5-200 chars: ${allCandidates}`);
-    log.steps.push(`Jobs matching "${targetRole}": ${jobs.length}`);
+      // Extract job listings — match against ALL roles, not just the search term
+      const { jobs, allCandidates } = await extractJobListings(page, roles);
+      log.steps.push(`Links with text 5-200 chars: ${allCandidates}`);
+      log.steps.push(`Jobs matching roles: ${jobs.length}`);
 
-    // Log some sample link texts for debugging
-    const sampleTexts = await page.evaluate(() => {
-      const links = Array.from(document.querySelectorAll("a[href]"));
-      return links
-        .map((l) => (l.textContent || "").trim().replace(/\s+/g, " "))
-        .filter((t) => t.length >= 5 && t.length <= 200)
-        .slice(0, 15);
-    });
-    log.steps.push(`Sample link texts: ${JSON.stringify(sampleTexts)}`);
+      // Log sample link texts
+      const sampleTexts = await page.evaluate(() => {
+        const links = Array.from(document.querySelectorAll("a[href]"));
+        return links
+          .map((l) => (l.textContent || "").trim().replace(/\s+/g, " "))
+          .filter((t) => t.length >= 5 && t.length <= 200)
+          .slice(0, 15);
+      });
+      log.steps.push(`Sample link texts: ${JSON.stringify(sampleTexts)}`);
 
-    // Try one page of pagination
-    if (jobs.length > 0) {
-      const { jobs: moreJobs } = await extractJobListings(page, targetRole);
-      const beforePagination = jobs.length;
-      // Try next page
-      const paginationJobs = await tryNextPage(page, targetRole, log);
-      jobs.push(...paginationJobs);
+      allJobs.push(...jobs);
+
+      // Try pagination
+      const paginationJobs = await tryNextPage(page, roles, log);
       if (paginationJobs.length > 0) {
         log.steps.push(`Pagination added ${paginationJobs.length} more jobs`);
+        allJobs.push(...paginationJobs);
       }
+
+      // Only search once if the URL already had no search capability
+      // (avoids re-loading the same page with different terms)
+      if (searchUrl === careersUrl) break;
     }
 
     // Deduplicate by URL
     const seen = new Set<string>();
-    const deduped = jobs.filter((j) => {
+    const deduped = allJobs.filter((j) => {
       if (seen.has(j.applyUrl)) return false;
       seen.add(j.applyUrl);
       return true;
@@ -169,22 +196,32 @@ async function trySearchInput(page: Page, query: string, log: DiscoveryLog): Pro
 
 /**
  * Extract job listings from the current page.
- * Finds links that look like job postings and match the target role.
+ * Matches against multiple roles — a link matches if ANY role is relevant.
+ * A role is relevant if at least half of its core words appear, OR if the
+ * strongest keyword (like "engineer", "scientist") appears.
  */
 async function extractJobListings(
   page: Page,
-  targetRole: string
+  roles: string[]
 ): Promise<{ jobs: DiscoveredJob[]; allCandidates: number }> {
-  const result = await page.evaluate((role: string) => {
-    const roleWords = role
-      .toLowerCase()
-      .split(/[\s\-\/,]+/)
-      .filter((w) => w.length > 1);
+  const result = await page.evaluate((rolesJson: string) => {
+    const roles: string[] = JSON.parse(rolesJson);
     const fillers = new Set([
       "senior", "junior", "staff", "principal", "lead", "sr", "jr",
       "ii", "iii", "iv", "the", "and", "or", "a", "an", "of", "for",
+      "intern", "internship",
     ]);
-    const coreWords = roleWords.filter((w) => !fillers.has(w));
+
+    // Build match data for each role
+    const roleMatchers = roles.map((role) => {
+      const words = role
+        .toLowerCase()
+        .split(/[\s\-\/,]+/)
+        .filter((w) => w.length > 1);
+      const coreWords = words.filter((w) => !fillers.has(w));
+      return { role, coreWords };
+    });
+
     const matched: { title: string; applyUrl: string }[] = [];
     let candidateCount = 0;
 
@@ -200,17 +237,30 @@ async function extractJobListings(
       candidateCount++;
       const lowerText = text.toLowerCase();
 
-      const matchCount = coreWords.filter(
-        (w) => lowerText.includes(w)
-      ).length;
+      // Check if this link matches ANY role
+      let isMatch = false;
+      for (const { coreWords } of roleMatchers) {
+        if (coreWords.length === 0) continue;
 
-      if (matchCount >= coreWords.length) {
+        const matchCount = coreWords.filter((w) => lowerText.includes(w)).length;
+
+        // Match if: ALL core words present, OR at least half AND has 2+ matches
+        if (
+          matchCount >= coreWords.length ||
+          (matchCount >= Math.ceil(coreWords.length / 2) && matchCount >= 1)
+        ) {
+          isMatch = true;
+          break;
+        }
+      }
+
+      if (isMatch) {
         matched.push({ title: text, applyUrl: href });
       }
     }
 
-    return { matched, candidateCount, coreWords };
-  }, targetRole);
+    return { matched, candidateCount };
+  }, JSON.stringify(roles));
 
   return { jobs: result.matched, allCandidates: result.candidateCount };
 }
@@ -220,7 +270,7 @@ async function extractJobListings(
  */
 async function tryNextPage(
   page: Page,
-  targetRole: string,
+  roles: string[],
   log: DiscoveryLog
 ): Promise<DiscoveredJob[]> {
   const paginationSelectors = [
@@ -239,7 +289,7 @@ async function tryNextPage(
         log.steps.push(`Found pagination: ${selector} — clicking`);
         await el.click();
         await page.waitForTimeout(3000);
-        const { jobs } = await extractJobListings(page, targetRole);
+        const { jobs } = await extractJobListings(page, roles);
         return jobs;
       }
     } catch {}
