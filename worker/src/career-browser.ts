@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import { getBrowser, applyToJob, type ApplyResult } from "./apply-engine";
+import { createStealthContext, applyToJob, type ApplyResult } from "./apply-engine";
 
 export interface DiscoveredJob {
   title: string;
@@ -43,8 +43,7 @@ export async function discoverJobs(
   const roles = parseRoles(targetRole);
   log.steps.push(`Parsed roles: ${JSON.stringify(roles)}`);
 
-  const b = await getBrowser();
-  const context = await b.newContext();
+  const context = await createStealthContext();
   const page = await context.newPage();
   const allJobs: DiscoveredJob[] = [];
 
@@ -61,8 +60,20 @@ export async function discoverJobs(
       await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
       await page.waitForTimeout(3000);
 
-      const pageTitle = await page.title();
-      log.steps.push(`Page loaded — title: "${pageTitle}"`);
+      // Check for Cloudflare challenge — if detected, wait longer
+      let pageTitle = await page.title();
+      if (pageTitle.includes("Just a moment") || pageTitle.includes("Attention Required")) {
+        log.steps.push(`Cloudflare challenge detected — waiting 10s for it to resolve...`);
+        await page.waitForTimeout(10000);
+        pageTitle = await page.title();
+        if (pageTitle.includes("Just a moment") || pageTitle.includes("Attention Required")) {
+          log.steps.push(`Cloudflare still blocking after wait — skipping this search term`);
+          continue;
+        }
+        log.steps.push(`Cloudflare challenge passed! Title now: "${pageTitle}"`);
+      } else {
+        log.steps.push(`Page loaded — title: "${pageTitle}"`);
+      }
 
       // If URL didn't have a search param, try finding a search input
       if (searchUrl === careersUrl) {
