@@ -28,7 +28,23 @@ export async function matchUserResume(
     },
   });
 
-  if (resumes.length === 0) return null;
+  if (resumes.length === 0) {
+    // Fall back to legacy single resume if no UserResume records exist
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { resumeUrl: true, resumeName: true },
+    });
+    if (user?.resumeUrl) {
+      return {
+        id: "legacy",
+        name: user.resumeName || "Resume",
+        blobUrl: user.resumeUrl,
+        fileName: user.resumeName || "resume.pdf",
+        isFallback: true,
+      };
+    }
+    return null;
+  }
 
   const title = jobTitle.toLowerCase();
   let bestMatch: MatchedResume | null = null;
@@ -51,9 +67,12 @@ export async function matchUserResume(
     }
   }
 
-  // Fall back to fallback resume if no keyword match
+  // Fall back to fallback resume, or the first resume if only one exists
   if (!bestMatch) {
     bestMatch = resumes.find((r) => r.isFallback) || null;
+  }
+  if (!bestMatch && resumes.length === 1) {
+    bestMatch = resumes[0];
   }
 
   return bestMatch;

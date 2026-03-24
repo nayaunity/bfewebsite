@@ -17,6 +17,7 @@ function formatDate(dateStr: Date | string): string {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   });
 }
 
@@ -58,7 +59,7 @@ export default function ApplicationsDashboard({
   const handleApplyNow = async () => {
     if (
       !confirm(
-        "This will submit your resume to all eligible Greenhouse jobs. Continue?"
+        "This will queue your resume for auto-apply to all eligible jobs. Continue?"
       )
     )
       return;
@@ -75,13 +76,13 @@ export default function ApplicationsDashboard({
       }
 
       setMessage(
-        `Applied to ${data.summary.submitted} jobs, skipped ${data.summary.skipped}, failed ${data.summary.failed}`
+        `Queued ${data.summary.queued} jobs for auto-apply, skipped ${data.summary.skipped}. ${data.summary.remainingThisMonth} applications remaining this month.`
       );
 
       // Refresh applications list
       const statusRes = await fetch("/api/auto-apply/status?limit=50");
       const statusData = await statusRes.json();
-      if (statusRes.ok) {
+      if (statusRes.ok && statusData.applications) {
         setApplications(statusData.applications);
       }
     } catch (err) {
