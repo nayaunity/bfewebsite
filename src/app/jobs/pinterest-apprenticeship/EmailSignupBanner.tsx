@@ -25,7 +25,7 @@ export default function EmailSignupBanner() {
         </div>
         <div>
           <p className="font-semibold text-[var(--foreground)] text-lg">Auto Apply is Coming</p>
-          <p className="text-[var(--gray-600)] text-sm mt-1">Apply to hundreds of jobs without lifting a finger. Sign up for the beta now!</p>
+          <p className="text-[var(--gray-600)] text-sm mt-1">Be the first to apply to hundreds of jobs effortlessly. Join the beta!</p>
         </div>
       </div>
 
