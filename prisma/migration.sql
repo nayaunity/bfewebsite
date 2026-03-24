@@ -255,3 +255,9 @@ CREATE TABLE IF NOT EXISTS "AutoApplyRun" (
 -- CreateIndex
 CREATE INDEX IF NOT EXISTS "AutoApplyRun_userId_idx" ON "AutoApplyRun"("userId");
 CREATE INDEX IF NOT EXISTS "AutoApplyRun_startedAt_idx" ON "AutoApplyRun"("startedAt");
+
+-- Add custom question answer fields to User
+ALTER TABLE "User" ADD COLUMN "usState" TEXT;
+ALTER TABLE "User" ADD COLUMN "workAuthorized" BOOLEAN;
+ALTER TABLE "User" ADD COLUMN "needsSponsorship" BOOLEAN;
+ALTER TABLE "User" ADD COLUMN "countryOfResidence" TEXT;

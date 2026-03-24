@@ -2,6 +2,19 @@
 
 import { useState } from "react";
 
+const US_STATES = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+  "New Hampshire", "New Jersey", "New Mexico", "New York",
+  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "West Virginia", "Wisconsin", "Wyoming",
+];
+
 interface AutoApplyProfileProps {
   initialData: {
     firstName: string | null;
@@ -9,6 +22,10 @@ interface AutoApplyProfileProps {
     phone: string | null;
     autoApplyEnabled: boolean;
     hasResume: boolean;
+    usState: string | null;
+    workAuthorized: boolean | null;
+    needsSponsorship: boolean | null;
+    countryOfResidence: string | null;
   };
 }
 
@@ -16,6 +33,16 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
   const [firstName, setFirstName] = useState(initialData.firstName || "");
   const [lastName, setLastName] = useState(initialData.lastName || "");
   const [phone, setPhone] = useState(initialData.phone || "");
+  const [usState, setUsState] = useState(initialData.usState || "");
+  const [workAuthorized, setWorkAuthorized] = useState<boolean | null>(
+    initialData.workAuthorized
+  );
+  const [needsSponsorship, setNeedsSponsorship] = useState<boolean | null>(
+    initialData.needsSponsorship
+  );
+  const [countryOfResidence, setCountryOfResidence] = useState(
+    initialData.countryOfResidence || ""
+  );
   const [autoApplyEnabled, setAutoApplyEnabled] = useState(
     initialData.autoApplyEnabled
   );
@@ -31,6 +58,9 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
     failed: number;
   } | null>(null);
 
+  const inputClass =
+    "w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]";
+
   const handleSave = async () => {
     setSaving(true);
     setMessage(null);
@@ -39,7 +69,16 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
       const response = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, phone, autoApplyEnabled }),
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          phone,
+          autoApplyEnabled,
+          usState: usState || null,
+          workAuthorized,
+          needsSponsorship,
+          countryOfResidence: countryOfResidence || null,
+        }),
       });
 
       const data = await response.json();
@@ -124,6 +163,7 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
       )}
 
       <div className="space-y-3">
+        {/* Name fields */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-[var(--gray-600)] mb-1">
@@ -134,7 +174,7 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Jane"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+              className={inputClass}
             />
           </div>
           <div>
@@ -146,11 +186,12 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Doe"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+              className={inputClass}
             />
           </div>
         </div>
 
+        {/* Phone */}
         <div>
           <label className="block text-xs text-[var(--gray-600)] mb-1">
             Phone
@@ -160,8 +201,104 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+1 (555) 123-4567"
-            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+            className={inputClass}
           />
+        </div>
+
+        {/* Common application questions */}
+        <div className="pt-2 border-t border-[var(--card-border)]">
+          <p className="text-xs font-medium text-[var(--foreground)] mb-3">
+            Common Application Questions
+          </p>
+
+          {/* US State */}
+          <div className="mb-3">
+            <label className="block text-xs text-[var(--gray-600)] mb-1">
+              U.S. State of Residence
+            </label>
+            <select
+              value={usState}
+              onChange={(e) => setUsState(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">Select state...</option>
+              {US_STATES.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Country */}
+          <div className="mb-3">
+            <label className="block text-xs text-[var(--gray-600)] mb-1">
+              Country of Residence
+            </label>
+            <input
+              type="text"
+              value={countryOfResidence}
+              onChange={(e) => setCountryOfResidence(e.target.value)}
+              placeholder="United States"
+              className={inputClass}
+            />
+          </div>
+
+          {/* Work Authorization */}
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <span className="text-sm text-[var(--foreground)]">
+                Authorized to Work
+              </span>
+              <p className="text-xs text-[var(--gray-600)]">
+                Currently authorized to work in the U.S.?
+              </p>
+            </div>
+            <div className="flex gap-2">
+              {[true, false].map((val) => (
+                <button
+                  key={String(val)}
+                  type="button"
+                  onClick={() => setWorkAuthorized(val)}
+                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                    workAuthorized === val
+                      ? "bg-[#ef562a] text-white"
+                      : "bg-[var(--gray-100)] text-[var(--gray-600)]"
+                  }`}
+                >
+                  {val ? "Yes" : "No"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sponsorship */}
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <span className="text-sm text-[var(--foreground)]">
+                Need Sponsorship
+              </span>
+              <p className="text-xs text-[var(--gray-600)]">
+                Will you need work authorization assistance?
+              </p>
+            </div>
+            <div className="flex gap-2">
+              {[true, false].map((val) => (
+                <button
+                  key={String(val)}
+                  type="button"
+                  onClick={() => setNeedsSponsorship(val)}
+                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                    needsSponsorship === val
+                      ? "bg-[#ef562a] text-white"
+                      : "bg-[var(--gray-100)] text-[var(--gray-600)]"
+                  }`}
+                >
+                  {val ? "Yes" : "No"}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Auto-apply toggle */}

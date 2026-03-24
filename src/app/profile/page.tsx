@@ -28,6 +28,10 @@ async function getUserData(userId: string) {
       lastName: true,
       phone: true,
       autoApplyEnabled: true,
+      usState: true,
+      workAuthorized: true,
+      needsSponsorship: true,
+      countryOfResidence: true,
       resumeUrl: true,
       resumeName: true,
       resumeUpdatedAt: true,
@@ -165,6 +169,10 @@ export default async function ProfilePage() {
               phone: user.phone,
               autoApplyEnabled: user.autoApplyEnabled,
               hasResume: !!user.resumeUrl,
+              usState: user.usState,
+              workAuthorized: user.workAuthorized,
+              needsSponsorship: user.needsSponsorship,
+              countryOfResidence: user.countryOfResidence,
             }}
           />
 

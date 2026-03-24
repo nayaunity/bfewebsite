@@ -5,6 +5,11 @@ export interface ApplicantProfile {
   phone: string;
   resumeUrl: string;
   resumeName: string;
+  // Custom question answers
+  usState?: string | null;
+  workAuthorized?: boolean | null;
+  needsSponsorship?: boolean | null;
+  countryOfResidence?: string | null;
 }
 
 export interface GreenhouseQuestion {

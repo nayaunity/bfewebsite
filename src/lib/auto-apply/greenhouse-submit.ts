@@ -2,8 +2,8 @@ import {
   ApplicantProfile,
   GreenhouseJobDetail,
   SubmitResult,
-  STANDARD_FIELD_NAMES,
 } from "./types";
+import { matchQuestionAnswers } from "./question-matcher";
 
 /**
  * Fetch a job's details including required questions from the Greenhouse API.
@@ -25,31 +25,8 @@ export async function fetchJobDetail(
 }
 
 /**
- * Check if a job has required custom questions we can't automatically answer.
- * Returns the list of unsupported required field names.
- */
-export function getUnsupportedRequiredFields(
-  detail: GreenhouseJobDetail
-): string[] {
-  if (!detail.questions) return [];
-
-  const unsupported: string[] = [];
-
-  for (const question of detail.questions) {
-    if (!question.required) continue;
-
-    for (const field of question.fields) {
-      if (!STANDARD_FIELD_NAMES.has(field.name)) {
-        unsupported.push(question.label || field.name);
-      }
-    }
-  }
-
-  return unsupported;
-}
-
-/**
  * Submit an application to a Greenhouse job via the public API.
+ * Automatically fills common custom questions from the applicant's profile.
  */
 export async function submitApplication(
   boardToken: string,
@@ -57,41 +34,56 @@ export async function submitApplication(
   applicant: ApplicantProfile
 ): Promise<SubmitResult> {
   try {
-    // First, fetch the job to check for required custom questions
+    // Fetch job detail with questions
     const detail = await fetchJobDetail(boardToken, jobId);
 
-    const unsupported = getUnsupportedRequiredFields(detail);
-    if (unsupported.length > 0) {
+    // Match custom questions against user's profile answers
+    const { answeredFields, unanswered } = matchQuestionAnswers(
+      detail.questions || [],
+      applicant
+    );
+
+    if (unanswered.length > 0) {
       return {
         success: false,
         status: "skipped",
-        error: `Required custom questions: ${unsupported.join(", ")}`,
+        error: `Required custom questions: ${unanswered.join(", ")}`,
       };
     }
 
+    // Build submission body: standard fields + matched custom answers
+    const body: Record<string, unknown> = {
+      first_name: applicant.firstName,
+      last_name: applicant.lastName,
+      email: applicant.email,
+      phone: applicant.phone,
+      resume_url: applicant.resumeUrl,
+      resume_url_filename: applicant.resumeName || "resume.pdf",
+      ...answeredFields,
+    };
+
     // Submit the application
+    // Greenhouse requires HTTP Basic auth for submissions on most boards
+    const apiKey = process.env.GREENHOUSE_API_KEY;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+    if (apiKey) {
+      headers["Authorization"] = `Basic ${Buffer.from(apiKey + ":").toString("base64")}`;
+    }
+
     const url = `https://boards-api.greenhouse.io/v1/boards/${boardToken}/jobs/${jobId}`;
     const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        first_name: applicant.firstName,
-        last_name: applicant.lastName,
-        email: applicant.email,
-        phone: applicant.phone,
-        resume_url: applicant.resumeUrl,
-        resume_url_filename: applicant.resumeName || "resume.pdf",
-      }),
+      headers,
+      body: JSON.stringify(body),
     });
 
     if (response.ok) {
       return { success: true, status: "submitted" };
     }
 
-    // Handle specific error codes
     if (response.status === 429) {
       return {
         success: false,

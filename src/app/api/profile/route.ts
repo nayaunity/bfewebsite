@@ -10,7 +10,10 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { firstName, lastName, phone, autoApplyEnabled } = body;
+    const {
+      firstName, lastName, phone, autoApplyEnabled,
+      usState, workAuthorized, needsSponsorship, countryOfResidence,
+    } = body;
 
     const data: Record<string, unknown> = {};
 
@@ -42,6 +45,34 @@ export async function PATCH(request: NextRequest) {
       data.autoApplyEnabled = autoApplyEnabled;
     }
 
+    if (usState !== undefined) {
+      if (usState !== null && (typeof usState !== "string" || usState.length > 100)) {
+        return NextResponse.json({ error: "Invalid US state" }, { status: 400 });
+      }
+      data.usState = usState?.trim() || null;
+    }
+
+    if (workAuthorized !== undefined) {
+      if (workAuthorized !== null && typeof workAuthorized !== "boolean") {
+        return NextResponse.json({ error: "Invalid work authorization value" }, { status: 400 });
+      }
+      data.workAuthorized = workAuthorized;
+    }
+
+    if (needsSponsorship !== undefined) {
+      if (needsSponsorship !== null && typeof needsSponsorship !== "boolean") {
+        return NextResponse.json({ error: "Invalid sponsorship value" }, { status: 400 });
+      }
+      data.needsSponsorship = needsSponsorship;
+    }
+
+    if (countryOfResidence !== undefined) {
+      if (countryOfResidence !== null && (typeof countryOfResidence !== "string" || countryOfResidence.length > 100)) {
+        return NextResponse.json({ error: "Invalid country" }, { status: 400 });
+      }
+      data.countryOfResidence = countryOfResidence?.trim() || null;
+    }
+
     if (Object.keys(data).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
     }
@@ -54,6 +85,10 @@ export async function PATCH(request: NextRequest) {
         lastName: true,
         phone: true,
         autoApplyEnabled: true,
+        usState: true,
+        workAuthorized: true,
+        needsSponsorship: true,
+        countryOfResidence: true,
       },
     });
 

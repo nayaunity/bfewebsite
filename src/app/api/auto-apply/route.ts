@@ -24,6 +24,10 @@ export async function POST() {
       resumeUrl: true,
       resumeName: true,
       role: true,
+      usState: true,
+      workAuthorized: true,
+      needsSponsorship: true,
+      countryOfResidence: true,
     },
   });
 
@@ -56,6 +60,10 @@ export async function POST() {
       phone: user.phone!,
       resumeUrl: user.resumeUrl!,
       resumeName: user.resumeName || "resume.pdf",
+      usState: user.usState,
+      workAuthorized: user.workAuthorized,
+      needsSponsorship: user.needsSponsorship,
+      countryOfResidence: user.countryOfResidence,
     });
 
     return NextResponse.json({

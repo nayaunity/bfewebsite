@@ -34,6 +34,10 @@ export async function GET(request: NextRequest) {
         phone: true,
         resumeUrl: true,
         resumeName: true,
+        usState: true,
+        workAuthorized: true,
+        needsSponsorship: true,
+        countryOfResidence: true,
       },
     });
 
@@ -50,6 +54,10 @@ export async function GET(request: NextRequest) {
           phone: user.phone!,
           resumeUrl: user.resumeUrl!,
           resumeName: user.resumeName || "resume.pdf",
+          usState: user.usState,
+          workAuthorized: user.workAuthorized,
+          needsSponsorship: user.needsSponsorship,
+          countryOfResidence: user.countryOfResidence,
         });
 
         results.push({
