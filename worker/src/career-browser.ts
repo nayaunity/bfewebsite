@@ -257,15 +257,23 @@ async function extractJobListings(
 
     const links = Array.from(document.querySelectorAll("a[href]"));
     for (const link of links) {
-      const text = (link.textContent || "").trim().replace(/\s+/g, " ");
+      const rawText = (link.textContent || "").trim().replace(/\s+/g, " ");
       const href = (link as HTMLAnchorElement).href;
 
-      if (text.length < 5 || text.length > 200) continue;
+      if (rawText.length < 5) continue;
       if (!href || href === "#" || href.startsWith("javascript:")) continue;
       if (href === window.location.href) continue;
 
-      // Only consider links that look like job pages
-      if (!looksLikeJobUrl(href)) continue;
+      // Only consider links with job-like URLs OR on a known career page
+      const isOnCareerPage = window.location.hostname.includes("career") ||
+        window.location.pathname.includes("/jobs") ||
+        window.location.pathname.includes("/positions") ||
+        window.location.pathname.includes("/openings");
+      if (!looksLikeJobUrl(href) && !isOnCareerPage) continue;
+
+      // For long texts (SPA pages like Meta), extract just the first line/title portion
+      const text = rawText.length > 200 ? rawText.slice(0, rawText.search(/[A-Z][a-z]+,\s*[A-Z]{2}|⋅|Multiple Locations|Posted|Remote|United States/)) || rawText.slice(0, 150) : rawText;
+      if (text.length < 5) continue;
 
       candidateCount++;
       const lowerText = text.toLowerCase();
@@ -285,6 +293,7 @@ async function extractJobListings(
       }
 
       if (isMatch) {
+        // Use the cleaned title, not the raw long text
         matched.push({ title: text, applyUrl: href });
       }
     }
