@@ -205,3 +205,53 @@ CREATE INDEX IF NOT EXISTS "PagePresence_country_idx" ON "PagePresence"("country
 
 -- Add country column if table already exists
 ALTER TABLE "PagePresence" ADD COLUMN "country" TEXT;
+
+-- Add auto-apply profile fields to User
+ALTER TABLE "User" ADD COLUMN "firstName" TEXT;
+ALTER TABLE "User" ADD COLUMN "lastName" TEXT;
+ALTER TABLE "User" ADD COLUMN "phone" TEXT;
+ALTER TABLE "User" ADD COLUMN "autoApplyEnabled" BOOLEAN DEFAULT false;
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "JobApplication" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "jobId" TEXT NOT NULL,
+    "externalJobId" TEXT NOT NULL,
+    "company" TEXT NOT NULL,
+    "companySlug" TEXT NOT NULL,
+    "boardToken" TEXT NOT NULL,
+    "jobTitle" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "errorMessage" TEXT,
+    "submittedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "JobApplication_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "JobApplication_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX IF NOT EXISTS "JobApplication_userId_jobId_key" ON "JobApplication"("userId", "jobId");
+CREATE INDEX IF NOT EXISTS "JobApplication_userId_idx" ON "JobApplication"("userId");
+CREATE INDEX IF NOT EXISTS "JobApplication_jobId_idx" ON "JobApplication"("jobId");
+CREATE INDEX IF NOT EXISTS "JobApplication_status_idx" ON "JobApplication"("status");
+CREATE INDEX IF NOT EXISTS "JobApplication_companySlug_idx" ON "JobApplication"("companySlug");
+CREATE INDEX IF NOT EXISTS "JobApplication_createdAt_idx" ON "JobApplication"("createdAt");
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "AutoApplyRun" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'running',
+    "totalJobs" INTEGER NOT NULL DEFAULT 0,
+    "submitted" INTEGER NOT NULL DEFAULT 0,
+    "skipped" INTEGER NOT NULL DEFAULT 0,
+    "failed" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
+    "startedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "completedAt" DATETIME
+);
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "AutoApplyRun_userId_idx" ON "AutoApplyRun"("userId");
+CREATE INDEX IF NOT EXISTS "AutoApplyRun_startedAt_idx" ON "AutoApplyRun"("startedAt");

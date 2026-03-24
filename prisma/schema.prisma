@@ -8,19 +8,24 @@ datasource db {
 }
 
 model User {
-  id            String           @id @default(cuid())
-  email         String           @unique
-  emailVerified DateTime?
-  role          String           @default("user")
-  resumeUrl     String?
-  resumeName    String?
-  resumeUpdatedAt DateTime?
-  createdAt     DateTime         @default(now())
-  accounts      Account[]
-  progress      LessonProgress[]
-  microWins     MicroWin[]
-  sessions      Session[]
-  createdJobs   Job[]
+  id               String           @id @default(cuid())
+  email            String           @unique
+  emailVerified    DateTime?
+  role             String           @default("user")
+  firstName        String?
+  lastName         String?
+  phone            String?
+  resumeUrl        String?
+  resumeName       String?
+  resumeUpdatedAt  DateTime?
+  autoApplyEnabled Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  accounts         Account[]
+  progress         LessonProgress[]
+  microWins        MicroWin[]
+  sessions         Session[]
+  createdJobs      Job[]
+  jobApplications  JobApplication[]
 
   @@index([role])
 }
@@ -94,12 +99,55 @@ model Job {
   createdById String?
   createdBy   User?     @relation(fields: [createdById], references: [id])
 
+  applications    JobApplication[]
+
   @@unique([externalId, companySlug])
   @@index([category])
   @@index([remote])
   @@index([isActive])
   @@index([companySlug])
   @@index([createdById])
+}
+
+model JobApplication {
+  id            String    @id @default(cuid())
+  userId        String
+  jobId         String
+  externalJobId String
+  company       String
+  companySlug   String
+  boardToken    String
+  jobTitle      String
+  status        String    @default("pending")
+  errorMessage  String?
+  submittedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@index([status])
+  @@index([companySlug])
+  @@index([createdAt])
+}
+
+model AutoApplyRun {
+  id           String    @id @default(cuid())
+  userId       String
+  status       String    @default("running")
+  totalJobs    Int       @default(0)
+  submitted    Int       @default(0)
+  skipped      Int       @default(0)
+  failed       Int       @default(0)
+  errorMessage String?
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+
+  @@index([userId])
+  @@index([startedAt])
 }
 
 model ScrapeLog {

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ResumeUpload } from "@/components/ResumeUpload";
+import { AutoApplyProfile } from "@/components/AutoApplyProfile";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,10 @@ async function getUserData(userId: string) {
       createdAt: true,
       emailVerified: true,
       role: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      autoApplyEnabled: true,
       resumeUrl: true,
       resumeName: true,
       resumeUpdatedAt: true,
@@ -151,6 +156,30 @@ export default async function ProfilePage() {
               updatedAt: user.resumeUpdatedAt,
             }}
           />
+
+          {/* Auto-Apply Profile */}
+          <AutoApplyProfile
+            initialData={{
+              firstName: user.firstName,
+              lastName: user.lastName,
+              phone: user.phone,
+              autoApplyEnabled: user.autoApplyEnabled,
+              hasResume: !!user.resumeUrl,
+            }}
+          />
+
+          {/* Applications Link */}
+          <div className="px-6 py-3 border-t border-[var(--card-border)]">
+            <Link
+              href="/profile/applications"
+              className="inline-flex items-center gap-2 text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              View Application History
+            </Link>
+          </div>
 
           {/* Admin Link */}
           {user.role === "admin" && (
