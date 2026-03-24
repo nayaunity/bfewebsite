@@ -42,8 +42,31 @@ interface Discovery {
   errorMessage: string | null;
 }
 
+const ROLE_OPTIONS = [
+  {
+    label: "AI Engineer / Software Engineer",
+    searchTerms: "AI Engineer, Software Engineer, Backend Engineer, Full Stack Engineer",
+    description: "Software, backend, frontend, full stack, AI, ML, data science, DevOps",
+  },
+  {
+    label: "Developer Advocate",
+    searchTerms: "Developer Advocate, Developer Relations, Technical Evangelist, Solutions Architect",
+    description: "DevRel, community engineer, technical writer, solutions architect",
+  },
+  {
+    label: "Content Creator",
+    searchTerms: "Content Strategist, Social Media Manager, Copywriter, Marketing Manager",
+    description: "Content strategy, social media, copywriting, video, brand",
+  },
+  {
+    label: "Storyteller / Product Manager",
+    searchTerms: "Product Manager, Program Manager, Producer, Creative Director",
+    description: "Producer, PM, creative director, narrative designer, curriculum",
+  },
+];
+
 export function BrowseApplyForm({ companies }: { companies: Company[] }) {
-  const [targetRole, setTargetRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
@@ -78,11 +101,12 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
     setStarting(true);
 
     try {
+      const roleOption = ROLE_OPTIONS.find((r) => r.label === selectedRole);
       const res = await fetch("/api/auto-apply/browse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          targetRole: targetRole.trim(),
+          targetRole: roleOption?.searchTerms || selectedRole,
           companies: Array.from(selected),
         }),
       });
@@ -140,16 +164,37 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
         <div className="px-6 py-4 space-y-4">
           {/* Target Role */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Target Role
             </label>
-            <input
-              type="text"
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-              placeholder="e.g. AI Engineer, Software Engineer, DevOps"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)]"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {ROLE_OPTIONS.map((role) => (
+                <label
+                  key={role.label}
+                  className={`flex items-start gap-3 px-3 py-3 rounded-lg border cursor-pointer transition-colors ${
+                    selectedRole === role.label
+                      ? "border-[#ef562a] bg-orange-50 dark:bg-orange-950/20"
+                      : "border-[var(--card-border)] hover:border-[var(--gray-400)]"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="targetRole"
+                    checked={selectedRole === role.label}
+                    onChange={() => setSelectedRole(role.label)}
+                    className="accent-[#ef562a] mt-0.5"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-[var(--foreground)]">
+                      {role.label}
+                    </span>
+                    <p className="text-xs text-[var(--gray-600)] mt-0.5">
+                      {role.description}
+                    </p>
+                  </div>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Company Selection */}
@@ -198,12 +243,12 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           )}
 
           {/* Validation hint */}
-          {(!targetRole.trim() || selected.size === 0) && (
+          {(!selectedRole || selected.size === 0) && (
             <p className="text-xs text-[var(--gray-600)]">
-              {!targetRole.trim() && selected.size === 0
-                ? "Enter a target role and select at least one company to start."
-                : !targetRole.trim()
-                  ? "Enter a target role above to start."
+              {!selectedRole && selected.size === 0
+                ? "Select a target role and at least one company to start."
+                : !selectedRole
+                  ? "Select a target role above to start."
                   : "Select at least one company to start."}
             </p>
           )}
@@ -212,14 +257,14 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           <button
             onClick={handleStart}
             disabled={
-              starting || !targetRole.trim() || selected.size === 0
+              starting || !selectedRole || selected.size === 0
             }
             className="w-full py-3 text-sm font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {starting
               ? "Starting..."
-              : !targetRole.trim()
-                ? "Enter a Target Role to Start"
+              : !selectedRole
+                ? "Select a Target Role to Start"
                 : selected.size === 0
                   ? "Select Companies to Start"
                   : `Start Applying to ${selected.size} ${selected.size === 1 ? "Company" : "Companies"}`}
