@@ -8,6 +8,7 @@ import {
   incrementUserAppCount,
 } from "./db";
 import { applyToJob, closeBrowser } from "./apply-engine";
+import { processNextBrowseSession } from "./browse-loop";
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "3001", 10);
@@ -31,6 +32,9 @@ async function startPolling() {
   while (true) {
     try {
       await processNextJob();
+      if (!isProcessing) {
+        await processNextBrowseSession();
+      }
     } catch (error) {
       console.error("Polling error:", error);
     }

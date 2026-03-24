@@ -1,16 +1,72 @@
-import { chromium, type Browser, type Page } from "playwright";
+import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
 let browser: Browser | null = null;
 
+const USER_AGENTS = [
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+];
+
+function randomUserAgent(): string {
+  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+}
+
 export async function getBrowser(): Promise<Browser> {
   if (!browser || !browser.isConnected()) {
     const headless = process.env.HEADLESS !== "false";
-    browser = await chromium.launch({ headless });
+    browser = await chromium.launch({
+      headless,
+      args: [
+        "--disable-blink-features=AutomationControlled",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gpu",
+      ],
+    });
   }
   return browser;
+}
+
+/**
+ * Create a stealth browser context with anti-detection measures.
+ */
+export async function createStealthContext(): Promise<BrowserContext> {
+  const b = await getBrowser();
+  const context = await b.newContext({
+    userAgent: randomUserAgent(),
+    viewport: { width: 1440, height: 900 },
+    locale: "en-US",
+    timezoneId: "America/Denver",
+    permissions: ["geolocation"],
+    geolocation: { latitude: 39.7392, longitude: -104.9903 }, // Denver
+  });
+
+  // Patch navigator.webdriver to be undefined
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", {
+      get: () => undefined,
+    });
+    // Override navigator.plugins to look real
+    Object.defineProperty(navigator, "plugins", {
+      get: () => [1, 2, 3, 4, 5],
+    });
+    // Override navigator.languages
+    Object.defineProperty(navigator, "languages", {
+      get: () => ["en-US", "en"],
+    });
+    // Chrome runtime
+    (window as unknown as Record<string, unknown>).chrome = { runtime: {} };
+  });
+
+  return context;
 }
 
 export async function closeBrowser(): Promise<void> {
@@ -45,8 +101,7 @@ export async function applyToJob(
   resumeUrl: string,
   resumeName: string
 ): Promise<ApplyResult> {
-  const b = await getBrowser();
-  const context = await b.newContext();
+  const context = await createStealthContext();
   const page = await context.newPage();
 
   try {
