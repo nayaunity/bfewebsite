@@ -22,7 +22,7 @@ export default async function PricingPage() {
     <main className="min-h-screen bg-[var(--background)]">
       <Navigation />
 
-      <div className="max-w-5xl mx-auto px-4 py-20">
+      <div className="max-w-5xl mx-auto px-4 pt-40 pb-20">
         {/* Hero */}
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
