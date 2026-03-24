@@ -36,6 +36,14 @@ If specific companies were named in the command, filter the list to only those. 
 
 If the profile is incomplete (missing name, email, phone), tell the user what's missing and stop.
 
+Load the application answers reference:
+
+```bash
+cat job-assets/application-answers.json
+```
+
+This contains pre-written answers to common application questions (why this company, tell me about yourself, strengths, weaknesses, etc.) tailored per resume type. Use the answers matching the resume selected for each job. For free-text application questions, adapt these answers to reference the specific company and role.
+
 ### 2. Resume Selection
 
 For each job found, select the right resume by running:
@@ -93,7 +101,8 @@ Use Playwright to open the company's `careersUrl`.
    - US State / Location: Use `usState` from profile
    - Country: Use `countryOfResidence` from profile
    - For dropdown/select questions: Pick the closest matching option
-   - For free-text required questions: Use best judgment
+   - For free-text questions (why this company, tell me about yourself, etc.): Use the matching role-specific answer from `application-answers.json`, adapting it to reference the specific company name and product. Use `commonQuestions` keyed by resume type and `additionalQuestions` for general questions
+   - For EEO/demographic questions: Use values from `backgroundQuestions` in the answers file
    - For optional fields: Skip
 6. **Submit** the application
 7. **Record the result**:
