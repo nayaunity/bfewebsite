@@ -101,7 +101,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
     try {
       // Apply company timeout
-      const discovered = await Promise.race([
+      const { jobs: discovered, log: discoveryLog } = await Promise.race([
         discoverJobs(careersUrl, session.targetRole),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
@@ -110,6 +110,9 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
       companyResult.found = discovered.length;
       console.log(`[Browse] ${companyName}: found ${discovered.length} matching jobs`);
+      for (const step of discoveryLog.steps) {
+        console.log(`[Browse] ${companyName}: ${step}`);
+      }
 
       // Update session counters
       await db.execute({
@@ -196,6 +199,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         applied: companyResult.applied,
         skipped: companyResult.skipped,
         failed: companyResult.failed,
+        debugLog: discoveryLog.steps,
       });
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "Unknown error";

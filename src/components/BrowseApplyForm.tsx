@@ -16,6 +16,7 @@ interface ProgressEntry {
   skipped?: number;
   failed?: number;
   error?: string;
+  debugLog?: string[];
 }
 
 interface SessionData {
@@ -292,27 +293,36 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
               </p>
               <div className="space-y-1 max-h-48 overflow-y-auto">
                 {sessionData.progressLog.map((entry, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between py-1.5 px-2 bg-[var(--gray-50)] rounded text-sm"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span>
-                        {entry.status === "done"
-                          ? "\u2713"
-                          : entry.status === "error"
-                            ? "\u2717"
-                            : "\u2022"}
-                      </span>
-                      <span className="text-[var(--foreground)]">
-                        {entry.company}
+                  <div key={i} className="py-1.5 px-2 bg-[var(--gray-50)] rounded text-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span>
+                          {entry.status === "done"
+                            ? "\u2713"
+                            : entry.status === "error"
+                              ? "\u2717"
+                              : "\u2022"}
+                        </span>
+                        <span className="text-[var(--foreground)]">
+                          {entry.company}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[var(--gray-600)]">
+                        {entry.status === "error"
+                          ? entry.error
+                          : `${entry.applied} applied, ${entry.found} found`}
                       </span>
                     </div>
-                    <span className="text-xs text-[var(--gray-600)]">
-                      {entry.status === "error"
-                        ? entry.error
-                        : `${entry.applied} applied, ${entry.found} found`}
-                    </span>
+                    {entry.debugLog && entry.debugLog.length > 0 && (
+                      <details className="mt-1">
+                        <summary className="text-xs text-[var(--gray-600)] cursor-pointer hover:text-[var(--foreground)]">
+                          Debug log ({entry.debugLog.length} steps)
+                        </summary>
+                        <pre className="mt-1 text-[10px] text-[var(--gray-600)] whitespace-pre-wrap break-all bg-[var(--background)] p-2 rounded border border-[var(--card-border)] max-h-48 overflow-y-auto">
+                          {entry.debugLog.join("\n")}
+                        </pre>
+                      </details>
+                    )}
                   </div>
                 ))}
               </div>
