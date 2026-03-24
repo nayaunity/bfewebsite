@@ -425,8 +425,8 @@ export default function JobBoard() {
                   <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
                     Apprenticeship
                   </span>
-                  <span className="text-xs px-2 py-1 bg-orange-100 text-orange-700 rounded-full">
-                    Coming Soon
+                  <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">
+                    Apply Now
                   </span>
                   <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
                     Remote
@@ -440,10 +440,12 @@ export default function JobBoard() {
                   <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
                   <span>Full-time</span>
                   <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>Applications opening soon</span>
+                  <span>$9,350 - $11,000/mo</span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
+                  <span>Apply by Mar 27</span>
                 </div>
                 <p className="mt-3 text-sm text-[var(--gray-600)]">
-                  Perfect for career changers and non-traditional backgrounds. Get notified when applications open.
+                  Up to 1-year program for career changers and non-traditional backgrounds. Starts July 27, 2026.
                 </p>
               </div>
               <div className="flex items-center gap-4">
