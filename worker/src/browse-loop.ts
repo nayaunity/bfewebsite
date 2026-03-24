@@ -3,7 +3,7 @@ import { discoverJobs, applyToJob } from "./career-browser";
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import targetCompanies from "../../scripts/target-companies.json";
+import targetCompanies from "../data/target-companies.json";
 
 const DELAY_BETWEEN_COMPANIES_MS = 10_000;
 const DELAY_BETWEEN_JOBS_MS = 5_000;
