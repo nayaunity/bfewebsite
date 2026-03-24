@@ -7,7 +7,8 @@ let browser: Browser | null = null;
 
 export async function getBrowser(): Promise<Browser> {
   if (!browser || !browser.isConnected()) {
-    browser = await chromium.launch({ headless: true });
+    const headless = process.env.HEADLESS !== "false";
+    browser = await chromium.launch({ headless });
   }
   return browser;
 }

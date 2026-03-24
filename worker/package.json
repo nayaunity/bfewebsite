@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "browse": "HEADLESS=false tsx src/browse-worker.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
