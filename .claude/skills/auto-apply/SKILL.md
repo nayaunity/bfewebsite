@@ -155,3 +155,6 @@ And a total across all companies.
 - Spend at most 5 minutes per company — if the site is too slow or complex, move on
 - ALWAYS use the matched resume for each job — never use a generic one if a specific match exists
 - If no resume matches a job, SKIP it — don't apply with the wrong resume
+- NEVER write inline Python, Ruby, or multi-line scripts in Bash — use only the provided helper scripts (`npx tsx scripts/...`) and Playwright MCP tools. Inline scripts trigger security prompts that block automation
+- Use ONLY Playwright MCP tools to interact with web pages — do not use curl, wget, or fetch to scrape page content
+- When parsing job listings from a page, use Playwright's snapshot/accessibility tree — do not try to parse HTML or JSON with ad-hoc scripts
