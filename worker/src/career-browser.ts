@@ -1,5 +1,8 @@
 import type { Page } from "playwright";
+import Anthropic from "@anthropic-ai/sdk";
 import { createStealthContext, applyToJob, type ApplyResult } from "./apply-engine";
+
+const anthropic = new Anthropic();
 
 export interface DiscoveredJob {
   title: string;
@@ -12,7 +15,6 @@ export interface DiscoveryLog {
 
 /**
  * Parse target role input into individual roles.
- * "AI Engineer, Software Engineer" → ["AI Engineer", "Software Engineer"]
  */
 function parseRoles(targetRole: string): string[] {
   return targetRole
@@ -22,18 +24,7 @@ function parseRoles(targetRole: string): string[] {
 }
 
 /**
- * Get a simple search term from the target roles for URL/input search.
- * Uses the first role, simplified (e.g. "AI Engineer" → "engineer").
- */
-function getSearchTerms(roles: string[]): string[] {
-  // Return each role as a separate search term
-  return roles.map((r) => r.trim());
-}
-
-/**
- * Search for the target role on a career page.
- * Tries URL params, search inputs, and fallback scan.
- * Returns discovered jobs AND a detailed log of what happened.
+ * Search for the target role on a career page using Claude for intelligent matching.
  */
 export async function discoverJobs(
   careersUrl: string,
@@ -48,74 +39,61 @@ export async function discoverJobs(
   const allJobs: DiscoveredJob[] = [];
 
   try {
-    // Search with each role separately, collect all results
-    const searchTerms = getSearchTerms(roles);
+    // Use first role for the search query (simpler, avoids comma issues)
+    const searchTerm = roles[0];
+    const searchUrl = appendSearchParam(careersUrl, searchTerm);
+    log.steps.push(`Search URL: ${searchUrl}`);
 
-    for (const term of searchTerms) {
-      log.steps.push(`--- Searching for: "${term}" ---`);
+    await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForTimeout(3000);
 
-      const searchUrl = appendSearchParam(careersUrl, term);
-      log.steps.push(`Search URL: ${searchUrl}`);
-
-      await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-      await page.waitForTimeout(3000);
-
-      // Check for Cloudflare challenge — if detected, wait longer
-      let pageTitle = await page.title();
+    // Check for Cloudflare challenge
+    let pageTitle = await page.title();
+    if (pageTitle.includes("Just a moment") || pageTitle.includes("Attention Required")) {
+      log.steps.push("Cloudflare challenge detected — waiting 10s...");
+      await page.waitForTimeout(10000);
+      pageTitle = await page.title();
       if (pageTitle.includes("Just a moment") || pageTitle.includes("Attention Required")) {
-        log.steps.push(`Cloudflare challenge detected — waiting 10s for it to resolve...`);
-        await page.waitForTimeout(10000);
-        pageTitle = await page.title();
-        if (pageTitle.includes("Just a moment") || pageTitle.includes("Attention Required")) {
-          log.steps.push(`Cloudflare still blocking after wait — skipping this search term`);
-          continue;
-        }
-        log.steps.push(`Cloudflare challenge passed! Title now: "${pageTitle}"`);
-      } else {
-        log.steps.push(`Page loaded — title: "${pageTitle}"`);
+        log.steps.push("Cloudflare still blocking — skipping");
+        return { jobs: [], log };
       }
+      log.steps.push(`Cloudflare passed! Title: "${pageTitle}"`);
+    } else {
+      log.steps.push(`Page loaded — title: "${pageTitle}"`);
+    }
 
-      // If URL didn't have a search param, try finding a search input
-      if (searchUrl === careersUrl) {
-        const searchFound = await trySearchInput(page, term, log);
-        if (!searchFound) {
-          log.steps.push("No search input found — will scan all visible links");
-        }
+    // If URL didn't change (no search param added), try a search input
+    if (searchUrl === careersUrl) {
+      const searchFound = await trySearchInput(page, searchTerm, log);
+      if (!searchFound) {
+        log.steps.push("No search input found — scanning all links");
       }
+    }
 
-      // Count total links on page
-      const totalLinks = await page.evaluate(() =>
-        document.querySelectorAll("a[href]").length
-      );
-      log.steps.push(`Total links on page: ${totalLinks}`);
+    // Extract ALL links from the page (no filtering — let Claude decide)
+    const pageLinks = await extractAllLinks(page);
+    log.steps.push(`Total links extracted: ${pageLinks.length}`);
 
-      // Extract job listings — match against ALL roles, not just the search term
-      const { jobs, allCandidates } = await extractJobListings(page, roles);
-      log.steps.push(`Links with text 5-200 chars: ${allCandidates}`);
-      log.steps.push(`Jobs matching roles: ${jobs.length}`);
+    if (pageLinks.length === 0) {
+      log.steps.push("No links found on page");
+      return { jobs: [], log };
+    }
 
-      // Log sample link texts
-      const sampleTexts = await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll("a[href]"));
-        return links
-          .map((l) => (l.textContent || "").trim().replace(/\s+/g, " "))
-          .filter((t) => t.length >= 5 && t.length <= 200)
-          .slice(0, 15);
-      });
-      log.steps.push(`Sample link texts: ${JSON.stringify(sampleTexts)}`);
+    // Send to Claude for intelligent matching
+    log.steps.push(`Sending ${pageLinks.length} links to Claude for matching...`);
+    const matched = await matchJobsWithClaude(pageLinks, roles, log);
+    allJobs.push(...matched);
 
-      allJobs.push(...jobs);
+    log.steps.push(`Claude identified ${matched.length} matching jobs`);
+    if (matched.length > 0) {
+      log.steps.push(`Matched: ${matched.map((j) => j.title).join(" | ")}`);
+    }
 
-      // Try pagination
-      const paginationJobs = await tryNextPage(page, roles, log);
-      if (paginationJobs.length > 0) {
-        log.steps.push(`Pagination added ${paginationJobs.length} more jobs`);
-        allJobs.push(...paginationJobs);
-      }
-
-      // Only search once if the URL already had no search capability
-      // (avoids re-loading the same page with different terms)
-      if (searchUrl === careersUrl) break;
+    // Try pagination for more results
+    const paginationJobs = await tryNextPage(page, roles, log);
+    if (paginationJobs.length > 0) {
+      log.steps.push(`Pagination found ${paginationJobs.length} more jobs`);
+      allJobs.push(...paginationJobs);
     }
 
     // Deduplicate by URL
@@ -127,11 +105,6 @@ export async function discoverJobs(
     });
 
     log.steps.push(`After dedup: ${deduped.length} unique jobs`);
-
-    if (deduped.length > 0) {
-      log.steps.push(`Matched jobs: ${deduped.map((j) => j.title).join(" | ")}`);
-    }
-
     return { jobs: deduped, log };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -143,13 +116,92 @@ export async function discoverJobs(
 }
 
 /**
+ * Extract all links from the page as raw text + URL pairs.
+ */
+async function extractAllLinks(page: Page): Promise<Array<{ text: string; url: string }>> {
+  return page.evaluate(() => {
+    const results: Array<{ text: string; url: string }> = [];
+    const links = Array.from(document.querySelectorAll("a[href]"));
+
+    for (const link of links) {
+      const text = (link.textContent || "").trim().replace(/\s+/g, " ");
+      const url = (link as HTMLAnchorElement).href;
+
+      // Basic filtering — skip empty, anchors, javascript
+      if (text.length < 3) continue;
+      if (!url || url === "#" || url.startsWith("javascript:")) continue;
+      if (url === window.location.href) continue;
+
+      results.push({ text: text.slice(0, 300), url });
+    }
+
+    return results;
+  });
+}
+
+/**
+ * Use Claude to intelligently identify which links are job listings matching the target roles.
+ */
+async function matchJobsWithClaude(
+  links: Array<{ text: string; url: string }>,
+  roles: string[],
+  log: DiscoveryLog
+): Promise<DiscoveredJob[]> {
+  // Format links for the prompt
+  const linksText = links
+    .map((l, i) => `[${i}] "${l.text}" → ${l.url}`)
+    .join("\n");
+
+  const prompt = `You are analyzing links from a company career page. Identify which ones are actual job listings relevant to these target roles: ${roles.join(", ")}.
+
+Rules:
+- Only include actual job postings (not navigation, footer, language, or category links)
+- Match broadly: "Software Engineer" should match "Senior Software Engineer", "Staff Engineer", "ML Engineer", etc.
+- Match related roles: "AI Engineer" should match "Machine Learning Engineer", "ML Infrastructure Engineer", etc.
+- Extract a CLEAN job title (just the role name, no location/metadata)
+- Include the exact URL from the link
+
+Links found on page:
+${linksText}
+
+Return ONLY a JSON array. No other text. Example format:
+[{"title": "Senior Software Engineer", "applyUrl": "https://..."}]
+
+If no matching jobs found, return: []`;
+
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2048,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    log.steps.push(`Claude response (${response.usage.input_tokens} in, ${response.usage.output_tokens} out)`);
+
+    // Parse JSON from response
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      log.steps.push("Claude returned no JSON array");
+      return [];
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]) as Array<{ title: string; applyUrl: string }>;
+    return parsed.filter((j) => j.title && j.applyUrl);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log.steps.push(`Claude API error: ${msg}`);
+    return [];
+  }
+}
+
+/**
  * Append a search query param to the career page URL.
  */
 function appendSearchParam(url: string, query: string): string {
   const searchParams = ["q", "search", "keywords", "query", "keyword"];
   const parsed = new URL(url);
 
-  // Check if any search param already exists
   for (const param of searchParams) {
     if (parsed.searchParams.has(param)) {
       parsed.searchParams.set(param, query);
@@ -157,7 +209,6 @@ function appendSearchParam(url: string, query: string): string {
     }
   }
 
-  // Try adding ?q= for URLs that look like job search pages
   if (
     url.includes("/search") ||
     url.includes("/jobs") ||
@@ -196,7 +247,7 @@ async function trySearchInput(page: Page, query: string, log: DiscoveryLog): Pro
         await el.fill(query);
         await page.keyboard.press("Enter");
         await page.waitForTimeout(3000);
-        log.steps.push(`Typed "${query}" and pressed Enter, waited 3s`);
+        log.steps.push(`Searched for "${query}"`);
         return true;
       }
     } catch {}
@@ -206,126 +257,7 @@ async function trySearchInput(page: Page, query: string, log: DiscoveryLog): Pro
 }
 
 /**
- * Extract job listings from the current page.
- * Matches against multiple roles — a link matches if ANY role is relevant.
- * A role is relevant if at least half of its core words appear, OR if the
- * strongest keyword (like "engineer", "scientist") appears.
- */
-async function extractJobListings(
-  page: Page,
-  roles: string[]
-): Promise<{ jobs: DiscoveredJob[]; allCandidates: number }> {
-  const result = await page.evaluate((rolesJson: string) => {
-    const roles: string[] = JSON.parse(rolesJson);
-    const fillers = new Set([
-      "senior", "junior", "staff", "principal", "lead", "sr", "jr",
-      "ii", "iii", "iv", "the", "and", "or", "a", "an", "of", "for",
-      "intern", "internship",
-    ]);
-
-    // Build match data for each role
-    const roleMatchers = roles.map((role) => {
-      const words = role
-        .toLowerCase()
-        .split(/[\s\-\/,]+/)
-        .filter((w) => w.length > 1); // Min 2 chars — whole-word regex handles false positives
-      const coreWords = words.filter((w) => !fillers.has(w));
-      return { role, coreWords };
-    });
-
-    // Check if a word appears as a whole word (not inside another word)
-    function hasWholeWord(text: string, word: string): boolean {
-      const regex = new RegExp(`\\b${word}\\b`, "i");
-      return regex.test(text);
-    }
-
-    // URL patterns that indicate job listing pages
-    const jobUrlPatterns = [
-      "/positions/", "/jobs/", "/job/", "/careers/", "/openings/",
-      "/apply/", "/requisition/", "/posting/", "/role/", "/opportunity/",
-      "lever.co/", "greenhouse.io/", "workday.com/",
-      "jobId=", "job_id=", "requisitionId=",
-    ];
-
-    function looksLikeJobUrl(href: string): boolean {
-      const lower = href.toLowerCase();
-      return jobUrlPatterns.some((p) => lower.includes(p));
-    }
-
-    const matched: { title: string; applyUrl: string }[] = [];
-    let candidateCount = 0;
-
-    const links = Array.from(document.querySelectorAll("a[href]"));
-    for (const link of links) {
-      const rawText = (link.textContent || "").trim().replace(/\s+/g, " ");
-      const href = (link as HTMLAnchorElement).href;
-
-      if (rawText.length < 5) continue;
-      if (!href || href === "#" || href.startsWith("javascript:")) continue;
-      if (href === window.location.href) continue;
-
-      // Only consider links with job-like URLs OR on a known career page
-      const isOnCareerPage = window.location.hostname.includes("career") ||
-        window.location.pathname.includes("/jobs") ||
-        window.location.pathname.includes("/positions") ||
-        window.location.pathname.includes("/openings");
-      if (!looksLikeJobUrl(href) && !isOnCareerPage) continue;
-
-      // For long texts (SPA pages like Meta), extract just the job title portion
-      let text = rawText;
-      if (rawText.length > 120) {
-        // Try to find where the title ends and metadata begins
-        const cutPatterns = [
-          /[A-Z][a-z]+,\s*[A-Z]{2}\b/,  // "Menlo Park, CA"
-          /⋅/,                              // Meta separator
-          /Multiple Locations/,
-          /Posted \d/,
-          /Remote/,
-          /United States/,
-          /\d+ locations/,
-          /Singapore|London|Toronto|New York, NY|Sunnyvale|Redmond/,
-        ];
-        let cutIndex = rawText.length;
-        for (const pattern of cutPatterns) {
-          const match = rawText.search(pattern);
-          if (match > 10 && match < cutIndex) cutIndex = match;
-        }
-        text = rawText.slice(0, cutIndex).trim();
-      }
-      if (text.length < 5) continue;
-
-      candidateCount++;
-      const lowerText = text.toLowerCase();
-
-      // Check if this link matches ANY role using whole-word matching
-      let isMatch = false;
-      for (const { coreWords } of roleMatchers) {
-        if (coreWords.length === 0) continue;
-
-        const matchCount = coreWords.filter((w) => hasWholeWord(lowerText, w)).length;
-
-        // Match if at least half of core words match, minimum 2 matches when possible
-        const threshold = coreWords.length <= 2 ? coreWords.length : Math.ceil(coreWords.length / 2);
-        if (matchCount >= threshold) {
-          isMatch = true;
-          break;
-        }
-      }
-
-      if (isMatch) {
-        // Use the cleaned title, not the raw long text
-        matched.push({ title: text, applyUrl: href });
-      }
-    }
-
-    return { matched, candidateCount };
-  }, JSON.stringify(roles));
-
-  return { jobs: result.matched, allCandidates: result.candidateCount };
-}
-
-/**
- * Try clicking a "Next" or "Load More" button and extracting more jobs.
+ * Try clicking pagination and extracting more jobs.
  */
 async function tryNextPage(
   page: Page,
@@ -345,11 +277,11 @@ async function tryNextPage(
     try {
       const el = page.locator(selector).first();
       if (await el.isVisible().catch(() => false)) {
-        log.steps.push(`Found pagination: ${selector} — clicking`);
+        log.steps.push(`Found pagination: ${selector}`);
         await el.click();
         await page.waitForTimeout(3000);
-        const { jobs } = await extractJobListings(page, roles);
-        return jobs;
+        const links = await extractAllLinks(page);
+        return matchJobsWithClaude(links, roles, log);
       }
     } catch {}
   }
