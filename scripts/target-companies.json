@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Anthropic",
+    "careersUrl": "https://www.anthropic.com/careers",
+    "notes": "AI safety company, maker of Claude"
+  },
+  {
+    "name": "OpenAI",
+    "careersUrl": "https://openai.com/careers/search",
+    "notes": "AI research, maker of ChatGPT"
+  },
+  {
+    "name": "Meta",
+    "careersUrl": "https://www.metacareers.com/jobs",
+    "notes": "Filter for engineering/tech roles"
+  },
+  {
+    "name": "Google",
+    "careersUrl": "https://www.google.com/about/careers/applications/jobs/results",
+    "notes": "Filter for software engineering"
+  },
+  {
+    "name": "Apple",
+    "careersUrl": "https://jobs.apple.com/en-us/search",
+    "notes": "Filter for software/engineering"
+  },
+  {
+    "name": "Microsoft",
+    "careersUrl": "https://careers.microsoft.com/us/en/search-results",
+    "notes": "Filter for engineering roles"
+  },
+  {
+    "name": "Netflix",
+    "careersUrl": "https://jobs.netflix.com/search",
+    "notes": "Entertainment tech"
+  },
+  {
+    "name": "Stripe",
+    "careersUrl": "https://stripe.com/jobs/search",
+    "notes": "Fintech/payments"
+  },
+  {
+    "name": "Figma",
+    "careersUrl": "https://www.figma.com/careers/#job-openings",
+    "notes": "Design tools"
+  },
+  {
+    "name": "Gamma",
+    "careersUrl": "https://gamma.app/careers",
+    "notes": "AI presentations"
+  },
+  {
+    "name": "Notion",
+    "careersUrl": "https://www.notion.com/careers",
+    "notes": "Productivity tools"
+  },
+  {
+    "name": "Vercel",
+    "careersUrl": "https://vercel.com/careers",
+    "notes": "Next.js / deployment platform"
+  },
+  {
+    "name": "Coinbase",
+    "careersUrl": "https://www.coinbase.com/careers/positions",
+    "notes": "Crypto/fintech"
+  },
+  {
+    "name": "Airbnb",
+    "careersUrl": "https://careers.airbnb.com/positions/",
+    "notes": "Travel tech"
+  },
+  {
+    "name": "Pinterest",
+    "careersUrl": "https://www.pinterestcareers.com/jobs/",
+    "notes": "Social/visual discovery"
+  },
+  {
+    "name": "Databricks",
+    "careersUrl": "https://www.databricks.com/company/careers/open-positions",
+    "notes": "Data/AI platform"
+  },
+  {
+    "name": "Robinhood",
+    "careersUrl": "https://robinhood.com/careers/openings/",
+    "notes": "Fintech"
+  },
+  {
+    "name": "Lyft",
+    "careersUrl": "https://www.lyft.com/careers",
+    "notes": "Rideshare/transportation"
+  },
+  {
+    "name": "Dropbox",
+    "careersUrl": "https://www.dropbox.com/jobs",
+    "notes": "Cloud storage"
+  },
+  {
+    "name": "Salesforce",
+    "careersUrl": "https://careers.salesforce.com/en/jobs/",
+    "notes": "Enterprise SaaS"
+  }
+]

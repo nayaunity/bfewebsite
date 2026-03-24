@@ -1,82 +1,121 @@
 # Auto-Apply Skill
 
-Autonomously apply to all eligible jobs in the database using browser automation.
+Autonomously browse company career pages, find relevant jobs, and apply using browser automation.
 
 ## Invocation
 
-User says: `/auto-apply`
+- `/auto-apply` — Apply to all companies in the target list
+- `/auto-apply Anthropic, OpenAI` — Apply only to specific companies
+- `/auto-apply --add "Company Name" "https://careers.example.com"` — Add a new company to the target list
 
 ## Instructions
 
-When this skill is invoked, follow these steps:
+### 1. Load Profile & Target Companies
 
-### 1. Load Profile Data
-
-Run this script to get the user's profile and eligible jobs:
+Run this to get the user's profile:
 
 ```bash
 npx tsx scripts/auto-apply-data.ts
 ```
 
-This outputs JSON with:
-- `profile`: User's name, email, phone, resume URL, work authorization answers
-- `jobs`: Array of eligible jobs (active Greenhouse jobs not yet applied to)
+Read the target companies list:
+
+```bash
+cat scripts/target-companies.json
+```
+
+If specific companies were named in the command, filter the list to only those. If `--add` was used, append the new company to `scripts/target-companies.json` and include it in this run.
 
 If the profile is incomplete (missing name, email, phone, or resume), tell the user what's missing and stop.
 
-If there are no eligible jobs, tell the user and stop.
+### 2. Download Resume
 
-### 2. Apply to Each Job
+Before starting, download the user's resume from the `resumeUrl` to a local temp file so it can be uploaded to forms:
 
-For each job in the list, use the Playwright MCP browser tools to:
+```bash
+curl -L -o /tmp/resume.pdf "<resumeUrl>"
+```
 
-1. **Navigate** to the job's `applyUrl`
-2. **Read the page** to understand the application form layout
-3. **Fill in fields** using the profile data:
-   - First Name, Last Name, Email, Phone from profile
-   - Resume: Download from the `resumeUrl` and upload to any file input
-   - LinkedIn: Skip if not in profile
-   - Cover Letter: Skip unless required
-   - Work authorization questions: Use `workAuthorized` (Yes/No) and `needsSponsorship` (Yes/No)
-   - US State: Use `usState` from profile
+### 3. For Each Company: Browse, Find Jobs, Apply
+
+For each company in the target list:
+
+#### 3a. Navigate to the careers page
+
+Use Playwright to open the company's `careersUrl`.
+
+#### 3b. Search for relevant jobs
+
+- Look for a search box or filter options on the careers page
+- Search for relevant terms based on the user's background (e.g., "software engineer", "developer", "engineering")
+- If there are location filters, try filtering to the user's state or "Remote"
+- Browse the job listings that appear
+
+#### 3c. For each relevant job listing
+
+1. **Click into the job** to see the full description and application form
+2. **Evaluate fit** — read the job title and requirements. Skip if it's clearly not a tech/engineering role or requires 10+ years of senior experience the user likely doesn't have
+3. **Find the Apply button** — click "Apply", "Apply Now", or similar
+4. **Fill the application form** using profile data:
+   - First Name, Last Name, Email, Phone
+   - Resume: Upload from `/tmp/resume.pdf`
+   - LinkedIn: Skip unless required
+   - Cover Letter: Skip unless required, if required write a brief 3-sentence one
+   - Work authorization: Use `workAuthorized` (Yes) and `needsSponsorship` (No/Yes from profile)
+   - US State / Location: Use `usState` from profile
    - Country: Use `countryOfResidence` from profile
-   - For any other required questions, use best judgment based on the profile data
-4. **Review** the form before submitting — make sure all required fields are filled
-5. **Submit** the application by clicking the submit/apply button
-6. **Record the result** by running:
+   - For dropdown/select questions: Pick the closest matching option
+   - For free-text required questions: Use best judgment based on profile data
+   - For optional fields: Skip them
+5. **Submit** the application
+6. **Record the result**:
 
 ```bash
-npx tsx scripts/auto-apply-record.ts --jobId="<jobId>" --status="submitted"
+npx tsx scripts/auto-apply-record-external.ts --company="<Company>" --title="<Job Title>" --url="<Job URL>" --status="submitted"
 ```
 
-Or if it failed:
+Or if failed:
 
 ```bash
-npx tsx scripts/auto-apply-record.ts --jobId="<jobId>" --status="failed" --error="<reason>"
+npx tsx scripts/auto-apply-record-external.ts --company="<Company>" --title="<Job Title>" --url="<Job URL>" --status="failed" --error="<reason>"
 ```
 
-### 3. Rate Limiting
+7. **Navigate back** to the job listings and continue to the next job
 
-Wait 3-5 seconds between each application to avoid being flagged.
+#### 3d. Move to next company
 
-### 4. Error Handling
+After processing available jobs at one company, move to the next.
 
-- If a page doesn't load or form can't be found, mark as `failed` and move to the next job
-- If CAPTCHA is encountered, mark as `failed` with error "CAPTCHA required" and move on
-- If the form has required fields you can't fill, mark as `skipped` and move on
+### 4. Rate Limiting
+
+- Wait 3-5 seconds between page navigations
+- Wait 5-10 seconds between applications at the same company
+- If a site shows a CAPTCHA or blocks you, skip that company and move on
+
+### 5. Error Handling
+
+- If a careers page doesn't load, skip that company
+- If an application form is too complex or broken, mark as failed and move on
+- If you get rate-limited or blocked, skip the rest of that company's jobs
+- If a job requires login/account creation to apply, mark as skipped with reason "requires account"
 - Never stop the entire batch because of one failure
 
-### 5. Summary
+### 6. Summary
 
-After processing all jobs, print a summary:
-- Total jobs processed
-- Successfully submitted
-- Failed
-- Skipped
+After processing all companies, print a summary table:
 
-## Important
+| Company | Jobs Found | Applied | Skipped | Failed |
+|---------|-----------|---------|---------|--------|
+
+And a total across all companies.
+
+## Important Rules
 
 - Do NOT ask the user for confirmation before each application — apply autonomously
 - Do NOT stop to ask questions — use best judgment for ambiguous fields
-- Process ALL eligible jobs in one run
+- Process ALL target companies in one run
 - The user wants this to be fully hands-free
+- If a site requires account creation, skip it (don't create accounts)
+- For "years of experience" questions, answer honestly based on the profile
+- Never fabricate credentials, certifications, or experience
+- Spend at most 5 minutes per company — if the site is too slow or complex, move on
