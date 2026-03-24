@@ -9,6 +9,7 @@
     "browse": "HEADLESS=false tsx src/browse-worker.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@libsql/client": "^0.14.0",
     "dotenv": "^16.4.0",
     "express": "^4.21.0",
