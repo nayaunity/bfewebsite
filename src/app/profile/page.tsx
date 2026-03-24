@@ -83,7 +83,12 @@ export default async function ProfilePage() {
 
   const tier = user.subscriptionTier || "free";
   const tierLimits = TIER_LIMITS[tier] || TIER_LIMITS.free;
-  const usage = await canApply(session.user.id);
+  const rawUsage = await canApply(session.user.id);
+  // Serialize to plain numbers to avoid hydration mismatches
+  const usage = {
+    used: Number(rawUsage.used) || 0,
+    limit: Number(rawUsage.limit) || 5,
+  };
 
   return (
     <main className="min-h-screen bg-[var(--background)]">
@@ -191,7 +196,10 @@ export default async function ProfilePage() {
 
           {/* Multi-Resume Manager */}
           <ResumeManager
-            initialResumes={user.resumes}
+            initialResumes={user.resumes.map(r => ({
+              ...r,
+              uploadedAt: r.uploadedAt.toISOString(),
+            }))}
             maxResumes={tierLimits.maxResumes}
             tier={tier}
           />
