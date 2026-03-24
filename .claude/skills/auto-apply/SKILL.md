@@ -83,12 +83,18 @@ Use Playwright to open the company's `careersUrl`.
 
 **IMPORTANT: Career pages are often very large and will exceed snapshot limits. Follow this approach:**
 
-1. First, use Playwright to navigate to the careers page
-2. Use Playwright's `browser_type` tool to type a search query like "software engineer" into the search box (use `browser_click` on the search input first, then `browser_type`)
-3. If the page has filter buttons/dropdowns for location, use `browser_click` to select "Remote" or the user's state
-4. **Do NOT try to parse raw snapshots with Python/scripts.** Instead, use `browser_snapshot` to read what's visible, then use `browser_click` on individual job links you can see
-5. If a snapshot is too large, use `browser_click` on pagination or scroll to see fewer results at a time
-6. Process jobs one at a time: click a job link, read the page, decide if it matches, apply or go back
+1. First, navigate to the careers page with a **narrow search query in the URL** to reduce results. For example, append `?query=software+engineer` or `?search=developer+advocate` to the URL. Do NOT load the full unfiltered page.
+2. If the page/snapshot is STILL too large (exceeds token limit), the snapshot gets saved to a file. Extract job links using the helper script:
+
+```bash
+npx tsx scripts/extract-job-links.ts "<path-to-saved-snapshot-file>" "engineer"
+```
+
+This returns a JSON array of `{title, url}` pairs. The second argument is an optional keyword filter.
+
+3. Then use `browser_navigate` to visit each job URL individually, read the job details, and apply
+4. Process jobs one at a time: navigate to the job page, read it, decide if it matches a resume, apply or skip, then move to the next URL
+5. Do NOT try to parse snapshots with inline Python, grep, or piped commands
 
 #### 3c. For each relevant job listing
 
@@ -162,6 +168,7 @@ And a total across all companies.
 - **CRITICAL: NEVER write inline Python, Ruby, or multi-line scripts in Bash.** This is the #1 rule. Any Bash command with a newline followed by a # comment triggers an un-skippable security prompt that breaks automation. Use ONLY:
   - `npx tsx scripts/auto-apply-data.ts` (load profile)
   - `npx tsx scripts/match-resume.ts "<title>"` (match resume)
+  - `npx tsx scripts/extract-job-links.ts "<snapshot-file>" "keyword"` (extract job links from large snapshots)
   - `npx tsx scripts/auto-apply-record-external.ts --company="X" --title="Y" --url="Z" --status="S"` (record result)
   - `cat <file>` for reading JSON files (single-line commands only)
 - **NEVER pipe commands into python3, node -e, or any inline interpreter**
