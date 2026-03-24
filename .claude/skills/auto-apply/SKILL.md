@@ -98,8 +98,9 @@ This returns a JSON array of `{title, url}` pairs. The second argument is an opt
 
 #### 3c. For each relevant job listing
 
-1. **Click into the job** to see the full description
-2. **Match a resume** — run `npx tsx scripts/match-resume.ts "<Job Title>"`. If `matched: false`, skip this job and move to the next one
+1. **Check if already applied** — run `npx tsx scripts/check-already-applied.ts --company="<Company>" --title="<Job Title>"`. If `applied: true`, skip this job and move to the next one
+2. **Click into the job** to see the full description
+3. **Match a resume** — run `npx tsx scripts/match-resume.ts "<Job Title>"`. If `matched: false`, skip this job and move to the next one
 3. **Check resume file exists** — if `exists: false`, skip and log a warning
 4. **Find the Apply button** — click "Apply", "Apply Now", or similar
 5. **Fill the application form** using profile data:
@@ -169,6 +170,7 @@ And a total across all companies.
   - `npx tsx scripts/auto-apply-data.ts` (load profile)
   - `npx tsx scripts/match-resume.ts "<title>"` (match resume)
   - `npx tsx scripts/extract-job-links.ts "<snapshot-file>" "keyword"` (extract job links from large snapshots)
+  - `npx tsx scripts/check-already-applied.ts --company="X" --title="Y"` (dedup check before applying)
   - `npx tsx scripts/auto-apply-record-external.ts --company="X" --title="Y" --url="Z" --status="S"` (record result)
   - `cat <file>` for reading JSON files (single-line commands only)
 - **NEVER pipe commands into python3, node -e, or any inline interpreter**
