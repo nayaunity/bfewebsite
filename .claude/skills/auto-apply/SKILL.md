@@ -81,10 +81,14 @@ Use Playwright to open the company's `careersUrl`.
 
 #### 3b. Search for relevant jobs
 
-- Look for a search box or filter options on the careers page
-- Search for relevant terms based on the user's background (e.g., "software engineer", "developer", "engineering")
-- If there are location filters, try filtering to the user's state or "Remote"
-- Browse the job listings that appear
+**IMPORTANT: Career pages are often very large and will exceed snapshot limits. Follow this approach:**
+
+1. First, use Playwright to navigate to the careers page
+2. Use Playwright's `browser_type` tool to type a search query like "software engineer" into the search box (use `browser_click` on the search input first, then `browser_type`)
+3. If the page has filter buttons/dropdowns for location, use `browser_click` to select "Remote" or the user's state
+4. **Do NOT try to parse raw snapshots with Python/scripts.** Instead, use `browser_snapshot` to read what's visible, then use `browser_click` on individual job links you can see
+5. If a snapshot is too large, use `browser_click` on pagination or scroll to see fewer results at a time
+6. Process jobs one at a time: click a job link, read the page, decide if it matches, apply or go back
 
 #### 3c. For each relevant job listing
 
@@ -155,6 +159,11 @@ And a total across all companies.
 - Spend at most 5 minutes per company — if the site is too slow or complex, move on
 - ALWAYS use the matched resume for each job — never use a generic one if a specific match exists
 - If no resume matches a job, SKIP it — don't apply with the wrong resume
-- NEVER write inline Python, Ruby, or multi-line scripts in Bash — use only the provided helper scripts (`npx tsx scripts/...`) and Playwright MCP tools. Inline scripts trigger security prompts that block automation
-- Use ONLY Playwright MCP tools to interact with web pages — do not use curl, wget, or fetch to scrape page content
-- When parsing job listings from a page, use Playwright's snapshot/accessibility tree — do not try to parse HTML or JSON with ad-hoc scripts
+- **CRITICAL: NEVER write inline Python, Ruby, or multi-line scripts in Bash.** This is the #1 rule. Any Bash command with a newline followed by a # comment triggers an un-skippable security prompt that breaks automation. Use ONLY:
+  - `npx tsx scripts/auto-apply-data.ts` (load profile)
+  - `npx tsx scripts/match-resume.ts "<title>"` (match resume)
+  - `npx tsx scripts/auto-apply-record-external.ts --company="X" --title="Y" --url="Z" --status="S"` (record result)
+  - `cat <file>` for reading JSON files (single-line commands only)
+- **NEVER pipe commands into python3, node -e, or any inline interpreter**
+- Use ONLY Playwright MCP tools (`browser_navigate`, `browser_click`, `browser_type`, `browser_snapshot`, `browser_tab_list`) to interact with web pages
+- When a page snapshot is too large, use Playwright to click/filter/paginate — do NOT download and parse the snapshot with scripts
