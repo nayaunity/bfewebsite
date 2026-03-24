@@ -45,3 +45,9 @@ next-env.d.ts
 prisma/dev.db
 prisma/dev.db-journal
 .env*.local
+
+# job assets - personal data (resumes, answers, etc.)
+job-assets/resumes/*.pdf
+job-assets/application-answers.json
+*.resume.pdf
+NBere_Resume.pdf
