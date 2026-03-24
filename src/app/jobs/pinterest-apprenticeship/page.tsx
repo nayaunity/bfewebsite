@@ -50,7 +50,7 @@ export default function PinterestApprenticeship() {
               <span className="px-3 py-1 text-sm font-medium bg-[#ef562a] text-white rounded-full">
                 Pinterest
               </span>
-              <span className="px-3 py-1 text-sm font-medium bg-green-500 text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-emerald-100 text-emerald-800 rounded-full">
                 Now Accepting Applications
               </span>
             </div>
