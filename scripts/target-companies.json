@@ -1,7 +1,7 @@
 [
   {
     "name": "Anthropic",
-    "careersUrl": "https://www.anthropic.com/careers",
+    "careersUrl": "https://www.anthropic.com/careers/jobs",
     "notes": "AI safety company, maker of Claude"
   },
   {
@@ -26,17 +26,17 @@
   },
   {
     "name": "Microsoft",
-    "careersUrl": "https://careers.microsoft.com/us/en/search-results",
+    "careersUrl": "https://apply.careers.microsoft.com/careers?start=0&location=United+States&pid=1970393556749467&sort_by=distance&filter_include_remote=1",
     "notes": "Filter for engineering roles"
   },
   {
     "name": "Netflix",
-    "careersUrl": "https://jobs.netflix.com/search",
+    "careersUrl": "https://explore.jobs.netflix.net/careers",
     "notes": "Entertainment tech"
   },
   {
     "name": "Stripe",
-    "careersUrl": "https://stripe.com/jobs/search",
+    "careersUrl": "https://stripe.com/jobs/search?office_locations=North+America--Atlanta&office_locations=North+America--Chicago&office_locations=North+America--Mexico+City&office_locations=North+America--New+York&office_locations=North+America--San+Francisco+Bridge+HQ&office_locations=North+America--Seattle&office_locations=North+America--South+San+Francisco&office_locations=North+America--Toronto&office_locations=North+America--Washington+DC",
     "notes": "Fintech/payments"
   },
   {
@@ -46,7 +46,7 @@
   },
   {
     "name": "Gamma",
-    "careersUrl": "https://gamma.app/careers",
+    "careersUrl": "https://careers.gamma.app/#card-h6ouzisd7pouj7j",
     "notes": "AI presentations"
   },
   {
@@ -56,17 +56,17 @@
   },
   {
     "name": "Vercel",
-    "careersUrl": "https://vercel.com/careers",
+    "careersUrl": "https://vercel.com/careers?location=United+States",
     "notes": "Next.js / deployment platform"
   },
   {
     "name": "Coinbase",
-    "careersUrl": "https://www.coinbase.com/careers/positions",
+    "careersUrl": "https://www.coinbase.com/careers/positions?location=remote%2520usa%2Cca%2Cny%2Cnc",
     "notes": "Crypto/fintech"
   },
   {
     "name": "Airbnb",
-    "careersUrl": "https://careers.airbnb.com/positions/",
+    "careersUrl": "https://careers.airbnb.com/positions/?_where_you_work=united-states%2Csan-francisco-united-states%2Cdc-united-states%2Cflorida-united-states-georgia-united-states-alabam%2Cmiami-united-states-san-francisco-united-states%2Cnorth-carolina-united-states-south-carolina-united%2Cremote-united-states-united-states%2Cvirginia-united-states-west-virginia-united-states",
     "notes": "Travel tech"
   },
   {
@@ -86,7 +86,7 @@
   },
   {
     "name": "Lyft",
-    "careersUrl": "https://www.lyft.com/careers",
+    "careersUrl": "https://www.lyft.com/careers#openings",
     "notes": "Rideshare/transportation"
   },
   {
