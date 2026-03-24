@@ -30,8 +30,8 @@ export default function EmailSignupBanner() {
       </div>
 
       {isSuccess ? (
-        <div className="p-4 bg-green-500/20 text-green-700 dark:text-green-300 rounded-lg text-center">
-          <span className="font-medium">{message}</span>
+        <div className="p-4 bg-emerald-100 text-emerald-800 rounded-lg text-center">
+          <span className="font-medium">You&apos;re on the Beta list!</span>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
