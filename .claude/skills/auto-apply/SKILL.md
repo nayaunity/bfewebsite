@@ -1,6 +1,6 @@
 # Auto-Apply Skill
 
-Autonomously browse company career pages, find relevant jobs, and apply using browser automation.
+Autonomously browse company career pages, find relevant jobs, select the best resume for each role, and apply using browser automation.
 
 ## Invocation
 
@@ -10,31 +10,58 @@ Autonomously browse company career pages, find relevant jobs, and apply using br
 
 ## Instructions
 
-### 1. Load Profile & Target Companies
+### 1. Load Profile & Configuration
 
-Run this to get the user's profile:
+Get the user's profile:
 
 ```bash
 npx tsx scripts/auto-apply-data.ts
 ```
 
-Read the target companies list:
+Read target companies:
 
 ```bash
 cat scripts/target-companies.json
 ```
 
-If specific companies were named in the command, filter the list to only those. If `--add` was used, append the new company to `scripts/target-companies.json` and include it in this run.
-
-If the profile is incomplete (missing name, email, phone, or resume), tell the user what's missing and stop.
-
-### 2. Download Resume
-
-Before starting, download the user's resume from the `resumeUrl` to a local temp file so it can be uploaded to forms:
+Check available resumes and their status:
 
 ```bash
-curl -L -o /tmp/resume.pdf "<resumeUrl>"
+npx tsx scripts/match-resume.ts
 ```
+
+This lists all configured resumes, their match keywords, and whether the PDF files exist. If resumes are missing, warn the user which files need to be placed in `job-assets/resumes/`.
+
+If specific companies were named in the command, filter the list to only those. If `--add` was used, append the new company to `scripts/target-companies.json`.
+
+If the profile is incomplete (missing name, email, phone), tell the user what's missing and stop.
+
+### 2. Resume Selection
+
+For each job found, select the right resume by running:
+
+```bash
+npx tsx scripts/match-resume.ts "<Job Title>"
+```
+
+This returns:
+- `matched: true` with the resume file path if a match is found
+- `matched: false` if no resume fits — **skip this job entirely**
+
+The matching logic:
+- Each resume in `job-assets/resumes.json` has keywords tied to role types
+- The job title is matched against these keywords
+- The most specific match wins (e.g., "developer advocate" beats "engineer" for a DevRel role)
+- If no keywords match, a fallback resume is used (if configured)
+- If no fallback exists and nothing matches, the job is skipped
+
+**Resume profiles configured in `job-assets/resumes.json`:**
+- Software Engineer — SWE, backend, frontend, full stack roles
+- Developer Advocate — DevRel, community, evangelism roles
+- Product / Program Manager — PM, TPM, project roles
+- Data / ML Engineer — data science, ML, analytics roles
+- DevOps / SRE — infrastructure, cloud, reliability roles
+- General (fallback) — anything else; remove this entry from the config to skip non-matching jobs instead
 
 ### 3. For Each Company: Browse, Find Jobs, Apply
 
@@ -53,38 +80,36 @@ Use Playwright to open the company's `careersUrl`.
 
 #### 3c. For each relevant job listing
 
-1. **Click into the job** to see the full description and application form
-2. **Evaluate fit** — read the job title and requirements. Skip if it's clearly not a tech/engineering role or requires 10+ years of senior experience the user likely doesn't have
-3. **Find the Apply button** — click "Apply", "Apply Now", or similar
-4. **Fill the application form** using profile data:
+1. **Click into the job** to see the full description
+2. **Match a resume** — run `npx tsx scripts/match-resume.ts "<Job Title>"`. If `matched: false`, skip this job and move to the next one
+3. **Check resume file exists** — if `exists: false`, skip and log a warning
+4. **Find the Apply button** — click "Apply", "Apply Now", or similar
+5. **Fill the application form** using profile data:
    - First Name, Last Name, Email, Phone
-   - Resume: Upload from `/tmp/resume.pdf`
+   - Resume: Upload the matched resume file from its `file` path
    - LinkedIn: Skip unless required
-   - Cover Letter: Skip unless required, if required write a brief 3-sentence one
-   - Work authorization: Use `workAuthorized` (Yes) and `needsSponsorship` (No/Yes from profile)
+   - Cover Letter: Skip unless required; if required, write a brief 3-sentence one tailored to the role
+   - Work authorization: Use `workAuthorized` and `needsSponsorship` from profile
    - US State / Location: Use `usState` from profile
    - Country: Use `countryOfResidence` from profile
    - For dropdown/select questions: Pick the closest matching option
-   - For free-text required questions: Use best judgment based on profile data
-   - For optional fields: Skip them
-5. **Submit** the application
-6. **Record the result**:
+   - For free-text required questions: Use best judgment
+   - For optional fields: Skip
+6. **Submit** the application
+7. **Record the result**:
 
 ```bash
 npx tsx scripts/auto-apply-record-external.ts --company="<Company>" --title="<Job Title>" --url="<Job URL>" --status="submitted"
 ```
 
-Or if failed:
+Or if failed/skipped:
 
 ```bash
 npx tsx scripts/auto-apply-record-external.ts --company="<Company>" --title="<Job Title>" --url="<Job URL>" --status="failed" --error="<reason>"
+npx tsx scripts/auto-apply-record-external.ts --company="<Company>" --title="<Job Title>" --url="<Job URL>" --status="skipped" --error="No matching resume"
 ```
 
-7. **Navigate back** to the job listings and continue to the next job
-
-#### 3d. Move to next company
-
-After processing available jobs at one company, move to the next.
+8. **Navigate back** to the job listings and continue to the next job
 
 ### 4. Rate Limiting
 
@@ -104,8 +129,8 @@ After processing available jobs at one company, move to the next.
 
 After processing all companies, print a summary table:
 
-| Company | Jobs Found | Applied | Skipped | Failed |
-|---------|-----------|---------|---------|--------|
+| Company | Jobs Found | Applied | Skipped | Failed | Resumes Used |
+|---------|-----------|---------|---------|--------|-------------|
 
 And a total across all companies.
 
@@ -119,3 +144,5 @@ And a total across all companies.
 - For "years of experience" questions, answer honestly based on the profile
 - Never fabricate credentials, certifications, or experience
 - Spend at most 5 minutes per company — if the site is too slow or complex, move on
+- ALWAYS use the matched resume for each job — never use a generic one if a specific match exists
+- If no resume matches a job, SKIP it — don't apply with the wrong resume
