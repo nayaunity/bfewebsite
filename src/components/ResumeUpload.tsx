@@ -6,11 +6,11 @@ interface ResumeUploadProps {
   initialResume?: {
     url: string | null;
     name: string | null;
-    updatedAt: Date | null;
+    updatedAt: Date | string | null;
   };
 }
 
-function formatDate(date: Date): string {
+function formatDate(date: Date | string): string {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

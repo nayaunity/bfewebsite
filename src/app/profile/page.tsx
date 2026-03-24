@@ -190,7 +190,7 @@ export default async function ProfilePage() {
             initialResume={{
               url: user.resumeUrl,
               name: user.resumeName,
-              updatedAt: user.resumeUpdatedAt,
+              updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
             }}
           />
 
