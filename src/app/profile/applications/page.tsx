@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import ApplicationsDashboard from "./ApplicationsDashboard";
+import targetCompanies from "../../../../scripts/target-companies.json";
 
 export const dynamic = "force-dynamic";
 
@@ -86,7 +87,7 @@ export default async function ApplicationsPage() {
           </div>
         </div>
 
-        <ApplicationsDashboard initialApplications={applications} />
+        <ApplicationsDashboard initialApplications={applications} companies={targetCompanies} />
       </div>
     </main>
   );

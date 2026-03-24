@@ -39,6 +39,7 @@ model User {
   jobApplications     JobApplication[]
   resumes             UserResume[]
   applyQueue          ApplyQueue[]
+  browseSessions      BrowseSession[]
 
   @@index([role])
   @@index([stripeCustomerId])
@@ -203,6 +204,51 @@ model ApplyQueue {
   @@index([status])
   @@index([createdAt])
   @@index([userId])
+}
+
+model BrowseSession {
+  id             String    @id @default(cuid())
+  userId         String
+  targetRole     String
+  companies      String
+  resumeUrl      String
+  resumeName     String
+  status         String    @default("queued")
+  totalCompanies Int       @default(0)
+  companiesDone  Int       @default(0)
+  jobsFound      Int       @default(0)
+  jobsApplied    Int       @default(0)
+  jobsSkipped    Int       @default(0)
+  jobsFailed     Int       @default(0)
+  progressLog    String    @default("[]")
+  errorMessage   String?
+  createdAt      DateTime  @default(now())
+  startedAt      DateTime?
+  completedAt    DateTime?
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discoveries BrowseDiscovery[]
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model BrowseDiscovery {
+  id           String   @id @default(cuid())
+  sessionId    String
+  company      String
+  jobTitle     String
+  applyUrl     String
+  status       String   @default("found")
+  errorMessage String?
+  createdAt    DateTime @default(now())
+
+  session BrowseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, applyUrl])
+  @@index([sessionId])
+  @@index([status])
 }
 
 model ScrapeLog {
