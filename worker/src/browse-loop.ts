@@ -167,6 +167,13 @@ export async function processNextBrowseSession(): Promise<boolean> {
           session.resumeName
         );
 
+        // Log the apply steps if available
+        if (applyResult.steps) {
+          for (const s of applyResult.steps) {
+            console.log(`[Apply] ${job.title}: ${s}`);
+          }
+        }
+
         if (applyResult.success) {
           companyResult.applied++;
           await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
@@ -174,14 +181,16 @@ export async function processNextBrowseSession(): Promise<boolean> {
             sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`,
             args: [session.id],
           });
-          // Increment user's monthly count
           await db.execute({
             sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`,
             args: [session.userId],
           });
         } else {
           companyResult.failed++;
-          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", applyResult.error || "Unknown error");
+          const errorWithSteps = applyResult.steps
+            ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
+            : applyResult.error || "Unknown error";
+          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
           await db.execute({
             sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`,
             args: [session.id],
