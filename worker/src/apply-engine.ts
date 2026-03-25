@@ -124,11 +124,28 @@ export async function applyToJob(
     steps.push(`Navigated to: ${page.url()}`);
 
     // Agent loop — Claude decides each step
+    let previousUrl = page.url();
+    let samePageCount = 0;
+
     for (let step = 0; step < MAX_STEPS; step++) {
+      const currentUrl = page.url();
+      if (currentUrl !== previousUrl) {
+        steps.push(`Page navigated to: ${currentUrl}`);
+        previousUrl = currentUrl;
+        samePageCount = 0;
+      } else {
+        samePageCount++;
+      }
+
+      // Stuck detection — if we've been on the same page for 4+ actions, bail
+      if (samePageCount >= 4) {
+        return { success: false, error: "Stuck: page not changing after multiple actions", steps };
+      }
+
       const snapshot = await getPageSnapshot(page);
       steps.push(`Step ${step + 1}: analyzing page (${snapshot.length} chars)`);
 
-      const action = await askClaudeNextAction(snapshot, applicant, step);
+      const action = await askClaudeNextAction(snapshot, applicant, step, steps);
       steps.push(`Claude: ${action.action} — ${action.reason}`);
 
       if (action.action === "done") {
@@ -141,11 +158,11 @@ export async function applyToJob(
 
       try {
         await executeAction(page, action, tmpPath);
-        await page.waitForTimeout(2000);
+        // Wait for potential navigation
+        await page.waitForTimeout(3000);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         steps.push(`Action failed: ${msg}`);
-        // Continue — Claude can try a different approach on the next step
       }
     }
 
@@ -163,76 +180,57 @@ export async function applyToJob(
 }
 
 /**
- * Get a compact text snapshot of the page for Claude to analyze.
+ * Get a snapshot of the page for Claude to analyze.
+ * Uses visible text + a focused list of interactive elements.
  */
 async function getPageSnapshot(page: Page): Promise<string> {
   const url = page.url();
   const title = await page.title();
 
-  // Get visible text + interactive elements
-  const content = await page.evaluate(() => {
+  // Get visible page text (compact)
+  const visibleText = await page.innerText("body").catch(() => "");
+  const truncatedText = visibleText.replace(/\s+/g, " ").trim().slice(0, 2000);
+
+  // Get all interactive elements separately for precision
+  const interactiveElements = await page.evaluate(() => {
     const elements: string[] = [];
 
-    // Collect interactive elements and text content
-    const walk = (node: Element, depth: number) => {
-      const tag = node.tagName?.toLowerCase();
-      if (!tag) return;
+    // Buttons
+    document.querySelectorAll("button, [role='button']").forEach((el) => {
+      const text = (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 80);
+      if (text) elements.push(`[BUTTON] "${text}"`);
+    });
 
-      // Skip hidden elements
-      const style = window.getComputedStyle(node);
-      if (style.display === "none" || style.visibility === "hidden") return;
-
-      // Interactive elements — show with details
-      if (tag === "input" || tag === "textarea" || tag === "select") {
-        const type = node.getAttribute("type") || "text";
-        const name = node.getAttribute("name") || "";
-        const placeholder = node.getAttribute("placeholder") || "";
-        const label = node.getAttribute("aria-label") || "";
-        const id = node.getAttribute("id") || "";
-        const value = (node as HTMLInputElement).value || "";
-        const disabled = (node as HTMLInputElement).disabled ? " [disabled]" : "";
-        elements.push(`[${"  ".repeat(depth)}${tag}] type=${type} name="${name}" placeholder="${placeholder}" label="${label}" id="${id}" value="${value}"${disabled}`);
-        return;
+    // Links that look like buttons or important actions
+    document.querySelectorAll("a[href]").forEach((el) => {
+      const text = (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 80);
+      const href = (el as HTMLAnchorElement).href;
+      if (text && (text.toLowerCase().includes("apply") || text.toLowerCase().includes("submit") || href.includes("apply"))) {
+        elements.push(`[LINK] "${text}" href="${href}"`);
       }
+    });
 
-      if (tag === "button" || (tag === "a" && node.getAttribute("href"))) {
-        const text = (node.textContent || "").trim().replace(/\s+/g, " ").slice(0, 100);
-        const href = node.getAttribute("href") || "";
-        if (text.length > 1) {
-          elements.push(`[${"  ".repeat(depth)}${tag}] "${text}"${href ? ` href="${href}"` : ""}`);
-        }
-        return;
-      }
+    // Form inputs
+    document.querySelectorAll("input, textarea, select").forEach((el) => {
+      const input = el as HTMLInputElement;
+      const type = input.type || "text";
+      const name = input.name || "";
+      const id = input.id || "";
+      const placeholder = input.placeholder || "";
+      const ariaLabel = input.getAttribute("aria-label") || "";
+      const label = el.closest("label")?.textContent?.trim().replace(/\s+/g, " ").slice(0, 60) || "";
+      // Find associated label via for attribute
+      const labelFor = id ? document.querySelector(`label[for="${id}"]`)?.textContent?.trim().replace(/\s+/g, " ").slice(0, 60) || "" : "";
+      const value = input.value || "";
+      const checked = input.type === "checkbox" || input.type === "radio" ? (input.checked ? " [CHECKED]" : " [unchecked]") : "";
 
-      // Headings and labels
-      if (tag.match(/^h[1-6]$/) || tag === "label") {
-        const text = (node.textContent || "").trim().replace(/\s+/g, " ").slice(0, 200);
-        if (text) elements.push(`[${"  ".repeat(depth)}${tag}] ${text}`);
-        return;
-      }
+      elements.push(`[INPUT type="${type}" name="${name}" id="${id}" placeholder="${placeholder}" aria-label="${ariaLabel}" label="${label || labelFor}" value="${value}"${checked}]`);
+    });
 
-      // Checkboxes inside labels
-      if (tag === "label") {
-        const text = (node.textContent || "").trim().replace(/\s+/g, " ");
-        const checkbox = node.querySelector("input[type='checkbox']");
-        if (checkbox) {
-          const checked = (checkbox as HTMLInputElement).checked ? " [checked]" : "";
-          elements.push(`[${"  ".repeat(depth)}checkbox] "${text}"${checked}`);
-          return;
-        }
-      }
-
-      // Recurse into children
-      for (const child of Array.from(node.children)) {
-        walk(child, depth + 1);
-      }
-    };
-
-    walk(document.body, 0);
-    return elements.slice(0, 100).join("\n"); // Limit to avoid token explosion
+    return elements.join("\n");
   });
 
-  return `URL: ${url}\nTitle: ${title}\n\nPage elements:\n${content}`;
+  return `URL: ${url}\nTitle: ${title}\n\nVisible text (truncated):\n${truncatedText}\n\nInteractive elements:\n${interactiveElements}`;
 }
 
 /**
@@ -241,9 +239,12 @@ async function getPageSnapshot(page: Page): Promise<string> {
 async function askClaudeNextAction(
   pageSnapshot: string,
   applicant: ApplicantData,
-  stepNum: number
+  stepNum: number,
+  previousSteps: string[]
 ): Promise<AgentAction> {
-  const prompt = `You are an AI agent applying to a job on behalf of a user. Analyze the page and determine the single next action to take.
+  const recentSteps = previousSteps.slice(-4).join("\n");
+
+  const prompt = `You are an AI agent applying to a job on behalf of a user. Analyze the current page and determine the SINGLE next action.
 
 APPLICANT INFO:
 - First Name: ${applicant.firstName}
@@ -254,23 +255,27 @@ APPLICANT INFO:
 - Preferred locations: Remote, US or Denver, CO area
 - Work authorized in US: ${applicant.workAuthorized ? "Yes" : "No"}
 - Needs sponsorship: ${applicant.needsSponsorship ? "Yes" : "No"}
-- Resume: Already downloaded as PDF, will be uploaded via file input
+- Resume: Already downloaded as PDF, ready for file input upload
+
+PREVIOUS STEPS TAKEN:
+${recentSteps || "(first step)"}
 
 CURRENT PAGE (step ${stepNum + 1}):
 ${pageSnapshot}
 
-INSTRUCTIONS:
-- If you see a job details page with an "Apply" or "Apply now" button, click it.
-- If you see a form, fill in fields one at a time. Fill the most important unfilled field.
-- For file upload inputs (type=file), use the "upload" action to upload the resume.
-- For location checkboxes, prefer "Remote" or the closest US location. Use "check" action with an array of selectors.
-- For dropdowns/selects, use the "select" action.
-- If the page shows a confirmation or "thank you" message, the application was submitted — use "done".
-- If the page requires login or account creation that can't be bypassed, use "error".
-- If you've already submitted and the page changed, check if it's a success confirmation.
+RULES:
+1. If you see a job details page with an "Apply" or "Apply now" button/link, click it using {"action": "click", "selector": "text=Apply now"} or the link's text.
+2. If you see an application form with inputs, fill one field at a time. Use CSS selectors like "input[name='firstName']" or "#email".
+3. For file uploads (type="file"), use {"action": "upload", "selector": "input[type='file']"}.
+4. For checkboxes (location preferences), prefer Remote/US locations. Use {"action": "check", "selectors": ["input[value='Remote']"]} or click the checkbox labels.
+5. For the Submit button, click it: {"action": "click", "selector": "text=Submit"}.
+6. If you see a "thank you", "application received", or "submitted" confirmation, return {"action": "done", "reason": "application submitted"}.
+7. If the page requires LOGIN, account creation, or asks for a password, return {"action": "error", "message": "Login required to apply"}.
+8. If you see a CAPTCHA or verification challenge, return {"action": "error", "message": "CAPTCHA detected"}.
+9. Do NOT repeat a failed action. If previous steps show the same action failing, try a different approach or return error.
 
-Respond with ONLY a JSON object (no markdown, no explanation):
-{"action": "click|fill|upload|check|select|done|error", "selector": "CSS selector or text", "value": "for fill/select", "selectors": ["for check"], "reason": "brief explanation"}`;
+Respond with ONLY a JSON object:
+{"action": "click|fill|upload|check|select|done|error", "selector": "CSS selector or button text", "value": "for fill/select only", "selectors": ["for check only"], "reason": "brief why", "message": "for error only"}`;
 
   try {
     const response = await anthropic.messages.create({
