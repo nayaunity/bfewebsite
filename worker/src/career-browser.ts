@@ -44,7 +44,10 @@ export async function discoverJobs(
     const searchUrl = appendSearchParam(careersUrl, searchTerm);
     log.steps.push(`Search URL: ${searchUrl}`);
 
-    await page.goto(searchUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.goto(searchUrl, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {
+      // networkidle can timeout on heavy SPAs — fall back to what we have
+      log.steps.push("networkidle timed out — proceeding with current page state");
+    });
     await page.waitForTimeout(3000);
 
     // Check for Cloudflare challenge
