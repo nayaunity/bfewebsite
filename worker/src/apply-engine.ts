@@ -191,22 +191,47 @@ async function getPageSnapshot(page: Page): Promise<string> {
   const visibleText = await page.innerText("body").catch(() => "");
   const truncatedText = visibleText.replace(/\s+/g, " ").trim().slice(0, 2000);
 
-  // Get all interactive elements separately for precision
+  // Get all interactive elements with WORKING selectors
   const interactiveElements = await page.evaluate(() => {
     const elements: string[] = [];
+
+    // Helper: generate a working selector for an element
+    function getSelector(el: Element): string {
+      if (el.id) return `#${CSS.escape(el.id)}`;
+      const name = el.getAttribute("name");
+      if (name) return `${el.tagName.toLowerCase()}[name="${name}"]`;
+      const ariaLabel = el.getAttribute("aria-label");
+      if (ariaLabel) return `${el.tagName.toLowerCase()}[aria-label="${ariaLabel}"]`;
+      const placeholder = (el as HTMLInputElement).placeholder;
+      if (placeholder) return `${el.tagName.toLowerCase()}[placeholder="${placeholder}"]`;
+      const type = el.getAttribute("type");
+      const tag = el.tagName.toLowerCase();
+      // Nth-of-type fallback
+      const parent = el.parentElement;
+      if (parent) {
+        const siblings = Array.from(parent.querySelectorAll(tag));
+        const index = siblings.indexOf(el);
+        if (index >= 0) return `${tag}:nth-of-type(${index + 1})`;
+      }
+      return tag;
+    }
 
     // Buttons
     document.querySelectorAll("button, [role='button']").forEach((el) => {
       const text = (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 80);
-      if (text) elements.push(`[BUTTON] "${text}"`);
+      if (text.length > 1) {
+        const sel = getSelector(el);
+        elements.push(`[BUTTON selector="${sel}"] "${text}"`);
+      }
     });
 
-    // Links that look like buttons or important actions
+    // Apply/Submit links
     document.querySelectorAll("a[href]").forEach((el) => {
       const text = (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 80);
       const href = (el as HTMLAnchorElement).href;
-      if (text && (text.toLowerCase().includes("apply") || text.toLowerCase().includes("submit") || href.includes("apply"))) {
-        elements.push(`[LINK] "${text}" href="${href}"`);
+      if (text && (text.toLowerCase().includes("apply") || text.toLowerCase().includes("submit") || text.toLowerCase().includes("upload") || href.includes("apply"))) {
+        const sel = getSelector(el);
+        elements.push(`[LINK selector="${sel}"] "${text}" href="${href}"`);
       }
     });
 
@@ -214,23 +239,25 @@ async function getPageSnapshot(page: Page): Promise<string> {
     document.querySelectorAll("input, textarea, select").forEach((el) => {
       const input = el as HTMLInputElement;
       const type = input.type || "text";
-      const name = input.name || "";
-      const id = input.id || "";
+      const sel = getSelector(el);
       const placeholder = input.placeholder || "";
       const ariaLabel = input.getAttribute("aria-label") || "";
+      const name = input.name || "";
+      // Find label text
       const label = el.closest("label")?.textContent?.trim().replace(/\s+/g, " ").slice(0, 60) || "";
-      // Find associated label via for attribute
+      const id = el.id || "";
       const labelFor = id ? document.querySelector(`label[for="${id}"]`)?.textContent?.trim().replace(/\s+/g, " ").slice(0, 60) || "" : "";
+      const displayLabel = label || labelFor || ariaLabel || placeholder || name;
       const value = input.value || "";
-      const checked = input.type === "checkbox" || input.type === "radio" ? (input.checked ? " [CHECKED]" : " [unchecked]") : "";
+      const checked = (type === "checkbox" || type === "radio") ? (input.checked ? " [CHECKED]" : " [unchecked]") : "";
 
-      elements.push(`[INPUT type="${type}" name="${name}" id="${id}" placeholder="${placeholder}" aria-label="${ariaLabel}" label="${label || labelFor}" value="${value}"${checked}]`);
+      elements.push(`[INPUT selector="${sel}" type="${type}" label="${displayLabel}" value="${value}"${checked}]`);
     });
 
     return elements.join("\n");
   });
 
-  return `URL: ${url}\nTitle: ${title}\n\nVisible text (truncated):\n${truncatedText}\n\nInteractive elements:\n${interactiveElements}`;
+  return `URL: ${url}\nTitle: ${title}\n\nVisible text (truncated):\n${truncatedText}\n\nInteractive elements (use the selector= value for actions):\n${interactiveElements}`;
 }
 
 /**
@@ -264,15 +291,16 @@ CURRENT PAGE (step ${stepNum + 1}):
 ${pageSnapshot}
 
 RULES:
-1. If you see a job details page with an "Apply" or "Apply now" button/link, click it using {"action": "click", "selector": "text=Apply now"} or the link's text.
-2. If you see an application form with inputs, fill one field at a time. Use CSS selectors like "input[name='firstName']" or "#email".
-3. For file uploads (type="file"), use {"action": "upload", "selector": "input[type='file']"}.
-4. For checkboxes (location preferences), prefer Remote/US locations. Use {"action": "check", "selectors": ["input[value='Remote']"]} or click the checkbox labels.
-5. For the Submit button, click it: {"action": "click", "selector": "text=Submit"}.
-6. If you see a "thank you", "application received", or "submitted" confirmation, return {"action": "done", "reason": "application submitted"}.
-7. If the page requires LOGIN, account creation, or asks for a password, return {"action": "error", "message": "Login required to apply"}.
-8. If you see a CAPTCHA or verification challenge, return {"action": "error", "message": "CAPTCHA detected"}.
-9. Do NOT repeat a failed action. If previous steps show the same action failing, try a different approach or return error.
+1. IMPORTANT: Use the exact selector= value from the interactive elements list. Do NOT guess selectors. Example: if you see [BUTTON selector="#apply-btn"] "Apply now", use selector "#apply-btn".
+2. If you see a job details page with an "Apply" or "Apply now" button/link, click it using the selector from the snapshot.
+3. If you see a form with inputs, fill one field at a time using the selector from the snapshot. Example: [INPUT selector="input[name='first_name']" label="First name"] → use selector "input[name='first_name']".
+4. For file uploads (type="file"), use the upload action with the selector from the snapshot.
+5. For checkboxes (location preferences), prefer Remote/US locations. Use the selector from the snapshot.
+6. For the Submit button, click it using its selector from the snapshot.
+7. If you see a "thank you", "application received", or "submitted" confirmation, return {"action": "done"}.
+8. If the page requires LOGIN, account creation, or password, return {"action": "error", "message": "Login required"}.
+9. If you see a CAPTCHA, return {"action": "error", "message": "CAPTCHA detected"}.
+10. Do NOT repeat a failed action. If previous steps show the same action failing, try a different selector or return error.
 
 Respond with ONLY a JSON object:
 {"action": "click|fill|upload|check|select|done|error", "selector": "CSS selector or button text", "value": "for fill/select only", "selectors": ["for check only"], "reason": "brief why", "message": "for error only"}`;
