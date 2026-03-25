@@ -375,7 +375,7 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           )}
 
           {/* Discoveries */}
-          {discoveries.length > 0 && isDone && (
+          {discoveries.length > 0 && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wide">
                 Jobs Discovered ({discoveries.length})
