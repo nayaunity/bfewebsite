@@ -298,60 +298,182 @@ Respond with ONLY a JSON object:
 }
 
 /**
- * Execute a Claude-decided action on the page.
+ * Execute a Claude-decided action on the page with robust fallbacks.
  */
 async function executeAction(page: Page, action: AgentAction, resumePath: string): Promise<void> {
+  // Check for iframes — if the form is inside one, switch context
+  const frames = page.frames();
+  const targetPage = frames.length > 1
+    ? frames.find(f => f !== page.mainFrame() && f.url() !== "about:blank") || page
+    : page;
+
   switch (action.action) {
     case "click":
       if (action.selector) {
-        // Try as CSS selector first, then as text selector
-        try {
-          await page.click(action.selector, { timeout: 5000 });
-        } catch {
-          // Try finding by text content
-          await page.getByText(action.selector, { exact: false }).first().click({ timeout: 5000 });
-        }
+        await robustClick(targetPage as unknown as Page, action.selector);
       }
       break;
 
     case "fill":
-      if (action.selector && action.value) {
-        try {
-          await page.fill(action.selector, action.value, { timeout: 5000 });
-        } catch {
-          await page.locator(action.selector).first().fill(action.value, { timeout: 5000 });
-        }
+      if (action.selector && action.value !== undefined) {
+        await robustFill(targetPage as unknown as Page, action.selector, action.value);
       }
       break;
 
     case "upload":
-      if (action.selector) {
-        await page.setInputFiles(action.selector, resumePath, { timeout: 5000 });
-      } else {
-        // Default: find any file input
-        await page.setInputFiles('input[type="file"]', resumePath, { timeout: 5000 });
-      }
+      await robustUpload(targetPage as unknown as Page, action.selector || 'input[type="file"]', resumePath);
       break;
 
     case "check":
       if (action.selectors) {
         for (const sel of action.selectors) {
           try {
-            await page.check(sel, { timeout: 3000 });
-          } catch {
-            // Try clicking instead (some checkboxes need click, not check)
-            try {
-              await page.click(sel, { timeout: 3000 });
-            } catch {}
-          }
+            await robustClick(targetPage as unknown as Page, sel);
+          } catch {}
         }
+      } else if (action.selector) {
+        await robustClick(targetPage as unknown as Page, action.selector);
       }
       break;
 
     case "select":
       if (action.selector && action.value) {
-        await page.selectOption(action.selector, action.value, { timeout: 5000 });
+        try {
+          await page.selectOption(action.selector, action.value, { timeout: 5000 });
+        } catch {
+          // Try clicking the select, then clicking the option
+          try {
+            await page.click(action.selector, { timeout: 3000 });
+            await page.waitForTimeout(500);
+            await page.getByText(action.value, { exact: false }).first().click({ timeout: 3000 });
+          } catch {}
+        }
       }
       break;
   }
+}
+
+/**
+ * Robust click — tries multiple strategies to click an element.
+ */
+async function robustClick(page: Page, selector: string): Promise<void> {
+  // Strategy 1: Direct CSS selector
+  try {
+    await page.click(selector, { timeout: 4000 });
+    return;
+  } catch {}
+
+  // Strategy 2: By visible text (handles "Apply now", "Submit", etc.)
+  try {
+    await page.getByText(selector, { exact: false }).first().click({ timeout: 4000 });
+    return;
+  } catch {}
+
+  // Strategy 3: By role — try button first, then link
+  try {
+    await page.getByRole("button", { name: selector }).first().click({ timeout: 3000 });
+    return;
+  } catch {}
+
+  try {
+    await page.getByRole("link", { name: selector }).first().click({ timeout: 3000 });
+    return;
+  } catch {}
+
+  // Strategy 4: Evaluate click in page context (bypasses Playwright actionability checks)
+  try {
+    await page.evaluate((sel) => {
+      const el = document.querySelector(sel) as HTMLElement;
+      if (el) el.click();
+    }, selector);
+    return;
+  } catch {}
+
+  throw new Error(`Could not click: ${selector}`);
+}
+
+/**
+ * Robust fill — tries multiple strategies to fill an input.
+ */
+async function robustFill(page: Page, selector: string, value: string): Promise<void> {
+  // Strategy 1: Standard fill
+  try {
+    await page.fill(selector, value, { timeout: 4000 });
+    return;
+  } catch {}
+
+  // Strategy 2: Click to focus, clear, then type character by character
+  try {
+    await page.click(selector, { timeout: 3000 });
+    await page.keyboard.press("Control+a");
+    await page.keyboard.type(value, { delay: 30 });
+    return;
+  } catch {}
+
+  // Strategy 3: Find by locator, click, then type
+  try {
+    const locator = page.locator(selector).first();
+    await locator.click({ timeout: 3000 });
+    await page.keyboard.press("Control+a");
+    await page.keyboard.type(value, { delay: 30 });
+    return;
+  } catch {}
+
+  // Strategy 4: Try getByLabel if selector looks like a label
+  try {
+    const labelLocator = page.getByLabel(selector, { exact: false }).first();
+    await labelLocator.click({ timeout: 3000 });
+    await page.keyboard.press("Control+a");
+    await page.keyboard.type(value, { delay: 30 });
+    return;
+  } catch {}
+
+  // Strategy 5: JavaScript-based value setting + input event dispatch
+  try {
+    await page.evaluate(({ sel, val }) => {
+      const el = document.querySelector(sel) as HTMLInputElement;
+      if (el) {
+        el.focus();
+        el.value = val;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }, { sel: selector, val: value });
+    return;
+  } catch {}
+
+  throw new Error(`Could not fill "${selector}" with value`);
+}
+
+/**
+ * Robust file upload — tries multiple strategies.
+ */
+async function robustUpload(page: Page, selector: string, filePath: string): Promise<void> {
+  // Strategy 1: Direct setInputFiles
+  try {
+    await page.setInputFiles(selector, filePath, { timeout: 5000 });
+    return;
+  } catch {}
+
+  // Strategy 2: Find any file input
+  try {
+    await page.setInputFiles('input[type="file"]', filePath, { timeout: 5000 });
+    return;
+  } catch {}
+
+  // Strategy 3: Make file input visible first (some are hidden), then set
+  try {
+    await page.evaluate(() => {
+      const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (input) {
+        input.style.display = "block";
+        input.style.visibility = "visible";
+        input.style.opacity = "1";
+      }
+    });
+    await page.setInputFiles('input[type="file"]', filePath, { timeout: 5000 });
+    return;
+  } catch {}
+
+  throw new Error(`Could not upload file to: ${selector}`);
 }
