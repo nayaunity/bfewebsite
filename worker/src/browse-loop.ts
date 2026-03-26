@@ -164,7 +164,8 @@ export async function processNextBrowseSession(): Promise<boolean> {
             countryOfResidence: user.countryOfResidence || undefined,
           },
           session.resumeUrl,
-          session.resumeName
+          session.resumeName,
+          session.targetRole
         );
 
         // Log the apply steps if available

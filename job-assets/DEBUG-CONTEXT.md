@@ -1,102 +1,143 @@
-# Debug Context for Next Session
+# Auto-Apply Debug Context — March 25, 2026
 
-## What We Built
+## System Overview
 
-A paid auto-apply SaaS feature on theblackfemaleengineer.com. Users subscribe (Free/Starter/Pro tiers via Stripe), upload resumes, fill in their profile, and the system applies to jobs at 20+ tech companies using browser automation (Playwright on a Railway worker server).
+The auto-apply SaaS lets users select a target role + companies, then a Railway worker browses career pages with Playwright and applies to matching jobs automatically.
 
-## Current Branch
+**Architecture:**
+1. User clicks "Start Applying" on website → creates `BrowseSession` in Turso DB
+2. Railway worker polls for sessions every 30s
+3. Worker uses Playwright + stealth context to browse career pages
+4. Claude Haiku identifies matching jobs from page links (replaces old regex matching)
+5. Claude Haiku drives the apply process — analyzes each page snapshot and decides next action (click, fill, upload, etc.)
+6. Results stored in `BrowseDiscovery` table, shown in real-time on frontend
 
-`auto-apply-saas` — all work is here. It's been merged to `main` and deployed to Vercel multiple times.
+**Branch:** `auto-apply-saas` (merged to `main` and deployed)
 
-## What's Working
+## Current Status: Job Discovery Works, Application Submission Fails
 
-- Stripe checkout flow — user can subscribe to Starter/Pro, gets redirected to Stripe, payment processes
-- Railway worker deployed and running — polls the `ApplyQueue` table in Turso every 30s
-- Production database migrated with all new tables (`UserResume`, `ApplyQueue`, subscription fields on `User`)
-- `/pricing` page renders correctly with 3 tier cards
-- Stripe webhook endpoint exists at `/api/stripe/webhook`
+### What Works
+- BrowseSession creation + polling ✅
+- Stealth browser context (random UAs, patched navigator.webdriver, anti-detection launch args) ✅
+- Career page loading with `networkidle` for SPAs ✅
+- Claude Haiku job discovery — sends all page links to Claude, gets back matching jobs with clean titles ✅
+- Meta: finds 9 matching jobs (AI Production Engineer, Business Engineer, Research Engineer, etc.) ✅
+- Microsoft: finds 32 matching jobs ✅
+- Frontend shows real-time progress, debug logs, per-job error details ✅
+- Stuck detection (bail after 4 same-URL actions instead of looping 12 times) ✅
+- Subscription tier enforcement (Starter: 50 apps/month) ✅
+- Stripe checkout works (webhook was fixed earlier in session) ✅
 
-## What's Broken — NEEDS DEBUGGING
+### What Fails: Application Submission (THE MAIN ISSUE)
 
-### 1. React Hydration Error on `/profile`
+All discovered jobs fail at the **apply step**. The Claude agent loop navigates to the job page and reaches the application form, but **can't interact with form elements**.
 
-**Error:** `Minified React error #418` — text content mismatch between server and client.
+**Error pattern for Meta (all 9 jobs):**
+```
+Stuck: page not changing after multiple actions | Steps: Step 5: analyzing page →
+Claude: fill — Country field is empty and must be filled before proceeding
+```
 
-**What we tried:**
-- Added `suppressHydrationWarning` to `<html>` and `<body>` in `src/app/layout.tsx`
-- Serialized `Date` objects to ISO strings before passing to client components (`ResumeUpload`, `ResumeManager`)
-- Replaced `Infinity` with `999999` in tier limits
-- Ensured numeric values from `canApply()` are explicitly cast with `Number()`
+**Error pattern for Microsoft (all 32 jobs):**
+```
+Stuck: page not changing after multiple actions
+```
 
-**None of these fixed it.** The error persists after the latest deploy.
+Claude correctly identifies what needs to happen ("fill First name", "fill Country", "upload resume") but the Playwright actions don't change the page state.
 
-**Root cause hypothesis:** The `ThemeProvider` (`src/providers/ThemeProvider.tsx`) defaults to `"light"` on the server but reads `localStorage` on the client, potentially switching to `"dark"`. This causes any theme-dependent text to mismatch. However, `suppressHydrationWarning` should have silenced this — unclear why it didn't.
+### Root Cause Analysis
 
-**To debug:** Run `npm run dev` locally and check the browser console — the dev build will show the exact component and text that mismatches instead of just the minified error number.
+The apply engine (`worker/src/apply-engine.ts`) uses a Claude agent loop:
+1. Take page snapshot (visible text + interactive elements with real CSS selectors)
+2. Send to Claude Haiku → get next action (click/fill/upload/check/select/done/error)
+3. Execute action via Playwright with 5 fallback strategies
+4. Repeat until done or stuck (max 12 steps, bail after 4 same-URL)
 
-### 2. Resume Upload Not Working on `/profile`
+**The problem is at step 3 — executing the action.** Despite having 5 fallback strategies for `fill()`:
+1. Standard `page.fill(selector, value)`
+2. Click → Ctrl+A → `keyboard.type()` character by character
+3. Locator click → type
+4. `getByLabel()` → type
+5. JavaScript direct value set + event dispatch
 
-**Symptom:** User clicks the upload area on the profile page but nothing happens (or it fails silently).
+...all 5 fail on Meta's React form components. The page snapshot now includes real CSS selectors extracted from the DOM (id, name, aria-label, placeholder, nth-of-type), and Claude is instructed to use them exactly. But the interactions still don't work.
 
-**Possibly related to:** The hydration error crashing React before event handlers attach. If fixing #1 doesn't fix this, check:
-- Browser console Network tab for requests to `/api/profile/resume` — what status code?
-- The `ResumeUpload` component at `src/components/ResumeUpload.tsx`
-- The API route at `src/app/api/profile/resume/route.ts`
-- Whether `BLOB_READ_WRITE_TOKEN` env var is set on Vercel (required for `@vercel/blob` uploads)
+**Possible reasons:**
+- Meta's inputs are custom React components with synthetic event handling — standard DOM events may not trigger React state updates
+- The form might require React-specific event dispatching (e.g., `ReactDOM.findDOMNode` or `Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set`)
+- The application form might require Meta authentication (cookies/session) that the headless browser doesn't have
+- The form might be inside a Shadow DOM or web component boundary
+- Playwright's headless mode on Railway might be missing something that headed mode provides
 
-### 3. Stripe Webhook Not Verified Yet
-
-After the user subscribes, the webhook `checkout.session.completed` should fire and update the user's `subscriptionTier` in the database. This hasn't been tested end-to-end yet.
-
-**To verify:**
-- Go to Stripe dashboard → Developers → Webhooks → click the endpoint → check "Attempts" tab
-- Look for `checkout.session.completed` events and whether they succeeded (200) or failed
-- If the user's tier badge on `/profile` doesn't show "Starter" or "Pro" after subscribing, the webhook isn't working
-
-**Webhook endpoint:** `src/app/api/stripe/webhook/route.ts`
-**Stripe webhook secret env var:** `STRIPE_WEBHOOK_SECRET` on Vercel
+**Debugging approach that hasn't been tried yet:**
+- Run `cd worker && npm run browse` locally with `HEADLESS=false` to see the browser visually and inspect what's happening
+- Take a screenshot at each step and inspect the actual DOM in a real browser
+- Try the React-specific value setter: `Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, value)` followed by `input.dispatchEvent(new Event('input', { bubbles: true }))`
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `src/app/profile/page.tsx` | Profile page — passes data to client components |
-| `src/components/ResumeUpload.tsx` | Single resume upload (original) |
-| `src/components/ResumeManager.tsx` | Multi-resume upload (new, tier-limited) |
-| `src/components/AutoApplyProfile.tsx` | Auto-apply profile form + Apply Now button |
-| `src/components/UsageMeter.tsx` | Monthly usage progress bar |
-| `src/components/SubscriptionBadge.tsx` | Tier badge (Free/Starter/Pro) |
-| `src/providers/ThemeProvider.tsx` | Theme toggle — likely hydration error source |
-| `src/app/layout.tsx` | Root layout with suppressHydrationWarning |
-| `src/lib/stripe.ts` | Stripe client + tier limits config |
-| `src/lib/subscription.ts` | Usage tracking helpers |
-| `src/app/api/stripe/webhook/route.ts` | Stripe webhook handler |
-| `src/app/api/stripe/checkout/route.ts` | Creates Stripe checkout sessions |
-| `src/app/api/profile/resume/route.ts` | Single resume upload API |
-| `src/app/api/profile/resumes/route.ts` | Multi-resume CRUD API |
-| `src/app/api/auto-apply/route.ts` | Auto-apply trigger (queues jobs) |
-| `src/app/api/auto-apply/queue/route.ts` | Queue status API |
-| `src/app/pricing/page.tsx` | Pricing page |
-| `worker/` | Railway Playwright worker (Express + Turso + Playwright) |
+| `worker/src/apply-engine.ts` | **THE FILE TO FIX** — Claude agent loop + form interaction with 5 fallback strategies |
+| `worker/src/career-browser.ts` | Job discovery using Claude Haiku (works well) |
+| `worker/src/browse-loop.ts` | Session orchestration (polls DB, iterates companies, applies to each job) |
+| `worker/src/browse-worker.ts` | Standalone local worker entry point (`npm run browse`) |
+| `worker/src/index.ts` | Railway worker main (polls ApplyQueue + BrowseSession) |
+| `worker/src/db.ts` | Turso database operations |
+| `src/components/BrowseApplyForm.tsx` | Frontend UI (role selector, company checklist, real-time progress) |
+| `src/app/api/auto-apply/browse/route.ts` | API: create browse session |
+| `src/app/api/auto-apply/browse/[sessionId]/route.ts` | API: poll session progress |
+| `src/lib/resume-matcher.ts` | Resume matching (legacy fallback + single resume fallback) |
+| `scripts/target-companies.json` | 20 company career page URLs |
+| `worker/data/target-companies.json` | Copy for Docker build context |
+| `prisma/schema.prisma` | BrowseSession + BrowseDiscovery models |
+| `job-assets/application-answers.json` | Pre-filled application answers by role |
+
+## Earlier Fixes Completed in This Session
+
+1. **Hydration error** — Fixed `formatDate` timezone mismatch (added `timeZone: "UTC"`)
+2. **Resume upload** — Fixed disabled file input blocking clicks in ResumeManager
+3. **Stripe webhook** — Fixed silent `break` → now logs and returns 400
+4. **Resume matcher** — Added legacy resumeUrl fallback + single-resume fallback
+5. **ApplicationsDashboard** — Fixed summary field names, updated confirm dialog text
+6. **User subscription** — Manually updated to Starter tier (webhook fired before fix was deployed)
+7. **Target role UI** — Changed from text input to 4 selectable role cards
+8. **Cloudflare detection** — Stealth context + 10s wait for challenges
+9. **Job discovery** — Replaced regex matching with Claude Haiku API calls
+10. **Page loading** — Switched to `networkidle` for SPA rendering
 
 ## Infrastructure
 
-- **Vercel** — hosts the Next.js app
-- **Turso** — production database (libsql), shared between Vercel and Railway worker
-- **Stripe** — subscription billing (currently in test mode)
-- **Railway** — hosts the Playwright worker server (polls `ApplyQueue`, applies via browser)
+- **Vercel** — hosts Next.js app (deployed via `vercel --prod`)
+- **Turso** — production database (libsql), shared between Vercel and Railway
+- **Stripe** — subscription billing (test mode, user on Starter tier)
+- **Railway** — hosts Playwright worker ("bfewebsite" service in "angelic-endurance" project)
 - **Vercel Blob** — stores uploaded resume PDFs
+- **Anthropic API** — Claude Haiku for job matching and apply agent loop
 
-## Environment Variables Needed
+## Environment Variables
 
-**Vercel:**
-- `STRIPE_SECRET_KEY` — set ✅
-- `STRIPE_PUBLISHABLE_KEY` — set ✅
-- `STRIPE_STARTER_PRICE_ID` — set ✅
-- `STRIPE_PRO_PRICE_ID` — set ✅
-- `STRIPE_WEBHOOK_SECRET` — set ✅
-- `BLOB_READ_WRITE_TOKEN` — CHECK IF SET (needed for resume uploads)
+**Railway:** `DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `ANTHROPIC_API_KEY`
+**Vercel:** `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_STARTER_PRICE_ID`, `STRIPE_PRO_PRICE_ID`, `BLOB_READ_WRITE_TOKEN`, plus DB vars
+**Local worker (.env):** `DATABASE_URL`, `DATABASE_AUTH_TOKEN` (from .env.production)
 
-**Railway:**
-- `DATABASE_URL` — set ✅
-- `DATABASE_AUTH_TOKEN` — set ✅
+## Useful Commands
+
+**Clear stuck sessions:**
+```bash
+DATABASE_URL=$(grep DATABASE_URL .env.production | cut -d'"' -f2) \
+DATABASE_AUTH_TOKEN=$(grep DATABASE_AUTH_TOKEN .env.production | cut -d'"' -f2) \
+npx tsx -e "
+import { createClient } from '@libsql/client';
+const db = createClient({ url: process.env.DATABASE_URL!, authToken: process.env.DATABASE_AUTH_TOKEN });
+await db.execute('UPDATE BrowseSession SET status = \"failed\", errorMessage = \"Cleared\", completedAt = datetime(\"now\") WHERE status IN (\"queued\", \"processing\")');
+console.log('Cleared');
+"
+```
+
+**Run worker locally (visible browser):**
+```bash
+cd worker && npm run browse
+```
+
+**Deploy:** `vercel --prod` (Vercel) — Railway auto-deploys from `main` push
