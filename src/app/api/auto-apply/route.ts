@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canApply, incrementAppCount } from "@/lib/subscription";
 import { matchUserResume } from "@/lib/resume-matcher";
+import { ensureApplicationEmail } from "@/lib/application-email";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -111,10 +112,12 @@ export async function POST() {
     const maxToQueue = Math.min(eligibleJobs.length, usage.remaining);
     const jobsToQueue = eligibleJobs.slice(0, maxToQueue);
 
+    // Use dedicated application email for forms (so we can read verification codes)
+    const applicationEmail = await ensureApplicationEmail(session.user.id);
     const applicantData = JSON.stringify({
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email,
+      email: applicationEmail,
       phone: user.phone,
       usState: user.usState,
       workAuthorized: user.workAuthorized,

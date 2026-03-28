@@ -3,6 +3,7 @@ import { writeFileSync, readFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join, resolve } from "path";
 import Anthropic from "@anthropic-ai/sdk";
+import { waitForVerificationCode } from "./verification";
 
 const anthropic = new Anthropic();
 
@@ -351,6 +352,84 @@ async function selectStaticDropdownSafe(
 }
 
 // ============================================================================
+// VERIFICATION CODE HELPERS
+// ============================================================================
+
+async function checkThankYou(frame: Frame, page: Page): Promise<boolean> {
+  const frameCheck = await frame.getByText(/thank you/i).first()
+    .isVisible({ timeout: 5000 }).catch(() => false);
+  if (frameCheck) return true;
+  const mainCheck = await page.getByText(/thank you for applying/i).first()
+    .isVisible({ timeout: 3000 }).catch(() => false);
+  return mainCheck;
+}
+
+async function handleVerificationCode(
+  frame: Frame,
+  page: Page,
+  applicant: ApplicantData,
+  steps: string[]
+): Promise<ApplyResult | null> {
+  steps.push("Verification code required — waiting for email...");
+
+  const code = await waitForVerificationCode(applicant.email);
+  if (!code) {
+    return { success: false, error: "Verification code not received within timeout", steps };
+  }
+
+  steps.push(`Got verification code: ${code.slice(0, 2)}******`);
+
+  // Fill the 8 individual code textboxes
+  try {
+    const verificationGroup = frame.locator("div, fieldset, section").filter({
+      hasText: /verification code/i,
+    }).first();
+
+    // Greenhouse renders 8 individual input fields for the code
+    const inputs = verificationGroup.locator("input");
+    const inputCount = await inputs.count();
+
+    if (inputCount >= 8) {
+      const codeChars = code.split("");
+      for (let i = 0; i < Math.min(codeChars.length, inputCount); i++) {
+        await inputs.nth(i).fill(codeChars[i], { timeout: 3000 });
+      }
+      steps.push("Filled verification code textboxes");
+    } else {
+      // Fallback: try a single textbox
+      const singleInput = frame.getByRole("textbox", { name: /security code/i }).first();
+      await singleInput.fill(code, { timeout: 3000 });
+      steps.push("Filled single verification code input");
+    }
+
+    await frame.waitForTimeout(2000);
+
+    // Click Submit (should now be enabled)
+    const submitButton = frame.getByRole("button", { name: /Submit application/i }).first();
+    const isEnabled = await submitButton.isEnabled({ timeout: 5000 }).catch(() => false);
+    if (!isEnabled) {
+      steps.push("Submit still disabled after entering code");
+      return { success: false, error: "Submit button still disabled after verification code entry", steps };
+    }
+
+    await submitButton.click({ timeout: 5000 });
+    steps.push("Clicked Submit after verification code");
+    await page.waitForTimeout(5000);
+
+    if (await checkThankYou(frame, page)) {
+      steps.push("Application submitted successfully after verification");
+      return { success: true, steps };
+    }
+
+    steps.push("Thank you page not found after verification submit");
+    return { success: false, error: "Submission failed after entering verification code", steps };
+  } catch (e) {
+    steps.push(`Verification code entry failed: ${e instanceof Error ? e.message : String(e)}`);
+    return { success: false, error: "Failed to enter verification code", steps };
+  }
+}
+
+// ============================================================================
 // GREENHOUSE DETERMINISTIC HANDLER
 // ============================================================================
 
@@ -555,48 +634,39 @@ async function greenhouseDeterministicFill(
   try {
     const submitButton = frame.getByRole("button", { name: /Submit application/i }).first();
 
-    // Check if submit button is disabled before clicking (verification code already shown)
+    // Check if submit button is disabled (verification code already shown)
     const isDisabled = await submitButton.isDisabled().catch(() => false);
     if (isDisabled) {
       steps.push("Submit button is disabled — checking for verification code");
       const hasVerification = await frame.getByText(/verification code was sent/i).first()
         .isVisible({ timeout: 2000 }).catch(() => false);
       if (hasVerification) {
-        steps.push("Email verification code required — all form fields filled successfully");
-        return { success: false, error: "Email verification code required — form filled but needs human intervention to enter code", steps };
+        const result = await handleVerificationCode(frame, page, applicant, steps);
+        if (result) return result;
+      } else {
+        return { success: false, error: "Submit button disabled — unknown reason", steps };
       }
-      return { success: false, error: "Submit button disabled — unknown reason", steps };
+    } else {
+      await submitButton.click({ timeout: 5000 });
+      steps.push("Clicked Submit");
+      await page.waitForTimeout(5000);
+
+      // Check for success
+      if (await checkThankYou(frame, page)) {
+        steps.push("Application submitted successfully");
+        return { success: true, steps };
+      }
+
+      // Check if verification code appeared after submit
+      const postSubmitVerification = await frame.getByText(/verification code was sent/i).first()
+        .isVisible({ timeout: 3000 }).catch(() => false);
+      if (postSubmitVerification) {
+        const result = await handleVerificationCode(frame, page, applicant, steps);
+        if (result) return result;
+      }
+
+      steps.push("Submit did not result in confirmation or verification — may have validation errors");
     }
-
-    await submitButton.click({ timeout: 5000 });
-    steps.push("Clicked Submit");
-    await page.waitForTimeout(5000);
-
-    // Check for success (Thank you page)
-    const thankYouVisible = await frame.getByText(/thank you/i).first()
-      .isVisible({ timeout: 5000 }).catch(() => false);
-    if (thankYouVisible) {
-      steps.push("Application submitted successfully");
-      return { success: true, steps };
-    }
-
-    // Check main page too
-    const mainThankYou = await page.getByText(/thank you for applying/i).first()
-      .isVisible({ timeout: 3000 }).catch(() => false);
-    if (mainThankYou) {
-      steps.push("Application submitted successfully");
-      return { success: true, steps };
-    }
-
-    // Check if verification code appeared AFTER submit
-    const postSubmitVerification = await frame.getByText(/verification code was sent/i).first()
-      .isVisible({ timeout: 3000 }).catch(() => false);
-    if (postSubmitVerification) {
-      steps.push("Email verification code required after submit — all fields filled successfully");
-      return { success: false, error: "Email verification code required — form filled but needs human intervention to enter code", steps };
-    }
-
-    steps.push("Submit did not result in confirmation or verification — may have validation errors");
   } catch (e) {
     steps.push(`Submit failed: ${e instanceof Error ? e.message : String(e)}`);
   }

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canApply } from "@/lib/subscription";
 import { matchUserResume } from "@/lib/resume-matcher";
+import { ensureApplicationEmail } from "@/lib/application-email";
 import targetCompanies from "../../../../../scripts/target-companies.json";
 
 export const runtime = "nodejs";
@@ -103,6 +104,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  // Ensure user has a dedicated application email
+  await ensureApplicationEmail(session.user.id);
 
   // Create browse session
   const browseSession = await prisma.browseSession.create({

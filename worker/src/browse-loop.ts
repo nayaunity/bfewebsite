@@ -22,6 +22,7 @@ interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
+  applicationEmail: string | null;
   phone: string;
   usState: string | null;
   workAuthorized: number | null;
@@ -58,7 +59,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
   // Fetch user profile
   const userResult = await db.execute({
-    sql: `SELECT firstName, lastName, email, phone, usState, workAuthorized, needsSponsorship, countryOfResidence, monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
+    sql: `SELECT firstName, lastName, email, applicationEmail, phone, usState, workAuthorized, needsSponsorship, countryOfResidence, monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
     args: [session.userId],
   });
 
@@ -156,7 +157,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           {
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.applicationEmail || user.email,
             phone: user.phone,
             usState: user.usState || undefined,
             workAuthorized: user.workAuthorized === 1,

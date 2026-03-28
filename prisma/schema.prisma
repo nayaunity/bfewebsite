@@ -23,6 +23,7 @@ model User {
   workAuthorized    Boolean?
   needsSponsorship  Boolean?
   countryOfResidence  String?
+  applicationEmail    String?          @unique
   stripeCustomerId    String?          @unique
   subscriptionTier    String           @default("free")
   subscriptionStatus  String           @default("inactive")
@@ -373,4 +374,18 @@ model BlogPost {
   @@index([featured])
   @@index([category])
   @@index([publishedAt])
+}
+
+model InboundEmail {
+  id         String   @id @default(cuid())
+  toEmail    String
+  fromEmail  String
+  fromName   String?
+  subject    String
+  textBody   String?
+  htmlBody   String?
+  receivedAt DateTime @default(now())
+  processed  Boolean  @default(false)
+
+  @@index([toEmail, receivedAt])
 }
