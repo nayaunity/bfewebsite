@@ -1,20 +1,11 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { writeFileSync, readFileSync, unlinkSync } from "fs";
+import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
-import { join, resolve } from "path";
+import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { waitForVerificationCode } from "./verification";
 
 const anthropic = new Anthropic();
-
-// Load application answers for Claude to use when filling forms
-let applicationAnswers: Record<string, unknown> = {};
-try {
-  const answersPath = resolve(__dirname, "../../job-assets/application-answers.json");
-  applicationAnswers = JSON.parse(readFileSync(answersPath, "utf-8"));
-} catch {
-  console.warn("[ApplyEngine] Could not load application-answers.json — Claude will use applicant info only");
-}
 
 let browser: Browser | null = null;
 
@@ -187,6 +178,36 @@ interface ApplicantData {
   workAuthorized?: boolean;
   needsSponsorship?: boolean;
   countryOfResidence?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  websiteUrl?: string;
+  currentEmployer?: string;
+  currentTitle?: string;
+  school?: string;
+  degree?: string;
+  city?: string;
+  preferredName?: string;
+  yearsOfExperience?: string;
+  targetCompany?: string;
+}
+
+// --- Template generators for free-text answers ---
+
+function generateWhyAnswer(applicant: ApplicantData): string {
+  const title = applicant.currentTitle || "software engineer";
+  const years = applicant.yearsOfExperience || "several";
+  const employer = applicant.currentEmployer ? ` at ${applicant.currentEmployer}` : "";
+  return `I'm a ${title} with ${years} years of experience${employer}. I'm excited about this opportunity to contribute my skills in building production systems at scale. I bring a strong track record of shipping high-quality software and collaborating cross-functionally.`;
+}
+
+function generateCoverLetter(applicant: ApplicantData): string {
+  const whyText = generateWhyAnswer(applicant);
+  const links = [
+    applicant.websiteUrl ? `Portfolio: ${applicant.websiteUrl}` : null,
+    applicant.githubUrl ? `GitHub: ${applicant.githubUrl}` : null,
+    applicant.linkedinUrl ? `LinkedIn: ${applicant.linkedinUrl}` : null,
+  ].filter(Boolean).join("\n");
+  return `Dear Hiring Team,\n\n${whyText}\n\n${links}\n\nBest regards,\n${applicant.firstName} ${applicant.lastName}`;
 }
 
 export interface ApplyResult {
@@ -497,17 +518,6 @@ async function greenhouseDeterministicFill(
     return { success: false, error: "Greenhouse iframe not found", steps };
   }
 
-  // Pre-compute application answers for use throughout the handler
-  const personal = applicationAnswers.personal as Record<string, string> | undefined;
-  const education = applicationAnswers.education as Record<string, string> | undefined;
-  const common = applicationAnswers.commonQuestions as Record<string, Record<string, string>> | undefined;
-  const roleKey = targetRole
-    ? Object.keys(common || {}).find((k) =>
-        k.toLowerCase().includes(targetRole.toLowerCase().split(",")[0].trim().split("/")[0].trim())
-      )
-    : Object.keys(common || {})[0];
-  const roleAnswers = roleKey && common ? common[roleKey] : undefined;
-
   // Wait for the form to load
   try {
     await frame.getByRole("heading", { name: /Apply for this job/i }).waitFor({ timeout: 10000 });
@@ -541,12 +551,13 @@ async function greenhouseDeterministicFill(
     const locationCombobox = frame.getByRole("combobox", { name: /Location/i }).first();
     if (await locationCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
       await locationCombobox.clear();
-      await locationCombobox.pressSequentially("Denver", { delay: 80 });
+      const citySearch = applicant.city || "Denver";
+      await locationCombobox.pressSequentially(citySearch, { delay: 80 });
       await frame.waitForTimeout(1500);
-      const option = frame.getByRole("option", { name: /Denver, Colorado/i }).first();
+      const option = frame.getByRole("option", { name: new RegExp(citySearch, "i") }).first();
       if (await option.isVisible({ timeout: 3000 }).catch(() => false)) {
         await option.click({ timeout: 5000 });
-        steps.push("Selected location: Denver, Colorado");
+        steps.push(`Selected location: ${citySearch}`);
       } else {
         steps.push("Location options did not appear");
       }
@@ -585,9 +596,7 @@ async function greenhouseDeterministicFill(
         // Find the textarea that appears
         const textarea = coverLetterGroup.locator("textarea").first();
         if (await textarea.isVisible({ timeout: 2000 }).catch(() => false)) {
-          const coverText = roleAnswers?.whyThisRole
-            ? `Dear Hiring Team,\n\n${roleAnswers.whyThisRole}\n\nPortfolio: https://theblackfemaleengineer.com\nGitHub: https://github.com/nyaradzobere\n\nBest regards,\n${applicant.firstName} ${applicant.lastName}`
-            : `Dear Hiring Team,\n\nI am excited to apply for this role. As a CTO and AI Engineer, I have shipped production AI systems, built RAG pipelines, and led full-stack development. My portfolio at https://theblackfemaleengineer.com showcases my work.\n\nBest regards,\n${applicant.firstName} ${applicant.lastName}`;
+          const coverText = generateCoverLetter(applicant);
           await textarea.fill(coverText);
           steps.push("Filled cover letter (text)");
         }
@@ -632,13 +641,13 @@ async function greenhouseDeterministicFill(
   try {
     const companyNameField = frame.getByRole("textbox", { name: /Company name/i }).first();
     if (await companyNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await companyNameField.fill("The Black Female Engineer");
+      await companyNameField.fill(applicant.currentEmployer || "");
       steps.push("Filled employment: Company name");
 
       // Title
       const titleField = frame.getByRole("textbox", { name: "Title" }).first();
       if (await titleField.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await titleField.fill("CTO / AI Engineer");
+        await titleField.fill(applicant.currentTitle || "");
         steps.push("Filled employment: Title");
       }
 
@@ -671,9 +680,10 @@ async function greenhouseDeterministicFill(
     if (await schoolCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
       // School is a combobox — try autocomplete first (type slowly to filter)
       await schoolCombobox.clear();
-      await schoolCombobox.pressSequentially("University of Colorado", { delay: 80 });
+      const schoolSearch = applicant.school || "University";
+      await schoolCombobox.pressSequentially(schoolSearch, { delay: 80 });
       await frame.waitForTimeout(1500);
-      const schoolOption = frame.getByRole("option", { name: /Colorado/i }).first();
+      const schoolOption = frame.getByRole("option", { name: new RegExp(schoolSearch.split(" ")[0], "i") }).first();
       if (await schoolOption.isVisible({ timeout: 3000 }).catch(() => false)) {
         await schoolOption.click({ timeout: 5000 });
         steps.push("Selected school (autocomplete)");
@@ -710,14 +720,14 @@ async function greenhouseDeterministicFill(
   try {
     const linkedinField = frame.getByRole("textbox", { name: /LinkedIn/i }).first();
     if (await linkedinField.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await linkedinField.fill("https://linkedin.com/in/theblackfemaleengineer");
+      await linkedinField.fill(applicant.linkedinUrl || "");
       steps.push("Filled LinkedIn URL");
     }
   } catch {}
   try {
     const websiteField = frame.getByRole("textbox", { name: /website|portfolio|github/i }).first();
     if (await websiteField.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await websiteField.fill("https://theblackfemaleengineer.com");
+      await websiteField.fill(applicant.websiteUrl || "");
       steps.push("Filled website/portfolio");
     }
   } catch {}
@@ -903,85 +913,59 @@ async function greenhouseDeterministicFill(
     }
   } catch {}
 
-  // Phase 7: Additional text fields
-  const whyAnswer = roleAnswers?.whyThisCompany?.slice(0, 500)
-    || "I'm drawn to this company because I've spent the last two years building production AI systems and shipping full-stack products as a CTO. I want to bring that builder energy to a team where I can go deeper on impactful technology at scale.";
+  // Phase 7: Additional text fields — all values from applicant profile
+  const whyAnswer = generateWhyAnswer(applicant);
+  const cityState = `${applicant.city || ""}${applicant.city && applicant.usState ? ", " : ""}${applicant.usState || ""}`.trim();
+  const prefName = applicant.preferredName || applicant.firstName;
 
   const additionalFields: Array<{ name: string | RegExp; value: string; label: string }> = [
-    { name: /current or previous employer/i, value: "The Black Female Engineer (Self-employed)", label: "Employer" },
-    { name: /current or previous job title/i, value: "CTO / AI Engineer", label: "Job Title" },
-    { name: /most recent school/i, value: education?.school || "University of Colorado Boulder", label: "School" },
-    { name: /most recent degree/i, value: education?.degree || "B.S. Finance & Accounting", label: "Degree" },
+    { name: /current or previous employer/i, value: applicant.currentEmployer || "", label: "Employer" },
+    { name: /current or previous job title/i, value: applicant.currentTitle || "", label: "Job Title" },
+    { name: /most recent school/i, value: applicant.school || "", label: "School" },
+    { name: /most recent degree/i, value: applicant.degree || "", label: "Degree" },
     // City/state — multiple label patterns across companies
-    { name: /city and state/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City/State" },
-    { name: /what city/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City" },
-    { name: /where are you located/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Location text" },
-    { name: /from where.*intend to work/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Intend to work from" },
-    { name: /address.*plan.*working|address.*which.*work/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Work address" },
+    { name: /city and state/i, value: cityState, label: "City/State" },
+    { name: /what city/i, value: cityState, label: "City" },
+    { name: /where are you located/i, value: cityState, label: "Location text" },
+    { name: /from where.*intend to work/i, value: cityState, label: "Intend to work from" },
+    { name: /address.*plan.*working|address.*which.*work/i, value: cityState, label: "Work address" },
     // Why this company — multiple label patterns
     { name: /why.*interested/i, value: whyAnswer, label: "Why interested" },
     { name: /why.*want to join/i, value: whyAnswer, label: "Why join" },
     { name: /why.*apply/i, value: whyAnswer, label: "Why apply" },
     { name: /what excites you/i, value: whyAnswer, label: "What excites you" },
-    // Generic "Why [Company]?" catch-all (Anthropic, etc.)
     { name: /^Why /i, value: whyAnswer, label: "Why company" },
-    // Preferred name (Figma, Affirm, Twilio, etc.)
-    { name: /preferred.*name/i, value: "Naya", label: "Preferred name" },
-    { name: /additional information/i, value: roleAnswers?.whyThisRole || whyAnswer, label: "Additional info" },
-    // "How did you hear" as text field (Databricks)
+    // Preferred name
+    { name: /preferred.*name/i, value: prefName, label: "Preferred name" },
+    { name: /additional information/i, value: whyAnswer, label: "Additional info" },
     { name: /how did you hear/i, value: "LinkedIn", label: "How did you hear" },
-    // Start date / availability (Anthropic)
     { name: /earliest.*start|when.*start.*working/i, value: "Immediately / As soon as possible", label: "Earliest start" },
-    // Timeline / deadlines (Anthropic)
     { name: /deadlines.*timeline|timeline.*considerations|deadlines.*aware/i, value: "No specific deadlines.", label: "Timeline" },
-    // Personal preferences / pronouns as text (Anthropic)
     { name: /personal preferences/i, value: "She/Her", label: "Personal preferences" },
-    // Know anyone at company (Glean, etc.)
     { name: /know anyone|know someone|do you know/i, value: "No", label: "Know anyone" },
-    // Years of relevant experience as text (Glean, etc.)
-    { name: /total years.*experience|years.*relevant.*experience/i, value: "5", label: "Years experience" },
-    // Salary expectations
+    { name: /total years.*experience|years.*relevant.*experience/i, value: applicant.yearsOfExperience || "5", label: "Years experience" },
     { name: /salary.*expectation|compensation.*expectation|desired.*salary/i, value: "Open to discussion based on total compensation package", label: "Salary" },
-    // Current company / current employer
-    { name: /current company|current employer/i, value: "The Black Female Engineer", label: "Current company" },
-    // Current title / current role
-    { name: /current title|current role/i, value: "CTO / AI Engineer", label: "Current title" },
-    // Referral
+    { name: /current company|current employer/i, value: applicant.currentEmployer || "", label: "Current company" },
+    { name: /current title|current role/i, value: applicant.currentTitle || "", label: "Current title" },
     { name: /referred by|referral/i, value: "N/A", label: "Referral" },
-    // Country (text)
-    { name: /^Country$/i, value: "United States", label: "Country text" },
-    // Zip code / postal code (Gusto)
-    { name: /zip code|postal code/i, value: "80202", label: "Zip code" },
-    // Name pronunciation (Affirm)
-    { name: /name pronunciation/i, value: "Nyar-ah-dzo Bear-eh", label: "Name pronunciation" },
-    // GitHub URL (Affirm)
-    { name: /^GitHub$/i, value: "https://github.com/nyaradzobere", label: "GitHub" },
-    // Twitter (Affirm)
+    { name: /^Country$/i, value: applicant.countryOfResidence || "United States", label: "Country text" },
+    { name: /zip code|postal code/i, value: "", label: "Zip code" },
+    { name: /name pronunciation/i, value: "", label: "Name pronunciation" },
+    { name: /^GitHub$/i, value: applicant.githubUrl || "", label: "GitHub" },
     { name: /^Twitter$/i, value: "", label: "Twitter" },
-    // Portfolio (Affirm)
-    { name: /^Portfolio$/i, value: "https://theblackfemaleengineer.com", label: "Portfolio" },
-    // Other Links (Affirm)
+    { name: /^Portfolio$/i, value: applicant.websiteUrl || "", label: "Portfolio" },
     { name: /^Other Links$/i, value: "", label: "Other links" },
-    // Current Company (Affirm, etc.)
-    { name: /^Current Company$/i, value: "The Black Female Engineer", label: "Current Company text" },
-    // Management experience (Webflow, etc.)
-    { name: /years.*experience.*managing|managing.*engineering.*team/i, value: "2 years managing a small engineering team at The Black Female Engineer, leading full-stack development, AI/ML projects, and shipping production systems.", label: "Management experience" },
-    // Developer tooling / tools experience (Webflow)
-    { name: /developer.*tooling|what tools.*using/i, value: "I regularly use VS Code, GitHub, Docker, Playwright, Vercel, and CI/CD pipelines. For AI development I use Claude API, LangChain, and vector databases.", label: "Tooling experience" },
-    // "Accessible and inclusive interview experience" (GitLab)
+    { name: /^Current Company$/i, value: applicant.currentEmployer || "", label: "Current Company text" },
+    { name: /years.*experience.*managing|managing.*engineering.*team/i, value: applicant.yearsOfExperience ? `${applicant.yearsOfExperience} years of experience${applicant.currentEmployer ? ` including leadership at ${applicant.currentEmployer}` : ""}, building and shipping production software.` : "", label: "Management experience" },
+    { name: /developer.*tooling|what tools.*using/i, value: "I regularly use modern development tools including Git/GitHub, Docker, CI/CD pipelines, and cloud platforms for building and deploying production software.", label: "Tooling experience" },
     { name: /accessible.*inclusive|adjustments.*hiring/i, value: "No adjustments needed, thank you.", label: "Accessibility" },
-    // "Name you'd prefer us to use" (GitLab)
-    { name: /prefer.*use.*interview|name.*prefer/i, value: "Naya", label: "Preferred name interview" },
-    // LinkedIn profile / website / blog combined field (Cloudflare)
-    { name: /include.*LinkedIn.*profile|LinkedIn.*personal.*website/i, value: "https://linkedin.com/in/theblackfemaleengineer", label: "LinkedIn/Website combined" },
-    // GitHub or Website (ClickHouse)
-    { name: /GitHub.*Website|GitHub.*or.*Website/i, value: "https://github.com/nyaradzobere", label: "GitHub/Website" },
-    // "What do you use [Company] for?" (Discord)
-    { name: /what do you use.*for/i, value: "I use Discord for developer communities, open source collaboration, and staying connected with tech communities. I'm active in several AI/ML and engineering Discord servers.", label: "Product usage" },
-    // Technical experience descriptions (Reddit)
-    { name: /experience creating.*agents|agents.*enterprise/i, value: "Yes, I have experience building AI agents using both enterprise platforms (Anthropic Claude, OpenAI) and open source solutions. I've deployed production agent systems for automated job applications and RAG pipelines.", label: "Agent experience" },
-    { name: /MCP integration/i, value: "I recently deployed an MCP (Model Context Protocol) integration connecting Claude to Playwright for browser automation, enabling AI-driven form interaction and web scraping workflows.", label: "MCP experience" },
-    { name: /harness configuration.*IDE/i, value: "I have experience configuring development harnesses for VS Code including Claude Code extensions, custom tool configurations, and local development server integrations.", label: "Harness experience" },
+    { name: /prefer.*use.*interview|name.*prefer/i, value: prefName, label: "Preferred name interview" },
+    { name: /include.*LinkedIn.*profile|LinkedIn.*personal.*website/i, value: applicant.linkedinUrl || "", label: "LinkedIn/Website combined" },
+    { name: /GitHub.*Website|GitHub.*or.*Website/i, value: applicant.githubUrl || applicant.websiteUrl || "", label: "GitHub/Website" },
+    { name: /what do you use.*for/i, value: "I use the product for professional collaboration and staying connected with tech communities.", label: "Product usage" },
+    { name: /experience creating.*agents|agents.*enterprise/i, value: whyAnswer, label: "Agent experience" },
+    { name: /MCP integration/i, value: whyAnswer, label: "MCP experience" },
+    { name: /harness configuration.*IDE/i, value: whyAnswer, label: "Harness experience" },
   ];
 
   for (const field of additionalFields) {
@@ -1154,37 +1138,24 @@ async function askClaudeNextAction(
     .slice(-5)
     .join("\n");
 
-  // Build application answers section
-  let answersSection = "";
-  if (applicationAnswers && Object.keys(applicationAnswers).length > 0) {
-    const personal = applicationAnswers.personal as Record<string, string> | undefined;
-    const background = applicationAnswers.backgroundQuestions as Record<string, string> | undefined;
-    const education = applicationAnswers.education as Record<string, string> | undefined;
-    const common = applicationAnswers.commonQuestions as Record<string, Record<string, string>> | undefined;
-    const additional = applicationAnswers.additionalQuestions as Record<string, string> | undefined;
-
-    const roleKey = targetRole
-      ? Object.keys(common || {}).find((k) => k.toLowerCase().includes(targetRole.toLowerCase().split(",")[0].trim().split("/")[0].trim()))
-      : undefined;
-    const roleAnswers = roleKey && common ? common[roleKey] : undefined;
-
-    answersSection = `
+  // Build application answers section from applicant profile data
+  const answersSection = `
 APPLICATION ANSWERS:
-- LinkedIn: ${personal?.linkedin || ""}
-- Website: ${personal?.website || ""}
-- Pronouns: ${personal?.pronouns || "She/Her"}
-- Remote Preference: ${personal?.remotePreference || "Remote or Hybrid"}
-- Earliest Start Date: ${personal?.earliestStartDate || "Immediately"}
-- Salary: ${personal?.salaryRules || "Open to discussion"}
-- Years of Experience: ${personal?.yearsOfExperience || "5"}
-- School: ${education?.school || ""}
-- Degree: ${education?.degree || ""}
+- LinkedIn: ${applicant.linkedinUrl || ""}
+- Website: ${applicant.websiteUrl || ""}
+- GitHub: ${applicant.githubUrl || ""}
+- Current Employer: ${applicant.currentEmployer || ""}
+- Current Title: ${applicant.currentTitle || ""}
+- Years of Experience: ${applicant.yearsOfExperience || "5"}
+- School: ${applicant.school || ""}
+- Degree: ${applicant.degree || ""}
+- Preferred Name: ${applicant.preferredName || applicant.firstName}
+- Remote Preference: Remote or Hybrid
+- Earliest Start Date: Immediately
+- Salary: Open to discussion
 
-EEO: Gender=${background?.genderIdentity || "Female"}, Race=${background?.race || "Black or African American"}, Hispanic=${background?.hispanicOrLatino || "No"}, Veteran=${background?.veteranStatus || "No"}, Disability=${background?.disabilityStatus || "No"}
-
-${roleAnswers ? `ROLE ANSWERS:\n- Why this company: ${roleAnswers.whyThisCompany?.slice(0, 400) || ""}\n- Tell me about yourself: ${roleAnswers.tellMeAboutYourself?.slice(0, 400) || ""}` : ""}
-${additional ? `- What makes you unique: ${additional.whatMakesYouUnique?.slice(0, 200) || ""}` : ""}`;
-  }
+ROLE ANSWER (adapt to the specific company):
+${generateWhyAnswer(applicant)}`;
 
   const prompt = `You are an AI agent filling a job application form. The page is described as an accessibility tree (YAML format showing roles, names, states, and values).
 
@@ -1192,7 +1163,7 @@ APPLICANT:
 - Name: ${applicant.firstName} ${applicant.lastName}
 - Email: ${applicant.email}
 - Phone: ${applicant.phone}
-- Location: Denver, ${applicant.usState || "Colorado"}, US
+- Location: ${applicant.city || ""}${applicant.city && applicant.usState ? ", " : ""}${applicant.usState || ""}, US
 - Work authorized: ${applicant.workAuthorized ? "Yes" : "No"}
 - Needs sponsorship: ${applicant.needsSponsorship ? "Yes" : "No"}
 - Resume: Downloaded as PDF, use "upload" action

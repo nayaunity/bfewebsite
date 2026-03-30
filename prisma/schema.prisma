@@ -24,6 +24,16 @@ model User {
   needsSponsorship  Boolean?
   countryOfResidence  String?
   applicationEmail    String?          @unique
+  linkedinUrl         String?
+  githubUrl           String?
+  websiteUrl          String?
+  currentEmployer     String?
+  currentTitle        String?
+  school              String?
+  degree              String?
+  city                String?
+  preferredName       String?
+  yearsOfExperience   String?
   stripeCustomerId    String?          @unique
   subscriptionTier    String           @default("free")
   subscriptionStatus  String           @default("inactive")

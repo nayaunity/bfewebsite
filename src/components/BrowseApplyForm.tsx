@@ -42,6 +42,16 @@ interface Discovery {
   errorMessage: string | null;
 }
 
+function friendlyError(error: string): string {
+  if (error.includes("Stuck")) return "Form didn't respond. We'll retry next time.";
+  if (error.includes("max steps")) return "Form was too complex to complete automatically.";
+  if (error.includes("Login") || error.includes("authentication")) return "This job requires a login we can't create.";
+  if (error.includes("resume")) return "Couldn't access your resume. Please re-upload.";
+  if (error.includes("Verification code not received") || error.includes("Verification code")) return "Email verification timed out.";
+  if (error.includes("iframe not found")) return "Could not find the application form.";
+  return "Application couldn't be completed.";
+}
+
 const ROLE_OPTIONS = [
   {
     label: "AI Engineer / Software Engineer",
@@ -410,8 +420,8 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
                       </span>
                     </div>
                     {d.errorMessage && (
-                      <p className="text-[10px] text-red-500 mt-0.5 truncate">
-                        {d.errorMessage}
+                      <p className="text-[10px] text-red-500 mt-0.5 truncate" title={d.errorMessage}>
+                        {friendlyError(d.errorMessage)}
                       </p>
                     )}
                   </div>
