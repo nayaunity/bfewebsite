@@ -13,6 +13,8 @@ export async function PATCH(request: NextRequest) {
     const {
       firstName, lastName, phone, autoApplyEnabled,
       usState, workAuthorized, needsSponsorship, countryOfResidence,
+      linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle,
+      school, degree, city, preferredName, yearsOfExperience,
     } = body;
 
     const data: Record<string, unknown> = {};
@@ -73,6 +75,29 @@ export async function PATCH(request: NextRequest) {
       data.countryOfResidence = countryOfResidence?.trim() || null;
     }
 
+    // Optional string profile fields (max 500 chars for URLs, 200 for text)
+    const optionalStringFields: Array<{ key: string; value: unknown; maxLen: number }> = [
+      { key: "linkedinUrl", value: linkedinUrl, maxLen: 500 },
+      { key: "githubUrl", value: githubUrl, maxLen: 500 },
+      { key: "websiteUrl", value: websiteUrl, maxLen: 500 },
+      { key: "currentEmployer", value: currentEmployer, maxLen: 200 },
+      { key: "currentTitle", value: currentTitle, maxLen: 200 },
+      { key: "school", value: school, maxLen: 200 },
+      { key: "degree", value: degree, maxLen: 200 },
+      { key: "city", value: city, maxLen: 100 },
+      { key: "preferredName", value: preferredName, maxLen: 100 },
+      { key: "yearsOfExperience", value: yearsOfExperience, maxLen: 10 },
+    ];
+
+    for (const field of optionalStringFields) {
+      if (field.value !== undefined) {
+        if (field.value !== null && (typeof field.value !== "string" || field.value.length > field.maxLen)) {
+          return NextResponse.json({ error: `Invalid ${field.key}` }, { status: 400 });
+        }
+        data[field.key] = typeof field.value === "string" ? field.value.trim() || null : null;
+      }
+    }
+
     if (Object.keys(data).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
     }
@@ -89,6 +114,16 @@ export async function PATCH(request: NextRequest) {
         workAuthorized: true,
         needsSponsorship: true,
         countryOfResidence: true,
+        linkedinUrl: true,
+        githubUrl: true,
+        websiteUrl: true,
+        currentEmployer: true,
+        currentTitle: true,
+        school: true,
+        degree: true,
+        city: true,
+        preferredName: true,
+        yearsOfExperience: true,
       },
     });
 

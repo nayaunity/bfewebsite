@@ -26,6 +26,16 @@ interface AutoApplyProfileProps {
     workAuthorized: boolean | null;
     needsSponsorship: boolean | null;
     countryOfResidence: string | null;
+    linkedinUrl: string | null;
+    githubUrl: string | null;
+    websiteUrl: string | null;
+    currentEmployer: string | null;
+    currentTitle: string | null;
+    school: string | null;
+    degree: string | null;
+    city: string | null;
+    preferredName: string | null;
+    yearsOfExperience: string | null;
   };
 }
 
@@ -43,6 +53,16 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
   const [countryOfResidence, setCountryOfResidence] = useState(
     initialData.countryOfResidence || ""
   );
+  const [linkedinUrl, setLinkedinUrl] = useState(initialData.linkedinUrl || "");
+  const [githubUrl, setGithubUrl] = useState(initialData.githubUrl || "");
+  const [websiteUrl, setWebsiteUrl] = useState(initialData.websiteUrl || "");
+  const [currentEmployer, setCurrentEmployer] = useState(initialData.currentEmployer || "");
+  const [currentTitle, setCurrentTitle] = useState(initialData.currentTitle || "");
+  const [school, setSchool] = useState(initialData.school || "");
+  const [degree, setDegree] = useState(initialData.degree || "");
+  const [city, setCity] = useState(initialData.city || "");
+  const [preferredName, setPreferredName] = useState(initialData.preferredName || "");
+  const [yearsOfExperience, setYearsOfExperience] = useState(initialData.yearsOfExperience || "");
   const [autoApplyEnabled, setAutoApplyEnabled] = useState(
     initialData.autoApplyEnabled
   );
@@ -78,6 +98,16 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
           workAuthorized,
           needsSponsorship,
           countryOfResidence: countryOfResidence || null,
+          linkedinUrl: linkedinUrl || null,
+          githubUrl: githubUrl || null,
+          websiteUrl: websiteUrl || null,
+          currentEmployer: currentEmployer || null,
+          currentTitle: currentTitle || null,
+          school: school || null,
+          degree: degree || null,
+          city: city || null,
+          preferredName: preferredName || null,
+          yearsOfExperience: yearsOfExperience || null,
         }),
       });
 
@@ -297,6 +327,148 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
                   {val ? "Yes" : "No"}
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Professional details */}
+        <div className="pt-2 border-t border-[var(--card-border)]">
+          <p className="text-xs font-medium text-[var(--foreground)] mb-3">
+            Professional Details
+          </p>
+
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Current Employer
+              </label>
+              <input
+                type="text"
+                value={currentEmployer}
+                onChange={(e) => setCurrentEmployer(e.target.value)}
+                placeholder="Acme Corp"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Current Title
+              </label>
+              <input
+                type="text"
+                value={currentTitle}
+                onChange={(e) => setCurrentTitle(e.target.value)}
+                placeholder="Software Engineer"
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                City
+              </label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Denver"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Years of Experience
+              </label>
+              <input
+                type="text"
+                value={yearsOfExperience}
+                onChange={(e) => setYearsOfExperience(e.target.value)}
+                placeholder="5"
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Preferred Name
+              </label>
+              <input
+                type="text"
+                value={preferredName}
+                onChange={(e) => setPreferredName(e.target.value)}
+                placeholder="Optional nickname"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                LinkedIn URL
+              </label>
+              <input
+                type="url"
+                value={linkedinUrl}
+                onChange={(e) => setLinkedinUrl(e.target.value)}
+                placeholder="https://linkedin.com/in/..."
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                GitHub URL
+              </label>
+              <input
+                type="url"
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+                placeholder="https://github.com/..."
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Website / Portfolio
+              </label>
+              <input
+                type="url"
+                value={websiteUrl}
+                onChange={(e) => setWebsiteUrl(e.target.value)}
+                placeholder="https://..."
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                School
+              </label>
+              <input
+                type="text"
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+                placeholder="University of..."
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[var(--gray-600)] mb-1">
+                Degree
+              </label>
+              <input
+                type="text"
+                value={degree}
+                onChange={(e) => setDegree(e.target.value)}
+                placeholder="B.S. Computer Science"
+                className={inputClass}
+              />
             </div>
           </div>
         </div>

@@ -82,9 +82,16 @@ export async function discoverJobs(
       return { jobs: [], log };
     }
 
-    // Send to Claude for intelligent matching
+    // Send to Claude for intelligent matching — batch if too many links
     log.steps.push(`Sending ${pageLinks.length} links to Claude for matching...`);
-    const matched = await matchJobsWithClaude(pageLinks, roles, log);
+    const BATCH_SIZE = 100;
+    const matched: DiscoveredJob[] = [];
+    for (let i = 0; i < pageLinks.length; i += BATCH_SIZE) {
+      const batch = pageLinks.slice(i, i + BATCH_SIZE);
+      if (i > 0) log.steps.push(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}...`);
+      const batchMatched = await matchJobsWithClaude(batch, roles, log);
+      matched.push(...batchMatched);
+    }
     allJobs.push(...matched);
 
     log.steps.push(`Claude identified ${matched.length} matching jobs`);
@@ -163,6 +170,8 @@ Rules:
 - Match related roles: "AI Engineer" should match "Machine Learning Engineer", "ML Infrastructure Engineer", etc.
 - Extract a CLEAN job title (just the role name, no location/metadata)
 - Include the exact URL from the link
+- Return at most 15 of the MOST relevant matches. Prefer exact role matches over loose matches.
+- Keep JSON compact: short titles, no extra whitespace
 
 Links found on page:
 ${linksText}
@@ -175,7 +184,7 @@ If no matching jobs found, return: []`;
   try {
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2048,
+      max_tokens: 4096,
       messages: [{ role: "user", content: prompt }],
     });
 

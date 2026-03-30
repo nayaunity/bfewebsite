@@ -9,6 +9,10 @@ const DELAY_BETWEEN_COMPANIES_MS = 10_000;
 const DELAY_BETWEEN_JOBS_MS = 5_000;
 const COMPANY_TIMEOUT_MS = 120_000;
 
+function log(sessionId: string, level: "info" | "warn" | "error", msg: string, meta?: Record<string, unknown>) {
+  console.log(JSON.stringify({ ts: new Date().toISOString(), sessionId, level, msg, ...meta }));
+}
+
 interface BrowseSessionRow {
   id: string;
   userId: string;
@@ -22,6 +26,7 @@ interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
+  applicationEmail: string | null;
   phone: string;
   usState: string | null;
   workAuthorized: number | null;
@@ -54,11 +59,11 @@ export async function processNextBrowseSession(): Promise<boolean> {
   }
 
   const session = result.rows[0] as unknown as BrowseSessionRow;
-  console.log(`[Browse] Processing session ${session.id} for role: ${session.targetRole}`);
+  log(session.id, "info", `Processing session for role: ${session.targetRole}`, { userId: session.userId });
 
   // Fetch user profile
   const userResult = await db.execute({
-    sql: `SELECT firstName, lastName, email, phone, usState, workAuthorized, needsSponsorship, countryOfResidence, monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
+    sql: `SELECT firstName, lastName, email, applicationEmail, phone, usState, workAuthorized, needsSponsorship, countryOfResidence, monthlyAppCount, subscriptionTier, linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle, school, degree, city, preferredName, yearsOfExperience FROM User WHERE id = ?`,
     args: [session.userId],
   });
 
@@ -156,15 +161,27 @@ export async function processNextBrowseSession(): Promise<boolean> {
           {
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.applicationEmail || user.email,
             phone: user.phone,
             usState: user.usState || undefined,
             workAuthorized: user.workAuthorized === 1,
             needsSponsorship: user.needsSponsorship === 1,
             countryOfResidence: user.countryOfResidence || undefined,
+            linkedinUrl: (user as any).linkedinUrl || undefined,
+            githubUrl: (user as any).githubUrl || undefined,
+            websiteUrl: (user as any).websiteUrl || undefined,
+            currentEmployer: (user as any).currentEmployer || undefined,
+            currentTitle: (user as any).currentTitle || undefined,
+            school: (user as any).school || undefined,
+            degree: (user as any).degree || undefined,
+            city: (user as any).city || undefined,
+            preferredName: (user as any).preferredName || undefined,
+            yearsOfExperience: (user as any).yearsOfExperience || undefined,
+            targetCompany: companyName,
           },
           session.resumeUrl,
-          session.resumeName
+          session.resumeName,
+          session.targetRole
         );
 
         // Log the apply steps if available
