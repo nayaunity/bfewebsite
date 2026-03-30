@@ -114,18 +114,22 @@ export async function discoverJobs(
       return true;
     });
 
-    // Filter to only Greenhouse job URLs (we only support Greenhouse forms)
-    const greenhouse = deduped.filter((j) => {
+    // Filter to job listing URLs (Greenhouse board links OR company career pages with job paths)
+    const jobUrls = deduped.filter((j) => {
       const url = j.applyUrl.toLowerCase();
-      return url.includes("greenhouse.io/") && url.includes("/jobs/");
+      // Always allow direct Greenhouse job URLs
+      if (url.includes("greenhouse.io/") && url.includes("/jobs/")) return true;
+      // Allow company-hosted job pages (contain /jobs/, /positions/, /listing/, /careers/ + ID pattern)
+      if (/\/(jobs|positions|listing|careers)\/.+/.test(url) && !url.includes("/search") && !url.includes("/results")) return true;
+      return false;
     });
 
-    if (greenhouse.length < deduped.length) {
-      log.steps.push(`Filtered ${deduped.length - greenhouse.length} non-Greenhouse URLs`);
+    if (jobUrls.length < deduped.length) {
+      log.steps.push(`Filtered ${deduped.length - jobUrls.length} non-job URLs`);
     }
 
-    log.steps.push(`After dedup: ${greenhouse.length} unique jobs`);
-    return { jobs: greenhouse, log };
+    log.steps.push(`After dedup: ${jobUrls.length} unique jobs`);
+    return { jobs: jobUrls, log };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log.steps.push(`ERROR: ${msg}`);
