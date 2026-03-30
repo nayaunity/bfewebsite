@@ -656,12 +656,19 @@ async function greenhouseDeterministicFill(
     steps.push(`Education section failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  // Phase 4c: LinkedIn URL
+  // Phase 4c: LinkedIn URL and Website/Portfolio
   try {
     const linkedinField = frame.getByRole("textbox", { name: /LinkedIn/i }).first();
     if (await linkedinField.isVisible({ timeout: 2000 }).catch(() => false)) {
       await linkedinField.fill("https://linkedin.com/in/theblackfemaleengineer");
       steps.push("Filled LinkedIn URL");
+    }
+  } catch {}
+  try {
+    const websiteField = frame.getByRole("textbox", { name: /website|portfolio|github/i }).first();
+    if (await websiteField.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await websiteField.fill("https://theblackfemaleengineer.com");
+      steps.push("Filled website/portfolio");
     }
   } catch {}
 
@@ -671,12 +678,18 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /remote/i, /Yes.*remote/i, steps);
   await selectStaticDropdownSafe(frame, /WhatsApp/i, "No", steps);
 
-  // Common fields (both Stripe and Coinbase)
+  // Pronouns (Figma-style)
+  await selectStaticDropdownSafe(frame, /pronouns/i, /She/i, steps);
+
+  // Common fields (Stripe, Coinbase, Figma, etc.)
   await selectStaticDropdownSafe(frame, /authorized to work/i, "Yes", steps);
   await selectStaticDropdownSafe(frame, /legally authorized/i, "Yes", steps);
   await selectStaticDropdownSafe(frame, /require.*sponsor/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /employed by/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /now or in the future require/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /visa.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, "No", steps);
   await selectStaticDropdownSafe(frame, /previously.*employed/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /ever worked for/i, "No", steps);
 
   // Coinbase-specific fields
   await selectStaticDropdownSafe(frame, /at least 18/i, "Yes", steps);
@@ -699,22 +712,25 @@ async function greenhouseDeterministicFill(
   } catch {}
 
   // Phase 7: Additional text fields
+  const whyAnswer = roleAnswers?.whyThisCompany?.slice(0, 500)
+    || "I'm drawn to this company because I've spent the last two years building production AI systems and shipping full-stack products as a CTO. I want to bring that builder energy to a team where I can go deeper on impactful technology at scale.";
+
   const additionalFields: Array<{ name: string | RegExp; value: string; label: string }> = [
     { name: /current or previous employer/i, value: "The Black Female Engineer (Self-employed)", label: "Employer" },
     { name: /current or previous job title/i, value: "CTO / AI Engineer", label: "Job Title" },
     { name: /most recent school/i, value: education?.school || "University of Colorado Boulder", label: "School" },
     { name: /most recent degree/i, value: education?.degree || "B.S. Finance & Accounting", label: "Degree" },
+    // City/state — multiple label patterns across companies
     { name: /city and state/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City/State" },
+    { name: /what city/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City" },
+    { name: /where are you located/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Location" },
+    { name: /from where.*intend to work/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Intend to work from" },
+    // Why this company — multiple label patterns
+    { name: /why.*interested/i, value: whyAnswer, label: "Why interested" },
+    { name: /why.*want to join/i, value: whyAnswer, label: "Why join" },
+    { name: /why.*apply/i, value: whyAnswer, label: "Why apply" },
+    { name: /what excites you/i, value: whyAnswer, label: "What excites you" },
   ];
-
-  // Add "Why are you interested" with a tailored answer
-  if (roleAnswers?.whyThisCompany) {
-    additionalFields.push({
-      name: /why.*interested/i,
-      value: roleAnswers.whyThisCompany.slice(0, 500),
-      label: "Why interested",
-    });
-  }
 
   for (const field of additionalFields) {
     try {
