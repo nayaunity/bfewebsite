@@ -114,8 +114,18 @@ export async function discoverJobs(
       return true;
     });
 
-    log.steps.push(`After dedup: ${deduped.length} unique jobs`);
-    return { jobs: deduped, log };
+    // Filter to only Greenhouse job URLs (we only support Greenhouse forms)
+    const greenhouse = deduped.filter((j) => {
+      const url = j.applyUrl.toLowerCase();
+      return url.includes("greenhouse.io/") && url.includes("/jobs/");
+    });
+
+    if (greenhouse.length < deduped.length) {
+      log.steps.push(`Filtered ${deduped.length - greenhouse.length} non-Greenhouse URLs`);
+    }
+
+    log.steps.push(`After dedup: ${greenhouse.length} unique jobs`);
+    return { jobs: greenhouse, log };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log.steps.push(`ERROR: ${msg}`);
@@ -166,6 +176,7 @@ async function matchJobsWithClaude(
 
 Rules:
 - Only include actual job postings (not navigation, footer, language, or category links)
+- STRONGLY prefer links with URLs containing "greenhouse.io" — these are the ones we can apply to
 - Match broadly: "Software Engineer" should match "Senior Software Engineer", "Staff Engineer", "ML Engineer", etc.
 - Match related roles: "AI Engineer" should match "Machine Learning Engineer", "ML Infrastructure Engineer", etc.
 - Extract a CLEAN job title (just the role name, no location/metadata)
