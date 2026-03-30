@@ -198,11 +198,11 @@ export interface ApplyResult {
 // --- New role-based action interface (replaces CSS-selector-based AgentAction) ---
 
 interface RoleAction {
-  action: "click" | "fill" | "type_slowly" | "upload" | "check" | "done" | "error";
+  action: "click" | "fill" | "type_slowly" | "upload" | "check" | "select_dropdown" | "done" | "error";
   role?: string;
-  name?: string;
+  name?: string;       // For select_dropdown: the combobox accessible name
   exact?: boolean;
-  value?: string;
+  value?: string;       // For select_dropdown: the option to select
   reason: string;
   message?: string;
 }
@@ -900,21 +900,21 @@ INTERACTION PATTERNS (use these EXACTLY):
 2. Autocomplete combobox (NO "Toggle flyout" button nearby):
    {"action": "type_slowly", "role": "combobox", "name": "NAME", "value": "SEARCH TEXT"}
    Then on next step click the option: {"action": "click", "role": "option", "name": "OPTION TEXT", "exact": true}
-3. Static dropdown (HAS "Toggle flyout" button nearby):
-   First: {"action": "click", "role": "button", "name": "Toggle flyout"}
-   Then: {"action": "click", "role": "option", "name": "OPTION TEXT", "exact": true}
+3. Static dropdown (HAS "Toggle flyout" button nearby — DO NOT click Toggle flyout directly):
+   {"action": "select_dropdown", "name": "COMBOBOX ACCESSIBLE NAME", "value": "OPTION TEXT"}
+   This handles opening the dropdown AND selecting the option in one step.
 4. Checkbox: {"action": "check", "role": "checkbox", "name": "NAME"}
-5. File upload: First click Attach button, then: {"action": "upload"}
+5. File upload: {"action": "click", "role": "button", "name": "Attach"} then {"action": "upload"}
 6. Submit: {"action": "click", "role": "button", "name": "Submit application"}
 7. When you see "Thank you" or "application received": {"action": "done", "reason": "submitted"}
 8. If login/CAPTCHA required: {"action": "error", "message": "Login required"}
 
-RULES:
-- Target elements by ARIA role + accessible name from the tree. Use "exact": true when needed.
+CRITICAL RULES:
+- NEVER click a "Toggle flyout" button directly. ALWAYS use select_dropdown instead.
+- For select_dropdown "name": Copy the EXACT combobox accessible name from the tree. Example: if the tree shows 'combobox "Have you ever worked for Robinhood?"', set name to "Have you ever worked for Robinhood?"
+- For select_dropdown "value": Use a SHORT keyword that matches the option text (e.g., "No", "Yes", "confirm", "acknowledge"). Do NOT guess the full option text.
 - Fill ONE field per step.
-- Skip fields that already show a value in the tree.
-- For "Toggle flyout" buttons: they are ALWAYS adjacent to the combobox they control. Identify which field you're targeting in your "reason".
-- Do NOT type into static dropdowns (comboboxes with Toggle flyout). Use the toggle+click pattern.
+- Skip fields that already show a value (not "Select...").
 - For free-text questions, use the ROLE ANSWERS above, adapted to the specific company.
 
 PREVIOUS STEPS:
@@ -926,7 +926,7 @@ CURRENT PAGE (step ${stepNum + 1}):
 ${pageSnapshot}
 
 Respond with ONLY a JSON object:
-{"action": "click|fill|type_slowly|upload|check|done|error", "role": "textbox|combobox|button|option|checkbox|link|heading", "name": "accessible name", "exact": true, "value": "for fill/type_slowly", "reason": "brief why", "message": "for error only"}`;
+{"action": "click|fill|type_slowly|upload|check|select_dropdown|done|error", "role": "textbox|combobox|button|option|checkbox", "name": "accessible name", "exact": true, "value": "for fill/type_slowly/select_dropdown", "reason": "brief why", "message": "for error only"}`;
 
   try {
     const response = await anthropic.messages.create({
@@ -991,6 +991,20 @@ async function executeRoleAction(page: Page, action: RoleAction, resumePath: str
     case "check":
       if (action.name) {
         await checkByRole(page, action.name, action.exact);
+      }
+      break;
+    case "select_dropdown":
+      if (action.name && action.value) {
+        // Use selectStaticDropdown which correctly finds the Toggle flyout
+        // button adjacent to the target combobox.
+        // Build forgiving regex: split name into keywords, match any combobox
+        // whose accessible name contains all keywords (case-insensitive).
+        const keywords = action.name!.split(/\s+/).filter(w => w.length > 2);
+        const namePattern = new RegExp(keywords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".*"), "i");
+        const valuePattern = new RegExp(action.value!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+        await withFrameFallback(page, async (frame) => {
+          await selectStaticDropdown(frame, namePattern, valuePattern);
+        });
       }
       break;
     case "upload":
