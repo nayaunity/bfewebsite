@@ -237,12 +237,18 @@ async function withFrameFallback(
 }
 
 function getGreenhouseFrame(page: Page): Frame | null {
+  // If we're directly on greenhouse.io, the form is on the main frame
+  const mainUrl = page.url();
+  if (mainUrl.includes("greenhouse.io") || mainUrl.includes("boards.greenhouse")) {
+    return page.mainFrame();
+  }
+  // Otherwise, look for Greenhouse in iframes
   for (const frame of page.frames()) {
     if (frame === page.mainFrame()) continue;
     const url = frame.url();
     if (url.includes("greenhouse.io") || url.includes("boards.greenhouse")) return frame;
   }
-  // Fallback: look for any non-blank iframe (Greenhouse may be embedded with a different URL)
+  // Fallback: look for any non-blank iframe
   for (const frame of page.frames()) {
     if (frame === page.mainFrame()) continue;
     if (frame.url() !== "about:blank" && frame.url() !== "") return frame;
@@ -928,8 +934,11 @@ export async function applyToJob(
       return { success: false, error: "Login/authentication required", steps };
     }
 
-    // Find and follow ATS apply link
-    const atsApplyUrl = await findATSApplyLink(page);
+    // Find and follow ATS apply link (skip if already on an ATS page)
+    const currentUrl = page.url();
+    const alreadyOnATS = ["greenhouse.io", "lever.co", "ashbyhq.com", "myworkdayjobs.com", "smartrecruiters.com"]
+      .some(ats => currentUrl.includes(ats));
+    const atsApplyUrl = alreadyOnATS ? null : await findATSApplyLink(page);
     if (atsApplyUrl) {
       steps.push(`Found ATS apply link: ${atsApplyUrl}`);
       await page.goto(atsApplyUrl, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {
