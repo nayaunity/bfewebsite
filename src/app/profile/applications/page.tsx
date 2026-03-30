@@ -15,7 +15,7 @@ export default async function ApplicationsPage() {
     redirect("/auth/signin?callbackUrl=/profile/applications");
   }
 
-  const [applications, stats] = await Promise.all([
+  const [applications, stats, browseDiscoveries] = await Promise.all([
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
       orderBy: { createdAt: "desc" },
@@ -26,11 +26,43 @@ export default async function ApplicationsPage() {
       where: { userId: session.user.id },
       _count: true,
     }),
+    prisma.browseDiscovery.findMany({
+      where: {
+        session: { userId: session.user.id },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      include: {
+        session: { select: { targetRole: true } },
+      },
+    }),
   ]);
 
-  const statusCounts = stats.reduce(
-    (acc, s) => {
-      acc[s.status] = s._count;
+  // Merge browse discoveries into the applications view
+  // Map discovery statuses to application-compatible statuses
+  const discoveryAsApplications = browseDiscoveries.map((d) => ({
+    id: d.id,
+    company: d.company,
+    jobTitle: d.jobTitle,
+    applyUrl: d.applyUrl,
+    status: d.status === "applied" ? "submitted" : d.status === "skipped" ? "skipped" : d.status === "failed" ? "failed" : "pending",
+    errorMessage: d.errorMessage,
+    submittedAt: d.status === "applied" ? d.createdAt : null,
+    createdAt: d.createdAt,
+    source: "browse" as const,
+    targetRole: d.session?.targetRole || null,
+  }));
+
+  // Combine both sources, dedup by applyUrl, sort by date
+  const allApplications = [
+    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null })),
+    ...discoveryAsApplications,
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // Count statuses across both sources
+  const statusCounts = allApplications.reduce(
+    (acc, a) => {
+      acc[a.status] = (acc[a.status] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>
@@ -69,9 +101,9 @@ export default async function ApplicationsPage() {
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4 text-center">
             <p className="text-2xl font-bold text-green-600">
-              {statusCounts.submitted || 0}
+              {(statusCounts.submitted || 0) + (statusCounts.applied || 0)}
             </p>
-            <p className="text-xs text-[var(--gray-600)]">Submitted</p>
+            <p className="text-xs text-[var(--gray-600)]">Applied</p>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4 text-center">
             <p className="text-2xl font-bold text-yellow-600">
@@ -87,7 +119,7 @@ export default async function ApplicationsPage() {
           </div>
         </div>
 
-        <ApplicationsDashboard initialApplications={applications} companies={targetCompanies} />
+        <ApplicationsDashboard initialApplications={allApplications} companies={targetCompanies} />
       </div>
     </main>
   );
