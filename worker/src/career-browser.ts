@@ -114,18 +114,36 @@ export async function discoverJobs(
       return true;
     });
 
+    // Convert company-hosted URLs to direct Greenhouse URLs where possible
+    // Companies like Coinbase host listings on their site but the forms work
+    // better when accessed directly via greenhouse.io
+    const COMPANY_TO_GREENHOUSE: Record<string, string> = {
+      "coinbase.com/careers/positions/": "https://job-boards.greenhouse.io/coinbase/jobs/",
+      "stripe.com/jobs/listing/": "https://job-boards.greenhouse.io/stripe/jobs/",
+    };
+
+    const converted = deduped.map((j) => {
+      for (const [pattern, replacement] of Object.entries(COMPANY_TO_GREENHOUSE)) {
+        if (j.applyUrl.includes(pattern)) {
+          const jobId = j.applyUrl.split("/").pop()?.split("?")[0];
+          if (jobId && /^\d+$/.test(jobId)) {
+            return { ...j, applyUrl: replacement + jobId };
+          }
+        }
+      }
+      return j;
+    });
+
     // Filter to job listing URLs (Greenhouse board links OR company career pages with job paths)
-    const jobUrls = deduped.filter((j) => {
+    const jobUrls = converted.filter((j) => {
       const url = j.applyUrl.toLowerCase();
-      // Always allow direct Greenhouse job URLs
       if (url.includes("greenhouse.io/") && url.includes("/jobs/")) return true;
-      // Allow company-hosted job pages (contain /jobs/, /positions/, /listing/, /careers/ + ID pattern)
       if (/\/(jobs|positions|listing|careers)\/.+/.test(url) && !url.includes("/search") && !url.includes("/results")) return true;
       return false;
     });
 
-    if (jobUrls.length < deduped.length) {
-      log.steps.push(`Filtered ${deduped.length - jobUrls.length} non-job URLs`);
+    if (jobUrls.length < converted.length) {
+      log.steps.push(`Filtered ${converted.length - jobUrls.length} non-job URLs`);
     }
 
     log.steps.push(`After dedup: ${jobUrls.length} unique jobs`);
