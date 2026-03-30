@@ -289,7 +289,19 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           <div>
             <div className="flex justify-between text-sm mb-1">
               <span className="text-[var(--foreground)] font-medium">
-                {isRunning ? "Browsing career pages..." : sessionData.status === "completed" ? "Complete" : "Failed"}
+                {isRunning ? (
+                  <span className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef562a] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef562a]"></span>
+                    </span>
+                    {sessionData.companiesDone === 0 && sessionData.jobsFound === 0
+                      ? "Connecting to career pages..."
+                      : sessionData.jobsFound > 0 && sessionData.jobsApplied === 0 && sessionData.jobsFailed === 0
+                        ? `Found ${sessionData.jobsFound} jobs, submitting applications...`
+                        : "Applying to jobs..."}
+                  </span>
+                ) : sessionData.status === "completed" ? "Complete" : "Failed"}
               </span>
               <span className="text-[var(--gray-600)]">
                 {sessionData.companiesDone}/{sessionData.totalCompanies}{" "}
@@ -317,6 +329,16 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
               />
             </div>
           </div>
+
+          {/* Waiting message */}
+          {isRunning && sessionData.companiesDone === 0 && sessionData.jobsFound === 0 && (
+            <div className="px-3 py-2 bg-[var(--gray-50)] rounded-lg border border-[var(--card-border)]">
+              <p className="text-xs text-[var(--gray-600)]">
+                Our system is browsing career pages and discovering matching jobs. This typically takes 1-3 minutes per company.
+                The page updates automatically — no need to refresh.
+              </p>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3">
