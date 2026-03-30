@@ -117,17 +117,19 @@ export async function discoverJobs(
     // Convert company-hosted URLs to direct Greenhouse URLs where possible
     // Companies like Coinbase host listings on their site but the forms work
     // better when accessed directly via greenhouse.io
-    const COMPANY_TO_GREENHOUSE: Record<string, string> = {
-      "coinbase.com/careers/positions/": "https://job-boards.greenhouse.io/coinbase/jobs/",
-      "stripe.com/jobs/listing/": "https://job-boards.greenhouse.io/stripe/jobs/",
+    // Convert company-hosted URLs to Greenhouse embed URLs
+    // Some companies (Coinbase) redirect board URLs back to their site,
+    // but the embed format always works: boards.greenhouse.io/embed/job_app?for={company}&token={jobId}
+    const COMPANY_TO_GH_SLUG: Record<string, string> = {
+      "coinbase.com/careers/positions/": "coinbase",
     };
 
     const converted = deduped.map((j) => {
-      for (const [pattern, replacement] of Object.entries(COMPANY_TO_GREENHOUSE)) {
+      for (const [pattern, ghSlug] of Object.entries(COMPANY_TO_GH_SLUG)) {
         if (j.applyUrl.includes(pattern)) {
           const jobId = j.applyUrl.split("/").pop()?.split("?")[0];
           if (jobId && /^\d+$/.test(jobId)) {
-            return { ...j, applyUrl: replacement + jobId };
+            return { ...j, applyUrl: `https://job-boards.greenhouse.io/embed/job_app?for=${ghSlug}&token=${jobId}` };
           }
         }
       }
