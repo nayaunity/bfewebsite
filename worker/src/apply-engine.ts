@@ -321,6 +321,10 @@ async function selectStaticDropdown(
   comboboxNamePattern: string | RegExp,
   optionName: string | RegExp
 ): Promise<void> {
+  // Close any previously open flyouts first (prevents intercept issues)
+  await frame.page().keyboard.press("Escape").catch(() => {});
+  await frame.waitForTimeout(300);
+
   // Find the combobox, then find the NEXT Toggle flyout button in document order.
   // This avoids the ancestor-based approach which often finds the wrong toggle
   // (e.g., phone country toggle instead of start date toggle).
@@ -331,7 +335,14 @@ async function selectStaticDropdown(
   await frame.waitForTimeout(1000);
 
   const useExact = typeof optionName === "string" && optionName.length <= 3;
-  await frame.getByRole("option", { name: optionName, exact: useExact }).first().click({ timeout: 5000 });
+  try {
+    await frame.getByRole("option", { name: optionName, exact: useExact }).first().click({ timeout: 5000 });
+  } catch {
+    // Close the flyout if option wasn't found to prevent blocking other dropdowns
+    await frame.page().keyboard.press("Escape").catch(() => {});
+    await frame.waitForTimeout(300);
+    throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}"`);
+  }
   await frame.waitForTimeout(300);
 }
 
@@ -359,12 +370,19 @@ async function selectStaticDropdownSafe(
 // ============================================================================
 
 async function checkThankYou(frame: Frame, page: Page): Promise<boolean> {
-  const frameCheck = await frame.getByText(/thank you/i).first()
-    .isVisible({ timeout: 5000 }).catch(() => false);
-  if (frameCheck) return true;
-  const mainCheck = await page.getByText(/thank you for applying/i).first()
-    .isVisible({ timeout: 3000 }).catch(() => false);
-  return mainCheck;
+  // Check for various confirmation text patterns across frame and main page
+  const patterns = [/thank you/i, /thanks for applying/i, /application.*received/i, /application.*submitted/i, /successfully.*submitted/i, /application complete/i, /we received your/i, /apply.*again/i, /your information has been/i];
+  for (const pattern of patterns) {
+    const frameCheck = await frame.getByText(pattern).first()
+      .isVisible({ timeout: 2000 }).catch(() => false);
+    if (frameCheck) return true;
+  }
+  for (const pattern of patterns) {
+    const mainCheck = await page.getByText(pattern).first()
+      .isVisible({ timeout: 1000 }).catch(() => false);
+    if (mainCheck) return true;
+  }
+  return false;
 }
 
 async function handleVerificationCode(
@@ -630,20 +648,26 @@ async function greenhouseDeterministicFill(
     steps.push(`Employment section failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  // Phase 4b: Education section (Coinbase-style — School/Degree/Discipline as comboboxes)
+  // Phase 4b: Education section (School/Degree/Discipline as comboboxes)
   try {
     const schoolCombobox = frame.getByRole("combobox", { name: /^School$/i }).first();
     if (await schoolCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
-      // School is an autocomplete combobox — type slowly
+      // School is a combobox — try autocomplete first (type slowly to filter)
       await schoolCombobox.clear();
       await schoolCombobox.pressSequentially("University of Colorado", { delay: 80 });
       await frame.waitForTimeout(1500);
       const schoolOption = frame.getByRole("option", { name: /Colorado/i }).first();
       if (await schoolOption.isVisible({ timeout: 3000 }).catch(() => false)) {
         await schoolOption.click({ timeout: 5000 });
-        steps.push("Selected school");
+        steps.push("Selected school (autocomplete)");
       } else {
-        steps.push("School options did not appear");
+        // Fallback: try as static dropdown (DoorDash pattern)
+        try {
+          await selectStaticDropdown(frame, /^School$/i, /Colorado/i);
+          steps.push("Selected school (static dropdown)");
+        } catch {
+          steps.push("School options did not appear");
+        }
       }
 
       // Degree dropdown
@@ -651,6 +675,15 @@ async function greenhouseDeterministicFill(
 
       // Discipline dropdown
       await selectStaticDropdownSafe(frame, /Discipline/i, /Business/i, steps);
+
+      // End date year (some forms have this)
+      try {
+        const endYear = frame.getByRole("textbox", { name: /End date year/i }).first();
+        if (await endYear.isVisible({ timeout: 1000 }).catch(() => false)) {
+          await endYear.fill("2017");
+          steps.push("Filled education: End year");
+        }
+      } catch {}
     }
   } catch (e) {
     steps.push(`Education section failed: ${e instanceof Error ? e.message : String(e)}`);
@@ -674,12 +707,12 @@ async function greenhouseDeterministicFill(
 
   // Phase 5: Static dropdowns — try all common patterns across different Greenhouse forms
   // Stripe-style fields
-  await selectStaticDropdownSafe(frame, /country.*reside/i, "US", steps);
+  await selectStaticDropdownSafe(frame, /country.*reside/i, /^US$|United States/i, steps);
   await selectStaticDropdownSafe(frame, /remote/i, /Yes.*remote/i, steps);
   await selectStaticDropdownSafe(frame, /WhatsApp/i, "No", steps);
 
-  // Pronouns (Figma-style)
-  await selectStaticDropdownSafe(frame, /pronouns/i, /She/i, steps);
+  // Pronouns (Figma, Sigma Computing, etc.)
+  await selectStaticDropdownSafe(frame, /pronoun/i, /She/i, steps);
 
   // Common fields (Stripe, Coinbase, Figma, etc.)
   await selectStaticDropdownSafe(frame, /authorized to work/i, "Yes", steps);
@@ -688,15 +721,44 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /now or in the future require/i, "No", steps);
   await selectStaticDropdownSafe(frame, /visa.*sponsor/i, "No", steps);
   await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /require.*immigration.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /future require.*immigration/i, "No", steps);
   await selectStaticDropdownSafe(frame, /currently or have you previously worked/i, "No", steps);
   await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /previously.*employed/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /previously.*employed/i, /No|have not|never/i, steps);
   await selectStaticDropdownSafe(frame, /ever worked for/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /have you worked at/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /previously been employed/i, /have not|No|never/i, steps);
+
+  // Sanctions / export control (Twilio, Databricks, etc.)
+  await selectStaticDropdownSafe(frame, /Cuba.*Iran|Iran.*Cuba|citizen.*resident.*countries|sanctioned|denied.*parties/i, "No", steps);
+
+  // Privacy / consent acknowledgements as dropdowns (DoorDash, etc.)
+  await selectStaticDropdownSafe(frame, /applicant.*privacy.*acknowledg|privacy.*acknowledg/i, /confirm|acknowledge|read.*understood|I have read/i, steps);
+  await selectStaticDropdownSafe(frame, /Global Data Privacy/i, /confirm/i, steps);
+
+  // SMS/WhatsApp contact preference (DoorDash)
+  await selectStaticDropdownSafe(frame, /contact.*via.*SMS|SMS.*WhatsApp.*updates|WhatsApp.*provide updates/i, "Yes", steps);
+
+  // In-person / office / hybrid commitment (Anthropic, Glean, etc.)
+  await selectStaticDropdownSafe(frame, /open to working in.person|commit.*hybrid|willing.*commit.*hybrid/i, "Yes", steps);
+
+  // AI Policy acknowledgement (Anthropic, etc.)
+  await selectStaticDropdownSafe(frame, /AI Policy/i, "Yes", steps);
+
+  // Open to relocation (Anthropic, etc.)
+  await selectStaticDropdownSafe(frame, /open to relocation/i, "Yes", steps);
+
+  // Interviewed / applied before (Anthropic, etc.)
+  await selectStaticDropdownSafe(frame, /interviewed.*before|previously.*interview|applied.*before/i, "No", steps);
+
+  // Engineering blog influence (DoorDash)
+  await selectStaticDropdownSafe(frame, /engineering blog.*influence|blog.*decision/i, /Not at all|Did not|No influence|None/i, steps);
 
   // Coinbase-specific fields
   await selectStaticDropdownSafe(frame, /at least 18/i, "Yes", steps);
   await selectStaticDropdownSafe(frame, /how did you hear/i, /LinkedIn/i, steps);
-  await selectStaticDropdownSafe(frame, /Global Data Privacy/i, /confirm/i, steps);
+  await selectStaticDropdownSafe(frame, /hear about this opportunity/i, /LinkedIn/i, steps);
   await selectStaticDropdownSafe(frame, /understand.*AI tools/i, /agree|acknowledge|confirm|yes/i, steps);
   await selectStaticDropdownSafe(frame, /how you use AI/i, /regularly/i, steps);
   await selectStaticDropdownSafe(frame, /government official/i, /No/i, steps);
@@ -710,6 +772,58 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /user-facing web applications/i, /Yes/i, steps);
   await selectStaticDropdownSafe(frame, /primary technical expertise/i, /Full/i, steps);
   await selectStaticDropdownSafe(frame, /programming languages.*regularly/i, /Python/i, steps);
+
+  // Catch-all: Any remaining "Do you require" / "Will you require" sponsorship pattern
+  await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, "No", steps);
+
+  // Office / in-person / relocation (Cloudflare, Discord, etc.)
+  await selectStaticDropdownSafe(frame, /able to work at.*office|work.*in.*office.*days/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /willing to relocate/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /currently located in the US|currently located in the United States/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /based in or willing to relocate/i, "Yes", steps);
+
+  // Country of residence (broad — GitLab uses "current country of residence")
+  await selectStaticDropdownSafe(frame, /country of residence/i, /^US$|United States/i, steps);
+
+  // AI consent (ClickHouse, etc.)
+  await selectStaticDropdownSafe(frame, /consent.*use of AI|consenting.*AI.*evaluat|AI.*candidacy/i, "Yes", steps);
+  // Generic "By selecting" consent dropdowns (Reddit, etc.)
+  await selectStaticDropdownSafe(frame, /By selecting/i, /Yes|agree|acknowledge|confirm/i, steps);
+
+  // Employment agreements / restrictions (GitLab)
+  await selectStaticDropdownSafe(frame, /subject to.*employment agreements|post-employment restrictions/i, "No", steps);
+
+  // Located in specific locations (GitLab — "Are you located in one of the following...")
+  await selectStaticDropdownSafe(frame, /located in.*following|located in one of/i, "Yes", steps);
+
+  // Technical experience yes/no questions (ZipRecruiter, etc.)
+  await selectStaticDropdownSafe(frame, /experience with.*big data|experience with.*Hadoop|experience with.*Spark/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /experience with.*containerization|experience with.*Docker|experience with.*Kubernetes/i, "Yes", steps);
+
+  // Years of experience in specific tech (ZipRecruiter)
+  await selectStaticDropdownSafe(frame, /years of professional experience.*software/i, /5|4-6|3-5/i, steps);
+  // Years of industry experience (Sigma Computing, etc.)
+  await selectStaticDropdownSafe(frame, /years of industry experience|years of experience/i, /5|4-6|3-5/i, steps);
+
+  // State/Province (Affirm, etc.)
+  await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State/i, /Colorado/i, steps);
+  // How did you first learn / hear about (Affirm)
+  await selectStaticDropdownSafe(frame, /first learn.*employer|learn about.*employer/i, /LinkedIn/i, steps);
+  // Ethnicity multi-select (Reddit-style)
+  await selectStaticDropdownSafe(frame, /ethnicities.*identify/i, /Black/i, steps);
+  // LGBTQ+ community (Discord)
+  await selectStaticDropdownSafe(frame, /LGBTQ|member of the.*community/i, /decline|don.*wish|prefer not|No/i, steps);
+  // Age range (Webflow)
+  await selectStaticDropdownSafe(frame, /age range|what age/i, /25-34|26-35|don.*wish|prefer not/i, steps);
+  // Region (Webflow)
+  await selectStaticDropdownSafe(frame, /region.*reside|what region/i, /North America|NORAM|West|Mountain|don.*wish/i, steps);
+  // First-generation professional (Gusto)
+  await selectStaticDropdownSafe(frame, /first.generation/i, /don.*wish|prefer not|No/i, steps);
+  // Consent / retain personal info (Webflow)
+  await selectStaticDropdownSafe(frame, /consent.*personal.*information|retain.*personal/i, /Yes|I consent|agree/i, steps);
+  // Racial/ethnic background (Webflow)
+  await selectStaticDropdownSafe(frame, /racial.*ethnic.*background/i, /Black/i, steps);
 
   // Phase 5b: Checkboxes
   try {
@@ -735,6 +849,38 @@ async function greenhouseDeterministicFill(
       steps.push("Checked 'Not applicable' (sanctions follow-up)");
     }
   } catch {}
+  // "Acknowledge" checkboxes — privacy policy, AI policy, etc. (Twilio, etc.)
+  try {
+    const acknowledgeCheckboxes = frame.getByRole("checkbox", { name: /Acknowledge/i });
+    const ackCount = await acknowledgeCheckboxes.count().catch(() => 0);
+    for (let i = 0; i < ackCount; i++) {
+      try {
+        const cb = acknowledgeCheckboxes.nth(i);
+        if (await cb.isVisible({ timeout: 1000 }).catch(() => false)) {
+          await cb.check();
+        }
+      } catch {}
+    }
+    if (ackCount > 0) steps.push(`Checked ${ackCount} Acknowledge checkbox(es)`);
+  } catch {}
+  // "I agree" / "I confirm" / "I consent" checkboxes
+  try {
+    for (const pattern of [/I agree/i, /I confirm/i, /I consent/i, /I certify/i]) {
+      const cb = frame.getByRole("checkbox", { name: pattern }).first();
+      if (await cb.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await cb.check();
+        steps.push(`Checked '${pattern.source}' checkbox`);
+      }
+    }
+  } catch {}
+  // "LinkedIn" checkbox in "How did you hear" groups (Twilio, etc.)
+  try {
+    const linkedinCb = frame.getByRole("checkbox", { name: "LinkedIn" }).first();
+    if (await linkedinCb.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await linkedinCb.check();
+      steps.push("Checked LinkedIn (how did you hear)");
+    }
+  } catch {}
 
   // Phase 7: Additional text fields
   const whyAnswer = roleAnswers?.whyThisCompany?.slice(0, 500)
@@ -748,18 +894,73 @@ async function greenhouseDeterministicFill(
     // City/state — multiple label patterns across companies
     { name: /city and state/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City/State" },
     { name: /what city/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "City" },
-    { name: /where are you located/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Location" },
+    { name: /where are you located/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Location text" },
     { name: /from where.*intend to work/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Intend to work from" },
+    { name: /address.*plan.*working|address.*which.*work/i, value: `Denver, ${applicant.usState || "Colorado"}`, label: "Work address" },
     // Why this company — multiple label patterns
     { name: /why.*interested/i, value: whyAnswer, label: "Why interested" },
     { name: /why.*want to join/i, value: whyAnswer, label: "Why join" },
     { name: /why.*apply/i, value: whyAnswer, label: "Why apply" },
     { name: /what excites you/i, value: whyAnswer, label: "What excites you" },
-    // Figma-specific
-    { name: /preferred first name/i, value: "Naya", label: "Preferred name" },
-    { name: /additional information/i, value: roleAnswers?.whyThisRole || "", label: "Additional info" },
+    // Generic "Why [Company]?" catch-all (Anthropic, etc.)
+    { name: /^Why /i, value: whyAnswer, label: "Why company" },
+    // Preferred name (Figma, Affirm, Twilio, etc.)
+    { name: /preferred.*name/i, value: "Naya", label: "Preferred name" },
+    { name: /additional information/i, value: roleAnswers?.whyThisRole || whyAnswer, label: "Additional info" },
     // "How did you hear" as text field (Databricks)
     { name: /how did you hear/i, value: "LinkedIn", label: "How did you hear" },
+    // Start date / availability (Anthropic)
+    { name: /earliest.*start|when.*start.*working/i, value: "Immediately / As soon as possible", label: "Earliest start" },
+    // Timeline / deadlines (Anthropic)
+    { name: /deadlines.*timeline|timeline.*considerations|deadlines.*aware/i, value: "No specific deadlines.", label: "Timeline" },
+    // Personal preferences / pronouns as text (Anthropic)
+    { name: /personal preferences/i, value: "She/Her", label: "Personal preferences" },
+    // Know anyone at company (Glean, etc.)
+    { name: /know anyone|know someone|do you know/i, value: "No", label: "Know anyone" },
+    // Years of relevant experience as text (Glean, etc.)
+    { name: /total years.*experience|years.*relevant.*experience/i, value: "5", label: "Years experience" },
+    // Salary expectations
+    { name: /salary.*expectation|compensation.*expectation|desired.*salary/i, value: "Open to discussion based on total compensation package", label: "Salary" },
+    // Current company / current employer
+    { name: /current company|current employer/i, value: "The Black Female Engineer", label: "Current company" },
+    // Current title / current role
+    { name: /current title|current role/i, value: "CTO / AI Engineer", label: "Current title" },
+    // Referral
+    { name: /referred by|referral/i, value: "N/A", label: "Referral" },
+    // Country (text)
+    { name: /^Country$/i, value: "United States", label: "Country text" },
+    // Zip code / postal code (Gusto)
+    { name: /zip code|postal code/i, value: "80202", label: "Zip code" },
+    // Name pronunciation (Affirm)
+    { name: /name pronunciation/i, value: "Nyar-ah-dzo Bear-eh", label: "Name pronunciation" },
+    // GitHub URL (Affirm)
+    { name: /^GitHub$/i, value: "https://github.com/nyaradzobere", label: "GitHub" },
+    // Twitter (Affirm)
+    { name: /^Twitter$/i, value: "", label: "Twitter" },
+    // Portfolio (Affirm)
+    { name: /^Portfolio$/i, value: "https://theblackfemaleengineer.com", label: "Portfolio" },
+    // Other Links (Affirm)
+    { name: /^Other Links$/i, value: "", label: "Other links" },
+    // Current Company (Affirm, etc.)
+    { name: /^Current Company$/i, value: "The Black Female Engineer", label: "Current Company text" },
+    // Management experience (Webflow, etc.)
+    { name: /years.*experience.*managing|managing.*engineering.*team/i, value: "2 years managing a small engineering team at The Black Female Engineer, leading full-stack development, AI/ML projects, and shipping production systems.", label: "Management experience" },
+    // Developer tooling / tools experience (Webflow)
+    { name: /developer.*tooling|what tools.*using/i, value: "I regularly use VS Code, GitHub, Docker, Playwright, Vercel, and CI/CD pipelines. For AI development I use Claude API, LangChain, and vector databases.", label: "Tooling experience" },
+    // "Accessible and inclusive interview experience" (GitLab)
+    { name: /accessible.*inclusive|adjustments.*hiring/i, value: "No adjustments needed, thank you.", label: "Accessibility" },
+    // "Name you'd prefer us to use" (GitLab)
+    { name: /prefer.*use.*interview|name.*prefer/i, value: "Naya", label: "Preferred name interview" },
+    // LinkedIn profile / website / blog combined field (Cloudflare)
+    { name: /include.*LinkedIn.*profile|LinkedIn.*personal.*website/i, value: "https://linkedin.com/in/theblackfemaleengineer", label: "LinkedIn/Website combined" },
+    // GitHub or Website (ClickHouse)
+    { name: /GitHub.*Website|GitHub.*or.*Website/i, value: "https://github.com/nyaradzobere", label: "GitHub/Website" },
+    // "What do you use [Company] for?" (Discord)
+    { name: /what do you use.*for/i, value: "I use Discord for developer communities, open source collaboration, and staying connected with tech communities. I'm active in several AI/ML and engineering Discord servers.", label: "Product usage" },
+    // Technical experience descriptions (Reddit)
+    { name: /experience creating.*agents|agents.*enterprise/i, value: "Yes, I have experience building AI agents using both enterprise platforms (Anthropic Claude, OpenAI) and open source solutions. I've deployed production agent systems for automated job applications and RAG pipelines.", label: "Agent experience" },
+    { name: /MCP integration/i, value: "I recently deployed an MCP (Model Context Protocol) integration connecting Claude to Playwright for browser automation, enabling AI-driven form interaction and web scraping workflows.", label: "MCP experience" },
+    { name: /harness configuration.*IDE/i, value: "I have experience configuring development harnesses for VS Code including Claude Code extensions, custom tool configurations, and local development server integrations.", label: "Harness experience" },
   ];
 
   for (const field of additionalFields) {
@@ -777,12 +978,54 @@ async function greenhouseDeterministicFill(
   }
 
   // Phase 8: EEO fields (sequential — conditional fields may appear)
-  await selectStaticDropdownSafe(frame, /gender/i, "Female", steps);
+  // Option patterns must be flexible: standard GH uses "Female", company-custom uses "Woman", etc.
+  await selectStaticDropdownSafe(frame, /gender/i, /Female|Woman/i, steps);
   await selectStaticDropdownSafe(frame, /hispanic/i, "No", steps);
   await frame.waitForTimeout(1000); // Wait for conditional "Race" field
-  await selectStaticDropdownSafe(frame, /race/i, /Black or African American/i, steps);
-  await selectStaticDropdownSafe(frame, /veteran/i, /not a protected veteran/i, steps);
-  await selectStaticDropdownSafe(frame, /disability/i, /No.*do not have/i, steps);
+  await selectStaticDropdownSafe(frame, /race|ethnicity/i, /Black/i, steps);
+  await selectStaticDropdownSafe(frame, /veteran/i, /not a protected veteran|No.*Not.*Veteran|Not a Veteran|No military|not a veteran|I am not|don.*wish|prefer not/i, steps);
+  await selectStaticDropdownSafe(frame, /disability/i, /^No$|No.*do not have|No.*don.*t have|I do not have|don.*wish|prefer not/i, steps);
+  // Sexual orientation (Twilio, Reddit, Amplitude, etc.)
+  await selectStaticDropdownSafe(frame, /sexual orientation/i, /don.*wish|decline|prefer not|Heterosexual/i, steps);
+  // Transgender experience (Reddit)
+  await selectStaticDropdownSafe(frame, /transgender/i, /No|don.*wish|decline/i, steps);
+
+  // Second pass: if company has BOTH custom EEO + standard Greenhouse EEO,
+  // the first pass may have matched custom fields with wrong option text.
+  // Try standard EEO field names specifically (these are at the very bottom).
+  await selectStaticDropdownSafe(frame, /^Gender\*?$/i, /Female/i, steps);
+  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, "No", steps);
+  await frame.waitForTimeout(1000); // Wait for conditional Race field
+  // Standard EEO Race (appears conditionally after Hispanic=No)
+  await selectStaticDropdownSafe(frame, /^Race$/i, /Black or African American/i, steps);
+  await selectStaticDropdownSafe(frame, /^Veteran Status/i, /not a protected veteran|No.*Not.*Veteran|No military|don.*wish/i, steps);
+  await selectStaticDropdownSafe(frame, /^Disability Status/i, /^No$|No.*do not have|No.*don.*t have|I do not have|don.*wish|prefer not/i, steps);
+
+  // Phase 8b: GDPR demographic consent checkbox (no ARIA label — find by ID or parent text)
+  try {
+    // Try by ID first (Greenhouse standard)
+    const gdprConsent = frame.locator('#gdpr_demographic_data_consent_given_1');
+    if (await gdprConsent.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await gdprConsent.check();
+      steps.push("Checked GDPR demographic consent");
+    } else {
+      // Fallback: find checkbox inside a label that mentions "consent" and "demographic"
+      const consentCheckbox = frame.locator('div').filter({ hasText: /consent.*demographic/i }).locator('input[type="checkbox"]').first();
+      if (await consentCheckbox.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await consentCheckbox.check();
+        steps.push("Checked GDPR demographic consent (via text)");
+      }
+    }
+  } catch {}
+  // Also check any "I consent" standalone checkboxes
+  try {
+    const consentCbs = frame.locator('div').filter({ hasText: /By checking this box.*consent/i }).locator('input[type="checkbox"]');
+    const count = await consentCbs.count().catch(() => 0);
+    for (let i = 0; i < count; i++) {
+      try { await consentCbs.nth(i).check(); } catch {}
+    }
+    if (count > 0) steps.push(`Checked ${count} consent checkbox(es)`);
+  } catch {}
 
   // Phase 9: Submit and verify
   try {
