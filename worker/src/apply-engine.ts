@@ -381,25 +381,38 @@ async function handleVerificationCode(
 
   // Fill the 8 individual code textboxes
   try {
-    const verificationGroup = frame.locator("div, fieldset, section").filter({
+    // Greenhouse renders 8 textboxes inside a group with "verification code" in its name
+    // Structure: group → textbox "Security code" + 7 unnamed textboxes
+    const verificationGroup = frame.getByRole("group").filter({
       hasText: /verification code/i,
     }).first();
 
-    // Greenhouse renders 8 individual input fields for the code
+    const codeChars = code.split("");
+
+    // Try filling via the group's input elements
     const inputs = verificationGroup.locator("input");
-    const inputCount = await inputs.count();
+    const inputCount = await inputs.count().catch(() => 0);
 
     if (inputCount >= 8) {
-      const codeChars = code.split("");
       for (let i = 0; i < Math.min(codeChars.length, inputCount); i++) {
         await inputs.nth(i).fill(codeChars[i], { timeout: 3000 });
       }
       steps.push("Filled verification code textboxes");
     } else {
-      // Fallback: try a single textbox
-      const singleInput = frame.getByRole("textbox", { name: /security code/i }).first();
-      await singleInput.fill(code, { timeout: 3000 });
-      steps.push("Filled single verification code input");
+      // Fallback: find all textboxes in the verification area
+      const allTextboxes = verificationGroup.getByRole("textbox");
+      const tbCount = await allTextboxes.count().catch(() => 0);
+      if (tbCount >= 8) {
+        for (let i = 0; i < Math.min(codeChars.length, tbCount); i++) {
+          await allTextboxes.nth(i).fill(codeChars[i], { timeout: 3000 });
+        }
+        steps.push("Filled verification code textboxes (via role)");
+      } else {
+        // Last fallback: type the full code into the first "Security code" textbox
+        const securityInput = frame.getByRole("textbox", { name: /security code/i }).first();
+        await securityInput.fill(code, { timeout: 3000 });
+        steps.push("Filled single security code input");
+      }
     }
 
     await frame.waitForTimeout(2000);
