@@ -321,18 +321,15 @@ async function selectStaticDropdown(
   comboboxNamePattern: string | RegExp,
   optionName: string | RegExp
 ): Promise<void> {
-  // Find the combobox and its nearest Toggle flyout button via XPath.
-  // ancestor::div[.//button[@aria-label="Toggle flyout"]][1] finds the closest
-  // ancestor div containing a Toggle flyout, then we select that button.
+  // Find the combobox, then find the NEXT Toggle flyout button in document order.
+  // This avoids the ancestor-based approach which often finds the wrong toggle
+  // (e.g., phone country toggle instead of start date toggle).
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
-  const toggle = combobox.locator(
-    'xpath=ancestor::div[.//button[@aria-label="Toggle flyout"]][1]//button[@aria-label="Toggle flyout"]'
-  ).first();
+  const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
 
   await toggle.click({ timeout: 5000 });
   await frame.waitForTimeout(1000);
 
-  // For exact short option names like "US", "No", etc., use exact matching
   const useExact = typeof optionName === "string" && optionName.length <= 3;
   await frame.getByRole("option", { name: optionName, exact: useExact }).first().click({ timeout: 5000 });
   await frame.waitForTimeout(300);
@@ -576,38 +573,130 @@ async function greenhouseDeterministicFill(
     steps.push(`Cover letter handling failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  // Phase 4: Static dropdowns (toggle + click option)
+  // Phase 3c: Phone country code (do this BEFORE employment to avoid Toggle flyout conflicts)
+  try {
+    const phoneGroup = frame.getByRole("group", { name: /Phone/i }).first();
+    if (await phoneGroup.isVisible({ timeout: 2000 }).catch(() => false)) {
+      // Only set if not already set (check if "+1" is already showing)
+      const alreadySet = await phoneGroup.getByText("+1").isVisible({ timeout: 1000 }).catch(() => false);
+      if (!alreadySet) {
+        const toggle = phoneGroup.getByRole("button", { name: "Toggle flyout" }).first();
+        await toggle.click({ timeout: 5000 });
+        await frame.waitForTimeout(500);
+        await frame.getByRole("option", { name: /United States \+1/i }).first().click({ timeout: 5000 });
+        steps.push("Set phone country code: US +1");
+      } else {
+        steps.push("Phone country already set to US +1");
+      }
+    }
+  } catch {
+    steps.push("Phone country code failed");
+  }
+
+  // Phase 4: Employment history (Coinbase-style — some forms have this section)
+  try {
+    const companyNameField = frame.getByRole("textbox", { name: /Company name/i }).first();
+    if (await companyNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await companyNameField.fill("The Black Female Engineer");
+      steps.push("Filled employment: Company name");
+
+      // Title
+      const titleField = frame.getByRole("textbox", { name: "Title" }).first();
+      if (await titleField.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await titleField.fill("CTO / AI Engineer");
+        steps.push("Filled employment: Title");
+      }
+
+      // Start date month dropdown
+      await selectStaticDropdownSafe(frame, /Start date month/i, "January", steps);
+
+      // Start date year
+      const startYear = frame.getByRole("textbox", { name: /Start date year/i }).first();
+      if (await startYear.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await startYear.fill("2023");
+        steps.push("Filled employment: Start year");
+      }
+
+      // Check "Current role" checkbox if available
+      try {
+        const currentRole = frame.getByRole("checkbox", { name: /Current role/i }).first();
+        if (await currentRole.isVisible({ timeout: 1000 }).catch(() => false)) {
+          await currentRole.check();
+          steps.push("Checked Current role");
+        }
+      } catch {}
+    }
+  } catch (e) {
+    steps.push(`Employment section failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+
+  // Phase 4b: Education section (Coinbase-style — School/Degree/Discipline as comboboxes)
+  try {
+    const schoolCombobox = frame.getByRole("combobox", { name: /^School$/i }).first();
+    if (await schoolCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
+      // School is an autocomplete combobox — type slowly
+      await schoolCombobox.clear();
+      await schoolCombobox.pressSequentially("University of Colorado", { delay: 80 });
+      await frame.waitForTimeout(1500);
+      const schoolOption = frame.getByRole("option", { name: /Colorado/i }).first();
+      if (await schoolOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await schoolOption.click({ timeout: 5000 });
+        steps.push("Selected school");
+      } else {
+        steps.push("School options did not appear");
+      }
+
+      // Degree dropdown
+      await selectStaticDropdownSafe(frame, /^Degree$/i, /Bachelor/i, steps);
+
+      // Discipline dropdown
+      await selectStaticDropdownSafe(frame, /Discipline/i, /Business/i, steps);
+    }
+  } catch (e) {
+    steps.push(`Education section failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+
+  // Phase 4c: LinkedIn URL
+  try {
+    const linkedinField = frame.getByRole("textbox", { name: /LinkedIn/i }).first();
+    if (await linkedinField.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await linkedinField.fill("https://linkedin.com/in/theblackfemaleengineer");
+      steps.push("Filled LinkedIn URL");
+    }
+  } catch {}
+
+  // Phase 5: Static dropdowns — try all common patterns across different Greenhouse forms
+  // Stripe-style fields
   await selectStaticDropdownSafe(frame, /country.*reside/i, "US", steps);
-  await selectStaticDropdownSafe(frame, /authorized to work/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /require.*sponsor/i, "No", steps);
   await selectStaticDropdownSafe(frame, /remote/i, /Yes.*remote/i, steps);
-  await selectStaticDropdownSafe(frame, /employed by/i, "No", steps);
   await selectStaticDropdownSafe(frame, /WhatsApp/i, "No", steps);
 
-  // Phase 5: Checkboxes (US work country)
+  // Common fields (both Stripe and Coinbase)
+  await selectStaticDropdownSafe(frame, /authorized to work/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /legally authorized/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /require.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /employed by/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /previously.*employed/i, "No", steps);
+
+  // Coinbase-specific fields
+  await selectStaticDropdownSafe(frame, /at least 18/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /how did you hear/i, /LinkedIn/i, steps);
+  await selectStaticDropdownSafe(frame, /Global Data Privacy/i, /confirm/i, steps);
+  await selectStaticDropdownSafe(frame, /understand.*AI tools/i, /agree|acknowledge|confirm|yes/i, steps);
+  await selectStaticDropdownSafe(frame, /how you use AI/i, /regularly/i, steps);
+  await selectStaticDropdownSafe(frame, /government official/i, /No/i, steps);
+  await selectStaticDropdownSafe(frame, /close relative.*government/i, /No/i, steps);
+  await selectStaticDropdownSafe(frame, /conflict of interest/i, /No/i, steps);
+  await selectStaticDropdownSafe(frame, /referred.*senior leader/i, /No/i, steps);
+
+  // Phase 5b: Checkboxes (US work country — Stripe-style)
   try {
     const usCheckbox = frame.getByRole("checkbox", { name: "US", exact: true }).first();
     if (await usCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
       await usCheckbox.check();
       steps.push("Checked US work country");
     }
-  } catch {
-    steps.push("US checkbox not found or failed");
-  }
-
-  // Phase 6: Phone country code
-  try {
-    const phoneGroup = frame.getByRole("group", { name: /Phone/i }).first();
-    if (await phoneGroup.isVisible({ timeout: 2000 }).catch(() => false)) {
-      const toggle = phoneGroup.getByRole("button", { name: "Toggle flyout" }).first();
-      await toggle.click({ timeout: 5000 });
-      await frame.waitForTimeout(500);
-      await frame.getByRole("option", { name: /United States \+1/i }).first().click({ timeout: 5000 });
-      steps.push("Set phone country code: US +1");
-    }
-  } catch {
-    steps.push("Phone country code failed");
-  }
+  } catch {}
 
   // Phase 7: Additional text fields
   const additionalFields: Array<{ name: string | RegExp; value: string; label: string }> = [
