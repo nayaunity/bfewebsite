@@ -38,6 +38,8 @@ async function getStats() {
     // Claude Code presale
     presaleVisitorsToday,
     presaleCtaToday,
+    // Auto Apply waitlist
+    autoApplyVisitorsToday,
   ] = await Promise.all([
     prisma.job.count(),
     prisma.job.count({ where: { isActive: true } }),
@@ -78,6 +80,12 @@ async function getStats() {
     prisma.linkClick.count({
       where: { linkId: "course-enroll-cta", clickedAt: { gte: todayStart } },
     }),
+    // Auto Apply waitlist
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "auto-apply", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
   ]);
 
   return {
@@ -98,6 +106,7 @@ async function getStats() {
       usersCount,
       presaleVisitorsToday,
       presaleCtaToday,
+      autoApplyVisitorsToday,
     },
   };
 }
@@ -197,7 +206,7 @@ export default async function AdminDashboard() {
             View Full Analytics
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Registered Users</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
@@ -235,6 +244,13 @@ export default async function AdminDashboard() {
               {stats.analytics.presaleVisitorsToday}
             </p>
             <p className="text-xs text-[var(--gray-600)]">{stats.analytics.presaleCtaToday} CTA clicks</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border-2 border-[#ef562a] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Auto Apply Waitlist</p>
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+              {stats.analytics.autoApplyVisitorsToday}
+            </p>
+            <p className="text-xs text-[var(--gray-600)]">visitors today</p>
           </div>
         </div>
       </div>
