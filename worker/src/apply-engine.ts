@@ -687,6 +687,8 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /require.*sponsor/i, "No", steps);
   await selectStaticDropdownSafe(frame, /now or in the future require/i, "No", steps);
   await selectStaticDropdownSafe(frame, /visa.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /currently or have you previously worked/i, "No", steps);
   await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, "No", steps);
   await selectStaticDropdownSafe(frame, /previously.*employed/i, "No", steps);
   await selectStaticDropdownSafe(frame, /ever worked for/i, "No", steps);
@@ -702,12 +704,35 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /conflict of interest/i, /No/i, steps);
   await selectStaticDropdownSafe(frame, /referred.*senior leader/i, /No/i, steps);
 
-  // Phase 5b: Checkboxes (US work country — Stripe-style)
+  // Figma-specific dropdowns
+  await selectStaticDropdownSafe(frame, /years of professional experience/i, /5/i, steps);
+  await selectStaticDropdownSafe(frame, /full-time software engineer.*professional/i, /Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /user-facing web applications/i, /Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /primary technical expertise/i, /Full/i, steps);
+  await selectStaticDropdownSafe(frame, /programming languages.*regularly/i, /Python/i, steps);
+
+  // Phase 5b: Checkboxes
   try {
     const usCheckbox = frame.getByRole("checkbox", { name: "US", exact: true }).first();
     if (await usCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
       await usCheckbox.check();
       steps.push("Checked US work country");
+    }
+  } catch {}
+  // Databricks sanctions/export control checkbox
+  try {
+    const noneAbove = frame.getByRole("checkbox", { name: /None of the above/i }).first();
+    if (await noneAbove.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await noneAbove.check();
+      steps.push("Checked 'None of the above' (sanctions)");
+    }
+  } catch {}
+  // Databricks conditional follow-up checkbox
+  try {
+    const notApplicable = frame.getByRole("checkbox", { name: /Not applicable/i }).first();
+    if (await notApplicable.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await notApplicable.check();
+      steps.push("Checked 'Not applicable' (sanctions follow-up)");
     }
   } catch {}
 
@@ -730,6 +755,11 @@ async function greenhouseDeterministicFill(
     { name: /why.*want to join/i, value: whyAnswer, label: "Why join" },
     { name: /why.*apply/i, value: whyAnswer, label: "Why apply" },
     { name: /what excites you/i, value: whyAnswer, label: "What excites you" },
+    // Figma-specific
+    { name: /preferred first name/i, value: "Naya", label: "Preferred name" },
+    { name: /additional information/i, value: roleAnswers?.whyThisRole || "", label: "Additional info" },
+    // "How did you hear" as text field (Databricks)
+    { name: /how did you hear/i, value: "LinkedIn", label: "How did you hear" },
   ];
 
   for (const field of additionalFields) {
@@ -806,13 +836,23 @@ async function getAccessibilitySnapshot(page: Page): Promise<string> {
   const url = page.url();
   const title = await page.title();
 
-  // Use Playwright's built-in accessibility snapshot (YAML format)
-  // This automatically includes iframe content and reveals ARIA roles/states
+  // Check if there's a Greenhouse iframe — if so, prioritize its content
+  // This prevents the snapshot from being dominated by the company's main page
+  // (nav, job description, footer) while the actual form is buried/truncated
+  const ghFrame = getGreenhouseFrame(page);
+  if (ghFrame && ghFrame !== page.mainFrame()) {
+    // Greenhouse is in an iframe — snapshot ONLY the iframe content
+    try {
+      const frameSnapshot = await ghFrame.locator("body").ariaSnapshot({ timeout: 10000 });
+      return `URL: ${url}\nTitle: ${title}\nForm iframe: ${ghFrame.url()}\n\nAccessibility Tree (Greenhouse form only):\n${frameSnapshot.slice(0, 15000)}`;
+    } catch {}
+  }
+
+  // Default: snapshot the whole page (for direct Greenhouse URLs or non-Greenhouse forms)
   let snapshot = "";
   try {
     snapshot = await page.locator("body").ariaSnapshot({ timeout: 10000 });
   } catch {
-    // Fallback: try each frame individually
     try {
       snapshot = await page.mainFrame().locator("body").ariaSnapshot({ timeout: 5000 });
     } catch {
@@ -828,7 +868,6 @@ async function getAccessibilitySnapshot(page: Page): Promise<string> {
     }
   }
 
-  // Truncate to fit in Claude prompt
   const truncated = snapshot.slice(0, 15000);
   return `URL: ${url}\nTitle: ${title}\n\nAccessibility Tree:\n${truncated}`;
 }
