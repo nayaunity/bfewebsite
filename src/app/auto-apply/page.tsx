@@ -79,7 +79,7 @@ export default function AutoApplyPage() {
 
       <main className="min-h-screen bg-[var(--background)]">
         {/* Hero */}
-        <section className="pt-32 pb-16 px-6">
+        <section className="pt-44 pb-16 px-6">
           <div className="max-w-3xl mx-auto text-center">
             <span className="inline-block px-4 py-1.5 bg-[#ef562a]/10 text-[#ef562a] text-sm font-semibold rounded-full mb-6">
               COMING SOON
