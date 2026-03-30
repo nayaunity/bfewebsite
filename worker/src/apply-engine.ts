@@ -446,12 +446,29 @@ async function handleVerificationCode(
       return { success: false, error: "Submit button still disabled after verification code entry", steps };
     }
 
+    const urlBefore = page.url();
     await submitButton.click({ timeout: 5000 });
     steps.push("Clicked Submit after verification code");
     await page.waitForTimeout(5000);
 
     if (await checkThankYou(frame, page)) {
       steps.push("Application submitted successfully after verification");
+      return { success: true, steps };
+    }
+
+    // Also check: if the URL changed or the submit button disappeared, submission likely succeeded
+    const urlAfter = page.url();
+    const submitStillVisible = await frame.getByRole("button", { name: /Submit application/i }).first()
+      .isVisible({ timeout: 2000 }).catch(() => false);
+    if (urlAfter !== urlBefore || !submitStillVisible) {
+      steps.push("Application likely submitted (URL changed or submit button gone)");
+      return { success: true, steps };
+    }
+
+    // One more check: look for confirmation text on the MAIN page (not frame)
+    const mainText = await page.locator("body").innerText().catch(() => "");
+    if (/thank|submitted|received|applied|application complete/i.test(mainText.slice(0, 2000))) {
+      steps.push("Application submitted (confirmation text on main page)");
       return { success: true, steps };
     }
 
@@ -806,8 +823,12 @@ async function greenhouseDeterministicFill(
   // Years of industry experience (Sigma Computing, etc.)
   await selectStaticDropdownSafe(frame, /years of industry experience|years of experience/i, /5|4-6|3-5/i, steps);
 
-  // State/Province (Affirm, etc.)
-  await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State/i, /Colorado/i, steps);
+  // State/Province (Affirm, Faire, etc.)
+  await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State|state of residence|current state/i, /Colorado/i, steps);
+  // Hybrid/in-office commitment (Faire, etc.)
+  await selectStaticDropdownSafe(frame, /commit.*in.office|in.office.*days.*week/i, "Yes", steps);
+  // Company familiarity (Faire, etc.)
+  await selectStaticDropdownSafe(frame, /familiar.*with.*as a company|how familiar/i, /Somewhat|A little|Not very/i, steps);
   // How did you first learn / hear about (Affirm)
   await selectStaticDropdownSafe(frame, /first learn.*employer|learn about.*employer/i, /LinkedIn/i, steps);
   // Ethnicity multi-select (Reddit-style)
@@ -984,7 +1005,7 @@ async function greenhouseDeterministicFill(
   await frame.waitForTimeout(1000); // Wait for conditional "Race" field
   await selectStaticDropdownSafe(frame, /race|ethnicity/i, /Black/i, steps);
   await selectStaticDropdownSafe(frame, /veteran/i, /not a protected veteran|No.*Not.*Veteran|Not a Veteran|No military|not a veteran|I am not|don.*wish|prefer not/i, steps);
-  await selectStaticDropdownSafe(frame, /disability/i, /^No$|No.*do not have|No.*don.*t have|I do not have|don.*wish|prefer not/i, steps);
+  await selectStaticDropdownSafe(frame, /disability/i, /^No$|No.*do not have|No.*don.*t have|I do not have|None of these|don.*wish|prefer not/i, steps);
   // Sexual orientation (Twilio, Reddit, Amplitude, etc.)
   await selectStaticDropdownSafe(frame, /sexual orientation/i, /don.*wish|decline|prefer not|Heterosexual/i, steps);
   // Transgender experience (Reddit)
