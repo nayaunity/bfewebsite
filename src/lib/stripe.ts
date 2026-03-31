@@ -13,6 +13,6 @@ export const TIER_LIMITS: Record<
   { appsPerMonth: number; maxResumes: number }
 > = {
   free: { appsPerMonth: 5, maxResumes: 1 },
-  starter: { appsPerMonth: 50, maxResumes: 2 },
-  pro: { appsPerMonth: 200, maxResumes: 10 },
+  starter: { appsPerMonth: 100, maxResumes: 5 },
+  pro: { appsPerMonth: 300, maxResumes: 10 },
 };

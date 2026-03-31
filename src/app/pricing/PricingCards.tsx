@@ -21,12 +21,12 @@ const tiers = [
   },
   {
     name: "Starter",
-    price: "$15",
+    price: "$29",
     period: "/month",
     key: "starter" as const,
     features: [
-      "50 applications per month",
-      "2 resume uploads",
+      "100 applications per month",
+      "Up to 5 resumes",
       "All 17 companies",
       "Smart resume matching",
       "Application tracking",
@@ -37,11 +37,11 @@ const tiers = [
   },
   {
     name: "Pro",
-    price: "$29",
+    price: "$59",
     period: "/month",
     key: "pro" as const,
     features: [
-      "200 applications per month",
+      "300 applications per month",
       "Up to 10 resumes",
       "All 17 companies",
       "Smart resume matching",
