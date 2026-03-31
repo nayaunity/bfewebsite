@@ -1395,6 +1395,15 @@ export async function applyToJob(
           steps.push(`Recoverable error, retrying: ${errMsg}`);
           continue;
         }
+        // Check if the error is about a verification code — try to handle it
+        if (/security code|verification code|8.character code/i.test(errMsg)) {
+          steps.push("Claude hit verification code — attempting automated retrieval");
+          const ghFrame = getGreenhouseFrame(page);
+          if (ghFrame) {
+            const verResult = await handleVerificationCode(ghFrame, page, applicant, steps);
+            if (verResult) return verResult;
+          }
+        }
         return { success: false, error: errMsg, steps };
       }
 
@@ -1415,6 +1424,25 @@ export async function applyToJob(
 
         if (await isLoginPage(page)) {
           return { success: false, error: "Redirected to login page", steps };
+        }
+
+        // After clicking Submit in Claude loop, check for verification code
+        if (action.action === "click" && action.name && /submit/i.test(action.name)) {
+          await page.waitForTimeout(3000);
+          const ghFrame = getGreenhouseFrame(page);
+          if (ghFrame) {
+            // Check for success first
+            if (await checkThankYou(ghFrame, page)) {
+              return { success: true, steps: [...steps, "Application submitted successfully"] };
+            }
+            // Check for verification code
+            const hasVerification = await ghFrame.getByText(/verification code was sent/i).first()
+              .isVisible({ timeout: 2000 }).catch(() => false);
+            if (hasVerification) {
+              const verResult = await handleVerificationCode(ghFrame, page, applicant, steps);
+              if (verResult) return verResult;
+            }
+          }
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
