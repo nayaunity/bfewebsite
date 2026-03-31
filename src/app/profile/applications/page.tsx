@@ -8,6 +8,7 @@ import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import targetCompanies from "../../../../scripts/target-companies.json";
 import { TicketWidget } from "@/components/TicketWidget";
+import { canApply } from "@/lib/subscription";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function ApplicationsPage() {
     redirect("/auth/signin?callbackUrl=/profile/applications");
   }
 
-  const [user, applications, browseDiscoveries, recentSessions] = await Promise.all([
+  const [user, applications, browseDiscoveries, recentSessions, usageData] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true },
@@ -55,6 +56,7 @@ export default async function ApplicationsPage() {
         completedAt: true,
       },
     }),
+    canApply(session.user.id),
   ]);
 
   const discoveryAsApplications = browseDiscoveries.map((d) => ({
@@ -111,6 +113,7 @@ export default async function ApplicationsPage() {
             companies={targetCompanies}
             stats={{ total: allApplications.length, applied, failed, sessions: totalSessions, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             defaultRole={user?.targetRole || null}
+            usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
           />
         </div>
         <TicketWidget page="applications" />
