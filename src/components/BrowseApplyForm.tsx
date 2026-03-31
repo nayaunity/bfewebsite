@@ -54,7 +54,7 @@ function friendlyError(error: string): string {
 
 import { ROLE_OPTIONS } from "@/lib/role-options";
 
-export function BrowseApplyForm({ companies, defaultRole }: { companies: Company[]; defaultRole?: string | null }) {
+export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { companies: Company[]; defaultRole?: string | null; initialUsage?: { used: number; limit: number; tier: string } | null }) {
   const [selectedRole, setSelectedRole] = useState<string | null>(defaultRole || null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -62,6 +62,7 @@ export function BrowseApplyForm({ companies, defaultRole }: { companies: Company
   const [discoveries, setDiscoveries] = useState<Discovery[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [usage, setUsage] = useState(initialUsage || null);
 
   const isRunning =
     sessionData?.status === "queued" || sessionData?.status === "processing";
@@ -156,9 +157,13 @@ export function BrowseApplyForm({ companies, defaultRole }: { companies: Company
       if (res.ok) {
         setSessionData(data.session);
         setDiscoveries(data.discoveries);
+        // Update usage counter based on applied count
+        if (usage && data.session.jobsApplied > 0) {
+          setUsage((prev) => prev ? { ...prev, used: (initialUsage?.used || 0) + data.session.jobsApplied } : prev);
+        }
       }
     } catch {}
-  }, [sessionId]);
+  }, [sessionId, usage, initialUsage]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -285,6 +290,35 @@ export function BrowseApplyForm({ companies, defaultRole }: { companies: Company
                   ? "Select a target role above to start."
                   : "Select at least one company to start."}
             </p>
+          )}
+
+          {/* Usage Counter */}
+          {usage && (
+            <div className="flex items-center justify-between p-3 bg-[var(--gray-50)] border border-[var(--card-border)] rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    usage.limit - usage.used <= 0 ? "bg-red-500" :
+                    usage.limit - usage.used <= 5 ? "bg-yellow-500" :
+                    "bg-green-500"
+                  }`} />
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    {Math.max(0, usage.limit - usage.used)} applications left
+                  </span>
+                </div>
+                <span className="text-xs text-[var(--gray-600)]">
+                  {usage.used}/{usage.limit} used this month
+                </span>
+              </div>
+              {usage.tier !== "pro" && (
+                <a
+                  href="/pricing"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+                >
+                  Upgrade Plan
+                </a>
+              )}
+            </div>
           )}
 
           {/* Start Button */}
