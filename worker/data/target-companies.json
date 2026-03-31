@@ -83,5 +83,105 @@
     "name": "Grammarly",
     "careersUrl": "https://job-boards.greenhouse.io/grammarly",
     "notes": "AI writing assistant"
+  },
+  {
+    "name": "Temporal",
+    "careersUrl": "https://job-boards.greenhouse.io/temporaltechnologies",
+    "notes": "Workflow orchestration platform"
+  },
+  {
+    "name": "LaunchDarkly",
+    "careersUrl": "https://job-boards.greenhouse.io/launchdarkly",
+    "notes": "Feature management platform"
+  },
+  {
+    "name": "Scale AI",
+    "careersUrl": "https://job-boards.greenhouse.io/scaleai",
+    "notes": "AI data infrastructure"
+  },
+  {
+    "name": "Together AI",
+    "careersUrl": "https://job-boards.greenhouse.io/togetherai",
+    "notes": "Open source AI platform"
+  },
+  {
+    "name": "Contentful",
+    "careersUrl": "https://job-boards.greenhouse.io/contentful",
+    "notes": "Headless CMS"
+  },
+  {
+    "name": "Fireblocks",
+    "careersUrl": "https://job-boards.greenhouse.io/fireblocks",
+    "notes": "Digital asset security"
+  },
+  {
+    "name": "SingleStore",
+    "careersUrl": "https://job-boards.greenhouse.io/singlestore",
+    "notes": "Real-time distributed database"
+  },
+  {
+    "name": "Labelbox",
+    "careersUrl": "https://job-boards.greenhouse.io/labelbox",
+    "notes": "AI training data platform"
+  },
+  {
+    "name": "Alchemy",
+    "careersUrl": "https://job-boards.greenhouse.io/alchemy",
+    "notes": "Web3 developer platform"
+  },
+  {
+    "name": "Materialize",
+    "careersUrl": "https://job-boards.greenhouse.io/materialize",
+    "notes": "Streaming SQL database"
+  },
+  {
+    "name": "Blockchain.com",
+    "careersUrl": "https://job-boards.greenhouse.io/blockchain",
+    "notes": "Crypto financial services"
+  },
+  {
+    "name": "PlanetScale",
+    "careersUrl": "https://job-boards.greenhouse.io/planetscale",
+    "notes": "Serverless MySQL platform"
+  },
+  {
+    "name": "project44",
+    "careersUrl": "https://job-boards.greenhouse.io/project44",
+    "notes": "Supply chain visibility"
+  },
+  {
+    "name": "Mercari",
+    "careersUrl": "https://job-boards.greenhouse.io/mercari",
+    "notes": "Online marketplace"
+  },
+  {
+    "name": "Grafana Labs",
+    "careersUrl": "https://job-boards.greenhouse.io/grafanalabs",
+    "notes": "Observability platform"
+  },
+  {
+    "name": "Attentive",
+    "careersUrl": "https://job-boards.greenhouse.io/attentive",
+    "notes": "SMS marketing platform"
+  },
+  {
+    "name": "Marqeta",
+    "careersUrl": "https://job-boards.greenhouse.io/marqeta",
+    "notes": "Card issuing platform"
+  },
+  {
+    "name": "Doximity",
+    "careersUrl": "https://job-boards.greenhouse.io/doximity",
+    "notes": "Medical professional network"
+  },
+  {
+    "name": "Culture Amp",
+    "careersUrl": "https://job-boards.greenhouse.io/cultureamp",
+    "notes": "Employee experience platform"
+  },
+  {
+    "name": "Apollo",
+    "careersUrl": "https://job-boards.greenhouse.io/apollo",
+    "notes": "GraphQL API platform"
   }
 ]

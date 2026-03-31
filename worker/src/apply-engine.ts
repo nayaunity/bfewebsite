@@ -736,54 +736,56 @@ async function greenhouseDeterministicFill(
   // Stripe-style fields
   await selectStaticDropdownSafe(frame, /country.*reside/i, /^US$|United States/i, steps);
   await selectStaticDropdownSafe(frame, /remote/i, /Yes.*remote/i, steps);
-  await selectStaticDropdownSafe(frame, /WhatsApp/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /WhatsApp/i, /^No/i, steps);
 
   // Pronouns (Figma, Sigma Computing, etc.)
   await selectStaticDropdownSafe(frame, /pronoun/i, /She/i, steps);
 
   // Common fields (Stripe, Coinbase, Figma, etc.)
-  await selectStaticDropdownSafe(frame, /authorized to work/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /legally authorized/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /require.*sponsor/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /now or in the future require/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /visa.*sponsor/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /require.*immigration.*sponsor/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /future require.*immigration/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /currently or have you previously worked/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, "No", steps);
+  // Use regex /^Yes/i and /^No/i to match both short ("Yes") and long-form
+  // ("Yes, I am currently legally authorized...") options
+  await selectStaticDropdownSafe(frame, /authorized to work/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /legally authorized/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /require.*sponsor/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /now or in the future require/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /visa.*sponsor/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /require.*immigration.*sponsor/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /future require.*immigration/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /currently or have you previously worked/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, /^No/i, steps);
   await selectStaticDropdownSafe(frame, /previously.*employed/i, /No|have not|never/i, steps);
-  await selectStaticDropdownSafe(frame, /ever worked for/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /have you worked at/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /ever worked for/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /have you worked at/i, /^No/i, steps);
   await selectStaticDropdownSafe(frame, /previously been employed/i, /have not|No|never/i, steps);
 
   // Sanctions / export control (Twilio, Databricks, etc.)
-  await selectStaticDropdownSafe(frame, /Cuba.*Iran|Iran.*Cuba|citizen.*resident.*countries|sanctioned|denied.*parties/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /Cuba.*Iran|Iran.*Cuba|citizen.*resident.*countries|sanctioned|denied.*parties/i, /^No/i, steps);
 
   // Privacy / consent acknowledgements as dropdowns (DoorDash, etc.)
   await selectStaticDropdownSafe(frame, /applicant.*privacy.*acknowledg|privacy.*acknowledg/i, /confirm|acknowledge|read.*understood|I have read/i, steps);
   await selectStaticDropdownSafe(frame, /Global Data Privacy/i, /confirm/i, steps);
 
   // SMS/WhatsApp contact preference (DoorDash)
-  await selectStaticDropdownSafe(frame, /contact.*via.*SMS|SMS.*WhatsApp.*updates|WhatsApp.*provide updates/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /contact.*via.*SMS|SMS.*WhatsApp.*updates|WhatsApp.*provide updates/i, /^Yes/i, steps);
 
   // In-person / office / hybrid commitment (Anthropic, Glean, etc.)
-  await selectStaticDropdownSafe(frame, /open to working in.person|commit.*hybrid|willing.*commit.*hybrid/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /open to working in.person|commit.*hybrid|willing.*commit.*hybrid/i, /^Yes/i, steps);
 
   // AI Policy acknowledgement (Anthropic, etc.)
-  await selectStaticDropdownSafe(frame, /AI Policy/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /AI Policy/i, /^Yes/i, steps);
 
   // Open to relocation (Anthropic, etc.)
-  await selectStaticDropdownSafe(frame, /open to relocation/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /open to relocation/i, /^Yes/i, steps);
 
   // Interviewed / applied before (Anthropic, etc.)
-  await selectStaticDropdownSafe(frame, /interviewed.*before|previously.*interview|applied.*before/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /interviewed.*before|previously.*interview|applied.*before/i, /^No/i, steps);
 
   // Engineering blog influence (DoorDash)
   await selectStaticDropdownSafe(frame, /engineering blog.*influence|blog.*decision/i, /Not at all|Did not|No influence|None/i, steps);
 
   // Coinbase-specific fields
-  await selectStaticDropdownSafe(frame, /at least 18/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /at least 18/i, /^Yes/i, steps);
   await selectStaticDropdownSafe(frame, /how did you hear/i, /LinkedIn/i, steps);
   await selectStaticDropdownSafe(frame, /hear about this opportunity/i, /LinkedIn/i, steps);
   await selectStaticDropdownSafe(frame, /understand.*AI tools/i, /agree|acknowledge|confirm|yes/i, steps);
@@ -801,32 +803,56 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /programming languages.*regularly/i, /Python/i, steps);
 
   // Catch-all: Any remaining "Do you require" / "Will you require" sponsorship pattern
-  await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, "No", steps);
-  await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, /^No/i, steps);
 
-  // Office / in-person / relocation (Cloudflare, Discord, etc.)
-  await selectStaticDropdownSafe(frame, /able to work at.*office|work.*in.*office.*days/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /willing to relocate/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /currently located in the US|currently located in the United States/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /based in or willing to relocate/i, "Yes", steps);
+  // Office / in-person / relocation / onsite (Cloudflare, Discord, Alchemy, Materialize, etc.)
+  await selectStaticDropdownSafe(frame, /able to work at.*office|work.*in.*office.*days/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /willing to relocate/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /currently located in the US|currently located in the United States/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /based in or willing to relocate/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /work onsite|willing.*onsite|able.*onsite/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /work.*from.*office|onsite.*office/i, /^Yes/i, steps);
 
   // Country of residence (broad — GitLab uses "current country of residence")
   await selectStaticDropdownSafe(frame, /country of residence/i, /^US$|United States/i, steps);
 
   // AI consent (ClickHouse, etc.)
-  await selectStaticDropdownSafe(frame, /consent.*use of AI|consenting.*AI.*evaluat|AI.*candidacy/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /consent.*use of AI|consenting.*AI.*evaluat|AI.*candidacy/i, /^Yes/i, steps);
   // Generic "By selecting" consent dropdowns (Reddit, etc.)
   await selectStaticDropdownSafe(frame, /By selecting/i, /Yes|agree|acknowledge|confirm/i, steps);
+  // Privacy policy / candidate privacy (Starburst, Iterable, Vercel, etc.)
+  await selectStaticDropdownSafe(frame, /privacy.*policy|privacy.*notice|candidate.*privacy/i, /^Yes|I have read|I acknowledge|I agree|confirm/i, steps);
+  // "Note from" / general notices (Iterable)
+  await selectStaticDropdownSafe(frame, /Note from/i, /^Yes|I have read|I acknowledge|I agree|confirm/i, steps);
+  // Interview recording consent (Earnin, etc.)
+  await selectStaticDropdownSafe(frame, /interview.*recorded|recording/i, /^Yes|I agree|I acknowledge|I consent/i, steps);
+  // "Previously applied" / "Previously interviewed" (Earnin, Rocket Lab, etc.)
+  await selectStaticDropdownSafe(frame, /previously.*applied|previously.*interviewed|have you.*applied/i, /^No/i, steps);
+  // Technical experience yes/no (Alchemy: "written code deployed to production")
+  await selectStaticDropdownSafe(frame, /written code.*production|deployed.*production|code.*deployed/i, /^Yes/i, steps);
+  // "Double check" / "verify information" consent (Vercel)
+  await selectStaticDropdownSafe(frame, /double.check|verify.*information|ensure.*accuracy/i, /^Yes|I confirm|I acknowledge/i, steps);
+  // "Used our product before" (Tailscale, etc.)
+  await selectStaticDropdownSafe(frame, /used.*before|familiar.*product/i, /^Yes|No|Some/i, steps);
+  // Background check consent (Rocket Lab, etc.)
+  await selectStaticDropdownSafe(frame, /background check|criminal.*background|contingent.*background/i, /^Yes|I agree|I acknowledge/i, steps);
+  // Meet required qualifications (Rocket Lab)
+  await selectStaticDropdownSafe(frame, /meet.*required.*qualifications|meet.*qualifications/i, /^Yes/i, steps);
+  // Government employment (Rocket Lab)
+  await selectStaticDropdownSafe(frame, /employed.*government|government.*capacity/i, /^No/i, steps);
+  // Location/work intent (Starburst)
+  await selectStaticDropdownSafe(frame, /location.*intend.*work|intend.*work.*out of/i, /Remote|US|United States/i, steps);
 
   // Employment agreements / restrictions (GitLab)
-  await selectStaticDropdownSafe(frame, /subject to.*employment agreements|post-employment restrictions/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /subject to.*employment agreements|post-employment restrictions/i, /^No/i, steps);
 
   // Located in specific locations (GitLab — "Are you located in one of the following...")
-  await selectStaticDropdownSafe(frame, /located in.*following|located in one of/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /located in.*following|located in one of/i, /^Yes/i, steps);
 
   // Technical experience yes/no questions (ZipRecruiter, etc.)
-  await selectStaticDropdownSafe(frame, /experience with.*big data|experience with.*Hadoop|experience with.*Spark/i, "Yes", steps);
-  await selectStaticDropdownSafe(frame, /experience with.*containerization|experience with.*Docker|experience with.*Kubernetes/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /experience with.*big data|experience with.*Hadoop|experience with.*Spark/i, /^Yes/i, steps);
+  await selectStaticDropdownSafe(frame, /experience with.*containerization|experience with.*Docker|experience with.*Kubernetes/i, /^Yes/i, steps);
 
   // Years of experience in specific tech (ZipRecruiter)
   await selectStaticDropdownSafe(frame, /years of professional experience.*software/i, /5|4-6|3-5/i, steps);
@@ -836,7 +862,7 @@ async function greenhouseDeterministicFill(
   // State/Province (Affirm, Faire, etc.)
   await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State|state of residence|current state/i, /Colorado/i, steps);
   // Hybrid/in-office commitment (Faire, etc.)
-  await selectStaticDropdownSafe(frame, /commit.*in.office|in.office.*days.*week/i, "Yes", steps);
+  await selectStaticDropdownSafe(frame, /commit.*in.office|in.office.*days.*week/i, /^Yes/i, steps);
   // Company familiarity (Faire, etc.)
   await selectStaticDropdownSafe(frame, /familiar.*with.*as a company|how familiar/i, /Somewhat|A little|Not very/i, steps);
   // How did you first learn / hear about (Affirm)
@@ -929,6 +955,12 @@ async function greenhouseDeterministicFill(
     { name: /where are you located/i, value: cityState, label: "Location text" },
     { name: /from where.*intend to work/i, value: cityState, label: "Intend to work from" },
     { name: /address.*plan.*working|address.*which.*work/i, value: cityState, label: "Work address" },
+    // Mailing address / primary address (Earnin, etc.)
+    { name: /mailing address|primary.*address/i, value: cityState, label: "Mailing address" },
+    // Compensation / salary alignment (Materialize, etc.)
+    { name: /compensation.*align|salary.*align|does this align/i, value: "Yes, this aligns with my expectations.", label: "Compensation alignment" },
+    // "Why interested in joining" (Tailscale, etc.)
+    { name: /why.*interested.*joining|interested.*joining/i, value: whyAnswer, label: "Why joining" },
     // Why this company — multiple label patterns
     { name: /why.*interested/i, value: whyAnswer, label: "Why interested" },
     { name: /why.*want to join/i, value: whyAnswer, label: "Why join" },
@@ -985,7 +1017,7 @@ async function greenhouseDeterministicFill(
   // Phase 8: EEO fields (sequential — conditional fields may appear)
   // Option patterns must be flexible: standard GH uses "Female", company-custom uses "Woman", etc.
   await selectStaticDropdownSafe(frame, /gender/i, /Female|Woman/i, steps);
-  await selectStaticDropdownSafe(frame, /hispanic/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /hispanic/i, /^No/i, steps);
   await frame.waitForTimeout(1000); // Wait for conditional "Race" field
   await selectStaticDropdownSafe(frame, /race|ethnicity/i, /Black/i, steps);
   await selectStaticDropdownSafe(frame, /veteran/i, /not a protected veteran|No.*Not.*Veteran|Not a Veteran|No military|not a veteran|I am not|don.*wish|prefer not/i, steps);
@@ -999,7 +1031,7 @@ async function greenhouseDeterministicFill(
   // the first pass may have matched custom fields with wrong option text.
   // Try standard EEO field names specifically (these are at the very bottom).
   await selectStaticDropdownSafe(frame, /^Gender\*?$/i, /Female/i, steps);
-  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, "No", steps);
+  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, /^No/i, steps);
   await frame.waitForTimeout(1000); // Wait for conditional Race field
   // Standard EEO Race (appears conditionally after Hispanic=No)
   await selectStaticDropdownSafe(frame, /^Race$/i, /Black or African American/i, steps);
