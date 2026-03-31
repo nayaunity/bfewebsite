@@ -12,6 +12,8 @@ export default async function AdminAutoApplyPage() {
     discoveryByCompany,
     browseSessions,
     optedInUsers,
+    users,
+    totalUsers,
   ] = await Promise.all([
     prisma.browseDiscovery.count(),
     prisma.browseDiscovery.groupBy({
@@ -38,6 +40,23 @@ export default async function AdminAutoApplyPage() {
     prisma.user.count({
       where: { autoApplyEnabled: true },
     }),
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        subscriptionTier: true,
+        monthlyAppCount: true,
+        autoApplyEnabled: true,
+        resumeUrl: true,
+        targetRole: true,
+        createdAt: true,
+        _count: { select: { browseSessions: true } },
+      },
+    }),
+    prisma.user.count(),
   ]);
 
   const statusMap = discoveryByStatus.reduce(
@@ -89,6 +108,84 @@ export default async function AdminAutoApplyPage() {
             {optedInUsers}
           </p>
           <p className="text-xs text-[var(--gray-600)]">Opted-In Users</p>
+        </div>
+      </div>
+
+      {/* Users */}
+      <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden mb-8">
+        <div className="px-4 py-3 border-b border-[var(--card-border)] flex items-center justify-between">
+          <h2 className="text-sm font-medium text-[var(--foreground)]">
+            Users ({totalUsers})
+          </h2>
+          <div className="flex gap-3 text-xs text-[var(--gray-600)]">
+            <span>{users.filter(u => u.resumeUrl).length} with resume</span>
+            <span>{users.filter(u => u.subscriptionTier !== "free").length} paid</span>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[var(--gray-50)] text-[10px] font-semibold text-[var(--gray-600)] uppercase tracking-wider">
+                <th className="text-left px-4 py-2">User</th>
+                <th className="text-left px-4 py-2">Plan</th>
+                <th className="text-left px-4 py-2">Target Role</th>
+                <th className="text-center px-4 py-2">Apps</th>
+                <th className="text-center px-4 py-2">Sessions</th>
+                <th className="text-center px-4 py-2">Resume</th>
+                <th className="text-center px-4 py-2">Auto</th>
+                <th className="text-right px-4 py-2">Joined</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--card-border)]">
+              {users.map((u) => (
+                <tr key={u.id} className="hover:bg-[var(--gray-50)] transition-colors">
+                  <td className="px-4 py-2.5">
+                    <p className="font-medium text-[var(--foreground)] text-xs">
+                      {[u.firstName, u.lastName].filter(Boolean).join(" ") || "—"}
+                    </p>
+                    <p className="text-[10px] text-[var(--gray-600)]">{u.email}</p>
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      u.subscriptionTier === "pro" ? "bg-[#ef562a]/10 text-[#ef562a]" :
+                      u.subscriptionTier === "starter" ? "bg-blue-100 text-blue-700" :
+                      "bg-[var(--gray-100)] text-[var(--gray-600)]"
+                    }`}>
+                      {u.subscriptionTier}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-[var(--gray-600)]">
+                    {u.targetRole || "—"}
+                  </td>
+                  <td className="px-4 py-2.5 text-center text-xs text-[var(--foreground)]">
+                    {u.monthlyAppCount}
+                  </td>
+                  <td className="px-4 py-2.5 text-center text-xs text-[var(--foreground)]">
+                    {u._count.browseSessions}
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    {u.resumeUrl ? (
+                      <span className="text-green-600 text-xs">Yes</span>
+                    ) : (
+                      <span className="text-[var(--gray-600)] text-xs">No</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    {u.autoApplyEnabled ? (
+                      <span className="text-green-600 text-xs">On</span>
+                    ) : (
+                      <span className="text-[var(--gray-600)] text-xs">Off</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-[10px] text-[var(--gray-600)]">
+                    {new Date(u.createdAt).toLocaleDateString("en-US", {
+                      month: "short", day: "numeric", year: "numeric",
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
