@@ -52,6 +52,7 @@ model User {
   resumes             UserResume[]
   applyQueue          ApplyQueue[]
   browseSessions      BrowseSession[]
+  tickets             Ticket[]
 
   @@index([role])
   @@index([stripeCustomerId])
@@ -399,4 +400,22 @@ model InboundEmail {
   processed  Boolean  @default(false)
 
   @@index([toEmail, receivedAt])
+}
+
+model Ticket {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("bug") // bug, feature, question
+  status    String   @default("new") // new, in-progress, done
+  page      String?  // which page the ticket was submitted from
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }

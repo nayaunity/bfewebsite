@@ -8,6 +8,7 @@ import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { UsageMeter } from "@/components/UsageMeter";
 import { ResumeManager } from "@/components/ResumeManager";
 import { ManageSubscriptionLink } from "@/components/ManageSubscriptionLink";
+import { TicketWidget } from "@/components/TicketWidget";
 import { TIER_LIMITS } from "@/lib/stripe";
 import { canApply } from "@/lib/subscription";
 
@@ -289,6 +290,7 @@ export default async function ProfilePage() {
           )}
         </div>
       </div>
+      <TicketWidget page="profile" />
     </main>
   );
 }
