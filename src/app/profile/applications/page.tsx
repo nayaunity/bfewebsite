@@ -102,64 +102,6 @@ export default async function ApplicationsPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#ef562a] to-[#d44a22] rounded-2xl p-5 text-white">
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <span className="text-xs font-medium text-white/80 uppercase tracking-wider">Total Applications</span>
-              </div>
-              <p className="text-3xl font-bold">{allApplications.length}</p>
-              <p className="text-xs text-white/70 mt-1">Across {new Set(allApplications.map((a) => a.company)).size} companies</p>
-            </div>
-            <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full bg-white/10" />
-            <div className="absolute -right-2 -bottom-8 w-16 h-16 rounded-full bg-white/5" />
-          </div>
-
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider">Applied</span>
-            </div>
-            <p className="text-3xl font-bold text-green-600">{applied}</p>
-            <p className="text-xs text-[var(--gray-600)] mt-1">Successfully submitted</p>
-          </div>
-
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider">Failed</span>
-            </div>
-            <p className="text-3xl font-bold text-red-500">{failed}</p>
-            <p className="text-xs text-[var(--gray-600)] mt-1">Could not complete</p>
-          </div>
-
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <span className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider">Sessions</span>
-            </div>
-            <p className="text-3xl font-bold text-blue-600">{totalSessions}</p>
-            <p className="text-xs text-[var(--gray-600)] mt-1">Apply sessions run</p>
-          </div>
-        </div>
 
         {/* Recent Sessions */}
         {recentSessions.length > 0 && (
@@ -202,7 +144,11 @@ export default async function ApplicationsPage() {
         )}
 
         {/* Main Dashboard */}
-        <ApplicationsDashboard initialApplications={allApplications} companies={targetCompanies} />
+        <ApplicationsDashboard
+          initialApplications={allApplications}
+          companies={targetCompanies}
+          stats={{ total: allApplications.length, applied, failed, sessions: totalSessions, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
+        />
       </div>
     </main>
   );
