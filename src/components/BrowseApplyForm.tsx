@@ -52,31 +52,10 @@ function friendlyError(error: string): string {
   return "Application couldn't be completed.";
 }
 
-const ROLE_OPTIONS = [
-  {
-    label: "AI Engineer / Software Engineer",
-    searchTerms: "AI Engineer, Software Engineer, Backend Engineer, Full Stack Engineer",
-    description: "Software, backend, frontend, full stack, AI, ML, data science, DevOps",
-  },
-  {
-    label: "Developer Advocate",
-    searchTerms: "Developer Advocate, Developer Relations, Technical Evangelist, Solutions Architect",
-    description: "DevRel, community engineer, technical writer, solutions architect",
-  },
-  {
-    label: "Content Creator",
-    searchTerms: "Content Strategist, Social Media Manager, Copywriter, Marketing Manager",
-    description: "Content strategy, social media, copywriting, video, brand",
-  },
-  {
-    label: "Storyteller / Product Manager",
-    searchTerms: "Product Manager, Program Manager, Producer, Creative Director",
-    description: "Producer, PM, creative director, narrative designer, curriculum",
-  },
-];
+import { ROLE_OPTIONS } from "@/lib/role-options";
 
-export function BrowseApplyForm({ companies }: { companies: Company[] }) {
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+export function BrowseApplyForm({ companies, defaultRole }: { companies: Company[]; defaultRole?: string | null }) {
+  const [selectedRole, setSelectedRole] = useState<string | null>(defaultRole || null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<SessionData | null>(null);

@@ -34,6 +34,7 @@ model User {
   city                String?
   preferredName       String?
   yearsOfExperience   String?
+  targetRole          String?
   stripeCustomerId    String?          @unique
   subscriptionTier    String           @default("free")
   subscriptionStatus  String           @default("inactive")

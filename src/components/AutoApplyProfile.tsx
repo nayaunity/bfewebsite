@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { ROLE_OPTIONS } from "@/lib/role-options";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -36,6 +38,7 @@ interface AutoApplyProfileProps {
     city: string | null;
     preferredName: string | null;
     yearsOfExperience: string | null;
+    targetRole: string | null;
   };
 }
 
@@ -63,6 +66,7 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
   const [city, setCity] = useState(initialData.city || "");
   const [preferredName, setPreferredName] = useState(initialData.preferredName || "");
   const [yearsOfExperience, setYearsOfExperience] = useState(initialData.yearsOfExperience || "");
+  const [targetRole, setTargetRole] = useState(initialData.targetRole || "");
   const [autoApplyEnabled, setAutoApplyEnabled] = useState(
     initialData.autoApplyEnabled
   );
@@ -108,6 +112,7 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
           city: city || null,
           preferredName: preferredName || null,
           yearsOfExperience: yearsOfExperience || null,
+          targetRole: targetRole || null,
         }),
       });
 
@@ -180,17 +185,6 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
         Fill in your details to auto-apply to Greenhouse jobs with your resume.
       </p>
 
-      {message && (
-        <div
-          className={`mb-4 p-3 rounded-lg text-sm ${
-            message.type === "success"
-              ? "bg-green-50 border border-green-200 text-green-700"
-              : "bg-red-50 border border-red-200 text-red-600"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
 
       <div className="space-y-3">
         {/* Name fields */}
@@ -473,6 +467,30 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
           </div>
         </div>
 
+        {/* Target Role */}
+        <div className="pt-2 border-t border-[var(--card-border)]">
+          <p className="text-xs font-medium text-[var(--foreground)] mb-2">
+            Target Role
+          </p>
+          <select
+            value={targetRole}
+            onChange={(e) => setTargetRole(e.target.value)}
+            className={inputClass}
+          >
+            <option value="">Select your target role...</option>
+            {ROLE_OPTIONS.map((role) => (
+              <option key={role.label} value={role.label}>
+                {role.label}
+              </option>
+            ))}
+          </select>
+          {targetRole && (
+            <p className="text-[10px] text-[var(--gray-600)] mt-1">
+              {ROLE_OPTIONS.find((r) => r.label === targetRole)?.description}
+            </p>
+          )}
+        </div>
+
         {/* Auto-apply toggle */}
         <div className="flex items-center justify-between py-2">
           <div>
@@ -507,6 +525,20 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
           </p>
         )}
 
+        {/* Success/Error Message */}
+        {message && (
+          <div
+            className={`p-3 rounded-lg text-sm ${
+              message.type === "success"
+                ? "bg-green-50 border border-green-200 text-green-700"
+                : "bg-red-50 border border-red-200 text-red-600"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        {/* Buttons */}
         <div className="flex gap-3 pt-2">
           <button
             onClick={handleSave}
@@ -516,52 +548,16 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
             {saving ? "Saving..." : "Save Profile"}
           </button>
 
-          {profileComplete && (
-            <button
-              onClick={handleApplyNow}
-              disabled={applying}
-              className="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+          {message?.type === "success" && (
+            <Link
+              href="/profile/applications"
+              className="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity text-center"
             >
-              {applying ? "Applying..." : "Apply Now"}
-            </button>
+              Start Applying
+            </Link>
           )}
         </div>
       </div>
-
-      {/* Apply results */}
-      {applyResult && (
-        <div className="mt-4 p-3 bg-[var(--gray-50)] rounded-lg">
-          <p className="text-sm font-medium text-[var(--foreground)] mb-2">
-            Results
-          </p>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div>
-              <p className="text-lg font-bold text-green-600">
-                {applyResult.submitted}
-              </p>
-              <p className="text-xs text-[var(--gray-600)]">Submitted</p>
-            </div>
-            <div>
-              <p className="text-lg font-bold text-yellow-600">
-                {applyResult.skipped}
-              </p>
-              <p className="text-xs text-[var(--gray-600)]">Skipped</p>
-            </div>
-            <div>
-              <p className="text-lg font-bold text-red-600">
-                {applyResult.failed}
-              </p>
-              <p className="text-xs text-[var(--gray-600)]">Failed</p>
-            </div>
-          </div>
-          <a
-            href="/profile/applications"
-            className="block mt-3 text-center text-sm text-[#ef562a] hover:underline"
-          >
-            View all applications
-          </a>
-        </div>
-      )}
     </div>
   );
 }

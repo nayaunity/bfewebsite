@@ -48,6 +48,7 @@ async function getUserData(userId: string) {
       city: true,
       preferredName: true,
       yearsOfExperience: true,
+      targetRole: true,
       subscriptionTier: true,
       subscriptionStatus: true,
       stripeCustomerId: true,
@@ -241,6 +242,7 @@ export default async function ProfilePage() {
               city: user.city,
               preferredName: user.preferredName,
               yearsOfExperience: user.yearsOfExperience,
+              targetRole: user.targetRole,
             }}
           />
 
