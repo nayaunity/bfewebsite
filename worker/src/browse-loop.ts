@@ -46,6 +46,24 @@ const companyUrlMap = new Map(
 export async function processNextBrowseSession(): Promise<boolean> {
   const db = getDb();
 
+  // Watchdog: reset sessions stuck in "processing" for >30 minutes
+  try {
+    const stale = await db.execute({
+      sql: `UPDATE BrowseSession SET status = 'failed',
+            errorMessage = 'Session timed out — please try again',
+            completedAt = datetime('now')
+            WHERE status = 'processing'
+            AND startedAt < datetime('now', '-30 minutes')
+            RETURNING id`,
+      args: [],
+    });
+    if (stale.rows && stale.rows.length > 0) {
+      for (const row of stale.rows) {
+        console.log(JSON.stringify({ ts: new Date().toISOString(), level: "warn", msg: "Reset stuck session", sessionId: row.id }));
+      }
+    }
+  } catch {}
+
   // Atomically claim next queued session
   const result = await db.execute({
     sql: `UPDATE BrowseSession SET status = 'processing', startedAt = datetime('now')
@@ -144,7 +162,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           args: [session.userId],
         });
         const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string } | undefined;
-        const tierLimits: Record<string, number> = { free: 5, starter: 50, pro: 999999 };
+        const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
         const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
         if (currentUser && currentUser.monthlyAppCount >= limit) {
           companyResult.skipped++;
