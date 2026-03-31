@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { ResumeUpload } from "@/components/ResumeUpload";
 import { AutoApplyProfile } from "@/components/AutoApplyProfile";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
@@ -103,7 +105,9 @@ export default async function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[var(--background)]">
+    <>
+    <Navigation />
+    <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Back link */}
         <Link
@@ -292,5 +296,7 @@ export default async function ProfilePage() {
       </div>
       <TicketWidget page="profile" />
     </main>
+    <Footer />
+    </>
   );
 }

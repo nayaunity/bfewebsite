@@ -92,27 +92,28 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
               {columnTickets.map((ticket) => (
                 <div
                   key={ticket.id}
-                  className="bg-[var(--background)] border border-[var(--card-border)] rounded-xl p-3 hover:shadow-md transition-shadow"
+                  className="bg-[var(--background)] border border-[var(--card-border)] rounded-xl p-3 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => setExpandedId(expandedId === ticket.id ? null : ticket.id)}
                 >
                   {/* Type badge + title */}
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3
-                      className="text-sm font-medium text-[var(--foreground)] cursor-pointer hover:text-[#ef562a] transition-colors"
-                      onClick={() => setExpandedId(expandedId === ticket.id ? null : ticket.id)}
-                    >
-                      {ticket.title}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <svg className={`w-3 h-3 transition-transform ${expandedId === ticket.id ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <h3 className="text-sm font-medium text-[var(--foreground)]">
+                        {ticket.title}
+                      </h3>
+                    </div>
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full whitespace-nowrap ${TYPE_BADGES[ticket.type]?.class || "bg-gray-100 text-gray-700"}`}>
                       {TYPE_BADGES[ticket.type]?.label || ticket.type}
                     </span>
                   </div>
 
-                  {/* Expanded message */}
-                  {expandedId === ticket.id && (
-                    <p className="text-xs text-[var(--gray-600)] mb-3 whitespace-pre-wrap bg-[var(--gray-50)] rounded-lg p-2">
-                      {ticket.message}
-                    </p>
-                  )}
+                  {/* Message - always show preview, full on expand */}
+                  <p className={`text-xs text-[var(--gray-600)] mb-3 whitespace-pre-wrap bg-[var(--gray-50)] rounded-lg p-2 ${expandedId === ticket.id ? "" : "line-clamp-2"}`}>
+                    {ticket.message}
+                  </p>
 
                   {/* Meta */}
                   <div className="flex items-center justify-between text-[10px] text-[var(--gray-600)]">
