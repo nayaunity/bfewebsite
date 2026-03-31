@@ -12,28 +12,57 @@ import { processNextBrowseSession } from "./browse-loop";
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "3001", 10);
-const POLL_INTERVAL_MS = 30_000; // 30 seconds
-const DELAY_BETWEEN_JOBS_MS = 5_000; // 5 seconds between same-company apps
+const POLL_INTERVAL_MS = 30_000;
+const DELAY_BETWEEN_JOBS_MS = 5_000;
+const MAX_CONCURRENT = 2;
 
-let isProcessing = false;
+let activeBrowseSessions = 0;
+let isProcessingQueue = false;
+let sessionsProcessedToday = 0;
+let lastSessionAt: string | null = null;
+const startedAt = new Date().toISOString();
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", processing: isProcessing, timestamp: new Date().toISOString() });
+  res.json({
+    status: "ok",
+    activeBrowseSessions,
+    isProcessingQueue,
+    maxConcurrent: MAX_CONCURRENT,
+    sessionsProcessedToday,
+    lastSessionAt,
+    uptime: Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000),
+    startedAt,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.listen(PORT, () => {
-  console.log(`Worker running on port ${PORT}`);
+  console.log(`Worker running on port ${PORT} (max ${MAX_CONCURRENT} concurrent sessions)`);
   startPolling();
 });
 
 async function startPolling() {
-  console.log(`Polling queue every ${POLL_INTERVAL_MS / 1000}s`);
+  console.log(`Polling every ${POLL_INTERVAL_MS / 1000}s`);
 
   while (true) {
     try {
-      await processNextJob();
-      if (!isProcessing) {
-        await processNextBrowseSession();
+      // Process queue jobs (legacy path)
+      if (!isProcessingQueue) {
+        processNextJob().catch((err) => console.error("Queue job error:", err));
+      }
+
+      // Process browse sessions — up to MAX_CONCURRENT in parallel
+      if (activeBrowseSessions < MAX_CONCURRENT) {
+        activeBrowseSessions++;
+        processNextBrowseSession()
+          .then((found) => {
+            if (found) {
+              sessionsProcessedToday++;
+              lastSessionAt = new Date().toISOString();
+            }
+          })
+          .catch((err) => console.error("Browse session error:", err))
+          .finally(() => { activeBrowseSessions--; });
       }
     } catch (error) {
       console.error("Polling error:", error);
@@ -43,12 +72,12 @@ async function startPolling() {
 }
 
 async function processNextJob() {
-  if (isProcessing) return;
+  if (isProcessingQueue) return;
 
   const item = await pollQueue();
   if (!item) return;
 
-  isProcessing = true;
+  isProcessingQueue = true;
   console.log(`Processing: ${item.job.title} at ${item.job.company}`);
 
   try {
@@ -90,7 +119,7 @@ async function processNextJob() {
     await markFailed(item.id, msg);
     console.error(`Error processing ${item.job.title}:`, msg);
   } finally {
-    isProcessing = false;
+    isProcessingQueue = false;
     await delay(DELAY_BETWEEN_JOBS_MS);
   }
 }
