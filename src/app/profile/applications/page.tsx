@@ -18,7 +18,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -108,6 +108,7 @@ export default async function ApplicationsPage() {
           initialApplications={allApplications}
           companies={targetCompanies}
           stats={{ total: allApplications.length, applied, failed, sessions: totalSessions, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
+          defaultRole={user?.targetRole || null}
         />
       </div>
     </main>

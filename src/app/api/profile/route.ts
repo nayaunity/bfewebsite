@@ -14,7 +14,7 @@ export async function PATCH(request: NextRequest) {
       firstName, lastName, phone, autoApplyEnabled,
       usState, workAuthorized, needsSponsorship, countryOfResidence,
       linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle,
-      school, degree, city, preferredName, yearsOfExperience,
+      school, degree, city, preferredName, yearsOfExperience, targetRole,
     } = body;
 
     const data: Record<string, unknown> = {};
@@ -87,6 +87,7 @@ export async function PATCH(request: NextRequest) {
       { key: "city", value: city, maxLen: 100 },
       { key: "preferredName", value: preferredName, maxLen: 100 },
       { key: "yearsOfExperience", value: yearsOfExperience, maxLen: 10 },
+      { key: "targetRole", value: targetRole, maxLen: 200 },
     ];
 
     for (const field of optionalStringFields) {
@@ -124,6 +125,7 @@ export async function PATCH(request: NextRequest) {
         city: true,
         preferredName: true,
         yearsOfExperience: true,
+        targetRole: true,
       },
     });
 
