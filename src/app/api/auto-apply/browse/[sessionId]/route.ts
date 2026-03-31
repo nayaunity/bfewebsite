@@ -30,8 +30,7 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  return NextResponse.json({
-    session: {
+  return NextResponse.json({ session: {
       id: browseSession.id,
       status: browseSession.status,
       targetRole: browseSession.targetRole,
@@ -55,4 +54,43 @@ export async function GET(
       errorMessage: d.errorMessage,
     })),
   });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ sessionId: string }> }
+) {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { sessionId } = await params;
+
+  const browseSession = await prisma.browseSession.findUnique({
+    where: { id: sessionId },
+  });
+
+  if (!browseSession) {
+    return NextResponse.json({ error: "Session not found" }, { status: 404 });
+  }
+
+  if (browseSession.userId !== session.user.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  if (browseSession.status !== "queued" && browseSession.status !== "processing") {
+    return NextResponse.json({ error: "Session is not active" }, { status: 400 });
+  }
+
+  await prisma.browseSession.update({
+    where: { id: sessionId },
+    data: {
+      status: "failed",
+      errorMessage: "Stopped by user",
+      completedAt: new Date(),
+    },
+  });
+
+  return NextResponse.json({ success: true });
 }
