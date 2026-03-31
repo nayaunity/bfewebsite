@@ -226,7 +226,7 @@ export function BrowseApplyForm({ companies, defaultRole }: { companies: Company
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium text-[var(--foreground)]">
-                Companies ({selected.size}/{companies.length})
+                Where do you wanna apply? ({selected.size}/{companies.length})
               </label>
               <button
                 onClick={toggleAll}
