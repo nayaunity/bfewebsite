@@ -103,46 +103,6 @@ export default async function ApplicationsPage() {
         </div>
 
 
-        {/* Recent Sessions */}
-        {recentSessions.length > 0 && (
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl mb-8 overflow-hidden">
-            <div className="px-5 py-3 border-b border-[var(--card-border)]">
-              <h2 className="text-sm font-semibold text-[var(--foreground)]">Recent Sessions</h2>
-            </div>
-            <div className="divide-y divide-[var(--card-border)]">
-              {recentSessions.map((s) => (
-                <div key={s.id} className="px-5 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      s.status === "completed" ? "bg-green-500" :
-                      s.status === "failed" ? "bg-red-500" :
-                      s.status === "processing" ? "bg-blue-500 animate-pulse" :
-                      "bg-gray-400"
-                    }`} />
-                    <div>
-                      <p className="text-sm text-[var(--foreground)]">{s.targetRole}</p>
-                      <p className="text-xs text-[var(--gray-600)]">
-                        {s.totalCompanies} {s.totalCompanies === 1 ? "company" : "companies"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6 text-xs text-[var(--gray-600)]">
-                    <span className="text-green-600 font-medium">{s.jobsApplied} applied</span>
-                    <span>{s.jobsFound} found</span>
-                    {s.jobsFailed > 0 && <span className="text-red-500">{s.jobsFailed} failed</span>}
-                    <span className="min-w-[100px] text-right">
-                      {new Date(s.createdAt).toLocaleDateString("en-US", {
-                        month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
-                        timeZone: "America/Denver",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Main Dashboard */}
         <ApplicationsDashboard
           initialApplications={allApplications}
