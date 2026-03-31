@@ -106,6 +106,42 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
     }
   };
 
+  const [stopping, setStopping] = useState(false);
+
+  const handleStop = async () => {
+    // Find the active session ID — either from current state or by fetching
+    const stopId = sessionId;
+    if (!stopId) {
+      // No session ID in state — try to cancel via a special endpoint
+      try {
+        setStopping(true);
+        const res = await fetch("/api/auto-apply/browse/cancel", { method: "POST" });
+        if (res.ok) {
+          setError(null);
+          setSessionId(null);
+          setSessionData(null);
+          setDiscoveries([]);
+        }
+      } catch {} finally {
+        setStopping(false);
+      }
+      return;
+    }
+
+    try {
+      setStopping(true);
+      const res = await fetch(`/api/auto-apply/browse/${stopId}`, { method: "DELETE" });
+      if (res.ok) {
+        setError(null);
+        setSessionId(null);
+        setSessionData(null);
+        setDiscoveries([]);
+      }
+    } catch {} finally {
+      setStopping(false);
+    }
+  };
+
   const handleStart = async () => {
     setError(null);
     setStarting(true);
@@ -247,8 +283,17 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-              {error}
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-center justify-between gap-3">
+              <span>{error}</span>
+              {error.includes("active browse session") && (
+                <button
+                  onClick={handleStop}
+                  disabled={stopping}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+                >
+                  {stopping ? "Stopping..." : "Stop Session"}
+                </button>
+              )}
             </div>
           )}
 
@@ -452,7 +497,16 @@ export function BrowseApplyForm({ companies }: { companies: Company[] }) {
             </div>
           )}
 
-          {/* New Session Button */}
+          {/* Stop / New Session Buttons */}
+          {isRunning && (
+            <button
+              onClick={handleStop}
+              disabled={stopping}
+              className="w-full py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+            >
+              {stopping ? "Stopping..." : "Stop Session"}
+            </button>
+          )}
           {isDone && (
             <button
               onClick={() => {
