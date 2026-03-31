@@ -33,7 +33,7 @@ const tiers = [
       "Priority queue",
     ],
     cta: "Subscribe",
-    highlighted: false,
+    highlighted: true,
   },
   {
     name: "Pro",
@@ -50,7 +50,7 @@ const tiers = [
       "Daily auto-apply",
     ],
     cta: "Subscribe",
-    highlighted: true,
+    highlighted: false,
   },
 ];
 
