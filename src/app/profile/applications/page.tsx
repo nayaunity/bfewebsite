@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import targetCompanies from "../../../../scripts/target-companies.json";
+import { TicketWidget } from "@/components/TicketWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -111,6 +112,7 @@ export default async function ApplicationsPage() {
           defaultRole={user?.targetRole || null}
         />
       </div>
+      <TicketWidget page="applications" />
     </main>
   );
 }
