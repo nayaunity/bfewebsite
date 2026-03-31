@@ -12,7 +12,7 @@ const tiers = [
     features: [
       "5 applications per month",
       "1 resume upload",
-      "All 20 companies",
+      "All 17 companies",
       "Smart resume matching",
       "Application tracking",
     ],
@@ -27,7 +27,7 @@ const tiers = [
     features: [
       "50 applications per month",
       "2 resume uploads",
-      "All 20 companies",
+      "All 17 companies",
       "Smart resume matching",
       "Application tracking",
       "Priority queue",
@@ -41,9 +41,9 @@ const tiers = [
     period: "/month",
     key: "pro" as const,
     features: [
-      "Unlimited applications",
-      "Unlimited resumes",
-      "All 20 companies",
+      "200 applications per month",
+      "Up to 10 resumes",
+      "All 17 companies",
       "Smart resume matching",
       "Application tracking",
       "Priority queue",
