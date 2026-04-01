@@ -11,6 +11,8 @@ import { UsageMeter } from "@/components/UsageMeter";
 import { ResumeManager } from "@/components/ResumeManager";
 import { ManageSubscriptionLink } from "@/components/ManageSubscriptionLink";
 import { TicketWidget } from "@/components/TicketWidget";
+import { OnboardingSync } from "@/components/OnboardingSync";
+import { Suspense } from "react";
 import { TIER_LIMITS } from "@/lib/stripe";
 import { canApply } from "@/lib/subscription";
 
@@ -106,6 +108,7 @@ export default async function ProfilePage() {
 
   return (
     <>
+    <Suspense><OnboardingSync /></Suspense>
     <Navigation />
     <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
       <div className="max-w-2xl mx-auto px-4 py-12">
