@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { CoverImageUpload } from "@/components/admin/CoverImageUpload";
 
 export default function NewBlogPostPage() {
   const router = useRouter();
@@ -172,19 +173,11 @@ export default function NewBlogPostPage() {
             </div>
           </div>
 
-          {/* Image URL */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Featured Image URL
-            </label>
-            <input
-              type="text"
-              value={formData.image}
-              onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
-              placeholder="/images/blog/image.jpg or https://example.com/image.jpg"
-            />
-          </div>
+          {/* Cover Image */}
+          <CoverImageUpload
+            value={formData.image}
+            onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+          />
 
           {/* Tags */}
           <div>
