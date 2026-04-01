@@ -415,52 +415,6 @@ export default function JobBoard() {
       </section>
 
 
-      {/* Featured Apprenticeship Jobs */}
-      <section className="bg-[var(--background)] pb-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          {/* Pinterest Apprenticeship */}
-          <button
-            onClick={() => router.push("/jobs/pinterest-apprenticeship")}
-            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#ef562a] font-medium">Pinterest</span>
-                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
-                    Apprenticeship
-                  </span>
-                  <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">
-                    Apply Now
-                  </span>
-                  <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                    Remote
-                  </span>
-                </div>
-                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
-                  Apprentice Engineer
-                </h3>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
-                  <span>San Francisco, CA</span>
-                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>Full-time</span>
-                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>$9,350 - $11,000/mo</span>
-                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>Apply by Mar 27</span>
-                </div>
-                <p className="mt-3 text-sm text-[var(--gray-600)]">
-                  Up to 1-year program for career changers and non-traditional backgrounds. Starts July 27, 2026.
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#ef562a]">Learn More →</span>
-              </div>
-            </div>
-          </button>
-        </div>
-      </section>
-
       {/* Auto-Apply Banner */}
       <section className="bg-[#1a1a1a] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
