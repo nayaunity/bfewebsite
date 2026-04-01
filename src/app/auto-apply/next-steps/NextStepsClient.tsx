@@ -88,10 +88,10 @@ export default function NextStepsClient({
           the<span className="text-[#ef562a]">BFE</span>
         </Link>
         <Link
-          href="/profile"
+          href="/"
           className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
         >
-          My Profile
+          Home
         </Link>
       </header>
 
@@ -245,20 +245,18 @@ export default function NextStepsClient({
           </div>
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom message */}
         <div className="mt-8 text-center">
           {goalMet ? (
-            <>
-              <p className="text-sm text-green-600 font-medium mb-4">
-                You&apos;re all set! We&apos;ll notify you when auto-apply is ready.
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-6">
+              <div className="text-3xl mb-3">&#127881;</div>
+              <h3 className="font-serif text-xl text-[var(--foreground)] mb-2">
+                You&apos;re all set!
+              </h3>
+              <p className="text-sm text-[var(--gray-600)]">
+                We&apos;ll send you an email when auto-apply is ready — within 24 hours. Keep an eye on your inbox!
               </p>
-              <Link
-                href="/profile"
-                className="inline-flex items-center gap-2 bg-[var(--foreground)] text-[var(--background)] px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity"
-              >
-                Go to Profile
-              </Link>
-            </>
+            </div>
           ) : (
             <p className="text-sm text-[var(--gray-600)]">
               Upload {goal - resumeCount} more resume{goal - resumeCount !== 1 ? "s" : ""} to complete this step.
