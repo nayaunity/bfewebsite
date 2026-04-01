@@ -11,7 +11,8 @@ export function OnboardingSync() {
     if (searchParams.get("onboarding") !== "complete") return;
     if (synced) return;
 
-    const raw = sessionStorage.getItem("onboarding_data");
+    // Check both storage types — localStorage survives magic link auth (new tab)
+    const raw = sessionStorage.getItem("onboarding_data") || localStorage.getItem("onboarding_data");
     if (!raw) return;
 
     try {
@@ -55,6 +56,7 @@ export function OnboardingSync() {
         }).then((res) => {
           if (res.ok) {
             sessionStorage.removeItem("onboarding_data");
+            localStorage.removeItem("onboarding_data");
             setSynced(true);
             // Clean URL without reload
             window.history.replaceState({}, "", window.location.pathname);

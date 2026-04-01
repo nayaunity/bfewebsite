@@ -138,8 +138,9 @@ export default function OnboardingWizard() {
   };
 
   const handleCreateAccount = () => {
+    localStorage.setItem("onboarding_data", JSON.stringify(data));
     sessionStorage.setItem("onboarding_data", JSON.stringify(data));
-    window.location.href = "/auth/signin?callbackUrl=/profile?onboarding=complete";
+    window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent("/profile?onboarding=complete");
   };
 
   // ============================================================================

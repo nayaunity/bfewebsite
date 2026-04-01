@@ -138,8 +138,10 @@ export default function OnboardingWizard() {
   };
 
   const handleCreateAccount = () => {
+    // Use localStorage so data survives magic link auth (new tab)
+    localStorage.setItem("onboarding_data", JSON.stringify(data));
     sessionStorage.setItem("onboarding_data", JSON.stringify(data));
-    window.location.href = "/auth/signin?callbackUrl=/auto-apply/next-steps?onboarding=complete";
+    window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent("/auto-apply/next-steps?onboarding=complete");
   };
 
   // ============================================================================
