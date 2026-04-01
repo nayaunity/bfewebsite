@@ -46,7 +46,6 @@ interface Stats {
   total: number;
   applied: number;
   failed: number;
-  sessions: number;
   uniqueCompanies: number;
 }
 
@@ -158,18 +157,6 @@ export default function ApplicationsDashboard({
           <p className="text-xs text-[var(--gray-600)] mt-1">Could not complete</p>
         </button>
 
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <span className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider">Sessions</span>
-          </div>
-          <p className="text-3xl font-bold text-blue-600">{stats.sessions}</p>
-          <p className="text-xs text-[var(--gray-600)] mt-1">Apply sessions run</p>
-        </div>
       </div>
 
       {/* Browse & Apply Form */}
