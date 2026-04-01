@@ -261,15 +261,20 @@ export default function JobBoard() {
               Explore roles at companies committed to diversity and inclusion in
               tech.
             </p>
-            <button
-              onClick={handleSubmitResume}
-              className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Submit Your Resume
-            </button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href="/auto-apply/landing"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
+              >
+                Auto-Apply to Jobs <span aria-hidden="true">&rarr;</span>
+              </a>
+              <button
+                onClick={handleSubmitResume}
+                className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--card-border)] text-[var(--foreground)] font-medium rounded-full hover:bg-[var(--gray-50)] transition-colors"
+              >
+                Submit Your Resume
+              </button>
+            </div>
           </div>
 
           {/* Mobile filter pills */}
@@ -453,6 +458,26 @@ export default function JobBoard() {
               </div>
             </div>
           </button>
+        </div>
+      </section>
+
+      {/* Auto-Apply Banner */}
+      <section className="bg-[#1a1a1a] py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-2xl md:text-3xl text-white">
+              Tired of applying one by one?
+            </h2>
+            <p className="mt-1 text-sm text-white/60">
+              Let BFE auto-apply to hundreds of jobs for you while you sleep.
+            </p>
+          </div>
+          <a
+            href="/auto-apply/landing"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
+          >
+            Get Started <span aria-hidden="true">&rarr;</span>
+          </a>
         </div>
       </section>
 
