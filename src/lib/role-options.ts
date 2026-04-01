@@ -79,4 +79,14 @@ export const ROLE_OPTIONS = [
     searchTerms: "UX Researcher, User Researcher, Design Researcher, Research Scientist",
     description: "User research, usability testing, interviews, insights",
   },
+  {
+    label: "Product Marketing",
+    searchTerms: "Product Marketing Manager, Growth Marketing, Marketing Manager, Go-To-Market",
+    description: "GTM strategy, positioning, launches, market research",
+  },
+  {
+    label: "Content Strategist",
+    searchTerms: "Content Strategist, Content Manager, Content Marketing, Editorial Manager",
+    description: "Content strategy, editorial planning, copywriting, SEO",
+  },
 ];
