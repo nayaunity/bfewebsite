@@ -522,7 +522,7 @@ export default function OnboardingWizard() {
                   <p className="text-xs text-[var(--gray-600)] mb-2">Without theBFE</p>
                   <div className="h-16 bg-[var(--gray-200)] rounded-lg" />
                 </div>
-                <div className="bg-[var(--foreground)] rounded-xl p-4 text-center flex-1">
+                <div className="bg-[#ef562a] rounded-xl p-4 text-center flex-1">
                   <p className="text-xs text-white/70 mb-2">With theBFE</p>
                   <p className="text-2xl font-bold text-white">10x</p>
                   <p className="text-xs text-white/70">more interviews</p>

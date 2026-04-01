@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const maxResumes = getMaxResumes(user.subscriptionTier || "free");
+  const maxResumes = Math.max(getMaxResumes(user.subscriptionTier || "free"), 3);
   if (user._count.resumes >= maxResumes) {
     return NextResponse.json(
       {
