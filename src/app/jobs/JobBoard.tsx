@@ -416,14 +416,14 @@ export default function JobBoard() {
 
 
       {/* Auto-Apply Banner */}
-      <section className="bg-[#1a1a1a] py-10">
+      <section className="bg-[#ef562a] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="font-serif text-2xl md:text-3xl text-white">
-              Tired of applying one by one?
+              Apply to hundreds of jobs while you sleep
             </h2>
-            <p className="mt-1 text-sm text-white/60">
-              Let BFE auto-apply to hundreds of jobs for you while you sleep.
+            <p className="mt-1 text-sm text-white/80">
+              Use Maticaly and get 10X interviews
             </p>
           </div>
           <a
