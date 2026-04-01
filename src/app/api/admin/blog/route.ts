@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPost } from "@/lib/blog";
 import { checkAdmin } from "@/lib/admin";
 
@@ -39,6 +40,9 @@ export async function POST(request: Request) {
       featured: featured || false,
       image: image || undefined,
     });
+
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
 
     return NextResponse.json({ success: true, slug });
   } catch (error) {
@@ -100,6 +104,12 @@ export async function PUT(request: Request) {
       publishedAt,
     });
 
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
+    if (originalSlug !== slug) {
+      revalidatePath(`/blog/${originalSlug}`);
+    }
+
     return NextResponse.json({ success: true, slug });
   } catch (error) {
     console.error("Failed to update blog post:", error);
@@ -136,6 +146,9 @@ export async function DELETE(request: Request) {
     }
 
     await deleteBlogPost(slug);
+
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
