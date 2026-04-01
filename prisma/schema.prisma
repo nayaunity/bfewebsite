@@ -35,6 +35,8 @@ model User {
   preferredName       String?
   yearsOfExperience   String?
   targetRole          String?
+  onboardingData      String?
+  onboardingCompletedAt DateTime?
   stripeCustomerId    String?          @unique
   subscriptionTier    String           @default("free")
   subscriptionStatus  String           @default("inactive")
