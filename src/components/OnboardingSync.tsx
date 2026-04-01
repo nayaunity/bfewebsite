@@ -57,7 +57,7 @@ export function OnboardingSync() {
             sessionStorage.removeItem("onboarding_data");
             setSynced(true);
             // Clean URL without reload
-            window.history.replaceState({}, "", "/profile");
+            window.history.replaceState({}, "", window.location.pathname);
           }
         });
       }
