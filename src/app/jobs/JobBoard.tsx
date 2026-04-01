@@ -539,7 +539,7 @@ export default function JobBoard() {
                         <a
                           href="/auto-apply/landing"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-3 py-1 text-xs font-medium rounded-full bg-[#ef562a] text-white hover:opacity-90 transition-opacity"
+                          className="px-5 py-2 text-sm font-medium rounded-full bg-[#ef562a] text-white hover:opacity-90 transition-opacity"
                         >
                           Auto Apply
                         </a>
