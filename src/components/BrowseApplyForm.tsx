@@ -321,6 +321,13 @@ export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { comp
             </div>
           )}
 
+          {/* Remaining apps notice */}
+          {usage && usage.limit - usage.used > 0 && usage.limit - usage.used <= 10 && (
+            <p className="text-xs text-[var(--gray-600)] text-center py-2">
+              You have <strong className="text-[var(--foreground)]">{usage.limit - usage.used}</strong> application{usage.limit - usage.used !== 1 ? "s" : ""} remaining this month. BFE will stop after reaching your limit.
+            </p>
+          )}
+
           {/* Start Button */}
           <button
             onClick={handleStart}
@@ -521,16 +528,31 @@ export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { comp
             </button>
           )}
           {isDone && (
-            <button
-              onClick={() => {
-                setSessionId(null);
-                setSessionData(null);
-                setDiscoveries([]);
-              }}
-              className="w-full py-2 text-sm font-medium rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--gray-50)] transition-colors"
-            >
-              Start New Session
-            </button>
+            <div className="space-y-2">
+              {usage && usage.used >= usage.limit && (
+                <div className="p-3 rounded-lg bg-[#ef562a]/10 text-center">
+                  <p className="text-sm text-[#ef562a] font-medium mb-2">
+                    Monthly limit reached ({usage.used}/{usage.limit} applications)
+                  </p>
+                  <a
+                    href="/pricing"
+                    className="inline-block px-4 py-2 text-xs font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity"
+                  >
+                    Upgrade for More Applications
+                  </a>
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  setSessionId(null);
+                  setSessionData(null);
+                  setDiscoveries([]);
+                }}
+                className="w-full py-2 text-sm font-medium rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--gray-50)] transition-colors"
+              >
+                Start New Session
+              </button>
+            </div>
           )}
         </div>
       )}

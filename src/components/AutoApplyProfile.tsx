@@ -122,6 +122,28 @@ export function AutoApplyProfile({ initialData }: AutoApplyProfileProps) {
         throw new Error(data.error || "Failed to save");
       }
 
+      // Sync form state with saved values to prevent stale data on next save
+      if (data.user) {
+        setFirstName(data.user.firstName || "");
+        setLastName(data.user.lastName || "");
+        setPhone(data.user.phone || "");
+        setUsState(data.user.usState || "");
+        setWorkAuthorized(data.user.workAuthorized);
+        setNeedsSponsorship(data.user.needsSponsorship);
+        setCountryOfResidence(data.user.countryOfResidence || "");
+        setLinkedinUrl(data.user.linkedinUrl || "");
+        setGithubUrl(data.user.githubUrl || "");
+        setWebsiteUrl(data.user.websiteUrl || "");
+        setCurrentEmployer(data.user.currentEmployer || "");
+        setCurrentTitle(data.user.currentTitle || "");
+        setSchool(data.user.school || "");
+        setDegree(data.user.degree || "");
+        setCity(data.user.city || "");
+        setPreferredName(data.user.preferredName || "");
+        setYearsOfExperience(data.user.yearsOfExperience || "");
+        setTargetRole(data.user.targetRole || "");
+      }
+
       setMessage({ type: "success", text: "Profile saved successfully" });
     } catch (err) {
       setMessage({

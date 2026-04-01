@@ -106,7 +106,22 @@ export async function processNextBrowseSession(): Promise<boolean> {
   }
 
   // Process each company
+  let limitReached = false;
   for (const companyName of companies) {
+    // Stop early if monthly limit was already hit
+    if (limitReached) {
+      await appendProgressLog(session.id, {
+        company: companyName,
+        status: "skipped",
+        found: 0,
+        applied: 0,
+        skipped: 0,
+        failed: 0,
+        error: "Monthly limit reached — stopping session",
+      });
+      await incrementCompanyDone(session.id);
+      continue;
+    }
     const careersUrl = companyUrlMap.get(companyName);
     if (!careersUrl) {
       await appendProgressLog(session.id, {
@@ -167,7 +182,9 @@ export async function processNextBrowseSession(): Promise<boolean> {
         if (currentUser && currentUser.monthlyAppCount >= limit) {
           companyResult.skipped++;
           await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", "Monthly limit reached");
-          continue;
+          limitReached = true;
+          console.log(`[Browse] Monthly limit reached (${currentUser.monthlyAppCount}/${limit}). Stopping session.`);
+          break;
         }
 
         // Record discovery

@@ -70,8 +70,13 @@ export const ROLE_OPTIONS = [
     description: "Test automation, quality assurance, CI testing",
   },
   {
-    label: "Designer (UX/UI)",
-    searchTerms: "Product Designer, UX Designer, UI Designer, Design Engineer, UX/UI Designer",
-    description: "Product design, UX/UI, UX research, design systems, Figma",
+    label: "UX / Product Designer",
+    searchTerms: "Product Designer, UX Designer, UI Designer, Design Engineer, Visual Designer",
+    description: "Product design, UI design, design systems, Figma, prototyping",
+  },
+  {
+    label: "UX Researcher",
+    searchTerms: "UX Researcher, User Researcher, Design Researcher, Research Scientist",
+    description: "User research, usability testing, interviews, insights",
   },
 ];

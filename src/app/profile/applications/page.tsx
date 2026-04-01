@@ -111,7 +111,7 @@ export default async function ApplicationsPage() {
           <ApplicationsDashboard
             initialApplications={allApplications}
             companies={targetCompanies}
-            stats={{ total: allApplications.length, applied, failed, sessions: totalSessions, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
+            stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             defaultRole={user?.targetRole || null}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
           />
