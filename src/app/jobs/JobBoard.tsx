@@ -49,6 +49,16 @@ const internalJobPages: Record<string, string> = {
   "jobId=43140": "/jobs/ibm-software-engineer-apprentice",
 };
 
+const TARGET_COMPANIES = new Set([
+  "Stripe", "Figma", "Databricks", "Twilio", "DoorDash", "Anthropic", "Glean",
+  "Cloudflare", "ZipRecruiter", "ClickHouse", "Affirm", "GitLab", "Reddit",
+  "Gusto", "Amplitude", "Airtable", "Grammarly", "Temporal", "LaunchDarkly",
+  "Scale AI", "Together AI", "Contentful", "Fireblocks", "SingleStore",
+  "Labelbox", "Alchemy", "Materialize", "Blockchain.com", "PlanetScale",
+  "project44", "Mercari", "Grafana Labs", "Attentive", "Marqeta", "Doximity",
+  "Culture Amp", "Apollo",
+]);
+
 const mobileFilters = [
   { label: "All", value: "" },
   { label: "Full Stack", value: "software engineer,software developer" },
@@ -524,7 +534,17 @@ export default function JobBoard() {
                         </div>
                       )}
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-end gap-2">
+                      {TARGET_COMPANIES.has(job.company) && (
+                        <a
+                          href="/auto-apply/landing"
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-3 py-1 text-xs font-medium rounded-full bg-[#ef562a] text-white hover:opacity-90 transition-opacity"
+                        >
+                          Auto Apply
+                        </a>
+                      )}
+                      <div className="flex items-center gap-4">
                       {job.salary && (
                         <span className="text-lg font-medium">{job.salary}</span>
                       )}
@@ -541,6 +561,7 @@ export default function JobBoard() {
                           d="M9 5l7 7-7 7"
                         />
                       </svg>
+                      </div>
                     </div>
                   </div>
                 </button>
