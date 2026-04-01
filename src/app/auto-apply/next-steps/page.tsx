@@ -16,7 +16,7 @@ export default async function NextStepsPage() {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/auth/signin?callbackUrl=/auto-apply/next-steps?onboarding=complete");
+    redirect("/auth/signin?callbackUrl=" + encodeURIComponent("/auto-apply/next-steps?onboarding=complete"));
   }
 
   const user = await prisma.user.findUnique({
