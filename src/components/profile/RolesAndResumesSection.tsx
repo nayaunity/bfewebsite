@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import { ProfileSection } from "./ProfileSection";
 import { labelClass, saveProfileFields } from "./form-utils";
 import { ROLE_OPTIONS } from "@/lib/role-options";
-import { ResumeUpload } from "@/components/ResumeUpload";
 
 interface ResumeData {
   id: string;
@@ -19,11 +18,6 @@ interface ResumeData {
 interface Props {
   initialRoles: string[];
   resumes: ResumeData[];
-  primaryResume: {
-    url: string | null;
-    name: string | null;
-    updatedAt: string | null;
-  };
   maxResumes: number;
   tier: string;
 }
@@ -40,7 +34,6 @@ function parseRoles(raw: string | null): string[] {
 export function RolesAndResumesSection({
   initialRoles,
   resumes: initialResumes,
-  primaryResume,
   maxResumes,
   tier,
 }: Props) {
@@ -135,11 +128,6 @@ export function RolesAndResumesSection({
       setError("Failed to delete resume");
     }
   };
-
-  // Resumes not tied to any selected role (orphaned or from old data)
-  const orphanedResumes = resumes.filter(
-    (r) => !selectedRoles.some((role) => r.name.toLowerCase().trim() === role.toLowerCase().trim())
-  );
 
   return (
     <ProfileSection
@@ -339,58 +327,6 @@ export function RolesAndResumesSection({
         </div>
       )}
 
-      {/* Orphaned resumes (uploaded for roles no longer selected) */}
-      {orphanedResumes.length > 0 && (
-        <div>
-          <label className={labelClass}>
-            Other Resumes
-            <span className="font-normal text-[var(--gray-600)] ml-1">
-              — not linked to a selected role
-            </span>
-          </label>
-          <div className="space-y-2 mt-2">
-            {orphanedResumes.map((resume) => (
-              <div
-                key={resume.id}
-                className="flex items-center gap-3 p-3 bg-[var(--gray-50)] rounded-lg border border-[var(--card-border)]"
-              >
-                <div className="flex-1 min-w-0">
-                  <a
-                    href={resume.blobUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-[var(--foreground)] hover:underline"
-                  >
-                    {resume.name}
-                  </a>
-                  <p className="text-xs text-[var(--gray-600)] truncate">
-                    {resume.fileName}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDeleteResume(resume.id)}
-                  className="text-xs text-red-600 hover:text-red-700 flex-shrink-0"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Primary / fallback resume */}
-      <div>
-        <label className={labelClass}>
-          Primary Resume
-          <span className="font-normal text-[var(--gray-600)] ml-1">
-            — used as fallback when no role-specific resume matches
-          </span>
-        </label>
-        <div className="-mx-6 mt-1">
-          <ResumeUpload initialResume={primaryResume} />
-        </div>
-      </div>
     </ProfileSection>
   );
 }

@@ -306,11 +306,6 @@ export default async function ProfilePage() {
                 keywords: r.keywords || "",
                 uploadedAt: r.uploadedAt.toISOString(),
               }))}
-              primaryResume={{
-                url: user.resumeUrl,
-                name: user.resumeName,
-                updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
-              }}
               maxResumes={tierLimits.maxResumes}
               tier={tier}
             />
