@@ -106,14 +106,14 @@ export default function NextStepsClient({
           <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-3">
             Welcome{userName ? `, ${userName}` : ""}!
           </h1>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ef562a]/10 text-[#ef562a] text-sm font-medium">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Auto-apply access activates within 24 hours
+            Auto-apply is ready
           </div>
           <p className="mt-4 text-[var(--gray-600)] max-w-md mx-auto">
-            While we set things up, here&apos;s how to maximize your success from day one.
+            Upload your role-specific resumes below, then head to the applications page to start.
           </p>
         </div>
 
@@ -250,8 +250,24 @@ export default function NextStepsClient({
           </div>
         </div>
 
+        {/* Applications CTA */}
+        {resumes.length > 0 && (
+          <Link
+            href="/profile/applications"
+            className="flex items-center justify-between w-full mt-8 px-6 py-4 bg-gradient-to-r from-[#ef562a] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
+          >
+            <div>
+              <span className="text-lg font-serif">Start Applying to Jobs</span>
+              <p className="text-sm text-white/80 mt-0.5">Select companies, choose a role, and let BFE apply for you</p>
+            </div>
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        )}
+
         {/* Bottom message */}
-        <div className="mt-8 text-center">
+        <div className="mt-6 text-center">
           {goalMet ? (
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-6">
               <div className="text-3xl mb-3">&#127881;</div>
@@ -259,7 +275,7 @@ export default function NextStepsClient({
                 You&apos;re all set!
               </h3>
               <p className="text-sm text-[var(--gray-600)]">
-                We&apos;ll send you an email when auto-apply is ready — within 24 hours. Keep an eye on your inbox!
+                Your resumes are uploaded. Head to the applications page to start applying!
               </p>
             </div>
           ) : (
