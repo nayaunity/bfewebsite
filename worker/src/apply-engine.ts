@@ -781,16 +781,17 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /pronoun/i, pronounPattern, steps);
 
   // Common fields (Stripe, Coinbase, Figma, etc.)
-  // Use regex /^Yes/i and /^No/i to match both short ("Yes") and long-form
-  // ("Yes, I am currently legally authorized...") options
-  await selectStaticDropdownSafe(frame, /authorized to work/i, /^Yes/i, steps);
-  await selectStaticDropdownSafe(frame, /legally authorized/i, /^Yes/i, steps);
-  await selectStaticDropdownSafe(frame, /require.*sponsor/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /now or in the future require/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /visa.*sponsor/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /require.*immigration.*sponsor/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /future require.*immigration/i, /^No/i, steps);
+  // Use applicant's actual work authorization and sponsorship answers
+  const workAuthPattern = applicant.workAuthorized === false ? /^No/i : /^Yes/i;
+  const sponsorPattern = applicant.needsSponsorship === true ? /^Yes/i : /^No/i;
+  await selectStaticDropdownSafe(frame, /authorized to work/i, workAuthPattern, steps);
+  await selectStaticDropdownSafe(frame, /legally authorized/i, workAuthPattern, steps);
+  await selectStaticDropdownSafe(frame, /require.*sponsor/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /now or in the future require/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /visa.*sponsor/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /need sponsorship.*visa/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /require.*immigration.*sponsor/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /future require.*immigration/i, sponsorPattern, steps);
   await selectStaticDropdownSafe(frame, /currently or have you previously worked/i, /^No/i, steps);
   await selectStaticDropdownSafe(frame, /employed by|worked for|worked at/i, /^No/i, steps);
   await selectStaticDropdownSafe(frame, /previously.*employed/i, /No|have not|never/i, steps);
@@ -843,8 +844,8 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /programming languages.*regularly/i, /Python/i, steps);
 
   // Catch-all: Any remaining "Do you require" / "Will you require" sponsorship pattern
-  await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, /^No/i, steps);
-  await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, sponsorPattern, steps);
+  await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, sponsorPattern, steps);
 
   // Office / in-person / relocation / onsite (Cloudflare, Discord, Alchemy, Materialize, etc.)
   await selectStaticDropdownSafe(frame, /able to work at.*office|work.*in.*office.*days/i, /^Yes/i, steps);
@@ -1296,9 +1297,10 @@ APPLICANT:
 - Email: ${applicant.email}
 - Phone: ${applicant.phone}
 - Location: ${applicant.city || ""}${applicant.city && applicant.usState ? ", " : ""}${applicant.usState || ""}, US
-- Work authorized: ${applicant.workAuthorized ? "Yes" : "No"}
-- Needs sponsorship: ${applicant.needsSponsorship ? "Yes" : "No"}
+- Work authorized: ${applicant.workAuthorized === true ? "Yes" : applicant.workAuthorized === false ? "No" : "Not specified — skip if optional, select 'Yes' if required"}
+- Needs sponsorship: ${applicant.needsSponsorship === true ? "Yes" : applicant.needsSponsorship === false ? "No" : "Not specified — skip if optional, select 'No' if required"}
 - Resume: Downloaded as PDF, use "upload" action
+${!applicant.linkedinUrl ? "\nNOTE: Applicant has no LinkedIn profile. If a LinkedIn field is optional, leave it empty. If required, enter 'N/A'." : ""}
 ${answersSection}
 
 INTERACTION PATTERNS (use these EXACTLY):
@@ -1321,6 +1323,8 @@ CRITICAL RULES:
 - For select_dropdown "value": Use a SHORT keyword that matches the option text (e.g., "No", "Yes", "confirm", "acknowledge"). Do NOT guess the full option text.
 - Fill ONE field per step.
 - Skip fields that already show a value (not "Select...").
+- If a field value is empty/blank in APPLICATION ANSWERS and the field is optional, SKIP it.
+- If you've tried filling a field 2+ times and it keeps failing, SKIP it and move to the next field.
 - For free-text questions, use the ROLE ANSWERS above, adapted to the specific company.
 
 PREVIOUS STEPS:

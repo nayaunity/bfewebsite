@@ -101,10 +101,12 @@ export async function POST(request: Request) {
   if (!user.lastName) missing.push("last name");
   if (!user.email) missing.push("email");
   if (!user.phone) missing.push("phone");
+  if (user.workAuthorized === null) missing.push("work authorization (go to Profile → Location & Work Authorization)");
+  if (!user.countryOfResidence) missing.push("country of residence (go to Profile → Location & Work Authorization)");
 
   if (missing.length > 0) {
     return NextResponse.json(
-      { error: `Missing required fields: ${missing.join(", ")}` },
+      { error: `Please complete your profile before applying. Missing: ${missing.join(", ")}` },
       { status: 400 }
     );
   }
