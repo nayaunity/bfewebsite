@@ -21,9 +21,9 @@ export function OnboardingSync() {
       // Map wizard answers to profile fields
       const profileUpdate: Record<string, unknown> = {};
 
-      // Target role — first selected role
+      // Target roles — save all selected roles as JSON array
       if (data.roles?.length > 0) {
-        profileUpdate.targetRole = data.roles[0];
+        profileUpdate.targetRole = JSON.stringify(data.roles);
       }
 
       // Experience → yearsOfExperience

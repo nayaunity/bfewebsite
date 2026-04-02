@@ -28,12 +28,35 @@ interface UserProfile {
   email: string;
   applicationEmail: string | null;
   phone: string;
+  preferredName: string | null;
+  pronouns: string | null;
   usState: string | null;
   workAuthorized: number | null;
   needsSponsorship: number | null;
   countryOfResidence: string | null;
+  willingToRelocate: number | null;
+  remotePreference: string | null;
   monthlyAppCount: number;
   subscriptionTier: string;
+  linkedinUrl: string | null;
+  githubUrl: string | null;
+  websiteUrl: string | null;
+  currentEmployer: string | null;
+  currentTitle: string | null;
+  school: string | null;
+  degree: string | null;
+  graduationYear: string | null;
+  additionalCerts: string | null;
+  city: string | null;
+  yearsOfExperience: string | null;
+  salaryExpectation: string | null;
+  earliestStartDate: string | null;
+  gender: string | null;
+  race: string | null;
+  hispanicOrLatino: string | null;
+  veteranStatus: string | null;
+  disabilityStatus: string | null;
+  applicationAnswers: string | null;
 }
 
 const companyUrlMap = new Map(
@@ -81,7 +104,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
   // Fetch user profile
   const userResult = await db.execute({
-    sql: `SELECT firstName, lastName, email, applicationEmail, phone, usState, workAuthorized, needsSponsorship, countryOfResidence, monthlyAppCount, subscriptionTier, linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle, school, degree, city, preferredName, yearsOfExperience FROM User WHERE id = ?`,
+    sql: `SELECT firstName, lastName, email, applicationEmail, phone, preferredName, pronouns, usState, workAuthorized, needsSponsorship, countryOfResidence, willingToRelocate, remotePreference, monthlyAppCount, subscriptionTier, linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle, school, degree, graduationYear, additionalCerts, city, yearsOfExperience, salaryExpectation, earliestStartDate, gender, race, hispanicOrLatino, veteranStatus, disabilityStatus, applicationAnswers FROM User WHERE id = ?`,
     args: [session.userId],
   });
 
@@ -198,20 +221,33 @@ export async function processNextBrowseSession(): Promise<boolean> {
             lastName: user.lastName,
             email: user.applicationEmail || user.email,
             phone: user.phone,
+            preferredName: user.preferredName || undefined,
+            pronouns: user.pronouns || undefined,
             usState: user.usState || undefined,
             workAuthorized: user.workAuthorized === 1,
             needsSponsorship: user.needsSponsorship === 1,
             countryOfResidence: user.countryOfResidence || undefined,
-            linkedinUrl: (user as any).linkedinUrl || undefined,
-            githubUrl: (user as any).githubUrl || undefined,
-            websiteUrl: (user as any).websiteUrl || undefined,
-            currentEmployer: (user as any).currentEmployer || undefined,
-            currentTitle: (user as any).currentTitle || undefined,
-            school: (user as any).school || undefined,
-            degree: (user as any).degree || undefined,
-            city: (user as any).city || undefined,
-            preferredName: (user as any).preferredName || undefined,
-            yearsOfExperience: (user as any).yearsOfExperience || undefined,
+            willingToRelocate: user.willingToRelocate === 1,
+            remotePreference: user.remotePreference || undefined,
+            linkedinUrl: user.linkedinUrl || undefined,
+            githubUrl: user.githubUrl || undefined,
+            websiteUrl: user.websiteUrl || undefined,
+            currentEmployer: user.currentEmployer || undefined,
+            currentTitle: user.currentTitle || undefined,
+            school: user.school || undefined,
+            degree: user.degree || undefined,
+            graduationYear: user.graduationYear || undefined,
+            additionalCerts: user.additionalCerts || undefined,
+            city: user.city || undefined,
+            yearsOfExperience: user.yearsOfExperience || undefined,
+            salaryExpectation: user.salaryExpectation || undefined,
+            earliestStartDate: user.earliestStartDate || undefined,
+            gender: user.gender || undefined,
+            race: user.race || undefined,
+            hispanicOrLatino: user.hispanicOrLatino || undefined,
+            veteranStatus: user.veteranStatus || undefined,
+            disabilityStatus: user.disabilityStatus || undefined,
+            applicationAnswers: user.applicationAnswers || undefined,
             targetCompany: companyName,
           },
           session.resumeUrl,

@@ -174,10 +174,14 @@ interface ApplicantData {
   lastName: string;
   email: string;
   phone: string;
+  preferredName?: string;
+  pronouns?: string;
   usState?: string;
   workAuthorized?: boolean;
   needsSponsorship?: boolean;
   countryOfResidence?: string;
+  willingToRelocate?: boolean;
+  remotePreference?: string;
   linkedinUrl?: string;
   githubUrl?: string;
   websiteUrl?: string;
@@ -185,9 +189,18 @@ interface ApplicantData {
   currentTitle?: string;
   school?: string;
   degree?: string;
+  graduationYear?: string;
+  additionalCerts?: string;
   city?: string;
-  preferredName?: string;
   yearsOfExperience?: string;
+  salaryExpectation?: string;
+  earliestStartDate?: string;
+  gender?: string;
+  race?: string;
+  hispanicOrLatino?: string;
+  veteranStatus?: string;
+  disabilityStatus?: string;
+  applicationAnswers?: string;
   targetCompany?: string;
 }
 
@@ -1170,6 +1183,12 @@ async function askClaudeNextAction(
     .slice(-5)
     .join("\n");
 
+  // Parse user's custom application answers if available
+  let customAnswers: Record<string, string> = {};
+  if (applicant.applicationAnswers) {
+    try { customAnswers = JSON.parse(applicant.applicationAnswers); } catch { /* ignore */ }
+  }
+
   // Build application answers section from applicant profile data
   const answersSection = `
 APPLICATION ANSWERS:
@@ -1181,10 +1200,32 @@ APPLICATION ANSWERS:
 - Years of Experience: ${applicant.yearsOfExperience || "5"}
 - School: ${applicant.school || ""}
 - Degree: ${applicant.degree || ""}
+- Graduation Year: ${applicant.graduationYear || ""}
+- Additional Certifications: ${applicant.additionalCerts || ""}
 - Preferred Name: ${applicant.preferredName || applicant.firstName}
-- Remote Preference: Remote or Hybrid
-- Earliest Start Date: Immediately
-- Salary: Open to discussion
+- Pronouns: ${applicant.pronouns || ""}
+- Remote Preference: ${applicant.remotePreference || "Open to remote or on-site"}
+- Willing to Relocate: ${applicant.willingToRelocate ? "Yes" : applicant.willingToRelocate === false ? "No" : "Open to discussion"}
+- Earliest Start Date: ${applicant.earliestStartDate || "Flexible"}
+- Salary Expectation: ${applicant.salaryExpectation || "Open to discussion based on total compensation"}
+- Gender: ${applicant.gender || "Prefer not to say"}
+- Race/Ethnicity: ${applicant.race || "Prefer not to say"}
+- Hispanic or Latino: ${applicant.hispanicOrLatino || "Prefer not to say"}
+- Veteran Status: ${applicant.veteranStatus || "Prefer not to say"}
+- Disability Status: ${applicant.disabilityStatus || "Prefer not to say"}
+${customAnswers.tellMeAboutYourself ? `- Tell Me About Yourself: ${customAnswers.tellMeAboutYourself}` : ""}
+${customAnswers.whyThisRole ? `- Why This Role: ${customAnswers.whyThisRole}` : ""}
+${customAnswers.greatestStrength ? `- Greatest Strength: ${customAnswers.greatestStrength}` : ""}
+${customAnswers.greatestWeakness ? `- Greatest Weakness: ${customAnswers.greatestWeakness}` : ""}
+${customAnswers.whyLeaving ? `- Why Leaving Current Role: ${customAnswers.whyLeaving}` : ""}
+${customAnswers.technicalChallenge ? `- Technical Challenge: ${customAnswers.technicalChallenge}` : ""}
+${customAnswers.whatMakesYouUnique ? `- What Makes You Unique: ${customAnswers.whatMakesYouUnique}` : ""}
+${customAnswers.whereDoYouSeeYourself ? `- Where Do You See Yourself: ${customAnswers.whereDoYouSeeYourself}` : ""}
+${customAnswers.managementStyle ? `- Management Style: ${customAnswers.managementStyle}` : ""}
+${customAnswers.conflictResolution ? `- Conflict Resolution: ${customAnswers.conflictResolution}` : ""}
+${customAnswers.diversityAndInclusion ? `- Diversity & Inclusion: ${customAnswers.diversityAndInclusion}` : ""}
+${customAnswers.howDoYouHandleFailure ? `- How You Handle Failure: ${customAnswers.howDoYouHandleFailure}` : ""}
+${customAnswers.howDoYouStayCurrent ? `- How You Stay Current: ${customAnswers.howDoYouStayCurrent}` : ""}
 
 ROLE ANSWER (adapt to the specific company):
 ${generateWhyAnswer(applicant)}`;

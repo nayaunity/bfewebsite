@@ -55,11 +55,21 @@ export async function matchUserResume(
 
   // 1. Exact role match — resume name matches the selected target role
   if (targetRole) {
-    const roleNorm = targetRole.toLowerCase().trim();
-    const roleMatch = resumes.find(
-      (r) => !r.isFallback && r.name.toLowerCase().trim() === roleNorm
-    );
-    if (roleMatch) return roleMatch;
+    // Support both plain string and JSON array
+    let roles: string[] = [];
+    try {
+      const parsed = JSON.parse(targetRole);
+      if (Array.isArray(parsed)) roles = parsed;
+    } catch { /* not JSON */ }
+    if (roles.length === 0) roles = [targetRole];
+
+    for (const role of roles) {
+      const roleNorm = role.toLowerCase().trim();
+      const roleMatch = resumes.find(
+        (r) => !r.isFallback && r.name.toLowerCase().trim() === roleNorm
+      );
+      if (roleMatch) return roleMatch;
+    }
   }
 
   // 2. Keyword match — resume keywords appear in the job title

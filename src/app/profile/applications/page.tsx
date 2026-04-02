@@ -80,18 +80,22 @@ export default async function ApplicationsPage() {
   const applied = allApplications.filter((a) => a.status === "submitted" || a.status === "applied").length;
   const failed = allApplications.filter((a) => a.status === "failed").length;
 
-  // Extract user's preferred roles from onboarding data, fall back to single targetRole
+  // Extract user's preferred roles: profile targetRole (JSON array or string) > onboarding data
   let userRoles: string[] = [];
-  if (user?.onboardingData) {
+  if (user?.targetRole) {
+    try {
+      const parsed = JSON.parse(user.targetRole);
+      if (Array.isArray(parsed)) userRoles = parsed;
+    } catch { /* not JSON, treat as single role */ }
+    if (userRoles.length === 0) userRoles = [user.targetRole];
+  }
+  if (userRoles.length === 0 && user?.onboardingData) {
     try {
       const onboarding = JSON.parse(user.onboardingData);
       if (Array.isArray(onboarding.roles) && onboarding.roles.length > 0) {
         userRoles = onboarding.roles;
       }
     } catch { /* ignore */ }
-  }
-  if (userRoles.length === 0 && user?.targetRole) {
-    userRoles = [user.targetRole];
   }
 
   return (
@@ -124,7 +128,7 @@ export default async function ApplicationsPage() {
             initialApplications={allApplications}
             companies={targetCompanies}
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
-            defaultRole={user?.targetRole || null}
+            defaultRole={userRoles[0] || null}
             userRoles={userRoles}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
           />

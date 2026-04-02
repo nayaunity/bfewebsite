@@ -98,7 +98,7 @@ export async function PATCH(request: NextRequest) {
       { key: "city", value: city, maxLen: 100 },
       { key: "preferredName", value: preferredName, maxLen: 100 },
       { key: "yearsOfExperience", value: yearsOfExperience, maxLen: 10 },
-      { key: "targetRole", value: targetRole, maxLen: 200 },
+      { key: "targetRole", value: targetRole, maxLen: 1000 },
       { key: "pronouns", value: pronouns, maxLen: 50 },
       { key: "remotePreference", value: remotePreference, maxLen: 100 },
       { key: "earliestStartDate", value: earliestStartDate, maxLen: 100 },

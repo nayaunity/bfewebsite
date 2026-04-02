@@ -5,11 +5,33 @@ export interface ApplicantProfile {
   phone: string;
   resumeUrl: string;
   resumeName: string;
-  // Custom question answers
+  preferredName?: string | null;
+  pronouns?: string | null;
   usState?: string | null;
   workAuthorized?: boolean | null;
   needsSponsorship?: boolean | null;
   countryOfResidence?: string | null;
+  willingToRelocate?: boolean | null;
+  remotePreference?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  websiteUrl?: string | null;
+  currentEmployer?: string | null;
+  currentTitle?: string | null;
+  school?: string | null;
+  degree?: string | null;
+  graduationYear?: string | null;
+  additionalCerts?: string | null;
+  city?: string | null;
+  yearsOfExperience?: string | null;
+  salaryExpectation?: string | null;
+  earliestStartDate?: string | null;
+  gender?: string | null;
+  race?: string | null;
+  hispanicOrLatino?: string | null;
+  veteranStatus?: string | null;
+  disabilityStatus?: string | null;
+  applicationAnswers?: string | null;
 }
 
 export interface GreenhouseQuestion {

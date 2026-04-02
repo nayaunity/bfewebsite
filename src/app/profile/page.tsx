@@ -116,7 +116,7 @@ async function backfillFromOnboarding(user: NonNullable<Awaited<ReturnType<typeo
 
     // Only backfill fields that are currently empty
     if (!user.targetRole && data.roles?.length > 0) {
-      updates.targetRole = data.roles[0];
+      updates.targetRole = JSON.stringify(data.roles);
     }
     if (!user.yearsOfExperience && data.experience?.length > 0) {
       updates.yearsOfExperience = EXP_MAP[data.experience[0]] || "5";
