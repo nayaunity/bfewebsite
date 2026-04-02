@@ -35,6 +35,19 @@ model User {
   preferredName       String?
   yearsOfExperience   String?
   targetRole          String?
+  pronouns            String?
+  willingToRelocate   Boolean?
+  remotePreference    String?
+  earliestStartDate   String?
+  graduationYear      String?
+  additionalCerts     String?
+  salaryExpectation   String?
+  gender              String?
+  race                String?
+  hispanicOrLatino    String?
+  veteranStatus       String?
+  disabilityStatus    String?
+  applicationAnswers  String?
   onboardingData      String?
   onboardingCompletedAt DateTime?
   stripeCustomerId    String?          @unique

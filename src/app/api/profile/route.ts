@@ -15,6 +15,10 @@ export async function PATCH(request: NextRequest) {
       usState, workAuthorized, needsSponsorship, countryOfResidence,
       linkedinUrl, githubUrl, websiteUrl, currentEmployer, currentTitle,
       school, degree, city, preferredName, yearsOfExperience, targetRole,
+      pronouns, willingToRelocate, remotePreference, earliestStartDate,
+      graduationYear, additionalCerts, salaryExpectation,
+      gender, race, hispanicOrLatino, veteranStatus, disabilityStatus,
+      applicationAnswers,
     } = body;
 
     const data: Record<string, unknown> = {};
@@ -75,6 +79,13 @@ export async function PATCH(request: NextRequest) {
       data.countryOfResidence = countryOfResidence?.trim() || null;
     }
 
+    if (willingToRelocate !== undefined) {
+      if (willingToRelocate !== null && typeof willingToRelocate !== "boolean") {
+        return NextResponse.json({ error: "Invalid willingToRelocate value" }, { status: 400 });
+      }
+      data.willingToRelocate = willingToRelocate;
+    }
+
     // Optional string profile fields (max 500 chars for URLs, 200 for text)
     const optionalStringFields: Array<{ key: string; value: unknown; maxLen: number }> = [
       { key: "linkedinUrl", value: linkedinUrl, maxLen: 500 },
@@ -88,6 +99,18 @@ export async function PATCH(request: NextRequest) {
       { key: "preferredName", value: preferredName, maxLen: 100 },
       { key: "yearsOfExperience", value: yearsOfExperience, maxLen: 10 },
       { key: "targetRole", value: targetRole, maxLen: 200 },
+      { key: "pronouns", value: pronouns, maxLen: 50 },
+      { key: "remotePreference", value: remotePreference, maxLen: 100 },
+      { key: "earliestStartDate", value: earliestStartDate, maxLen: 100 },
+      { key: "graduationYear", value: graduationYear, maxLen: 10 },
+      { key: "additionalCerts", value: additionalCerts, maxLen: 500 },
+      { key: "salaryExpectation", value: salaryExpectation, maxLen: 500 },
+      { key: "gender", value: gender, maxLen: 100 },
+      { key: "race", value: race, maxLen: 200 },
+      { key: "hispanicOrLatino", value: hispanicOrLatino, maxLen: 50 },
+      { key: "veteranStatus", value: veteranStatus, maxLen: 200 },
+      { key: "disabilityStatus", value: disabilityStatus, maxLen: 200 },
+      { key: "applicationAnswers", value: applicationAnswers, maxLen: 10000 },
     ];
 
     for (const field of optionalStringFields) {
@@ -126,6 +149,19 @@ export async function PATCH(request: NextRequest) {
         preferredName: true,
         yearsOfExperience: true,
         targetRole: true,
+        pronouns: true,
+        willingToRelocate: true,
+        remotePreference: true,
+        earliestStartDate: true,
+        graduationYear: true,
+        additionalCerts: true,
+        salaryExpectation: true,
+        gender: true,
+        race: true,
+        hispanicOrLatino: true,
+        veteranStatus: true,
+        disabilityStatus: true,
+        applicationAnswers: true,
       },
     });
 
