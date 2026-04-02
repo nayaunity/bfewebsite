@@ -60,6 +60,11 @@ export const ROLE_OPTIONS = [
     description: "Product strategy, roadmaps, cross-functional leadership",
   },
   {
+    label: "Project Manager",
+    searchTerms: "Project Manager, Technical Project Manager, Program Manager, Scrum Master",
+    description: "Project planning, delivery, agile, stakeholder management",
+  },
+  {
     label: "Engineering Manager",
     searchTerms: "Engineering Manager, Technical Lead, Director of Engineering",
     description: "Team leadership, technical mentorship, delivery",
