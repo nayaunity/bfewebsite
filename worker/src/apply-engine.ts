@@ -359,13 +359,33 @@ async function selectStaticDropdown(
   await frame.page().keyboard.press("Escape").catch(() => {});
   await frame.waitForTimeout(300);
 
-  // Find the combobox, then find the NEXT Toggle flyout button in document order.
-  // This avoids the ancestor-based approach which often finds the wrong toggle
-  // (e.g., phone country toggle instead of start date toggle).
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
-  const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
 
-  await toggle.click({ timeout: 5000 });
+  // Strategy 1: Find the NEXT Toggle flyout button in document order and click it
+  let flyoutOpened = false;
+  try {
+    const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
+    await toggle.click({ timeout: 3000 });
+    flyoutOpened = true;
+  } catch {
+    // Strategy 2: Click the combobox itself (works on many Greenhouse forms)
+    try {
+      await combobox.click({ timeout: 3000 });
+      flyoutOpened = true;
+    } catch {
+      // Strategy 3: Try finding toggle as a sibling in a shared parent container
+      try {
+        const parentToggle = combobox.locator('xpath=ancestor::*[position() <= 3]//button[@aria-label="Toggle flyout"]').first();
+        await parentToggle.click({ timeout: 3000 });
+        flyoutOpened = true;
+      } catch {}
+    }
+  }
+
+  if (!flyoutOpened) {
+    throw new Error(`Could not open dropdown "${String(comboboxNamePattern)}"`);
+  }
+
   await frame.waitForTimeout(1000);
 
   const useExact = typeof optionName === "string" && optionName.length <= 3;
