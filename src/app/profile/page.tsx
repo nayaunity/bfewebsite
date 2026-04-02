@@ -4,27 +4,27 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ResumeUpload } from "@/components/ResumeUpload";
-import { AutoApplyProfile } from "@/components/AutoApplyProfile";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
-import { UsageMeter } from "@/components/UsageMeter";
-import { ResumeManager } from "@/components/ResumeManager";
-import { ManageSubscriptionLink } from "@/components/ManageSubscriptionLink";
 import { TicketWidget } from "@/components/TicketWidget";
 import { OnboardingSync } from "@/components/OnboardingSync";
 import { Suspense } from "react";
 import { TIER_LIMITS } from "@/lib/stripe";
 import { canApply } from "@/lib/subscription";
 
-export const dynamic = "force-dynamic";
+import { ProfileCompletionBar } from "@/components/profile/ProfileCompletionBar";
+import { PersonalInfoSection } from "@/components/profile/PersonalInfoSection";
+import { LocationSection } from "@/components/profile/LocationSection";
+import { ProfessionalSection } from "@/components/profile/ProfessionalSection";
+import { EducationSection } from "@/components/profile/EducationSection";
+import { OnlinePresenceSection } from "@/components/profile/OnlinePresenceSection";
+import { ResumesSection } from "@/components/profile/ResumesSection";
+import { JobPreferencesSection } from "@/components/profile/JobPreferencesSection";
+import { DemographicsSection } from "@/components/profile/DemographicsSection";
+import { ApplicationAnswersSection } from "@/components/profile/ApplicationAnswersSection";
+import { AutoApplySettingsSection } from "@/components/profile/AutoApplySettingsSection";
+import { AccountSection } from "@/components/profile/AccountSection";
 
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+export const dynamic = "force-dynamic";
 
 async function getUserData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -38,11 +38,15 @@ async function getUserData(userId: string) {
       firstName: true,
       lastName: true,
       phone: true,
+      preferredName: true,
+      pronouns: true,
       autoApplyEnabled: true,
       usState: true,
       workAuthorized: true,
       needsSponsorship: true,
       countryOfResidence: true,
+      willingToRelocate: true,
+      remotePreference: true,
       linkedinUrl: true,
       githubUrl: true,
       websiteUrl: true,
@@ -50,10 +54,20 @@ async function getUserData(userId: string) {
       currentTitle: true,
       school: true,
       degree: true,
+      graduationYear: true,
+      additionalCerts: true,
       city: true,
-      preferredName: true,
       yearsOfExperience: true,
       targetRole: true,
+      salaryExpectation: true,
+      earliestStartDate: true,
+      gender: true,
+      race: true,
+      hispanicOrLatino: true,
+      veteranStatus: true,
+      disabilityStatus: true,
+      applicationAnswers: true,
+      onboardingData: true,
       subscriptionTier: true,
       subscriptionStatus: true,
       stripeCustomerId: true,
@@ -84,6 +98,82 @@ async function getUserData(userId: string) {
   return user;
 }
 
+const EXP_MAP: Record<string, string> = {
+  "Internship": "0",
+  "Entry Level & Graduate": "1",
+  "Junior (1-2 years)": "2",
+  "Mid Level (3-5 years)": "4",
+  "Senior (6-9 years)": "7",
+  "Expert & Leadership (10+ years)": "10",
+};
+
+async function backfillFromOnboarding(user: NonNullable<Awaited<ReturnType<typeof getUserData>>>) {
+  if (!user.onboardingData) return;
+
+  try {
+    const data = JSON.parse(user.onboardingData);
+    const updates: Record<string, unknown> = {};
+
+    // Only backfill fields that are currently empty
+    if (!user.targetRole && data.roles?.length > 0) {
+      updates.targetRole = data.roles[0];
+    }
+    if (!user.yearsOfExperience && data.experience?.length > 0) {
+      updates.yearsOfExperience = EXP_MAP[data.experience[0]] || "5";
+    }
+    if (!user.city && data.locations?.length > 0) {
+      const physicalLoc = data.locations.find((l: string) => l !== "Remote US");
+      if (physicalLoc) updates.city = physicalLoc;
+    }
+    if (!user.remotePreference && data.locations?.length > 0) {
+      const hasRemote = data.locations.includes("Remote US");
+      const hasPhysical = data.locations.some((l: string) => l !== "Remote US");
+      if (hasRemote && hasPhysical) updates.remotePreference = "Remote or Hybrid";
+      else if (hasRemote) updates.remotePreference = "Remote";
+    }
+    if (!user.salaryExpectation && data.minSalary && data.minSalary > 0) {
+      updates.salaryExpectation = `$${Number(data.minSalary).toLocaleString()}+`;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: updates,
+      });
+      // Merge updates into the user object so the page reflects them immediately
+      Object.assign(user, updates);
+    }
+  } catch { /* ignore parse errors */ }
+}
+
+function countFilledFields(user: NonNullable<Awaited<ReturnType<typeof getUserData>>>): { filled: number; total: number } {
+  const coreFields = [
+    user.firstName, user.lastName, user.phone,
+    user.city, user.usState, user.countryOfResidence,
+    user.workAuthorized !== null ? "set" : null,
+    user.needsSponsorship !== null ? "set" : null,
+    user.currentEmployer, user.currentTitle, user.yearsOfExperience, user.targetRole,
+    user.school, user.degree,
+    user.linkedinUrl,
+    user.resumeUrl,
+    user.salaryExpectation, user.earliestStartDate,
+    user.gender, user.race, user.hispanicOrLatino, user.veteranStatus, user.disabilityStatus,
+  ];
+
+  let answerCount = 0;
+  const answerTotal = 14;
+  if (user.applicationAnswers) {
+    try {
+      const parsed = JSON.parse(user.applicationAnswers);
+      answerCount = Object.values(parsed).filter((v) => typeof v === "string" && (v as string).trim()).length;
+    } catch { /* ignore */ }
+  }
+
+  const total = coreFields.length + answerTotal;
+  const filled = coreFields.filter(Boolean).length + answerCount;
+  return { filled, total };
+}
+
 export default async function ProfilePage() {
   const session = await auth();
 
@@ -97,209 +187,190 @@ export default async function ProfilePage() {
     redirect("/auth/signin");
   }
 
+  // Backfill any missing profile fields from onboarding data
+  await backfillFromOnboarding(user);
+
   const tier = user.subscriptionTier || "free";
   const tierLimits = TIER_LIMITS[tier] || TIER_LIMITS.free;
   const rawUsage = await canApply(session.user.id);
-  // Serialize to plain numbers to avoid hydration mismatches
   const usage = {
     used: Number(rawUsage.used) || 0,
     limit: Number(rawUsage.limit) || 5,
   };
 
+  const completion = countFilledFields(user);
+
   return (
     <>
-    <Suspense><OnboardingSync /></Suspense>
-    <Navigation />
-    <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        {/* Back link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors mb-8"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to home
-        </Link>
+      <Suspense><OnboardingSync /></Suspense>
+      <Navigation />
+      <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors mb-8"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to home
+          </Link>
 
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3">
-            <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)]">
-              Your Profile
-            </h1>
-            <SubscriptionBadge tier={tier} />
-          </div>
-          <p className="mt-2 text-[var(--gray-600)]">
-            Manage your account information
-          </p>
-        </div>
-
-        {/* Profile Card */}
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
-          {/* User Avatar & Email Section */}
-          <div className="px-6 py-6 border-b border-[var(--card-border)]">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-[var(--foreground)] text-[var(--background)] flex items-center justify-center text-2xl font-medium">
-                {user.email?.[0]?.toUpperCase() || "U"}
+          {/* Header */}
+          <div className="flex items-center gap-5 mb-8">
+            <div className="w-16 h-16 rounded-full bg-[var(--foreground)] text-[var(--background)] flex items-center justify-center text-2xl font-medium flex-shrink-0">
+              {user.email?.[0]?.toUpperCase() || "U"}
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)]">
+                  {user.firstName && user.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : "Your Profile"}
+                </h1>
+                <SubscriptionBadge tier={tier} />
               </div>
-              <div>
-                <p className="text-lg font-medium text-[var(--foreground)]">
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-[var(--gray-600)] text-sm truncate">
                   {user.email}
                 </p>
-                <div className="flex items-center gap-2 mt-1">
-                  {user.emailVerified ? (
-                    <span className="inline-flex items-center gap-1 text-sm text-green-600">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Verified
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-sm text-[var(--gray-600)]">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                      </svg>
-                      Pending verification
-                    </span>
-                  )}
-                </div>
+                {user.emailVerified ? (
+                  <span className="inline-flex items-center gap-1 text-xs text-green-600 flex-shrink-0">
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-xs text-[var(--gray-600)] flex-shrink-0">
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    Pending
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Account Details */}
-          <div className="px-6 py-4 space-y-4">
-            <div className="flex justify-between items-center py-2">
-              <span className="text-[var(--gray-600)]">Member since</span>
-              <span className="text-[var(--foreground)] font-medium">
-                {formatDate(user.createdAt)}
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center py-2">
-              <span className="text-[var(--gray-600)]">Account type</span>
-              <span className="text-[var(--foreground)] font-medium capitalize">
-                {user.role}
-              </span>
-            </div>
-
-            {user._count.progress > 0 && (
-              <div className="flex justify-between items-center py-2">
-                <span className="text-[var(--gray-600)]">Lessons completed</span>
-                <span className="text-[var(--foreground)] font-medium">
-                  {user._count.progress}
-                </span>
-              </div>
-            )}
-
-            {user._count.microWins > 0 && (
-              <div className="flex justify-between items-center py-2">
-                <span className="text-[var(--gray-600)]">Wins shared</span>
-                <span className="text-[var(--foreground)] font-medium">
-                  {user._count.microWins}
-                </span>
-              </div>
-            )}
+          {/* Completion bar */}
+          <div className="mb-8">
+            <ProfileCompletionBar filled={completion.filled} total={completion.total} />
           </div>
 
-          {/* Resume Upload */}
-          <ResumeUpload
-            initialResume={{
-              url: user.resumeUrl,
-              name: user.resumeName,
-              updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
-            }}
-          />
+          {/* Sections */}
+          <div className="space-y-4">
+            <PersonalInfoSection
+              initialData={{
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phone: user.phone,
+                preferredName: user.preferredName,
+                pronouns: user.pronouns,
+              }}
+            />
 
-          {/* Multi-Resume Manager */}
-          <ResumeManager
-            initialResumes={user.resumes.map(r => ({
-              ...r,
-              uploadedAt: r.uploadedAt.toISOString(),
-            }))}
-            maxResumes={tierLimits.maxResumes}
-            tier={tier}
-          />
+            <LocationSection
+              initialData={{
+                city: user.city,
+                usState: user.usState,
+                countryOfResidence: user.countryOfResidence,
+                workAuthorized: user.workAuthorized,
+                needsSponsorship: user.needsSponsorship,
+                willingToRelocate: user.willingToRelocate,
+                remotePreference: user.remotePreference,
+              }}
+            />
 
-          {/* Usage Meter */}
-          <div className="px-6 py-4 border-t border-[var(--card-border)]">
-            <UsageMeter used={usage.used} limit={usage.limit} />
+            <ProfessionalSection
+              initialData={{
+                currentEmployer: user.currentEmployer,
+                currentTitle: user.currentTitle,
+                yearsOfExperience: user.yearsOfExperience,
+                targetRole: user.targetRole,
+              }}
+            />
+
+            <EducationSection
+              initialData={{
+                school: user.school,
+                degree: user.degree,
+                graduationYear: user.graduationYear,
+                additionalCerts: user.additionalCerts,
+              }}
+            />
+
+            <OnlinePresenceSection
+              initialData={{
+                linkedinUrl: user.linkedinUrl,
+                githubUrl: user.githubUrl,
+                websiteUrl: user.websiteUrl,
+              }}
+            />
+
+            <ResumesSection
+              primaryResume={{
+                url: user.resumeUrl,
+                name: user.resumeName,
+                updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
+              }}
+              resumes={user.resumes.map((r) => ({
+                ...r,
+                keywords: r.keywords || "",
+                uploadedAt: r.uploadedAt.toISOString(),
+              }))}
+              maxResumes={tierLimits.maxResumes}
+              tier={tier}
+            />
+
+            <JobPreferencesSection
+              initialData={{
+                salaryExpectation: user.salaryExpectation,
+                earliestStartDate: user.earliestStartDate,
+              }}
+            />
+
+            <DemographicsSection
+              initialData={{
+                gender: user.gender,
+                race: user.race,
+                hispanicOrLatino: user.hispanicOrLatino,
+                veteranStatus: user.veteranStatus,
+                disabilityStatus: user.disabilityStatus,
+              }}
+            />
+
+            <ApplicationAnswersSection
+              initialData={{
+                applicationAnswers: user.applicationAnswers,
+              }}
+            />
+
+            <AutoApplySettingsSection
+              initialData={{
+                autoApplyEnabled: user.autoApplyEnabled,
+                hasResume: !!user.resumeUrl,
+              }}
+              usage={usage}
+            />
+
+            <AccountSection
+              user={{
+                createdAt: user.createdAt.toISOString(),
+                role: user.role,
+                emailVerified: !!user.emailVerified,
+                stripeCustomerId: user.stripeCustomerId,
+                lessonsCompleted: user._count.progress,
+                winsShared: user._count.microWins,
+              }}
+              tier={tier}
+            />
           </div>
-
-          {/* Auto-Apply Profile */}
-          <AutoApplyProfile
-            initialData={{
-              firstName: user.firstName,
-              lastName: user.lastName,
-              phone: user.phone,
-              autoApplyEnabled: user.autoApplyEnabled,
-              hasResume: !!user.resumeUrl,
-              usState: user.usState,
-              workAuthorized: user.workAuthorized,
-              needsSponsorship: user.needsSponsorship,
-              countryOfResidence: user.countryOfResidence,
-              linkedinUrl: user.linkedinUrl,
-              githubUrl: user.githubUrl,
-              websiteUrl: user.websiteUrl,
-              currentEmployer: user.currentEmployer,
-              currentTitle: user.currentTitle,
-              school: user.school,
-              degree: user.degree,
-              city: user.city,
-              preferredName: user.preferredName,
-              yearsOfExperience: user.yearsOfExperience,
-              targetRole: user.targetRole,
-            }}
-          />
-
-          {/* Applications Link */}
-          <div className="px-6 py-3 border-t border-[var(--card-border)]">
-            <Link
-              href="/profile/applications"
-              className="inline-flex items-center gap-2 text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-              View Application History
-            </Link>
-          </div>
-
-          {/* Subscription Links */}
-          <div className="px-6 py-3 border-t border-[var(--card-border)] flex gap-4">
-            <Link
-              href="/pricing"
-              className="text-sm text-[#ef562a] hover:underline"
-            >
-              {tier === "free" ? "Upgrade Plan" : "Change Plan"}
-            </Link>
-            {user.stripeCustomerId && (
-              <ManageSubscriptionLink />
-            )}
-          </div>
-
-          {/* Admin Link */}
-          {user.role === "admin" && (
-            <div className="px-6 py-4 border-t border-[var(--card-border)]">
-              <Link
-                href="/admin"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[var(--foreground)] hover:text-[var(--gray-600)] transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Go to Admin Dashboard
-              </Link>
-            </div>
-          )}
         </div>
-      </div>
-      <TicketWidget page="profile" />
-    </main>
-    <Footer />
+        <TicketWidget page="profile" />
+      </main>
+      <Footer />
     </>
   );
 }

@@ -39,12 +39,23 @@ export function OnboardingSync() {
         profileUpdate.yearsOfExperience = expMap[data.experience[0]] || "5";
       }
 
-      // Location → city
+      // Location → city + remotePreference
       if (data.locations?.length > 0) {
-        const loc = data.locations[0];
-        if (loc !== "Remote US") {
-          profileUpdate.city = loc;
+        const hasRemote = data.locations.includes("Remote US");
+        const physicalLoc = data.locations.find((l: string) => l !== "Remote US");
+        if (physicalLoc) {
+          profileUpdate.city = physicalLoc;
         }
+        if (hasRemote && physicalLoc) {
+          profileUpdate.remotePreference = "Remote or Hybrid";
+        } else if (hasRemote) {
+          profileUpdate.remotePreference = "Remote";
+        }
+      }
+
+      // Salary → salaryExpectation
+      if (data.minSalary && data.minSalary > 0) {
+        profileUpdate.salaryExpectation = `$${Number(data.minSalary).toLocaleString()}+`;
       }
 
       // Save to profile
