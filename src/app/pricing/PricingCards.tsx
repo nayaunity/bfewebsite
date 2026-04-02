@@ -11,7 +11,7 @@ const tiers = [
     key: "free" as const,
     features: [
       "5 applications per month",
-      "1 resume upload",
+      "Up to 3 resumes",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
