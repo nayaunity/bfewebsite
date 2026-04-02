@@ -170,37 +170,6 @@ export function RolesAndResumesSection({
         </div>
       )}
 
-      {/* Why is this important */}
-      <div>
-        <button
-          type="button"
-          onClick={() => setShowWhy(!showWhy)}
-          className="inline-flex items-center gap-1.5 text-sm text-[#ef562a] hover:underline cursor-pointer"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Why is this important?
-        </button>
-        {showWhy && (
-          <div className="mt-2 p-4 bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)] text-sm rounded-lg leading-relaxed space-y-2">
-            <p>
-              One of the fastest ways to land a job is to apply to multiple role types at the same time.
-              But here&apos;s the catch — a generic resume won&apos;t get you interviews for any of them.
-            </p>
-            <p>
-              Recruiters spend seconds scanning your resume. If it&apos;s not tailored to the specific role,
-              you look like a long shot instead of the obvious choice. A resume optimized for Product Manager
-              highlights completely different strengths than one for Software Engineer.
-            </p>
-            <p>
-              By uploading a resume for each target role, BFE makes sure you&apos;re not just casting a wide net —
-              you&apos;re always showing up as the right person for the job. More roles, more applications, better fit.
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Role selection */}
       <div>
         <label className={labelClass}>
@@ -328,6 +297,38 @@ export function RolesAndResumesSection({
               );
             })}
           </div>
+
+          {rolesMissingResumes.length > 0 && (
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => setShowWhy(!showWhy)}
+                className="inline-flex items-center gap-1.5 text-xs text-[#ef562a] hover:underline cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Why is this important?
+              </button>
+              {showWhy && (
+                <div className="mt-2 p-4 bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)] text-sm rounded-lg leading-relaxed space-y-2">
+                  <p>
+                    One of the fastest ways to land a job is to apply to multiple role types at the same time.
+                    But here&apos;s the catch — a generic resume won&apos;t get you interviews for any of them.
+                  </p>
+                  <p>
+                    Recruiters spend seconds scanning your resume. If it&apos;s not tailored to the specific role,
+                    you look like a long shot instead of the obvious choice. A resume optimized for Product Manager
+                    highlights completely different strengths than one for Software Engineer.
+                  </p>
+                  <p>
+                    By uploading a resume for each target role, BFE makes sure you&apos;re not just casting a wide net —
+                    you&apos;re always showing up as the right person for the job. More roles, more applications, better fit.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {atLimit && rolesMissingResumes.length > 0 && (
             <p className="text-xs text-[var(--gray-600)] mt-2">
