@@ -181,15 +181,35 @@ export async function processNextBrowseSession(): Promise<boolean> {
         args: [discovered.length, session.id],
       });
 
-      // Apply to each discovered job
+      // Apply to each discovered job — track URLs we've already processed in this session
+      const processedUrls = new Set<string>();
+
       for (const job of discovered) {
-        // Check if already applied to this URL
+        // Dedup within this session's batch (career browser can return the same job twice)
+        if (processedUrls.has(job.applyUrl)) {
+          companyResult.skipped++;
+          continue;
+        }
+        processedUrls.add(job.applyUrl);
+
+        // Check if already applied to this URL in ANY previous session or current session
         const dedupCheck = await db.execute({
-          sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status = 'applied' LIMIT 1`,
+          sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying') LIMIT 1`,
           args: [session.userId, job.applyUrl],
         });
 
         if (dedupCheck.rows && dedupCheck.rows.length > 0) {
+          companyResult.skipped++;
+          continue;
+        }
+
+        // Also check JobApplication table (cross-flow dedup with Greenhouse auto-apply)
+        const jobAppCheck = await db.execute({
+          sql: `SELECT 1 FROM JobApplication WHERE userId = ? AND status IN ('submitted', 'pending') AND jobId IN (SELECT id FROM Job WHERE applyUrl = ?) LIMIT 1`,
+          args: [session.userId, job.applyUrl],
+        });
+
+        if (jobAppCheck.rows && jobAppCheck.rows.length > 0) {
           companyResult.skipped++;
           continue;
         }
