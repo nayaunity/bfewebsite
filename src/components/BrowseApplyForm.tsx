@@ -201,7 +201,7 @@ export function BrowseApplyForm({ companies, defaultRole, userRoles, initialUsag
                 Target Role
               </label>
               <a
-                href="/profile#professional"
+                href="/profile#roles-resumes"
                 className="text-xs text-[#ef562a] hover:underline"
               >
                 Edit roles in profile

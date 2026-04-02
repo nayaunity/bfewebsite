@@ -17,7 +17,7 @@ import { LocationSection } from "@/components/profile/LocationSection";
 import { ProfessionalSection } from "@/components/profile/ProfessionalSection";
 import { EducationSection } from "@/components/profile/EducationSection";
 import { OnlinePresenceSection } from "@/components/profile/OnlinePresenceSection";
-import { ResumesSection } from "@/components/profile/ResumesSection";
+import { RolesAndResumesSection } from "@/components/profile/RolesAndResumesSection";
 import { JobPreferencesSection } from "@/components/profile/JobPreferencesSection";
 import { DemographicsSection } from "@/components/profile/DemographicsSection";
 import { ApplicationAnswersSection } from "@/components/profile/ApplicationAnswersSection";
@@ -152,10 +152,11 @@ function countFilledFields(user: NonNullable<Awaited<ReturnType<typeof getUserDa
     user.city, user.usState, user.countryOfResidence,
     user.workAuthorized !== null ? "set" : null,
     user.needsSponsorship !== null ? "set" : null,
-    user.currentEmployer, user.currentTitle, user.yearsOfExperience, user.targetRole,
+    user.currentEmployer, user.currentTitle, user.yearsOfExperience,
+    user.targetRole,
+    user.resumeUrl || user.resumes.length > 0 ? "has resume" : null,
     user.school, user.degree,
     user.linkedinUrl,
-    user.resumeUrl,
     user.salaryExpectation, user.earliestStartDate,
     user.gender, user.race, user.hispanicOrLatino, user.veteranStatus, user.disabilityStatus,
   ];
@@ -288,8 +289,30 @@ export default async function ProfilePage() {
                 currentEmployer: user.currentEmployer,
                 currentTitle: user.currentTitle,
                 yearsOfExperience: user.yearsOfExperience,
-                targetRole: user.targetRole,
               }}
+            />
+
+            <RolesAndResumesSection
+              initialRoles={(() => {
+                if (!user.targetRole) return [];
+                try {
+                  const parsed = JSON.parse(user.targetRole);
+                  if (Array.isArray(parsed)) return parsed;
+                } catch { /* not JSON */ }
+                return user.targetRole.trim() ? [user.targetRole.trim()] : [];
+              })()}
+              resumes={user.resumes.map((r) => ({
+                ...r,
+                keywords: r.keywords || "",
+                uploadedAt: r.uploadedAt.toISOString(),
+              }))}
+              primaryResume={{
+                url: user.resumeUrl,
+                name: user.resumeName,
+                updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
+              }}
+              maxResumes={tierLimits.maxResumes}
+              tier={tier}
             />
 
             <EducationSection
@@ -307,21 +330,6 @@ export default async function ProfilePage() {
                 githubUrl: user.githubUrl,
                 websiteUrl: user.websiteUrl,
               }}
-            />
-
-            <ResumesSection
-              primaryResume={{
-                url: user.resumeUrl,
-                name: user.resumeName,
-                updatedAt: user.resumeUpdatedAt ? new Date(user.resumeUpdatedAt).toISOString() : null,
-              }}
-              resumes={user.resumes.map((r) => ({
-                ...r,
-                keywords: r.keywords || "",
-                uploadedAt: r.uploadedAt.toISOString(),
-              }))}
-              maxResumes={tierLimits.maxResumes}
-              tier={tier}
             />
 
             <JobPreferencesSection
