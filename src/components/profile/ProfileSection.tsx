@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
 interface ProfileSectionProps {
   title: string;
   description?: string;
   icon: ReactNode;
+  id?: string;
   defaultOpen?: boolean;
   completionCount?: { filled: number; total: number };
   onSave?: () => Promise<{ ok: boolean; error?: string }>;
@@ -17,6 +18,7 @@ export function ProfileSection({
   title,
   description,
   icon,
+  id,
   defaultOpen = false,
   completionCount,
   onSave,
@@ -24,6 +26,16 @@ export function ProfileSection({
   hideSave,
 }: ProfileSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
+
+  // Auto-open when navigated to via anchor link
+  useEffect(() => {
+    if (id && typeof window !== "undefined" && window.location.hash === `#${id}`) {
+      setOpen(true);
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [id]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -54,7 +66,7 @@ export function ProfileSection({
     completionCount.total > 0;
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
+    <div id={id} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden scroll-mt-32">
       <button
         type="button"
         onClick={() => setOpen(!open)}

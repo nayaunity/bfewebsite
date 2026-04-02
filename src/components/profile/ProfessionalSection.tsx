@@ -34,6 +34,7 @@ export function ProfessionalSection({ initialData }: Props) {
   return (
     <ProfileSection
       title="Professional Background"
+      id="professional"
       description="Your work experience and career goals"
       icon={
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

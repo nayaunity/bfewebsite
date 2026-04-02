@@ -10,11 +10,18 @@ interface MatchedResume {
 }
 
 /**
- * Find the best matching resume for a job title from a user's uploaded resumes.
+ * Find the best matching resume for a job.
+ *
+ * Priority:
+ * 1. Exact role match — resume.name matches the user's selected targetRole
+ * 2. Keyword match — resume keywords appear in the job title
+ * 3. Fallback resume — marked isFallback
+ * 4. Single resume — only one exists
  */
 export async function matchUserResume(
   userId: string,
-  jobTitle: string
+  jobTitle: string,
+  targetRole?: string
 ): Promise<MatchedResume | null> {
   const resumes = await prisma.userResume.findMany({
     where: { userId },
@@ -46,6 +53,16 @@ export async function matchUserResume(
     return null;
   }
 
+  // 1. Exact role match — resume name matches the selected target role
+  if (targetRole) {
+    const roleNorm = targetRole.toLowerCase().trim();
+    const roleMatch = resumes.find(
+      (r) => !r.isFallback && r.name.toLowerCase().trim() === roleNorm
+    );
+    if (roleMatch) return roleMatch;
+  }
+
+  // 2. Keyword match — resume keywords appear in the job title
   const title = jobTitle.toLowerCase();
   let bestMatch: MatchedResume | null = null;
   let bestScore = 0;
@@ -67,13 +84,24 @@ export async function matchUserResume(
     }
   }
 
-  // Fall back to fallback resume, or the first resume if only one exists
-  if (!bestMatch) {
-    bestMatch = resumes.find((r) => r.isFallback) || null;
-  }
-  if (!bestMatch && resumes.length === 1) {
-    bestMatch = resumes[0];
+  if (bestMatch) return bestMatch;
+
+  // 3. Name-contains match — resume name words appear in the job title
+  for (const resume of resumes) {
+    if (resume.isFallback) continue;
+    const nameWords = resume.name.toLowerCase().split(/\s+/);
+    const matches = nameWords.filter((w) => w.length > 2 && title.includes(w));
+    if (matches.length >= 2) {
+      return resume;
+    }
   }
 
-  return bestMatch;
+  // 4. Fallback resume
+  const fallback = resumes.find((r) => r.isFallback) || null;
+  if (fallback) return fallback;
+
+  // 5. Single resume
+  if (resumes.length === 1) return resumes[0];
+
+  return null;
 }

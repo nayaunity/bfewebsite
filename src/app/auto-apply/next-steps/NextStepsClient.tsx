@@ -43,10 +43,15 @@ export default function NextStepsClient({
     setUploading(true);
 
     try {
+      const roleOption = ROLE_OPTIONS.find((r) => r.label === selectedRole);
+      const keywords = roleOption
+        ? roleOption.searchTerms.split(",").map((k) => k.trim()).filter(Boolean)
+        : [];
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("name", selectedRole);
-      formData.append("keywords", JSON.stringify([]));
+      formData.append("keywords", JSON.stringify(keywords));
 
       const res = await fetch("/api/profile/resumes", {
         method: "POST",

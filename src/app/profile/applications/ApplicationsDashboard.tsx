@@ -54,12 +54,14 @@ export default function ApplicationsDashboard({
   companies,
   stats,
   defaultRole,
+  userRoles,
   usage,
 }: {
   initialApplications: Application[];
   companies: Company[];
   stats: Stats;
   defaultRole?: string | null;
+  userRoles?: string[];
   usage?: { used: number; limit: number; tier: string } | null;
 }) {
   const [filter, setFilter] = useState<string>("all");
@@ -160,7 +162,7 @@ export default function ApplicationsDashboard({
       </div>
 
       {/* Browse & Apply Form */}
-      <BrowseApplyForm companies={companies} defaultRole={defaultRole} initialUsage={usage} />
+      <BrowseApplyForm companies={companies} defaultRole={defaultRole} userRoles={userRoles} initialUsage={usage} />
 
       {/* Application Status Table */}
       <div id="application-table" className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden scroll-mt-4">

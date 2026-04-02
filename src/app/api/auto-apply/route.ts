@@ -39,6 +39,7 @@ export async function POST() {
       workAuthorized: true,
       needsSponsorship: true,
       countryOfResidence: true,
+      targetRole: true,
     },
   });
 
@@ -129,8 +130,8 @@ export async function POST() {
     let skipped = 0;
 
     for (const job of jobsToQueue) {
-      // Match a resume for this job
-      const resume = await matchUserResume(session.user.id, job.title);
+      // Match a resume for this job — use profile targetRole for role-aware matching
+      const resume = await matchUserResume(session.user.id, job.title, user.targetRole || undefined);
       if (!resume) {
         skipped++;
         continue;

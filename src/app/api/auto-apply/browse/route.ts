@@ -17,8 +17,9 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { targetRole, companies } = body as {
+  const { targetRole, roleLabel, companies } = body as {
     targetRole?: string;
+    roleLabel?: string;
     companies?: string[];
   };
 
@@ -96,8 +97,8 @@ export async function POST(request: Request) {
     );
   }
 
-  // Match resume
-  const resume = await matchUserResume(session.user.id, targetRole.trim());
+  // Match resume — use roleLabel (clean role name) for role-aware matching
+  const resume = await matchUserResume(session.user.id, targetRole.trim(), roleLabel || targetRole.trim());
   if (!resume) {
     return NextResponse.json(
       { error: "No resume found. Please upload a resume first." },

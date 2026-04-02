@@ -54,7 +54,8 @@ function friendlyError(error: string): string {
 
 import { ROLE_OPTIONS } from "@/lib/role-options";
 
-export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { companies: Company[]; defaultRole?: string | null; initialUsage?: { used: number; limit: number; tier: string } | null }) {
+export function BrowseApplyForm({ companies, defaultRole, userRoles, initialUsage }: { companies: Company[]; defaultRole?: string | null; userRoles?: string[]; initialUsage?: { used: number; limit: number; tier: string } | null }) {
+  const hasUserRoles = userRoles && userRoles.length > 0;
   const [selectedRole, setSelectedRole] = useState<string | null>(defaultRole || null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -133,6 +134,7 @@ export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { comp
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           targetRole: roleOption?.searchTerms || selectedRole,
+          roleLabel: selectedRole,
           companies: Array.from(selected),
         }),
       });
@@ -194,11 +196,22 @@ export function BrowseApplyForm({ companies, defaultRole, initialUsage }: { comp
         <div className="px-6 py-4 space-y-4">
           {/* Target Role */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-              Target Role
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-[var(--foreground)]">
+                Target Role
+              </label>
+              <a
+                href="/profile#professional"
+                className="text-xs text-[#ef562a] hover:underline"
+              >
+                Edit roles in profile
+              </a>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {ROLE_OPTIONS.map((role) => (
+              {(hasUserRoles
+                ? ROLE_OPTIONS.filter((r) => userRoles!.includes(r.label))
+                : ROLE_OPTIONS
+              ).map((role) => (
                 <label
                   key={role.label}
                   className={`flex items-start gap-3 px-3 py-3 rounded-lg border cursor-pointer transition-colors ${

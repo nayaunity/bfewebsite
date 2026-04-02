@@ -22,7 +22,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions, usageData] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -79,8 +79,20 @@ export default async function ApplicationsPage() {
 
   const applied = allApplications.filter((a) => a.status === "submitted" || a.status === "applied").length;
   const failed = allApplications.filter((a) => a.status === "failed").length;
-  const pending = allApplications.filter((a) => a.status === "pending").length;
-  const totalSessions = recentSessions.length;
+
+  // Extract user's preferred roles from onboarding data, fall back to single targetRole
+  let userRoles: string[] = [];
+  if (user?.onboardingData) {
+    try {
+      const onboarding = JSON.parse(user.onboardingData);
+      if (Array.isArray(onboarding.roles) && onboarding.roles.length > 0) {
+        userRoles = onboarding.roles;
+      }
+    } catch { /* ignore */ }
+  }
+  if (userRoles.length === 0 && user?.targetRole) {
+    userRoles = [user.targetRole];
+  }
 
   return (
     <>
@@ -113,6 +125,7 @@ export default async function ApplicationsPage() {
             companies={targetCompanies}
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             defaultRole={user?.targetRole || null}
+            userRoles={userRoles}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
           />
         </div>
