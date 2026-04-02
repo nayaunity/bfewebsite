@@ -30,24 +30,27 @@ function randomUserAgent(): string {
 async function findATSApplyLink(page: Page): Promise<string | null> {
   const currentUrl = page.url();
 
-  // Strategy 1: Many sites use {listing-url}/apply pattern (Stripe, etc.)
-  // Check if there's an "Apply" link pointing to currentUrl/apply
-  const applyUrlSuffix = await page.evaluate((baseUrl) => {
+  // Strategy 0: Known URL patterns — directly construct apply URL without parsing page
+  // This is more reliable than page parsing for SPAs that haven't fully loaded
+  if (/\/jobs\/listing\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
+    return currentUrl.replace(/\/?$/, "/apply");
+  }
+  if (/\/careers\/positions\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
+    return currentUrl.replace(/\/?$/, "/apply");
+  }
+
+  // Strategy 1: Look for "Apply" links on the page
+  const applyUrlSuffix = await page.evaluate(() => {
     const links = Array.from(document.querySelectorAll("a[href]"));
     for (const link of links) {
       const href = (link as HTMLAnchorElement).href;
       const text = (link.textContent || "").trim().toLowerCase();
-      // Check for /apply suffix link
       if ((text.includes("apply") || text.includes("submit")) && href.includes("/apply")) {
         return href;
       }
     }
-    // Also check if current page URL + /apply would make sense (but not if already on /apply)
-    if ((baseUrl.match(/\/jobs\/listing\//) || baseUrl.match(/\/careers\/positions\//)) && !baseUrl.endsWith("/apply")) {
-      return baseUrl.replace(/\/?$/, "/apply");
-    }
     return null;
-  }, currentUrl);
+  });
 
   if (applyUrlSuffix) return applyUrlSuffix;
 
@@ -772,7 +775,10 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /WhatsApp/i, /^No/i, steps);
 
   // Pronouns (Figma, Sigma Computing, etc.)
-  await selectStaticDropdownSafe(frame, /pronoun/i, /She/i, steps);
+  const pronounPattern = applicant.pronouns
+    ? new RegExp(applicant.pronouns.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").split("/")[0], "i")
+    : /She/i;
+  await selectStaticDropdownSafe(frame, /pronoun/i, pronounPattern, steps);
 
   // Common fields (Stripe, Coinbase, Figma, etc.)
   // Use regex /^Yes/i and /^No/i to match both short ("Yes") and long-form
@@ -829,7 +835,8 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /referred.*senior leader/i, /No/i, steps);
 
   // Figma-specific dropdowns
-  await selectStaticDropdownSafe(frame, /years of professional experience/i, /5/i, steps);
+  const yoePattern = new RegExp(applicant.yearsOfExperience || "5", "i");
+  await selectStaticDropdownSafe(frame, /years of professional experience/i, yoePattern, steps);
   await selectStaticDropdownSafe(frame, /full-time software engineer.*professional/i, /Yes/i, steps);
   await selectStaticDropdownSafe(frame, /user-facing web applications/i, /Yes/i, steps);
   await selectStaticDropdownSafe(frame, /primary technical expertise/i, /Full/i, steps);
@@ -888,12 +895,27 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /experience with.*containerization|experience with.*Docker|experience with.*Kubernetes/i, /^Yes/i, steps);
 
   // Years of experience in specific tech (ZipRecruiter)
-  await selectStaticDropdownSafe(frame, /years of professional experience.*software/i, /5|4-6|3-5/i, steps);
+  const yoe = applicant.yearsOfExperience || "5";
+  const yoeNum = parseInt(yoe);
+  // Build a pattern that matches the YOE or common ranges containing it
+  const yoeRangePattern = new RegExp(
+    `${yoe}|` +
+    (yoeNum <= 1 ? "0.*1|0.*2" :
+     yoeNum <= 3 ? "1.*3|2.*4|1\\.5.*3" :
+     yoeNum <= 5 ? "3.*5|4.*6" :
+     yoeNum <= 7 ? "5.*7|6.*8|5.*9" :
+     yoeNum <= 10 ? "7.*10|8.*10|6.*9" :
+     "10\\+|10.*"), "i"
+  );
+  await selectStaticDropdownSafe(frame, /years of professional experience.*software/i, yoeRangePattern, steps);
   // Years of industry experience (Sigma Computing, etc.)
-  await selectStaticDropdownSafe(frame, /years of industry experience|years of experience/i, /5|4-6|3-5/i, steps);
+  await selectStaticDropdownSafe(frame, /years of industry experience|years of experience/i, yoeRangePattern, steps);
 
   // State/Province (Affirm, Faire, etc.)
-  await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State|state of residence|current state/i, /Colorado/i, steps);
+  const statePattern = applicant.usState
+    ? new RegExp(applicant.usState.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    : /Colorado/i;
+  await selectStaticDropdownSafe(frame, /State.*reside|Province.*reside|which.*State|state of residence|current state/i, statePattern, steps);
   // Hybrid/in-office commitment (Faire, etc.)
   await selectStaticDropdownSafe(frame, /commit.*in.office|in.office.*days.*week/i, /^Yes/i, steps);
   // Company familiarity (Faire, etc.)
@@ -901,7 +923,10 @@ async function greenhouseDeterministicFill(
   // How did you first learn / hear about (Affirm)
   await selectStaticDropdownSafe(frame, /first learn.*employer|learn about.*employer/i, /LinkedIn/i, steps);
   // Ethnicity multi-select (Reddit-style)
-  await selectStaticDropdownSafe(frame, /ethnicities.*identify/i, /Black/i, steps);
+  const earlyRacePattern = applicant.race
+    ? new RegExp(applicant.race.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    : /Black|decline|prefer not/i;
+  await selectStaticDropdownSafe(frame, /ethnicities.*identify/i, earlyRacePattern, steps);
   // LGBTQ+ community (Discord)
   await selectStaticDropdownSafe(frame, /LGBTQ|member of the.*community/i, /decline|don.*wish|prefer not|No/i, steps);
   // Age range (Webflow)
@@ -913,7 +938,7 @@ async function greenhouseDeterministicFill(
   // Consent / retain personal info (Webflow)
   await selectStaticDropdownSafe(frame, /consent.*personal.*information|retain.*personal/i, /Yes|I consent|agree/i, steps);
   // Racial/ethnic background (Webflow)
-  await selectStaticDropdownSafe(frame, /racial.*ethnic.*background/i, /Black/i, steps);
+  await selectStaticDropdownSafe(frame, /racial.*ethnic.*background/i, earlyRacePattern, steps);
 
   // Phase 5b: Checkboxes
   try {
@@ -1004,12 +1029,12 @@ async function greenhouseDeterministicFill(
     { name: /preferred.*name/i, value: prefName, label: "Preferred name" },
     { name: /additional information/i, value: whyAnswer, label: "Additional info" },
     { name: /how did you hear/i, value: "LinkedIn", label: "How did you hear" },
-    { name: /earliest.*start|when.*start.*working/i, value: "Immediately / As soon as possible", label: "Earliest start" },
+    { name: /earliest.*start|when.*start.*working/i, value: applicant.earliestStartDate || "Immediately / As soon as possible", label: "Earliest start" },
     { name: /deadlines.*timeline|timeline.*considerations|deadlines.*aware/i, value: "No specific deadlines.", label: "Timeline" },
-    { name: /personal preferences/i, value: "She/Her", label: "Personal preferences" },
+    { name: /personal preferences/i, value: applicant.pronouns || "She/Her", label: "Personal preferences" },
     { name: /know anyone|know someone|do you know/i, value: "No", label: "Know anyone" },
     { name: /total years.*experience|years.*relevant.*experience/i, value: applicant.yearsOfExperience || "5", label: "Years experience" },
-    { name: /salary.*expectation|compensation.*expectation|desired.*salary/i, value: "Open to discussion based on total compensation package", label: "Salary" },
+    { name: /salary.*expectation|compensation.*expectation|desired.*salary/i, value: applicant.salaryExpectation || "Open to discussion based on total compensation package", label: "Salary" },
     { name: /current company|current employer/i, value: applicant.currentEmployer || "", label: "Current company" },
     { name: /current title|current role/i, value: applicant.currentTitle || "", label: "Current title" },
     { name: /referred by|referral/i, value: "N/A", label: "Referral" },
@@ -1047,14 +1072,29 @@ async function greenhouseDeterministicFill(
     }
   }
 
-  // Phase 8: EEO fields (sequential — conditional fields may appear)
-  // Option patterns must be flexible: standard GH uses "Female", company-custom uses "Woman", etc.
-  await selectStaticDropdownSafe(frame, /gender/i, /Female|Woman/i, steps);
-  await selectStaticDropdownSafe(frame, /hispanic/i, /^No/i, steps);
+  // Phase 8: EEO fields — use applicant profile data
+  const genderPattern = applicant.gender
+    ? new RegExp(applicant.gender.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    : /Female|Woman|decline|prefer not/i;
+  const racePattern = applicant.race
+    ? new RegExp(applicant.race.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    : /Black|decline|prefer not/i;
+  const hispanicPattern = applicant.hispanicOrLatino === "Yes" ? /^Yes/i
+    : applicant.hispanicOrLatino === "No" ? /^No/i
+    : /^No|decline|prefer not/i;
+  const veteranPattern = applicant.veteranStatus
+    ? new RegExp(applicant.veteranStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
+    : /not a protected veteran|No.*Not.*Veteran|don.*wish|prefer not/i;
+  const disabilityPattern = applicant.disabilityStatus
+    ? new RegExp(applicant.disabilityStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
+    : /^No$|No.*do not have|don.*wish|prefer not/i;
+
+  await selectStaticDropdownSafe(frame, /gender/i, genderPattern, steps);
+  await selectStaticDropdownSafe(frame, /hispanic/i, hispanicPattern, steps);
   await frame.waitForTimeout(1000); // Wait for conditional "Race" field
-  await selectStaticDropdownSafe(frame, /race|ethnicity/i, /Black/i, steps);
-  await selectStaticDropdownSafe(frame, /veteran/i, /not a protected veteran|No.*Not.*Veteran|Not a Veteran|No military|not a veteran|I am not|don.*wish|prefer not/i, steps);
-  await selectStaticDropdownSafe(frame, /disability/i, /^No$|No.*do not have|No.*don.*t have|I do not have|None of these|don.*wish|prefer not/i, steps);
+  await selectStaticDropdownSafe(frame, /race|ethnicity/i, racePattern, steps);
+  await selectStaticDropdownSafe(frame, /veteran/i, veteranPattern, steps);
+  await selectStaticDropdownSafe(frame, /disability/i, disabilityPattern, steps);
   // Sexual orientation (Twilio, Reddit, Amplitude, etc.)
   await selectStaticDropdownSafe(frame, /sexual orientation/i, /don.*wish|decline|prefer not|Heterosexual/i, steps);
   // Transgender experience (Reddit)
@@ -1063,13 +1103,12 @@ async function greenhouseDeterministicFill(
   // Second pass: if company has BOTH custom EEO + standard Greenhouse EEO,
   // the first pass may have matched custom fields with wrong option text.
   // Try standard EEO field names specifically (these are at the very bottom).
-  await selectStaticDropdownSafe(frame, /^Gender\*?$/i, /Female/i, steps);
-  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, /^No/i, steps);
+  await selectStaticDropdownSafe(frame, /^Gender\*?$/i, genderPattern, steps);
+  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, hispanicPattern, steps);
   await frame.waitForTimeout(1000); // Wait for conditional Race field
-  // Standard EEO Race (appears conditionally after Hispanic=No)
-  await selectStaticDropdownSafe(frame, /^Race$/i, /Black or African American/i, steps);
-  await selectStaticDropdownSafe(frame, /^Veteran Status/i, /not a protected veteran|No.*Not.*Veteran|No military|don.*wish/i, steps);
-  await selectStaticDropdownSafe(frame, /^Disability Status/i, /^No$|No.*do not have|No.*don.*t have|I do not have|don.*wish|prefer not/i, steps);
+  await selectStaticDropdownSafe(frame, /^Race$/i, racePattern, steps);
+  await selectStaticDropdownSafe(frame, /^Veteran Status/i, veteranPattern, steps);
+  await selectStaticDropdownSafe(frame, /^Disability Status/i, disabilityPattern, steps);
 
   // Phase 8b: GDPR demographic consent checkbox (no ARIA label — find by ID or parent text)
   try {
@@ -1438,7 +1477,16 @@ export async function applyToJob(
       }
     }
 
-    const ats = detectATS(page.url(), page);
+    // Wait for ATS iframes to load (Greenhouse forms in embedded pages can be slow)
+    let ats = detectATS(page.url(), page);
+    if (ats === "Unknown") {
+      // Give iframes up to 8 seconds to appear
+      for (let i = 0; i < 4; i++) {
+        await page.waitForTimeout(2000);
+        ats = detectATS(page.url(), page);
+        if (ats !== "Unknown") break;
+      }
+    }
     steps.push(`Detected ATS: ${ats}`);
 
     // FAST PATH: Greenhouse deterministic handler
