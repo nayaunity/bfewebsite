@@ -4,7 +4,20 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { ROLE_OPTIONS } from "@/lib/role-options";
 
-const TOTAL_STEPS = 22;
+const TOTAL_STEPS = 25;
+
+const US_STATES = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+  "New Hampshire", "New Jersey", "New Mexico", "New York",
+  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "West Virginia", "Wisconsin", "Wyoming",
+];
 
 const JOB_PRIORITIES = [
   "Work-life balance", "Meaningful work", "Experienced leaders",
@@ -62,6 +75,12 @@ interface WizardData {
   minSalary: number;
   goal: string;
   blocker: string;
+  phone: string;
+  linkedinUrl: string;
+  countryOfResidence: string;
+  usState: string;
+  workAuthorized: string;
+  needsSponsorship: string;
 }
 
 export default function OnboardingWizard() {
@@ -78,6 +97,12 @@ export default function OnboardingWizard() {
     minSalary: 80000,
     goal: "",
     blocker: "",
+    phone: "",
+    linkedinUrl: "",
+    countryOfResidence: "United States",
+    usState: "",
+    workAuthorized: "",
+    needsSponsorship: "",
   });
   const [showMoreLocations, setShowMoreLocations] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(false);
@@ -94,7 +119,7 @@ export default function OnboardingWizard() {
 
   // Auto-advance from the "Creating plan" step after animation
   useEffect(() => {
-    if (step === 15) {
+    if (step === 18) {
       setLoadingPlan(true);
       const timer = setTimeout(() => {
         setLoadingPlan(false);
@@ -121,7 +146,10 @@ export default function OnboardingWizard() {
       case 12: return !!data.goal;
       case 13: return !!data.blocker;
       case 14: return true;
-      case 15: return false; // auto-advances
+      case 15: return !!data.phone.trim();
+      case 16: return !!data.countryOfResidence.trim();
+      case 17: return !!data.workAuthorized;
+      case 18: return false; // auto-advances
       default: return true;
     }
   }, [step, data]);
@@ -589,8 +617,137 @@ export default function OnboardingWizard() {
         );
       }
 
-      // Creating plan — animated loading
+      // --- NEW: Profile essentials (steps 15-17) ---
+
       case 15:
+        return (
+          <>
+            <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">ALMOST THERE</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-2">
+              Your contact info
+            </h1>
+            <p className="text-center text-[var(--gray-600)] mb-6">
+              Companies need these on every application. Fill them in once, and BFE handles the rest.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Phone number *</label>
+                <input
+                  type="tel"
+                  value={data.phone}
+                  onChange={(e) => setData({ ...data, phone: e.target.value })}
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-1">LinkedIn URL</label>
+                <input
+                  type="url"
+                  value={data.linkedinUrl}
+                  onChange={(e) => setData({ ...data, linkedinUrl: e.target.value })}
+                  placeholder="https://linkedin.com/in/yourname"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                />
+                <p className="text-xs text-[var(--gray-600)] mt-1">Most companies require this on their applications</p>
+              </div>
+            </div>
+          </>
+        );
+
+      case 16:
+        return (
+          <>
+            <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">ALMOST THERE</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-2">
+              Where are you based?
+            </h1>
+            <p className="text-center text-[var(--gray-600)] mb-6">
+              This helps us answer location questions on applications.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Country of residence *</label>
+                <input
+                  type="text"
+                  value={data.countryOfResidence}
+                  onChange={(e) => setData({ ...data, countryOfResidence: e.target.value })}
+                  placeholder="United States"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                />
+              </div>
+              {data.countryOfResidence.toLowerCase().includes("united states") && (
+                <div>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-1">U.S. State</label>
+                  <select
+                    value={data.usState}
+                    onChange={(e) => setData({ ...data, usState: e.target.value })}
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                  >
+                    <option value="">Select state...</option>
+                    {US_STATES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          </>
+        );
+
+      case 17:
+        return (
+          <>
+            <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">LAST ONE</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-2">
+              Work authorization
+            </h1>
+            <p className="text-center text-[var(--gray-600)] mb-6">
+              Almost every application asks these. Let&apos;s answer them once.
+            </p>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm font-medium text-[var(--foreground)] mb-3">Are you authorized to work in the U.S.? *</p>
+                <div className="flex gap-3">
+                  {["Yes", "No"].map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => setData({ ...data, workAuthorized: val })}
+                      className={`flex-1 py-3 text-sm font-medium rounded-xl border transition-colors ${
+                        data.workAuthorized === val
+                          ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a]"
+                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#ef562a]"
+                      }`}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[var(--foreground)] mb-3">Will you need visa sponsorship?</p>
+                <div className="flex gap-3">
+                  {["Yes", "No"].map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => setData({ ...data, needsSponsorship: val })}
+                      className={`flex-1 py-3 text-sm font-medium rounded-xl border transition-colors ${
+                        data.needsSponsorship === val
+                          ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a]"
+                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#ef562a]"
+                      }`}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        );
+
+      // Creating plan — animated loading
+      case 18:
         return (
           <div className="text-center py-12">
             <div className="inline-flex items-center gap-3 bg-[var(--gray-50)] rounded-2xl px-8 py-5 border border-[var(--card-border)] mb-10">
@@ -624,7 +781,7 @@ export default function OnboardingWizard() {
           </div>
         );
 
-      case 16:
+      case 19:
         return (
           <>
             <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">HOW IT WORKS</p>
@@ -656,7 +813,7 @@ export default function OnboardingWizard() {
           </>
         );
 
-      case 17:
+      case 20:
         return (
           <>
             <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">HOW IT WORKS</p>
@@ -685,7 +842,7 @@ export default function OnboardingWizard() {
           </>
         );
 
-      case 18:
+      case 21:
         return (
           <>
             <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">HOW IT WORKS</p>
@@ -714,7 +871,7 @@ export default function OnboardingWizard() {
           </>
         );
 
-      case 19:
+      case 22:
         return (
           <>
             <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider text-center mb-4">HOW IT WORKS</p>
@@ -746,7 +903,7 @@ export default function OnboardingWizard() {
           </>
         );
 
-      case 20: {
+      case 23: {
         const months = ({ "1 month": 1, "3 months": 3, "6 months": 6, "12 months+": 12 } as Record<string, number>)[data.timeline] || 3;
         const targetDate = new Date();
         targetDate.setMonth(targetDate.getMonth() + months);
@@ -776,7 +933,7 @@ export default function OnboardingWizard() {
         );
       }
 
-      case 21: {
+      case 24: {
         const months = ({ "1 month": 1, "3 months": 3, "6 months": 6, "12 months+": 12 } as Record<string, number>)[data.timeline] || 3;
         const targetDate = new Date();
         targetDate.setMonth(targetDate.getMonth() + months);
@@ -829,13 +986,13 @@ export default function OnboardingWizard() {
       </header>
 
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-6 py-8">
-        {step !== 15 && renderProgressBar()}
+        {step !== 18 && renderProgressBar()}
         <div className="flex-1 flex flex-col justify-center">
           {renderStep()}
         </div>
-        {step !== 15 && (
+        {step !== 18 && (
           <div className="pt-6">
-            {step === 21 ? (
+            {step === 24 ? (
               <button
                 onClick={handleCreateAccount}
                 className="w-full py-4 text-base font-medium rounded-xl bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-all flex items-center justify-center gap-2"

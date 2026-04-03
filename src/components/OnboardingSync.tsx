@@ -58,6 +58,32 @@ export function OnboardingSync() {
         profileUpdate.salaryExpectation = `$${Number(data.minSalary).toLocaleString()}+`;
       }
 
+      // Phone
+      if (data.phone?.trim()) {
+        profileUpdate.phone = data.phone.trim();
+      }
+
+      // LinkedIn
+      if (data.linkedinUrl?.trim()) {
+        profileUpdate.linkedinUrl = data.linkedinUrl.trim();
+      }
+
+      // Country + State
+      if (data.countryOfResidence?.trim()) {
+        profileUpdate.countryOfResidence = data.countryOfResidence.trim();
+      }
+      if (data.usState?.trim()) {
+        profileUpdate.usState = data.usState.trim();
+      }
+
+      // Work authorization
+      if (data.workAuthorized === "Yes" || data.workAuthorized === "No") {
+        profileUpdate.workAuthorized = data.workAuthorized === "Yes";
+      }
+      if (data.needsSponsorship === "Yes" || data.needsSponsorship === "No") {
+        profileUpdate.needsSponsorship = data.needsSponsorship === "Yes";
+      }
+
       // Save to profile
       if (Object.keys(profileUpdate).length > 0) {
         fetch("/api/profile", {
