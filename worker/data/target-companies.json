@@ -183,5 +183,35 @@
     "name": "Apollo",
     "careersUrl": "https://job-boards.greenhouse.io/apollo",
     "notes": "GraphQL API platform"
+  },
+  {
+    "name": "Okta",
+    "careersUrl": "https://job-boards.greenhouse.io/okta",
+    "notes": "Identity/security platform — 377 jobs"
+  },
+  {
+    "name": "Zscaler",
+    "careersUrl": "https://job-boards.greenhouse.io/zscaler",
+    "notes": "Cloud security — 290 jobs"
+  },
+  {
+    "name": "Klaviyo",
+    "careersUrl": "https://job-boards.greenhouse.io/klaviyo",
+    "notes": "Marketing platform — 243 jobs"
+  },
+  {
+    "name": "Intercom",
+    "careersUrl": "https://job-boards.greenhouse.io/intercom",
+    "notes": "Customer messaging — 194 jobs"
+  },
+  {
+    "name": "Asana",
+    "careersUrl": "https://job-boards.greenhouse.io/asana",
+    "notes": "Work management — 151 jobs"
+  },
+  {
+    "name": "Abnormal Security",
+    "careersUrl": "https://job-boards.greenhouse.io/abnormalsecurity",
+    "notes": "Email security/AI — 97 jobs"
   }
 ]
