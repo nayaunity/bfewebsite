@@ -800,8 +800,13 @@ async function greenhouseDeterministicFill(
 
   // Common fields (Stripe, Coinbase, Figma, etc.)
   // Use applicant's actual work authorization and sponsorship answers
-  const workAuthPattern = applicant.workAuthorized === false ? /^No/i : /^Yes/i;
-  const sponsorPattern = applicant.needsSponsorship === true ? /^Yes/i : /^No/i;
+  // Work auth options vary: "Yes"/"No", or long-form like "I am authorised to work..."
+  const workAuthYes = /^Yes|I am authori[sz]ed|currently.*legally.*authori[sz]ed|citizen.*permanent/i;
+  const workAuthNo = /^No|not.*authori[sz]ed|require.*sponsor|unknown/i;
+  const workAuthPattern = applicant.workAuthorized === false ? workAuthNo : workAuthYes;
+  const sponsorYes = /^Yes|require.*sponsor|need.*sponsor|will require/i;
+  const sponsorNo = /^No|not.*require|do not need|don.*need/i;
+  const sponsorPattern = applicant.needsSponsorship === true ? sponsorYes : sponsorNo;
   await selectStaticDropdownSafe(frame, /authori[sz]ed to work/i, workAuthPattern, steps);
   await selectStaticDropdownSafe(frame, /legally authori[sz]ed/i, workAuthPattern, steps);
   await selectStaticDropdownSafe(frame, /require.*sponsor/i, sponsorPattern, steps);
