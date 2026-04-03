@@ -400,7 +400,9 @@ async function selectStaticDropdown(
     await frame.waitForTimeout(300);
     throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}"`);
   }
-  await frame.waitForTimeout(300);
+  // Click elsewhere to trigger blur/validation — Greenhouse forms need this to register the selection
+  await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
+  await frame.waitForTimeout(500);
 }
 
 async function selectStaticDropdownSafe(
@@ -602,6 +604,22 @@ async function greenhouseDeterministicFill(
     steps.push(`Location field failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
+  // Phase 2b: "Current Location" autocomplete (Intercom, Abnormal Security)
+  try {
+    const currentLocCombobox = frame.getByRole("combobox", { name: /Current Location/i }).first();
+    if (await currentLocCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await currentLocCombobox.clear();
+      const citySearch = applicant.city || "Denver";
+      await currentLocCombobox.pressSequentially(citySearch, { delay: 80 });
+      await frame.waitForTimeout(1500);
+      const option = frame.getByRole("option", { name: new RegExp(citySearch, "i") }).first();
+      if (await option.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await option.click({ timeout: 5000 });
+        steps.push(`Selected current location: ${citySearch}`);
+      }
+    }
+  } catch {}
+
   // Phase 3: Resume upload
   try {
     const attachButton = frame.getByRole("button", { name: "Attach" }).first();
@@ -784,8 +802,8 @@ async function greenhouseDeterministicFill(
   // Use applicant's actual work authorization and sponsorship answers
   const workAuthPattern = applicant.workAuthorized === false ? /^No/i : /^Yes/i;
   const sponsorPattern = applicant.needsSponsorship === true ? /^Yes/i : /^No/i;
-  await selectStaticDropdownSafe(frame, /authorized to work/i, workAuthPattern, steps);
-  await selectStaticDropdownSafe(frame, /legally authorized/i, workAuthPattern, steps);
+  await selectStaticDropdownSafe(frame, /authori[sz]ed to work/i, workAuthPattern, steps);
+  await selectStaticDropdownSafe(frame, /legally authori[sz]ed/i, workAuthPattern, steps);
   await selectStaticDropdownSafe(frame, /require.*sponsor/i, sponsorPattern, steps);
   await selectStaticDropdownSafe(frame, /now or in the future require/i, sponsorPattern, steps);
   await selectStaticDropdownSafe(frame, /visa.*sponsor/i, sponsorPattern, steps);
@@ -847,9 +865,16 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /do you require.*sponsor/i, sponsorPattern, steps);
   await selectStaticDropdownSafe(frame, /will you.*require.*sponsor/i, sponsorPattern, steps);
 
+  // Hybrid / in-person / office (Intercom uses "3 days per week", others use different wording)
+  await selectStaticDropdownSafe(frame, /hybrid.*model.*willing|willing.*work.*office.*days|work.*office.*3 days/i, /^Yes/i, steps);
+  // "Are you willing to relocate?" (Intercom, Abnormal)
+  await selectStaticDropdownSafe(frame, /willing to relocate/i, /^Yes/i, steps);
+  // Previously worked for this company (Intercom: "Have you previously worked for Intercom?")
+  await selectStaticDropdownSafe(frame, /previously worked for/i, /^No/i, steps);
+  // Email about future openings
+  await selectStaticDropdownSafe(frame, /email.*about future|future.*openings/i, /^Yes/i, steps);
   // Office / in-person / relocation / onsite (Cloudflare, Discord, Alchemy, Materialize, etc.)
   await selectStaticDropdownSafe(frame, /able to work at.*office|work.*in.*office.*days/i, /^Yes/i, steps);
-  await selectStaticDropdownSafe(frame, /willing to relocate/i, /^Yes/i, steps);
   await selectStaticDropdownSafe(frame, /currently located in the US|currently located in the United States/i, /^Yes/i, steps);
   await selectStaticDropdownSafe(frame, /based in or willing to relocate/i, /^Yes/i, steps);
   await selectStaticDropdownSafe(frame, /work onsite|willing.*onsite|able.*onsite/i, /^Yes/i, steps);
