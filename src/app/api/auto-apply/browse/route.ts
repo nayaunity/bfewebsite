@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { canApply } from "@/lib/subscription";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
+import { logError } from "@/lib/error-logger";
 import targetCompanies from "../../../../../scripts/target-companies.json";
 
 export const runtime = "nodejs";
@@ -105,6 +106,14 @@ export async function POST(request: Request) {
   if (!user.countryOfResidence) missing.push("country of residence (go to Profile → Location & Work Authorization)");
 
   if (missing.length > 0) {
+    await logError({
+      userId: session.user.id,
+      endpoint: "/api/auto-apply/browse",
+      method: "POST",
+      status: 400,
+      error: "Incomplete profile blocked application",
+      detail: `Missing: ${missing.join(", ")}`,
+    });
     return NextResponse.json(
       { error: `Please complete your profile before applying. Missing: ${missing.join(", ")}` },
       { status: 400 }

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { put, del } from "@vercel/blob";
 import { getMaxResumes } from "@/lib/subscription";
+import { logError } from "@/lib/error-logger";
 
 export async function GET() {
   const session = await auth();
@@ -82,7 +83,16 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ resume });
   } catch (error) {
-    console.error("Resume upload error:", error);
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error("Resume upload error:", errMsg);
+    await logError({
+      userId: session.user.id,
+      endpoint: "/api/profile/resumes",
+      method: "POST",
+      status: 500,
+      error: "Failed to upload resume",
+      detail: errMsg,
+    });
     return NextResponse.json(
       { error: "Failed to upload resume" },
       { status: 500 }

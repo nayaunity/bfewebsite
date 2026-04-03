@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe, STRIPE_PRICES } from "@/lib/stripe";
+import { logError } from "@/lib/error-logger";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -54,6 +55,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error("Stripe checkout error:", errMsg);
+    await logError({
+      userId: session.user.id,
+      endpoint: "/api/stripe/checkout",
+      method: "POST",
+      status: 500,
+      error: "Failed to create checkout session",
+      detail: errMsg,
+    });
     return NextResponse.json(
       { error: "Failed to create checkout session", detail: errMsg },
       { status: 500 }

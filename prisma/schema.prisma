@@ -291,6 +291,23 @@ model ScrapeLog {
   @@index([createdAt])
 }
 
+model ErrorLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  endpoint  String
+  method    String   @default("UNKNOWN")
+  status    Int      @default(500)
+  error     String
+  detail    String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([endpoint])
+  @@index([createdAt])
+  @@index([status])
+}
+
 model JobClick {
   id          String   @id @default(cuid())
   jobId       String

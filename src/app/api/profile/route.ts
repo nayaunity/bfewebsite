@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/error-logger";
 
 export async function PATCH(request: NextRequest) {
   const session = await auth();
@@ -116,6 +117,14 @@ export async function PATCH(request: NextRequest) {
     for (const field of optionalStringFields) {
       if (field.value !== undefined) {
         if (field.value !== null && (typeof field.value !== "string" || field.value.length > field.maxLen)) {
+          await logError({
+            userId: session.user.id,
+            endpoint: "/api/profile",
+            method: "PATCH",
+            status: 400,
+            error: `Invalid ${field.key}`,
+            detail: `Value length: ${typeof field.value === "string" ? field.value.length : typeof field.value}, max: ${field.maxLen}`,
+          });
           return NextResponse.json({ error: `Invalid ${field.key}` }, { status: 400 });
         }
         data[field.key] = typeof field.value === "string" ? field.value.trim() || null : null;
@@ -167,7 +176,16 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ user });
   } catch (error) {
-    console.error("Profile update error:", error);
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error("Profile update error:", errMsg);
+    await logError({
+      userId: session.user.id,
+      endpoint: "/api/profile",
+      method: "PATCH",
+      status: 500,
+      error: "Failed to update profile",
+      detail: errMsg,
+    });
     return NextResponse.json(
       { error: "Failed to update profile" },
       { status: 500 }
