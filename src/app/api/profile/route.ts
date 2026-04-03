@@ -110,7 +110,7 @@ export async function PATCH(request: NextRequest) {
       { key: "hispanicOrLatino", value: hispanicOrLatino, maxLen: 50 },
       { key: "veteranStatus", value: veteranStatus, maxLen: 200 },
       { key: "disabilityStatus", value: disabilityStatus, maxLen: 200 },
-      { key: "applicationAnswers", value: applicationAnswers, maxLen: 10000 },
+      { key: "applicationAnswers", value: applicationAnswers, maxLen: 50000 },
     ];
 
     for (const field of optionalStringFields) {
