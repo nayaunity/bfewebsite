@@ -24,6 +24,64 @@ function parseRoles(targetRole: string): string[] {
 }
 
 /**
+ * Try Greenhouse API-based discovery first. Returns null if not a Greenhouse URL.
+ */
+async function discoverViaGreenhouseAPI(
+  careersUrl: string,
+  roles: string[],
+  log: DiscoveryLog
+): Promise<DiscoveredJob[] | null> {
+  // Extract Greenhouse slug from URL
+  const ghMatch = careersUrl.match(/(?:job-boards|boards)\.greenhouse\.io\/(\w+)/);
+  if (!ghMatch) return null;
+
+  const slug = ghMatch[1];
+  log.steps.push(`Greenhouse API discovery for slug: ${slug}`);
+
+  try {
+    const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs?content=false`);
+    if (!res.ok) {
+      log.steps.push(`Greenhouse API returned ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    const allJobs: Array<{ id: number; title: string; absolute_url: string; location: { name: string } }> = data.jobs || [];
+    log.steps.push(`Greenhouse API returned ${allJobs.length} total jobs`);
+
+    // Match jobs against target roles using keyword matching
+    const roleKeywords = roles.map(r => r.toLowerCase().split(/\s+/).filter(w => w.length > 2));
+
+    const matched = allJobs.filter(job => {
+      const titleLower = job.title.toLowerCase();
+      // Check if any role has at least 2 keyword matches in the job title
+      return roleKeywords.some(keywords => {
+        const matches = keywords.filter(kw => titleLower.includes(kw));
+        return matches.length >= 2 || (keywords.length === 1 && titleLower.includes(keywords[0]));
+      });
+    });
+
+    log.steps.push(`Matched ${matched.length} jobs against roles: ${roles.join(", ")}`);
+
+    // Convert to DiscoveredJob format with direct Greenhouse apply URLs
+    const jobs: DiscoveredJob[] = matched.slice(0, 15).map(job => ({
+      title: job.title,
+      applyUrl: `https://job-boards.greenhouse.io/${slug}/jobs/${job.id}`,
+    }));
+
+    if (jobs.length > 0) {
+      log.steps.push(`Top matches: ${jobs.map(j => j.title).join(" | ")}`);
+    }
+
+    return jobs;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log.steps.push(`Greenhouse API error: ${msg}`);
+    return null;
+  }
+}
+
+/**
  * Search for the target role on a career page using Claude for intelligent matching.
  */
 export async function discoverJobs(
@@ -33,6 +91,13 @@ export async function discoverJobs(
   const log: DiscoveryLog = { steps: [] };
   const roles = parseRoles(targetRole);
   log.steps.push(`Parsed roles: ${JSON.stringify(roles)}`);
+
+  // FAST PATH: Use Greenhouse API if this is a Greenhouse board
+  const apiJobs = await discoverViaGreenhouseAPI(careersUrl, roles, log);
+  if (apiJobs !== null) {
+    log.steps.push(`Greenhouse API discovery complete: ${apiJobs.length} jobs`);
+    return { jobs: apiJobs, log };
+  }
 
   const context = await createStealthContext();
   const page = await context.newPage();
