@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { createClient } from "@libsql/client";
+
+export const runtime = "edge";
+
+const db = createClient({
+  url: process.env.DATABASE_URL!,
+  authToken: process.env.DATABASE_AUTH_TOKEN,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,21 +15,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email.trim().toLowerCase() },
-      select: { id: true, passwordHash: true, firstName: true },
+    const result = await db.execute({
+      sql: "SELECT id, passwordHash, firstName FROM User WHERE email = ?",
+      args: [email.trim().toLowerCase()],
     });
+
+    const user = result.rows[0];
 
     if (!user) {
       return NextResponse.json({ status: "new" });
     }
 
     if (user.passwordHash) {
-      return NextResponse.json({ status: "has_password", firstName: user.firstName });
+      return NextResponse.json({
+        status: "has_password",
+        firstName: user.firstName,
+      });
     }
 
-    return NextResponse.json({ status: "needs_password", firstName: user.firstName });
+    return NextResponse.json({
+      status: "needs_password",
+      firstName: user.firstName,
+    });
   } catch {
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
