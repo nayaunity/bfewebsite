@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { createClient } from "@libsql/client/web";
-import { EncryptJWT, base64url, calculateJwkThumbprint } from "jose";
-import { hkdf } from "@panva/hkdf";
+import { setSessionCookie } from "@/lib/session-edge";
 
 export const runtime = "edge";
 
@@ -10,34 +9,6 @@ const db = createClient({
   url: process.env.DATABASE_URL!.trim(),
   authToken: process.env.DATABASE_AUTH_TOKEN?.trim(),
 });
-
-const COOKIE_NAME = "__Secure-authjs.session-token";
-const MAX_AGE = 30 * 24 * 60 * 60; // 30 days
-
-async function createSessionCookie(userId: string, email: string): Promise<string> {
-  const secret = process.env.AUTH_SECRET!;
-  const encryptionSecret = await hkdf(
-    "sha256",
-    secret,
-    COOKIE_NAME,
-    `Auth.js Generated Encryption Key (${COOKIE_NAME})`,
-    64
-  );
-
-  const thumbprint = await calculateJwkThumbprint(
-    { kty: "oct", k: base64url.encode(encryptionSecret) },
-    "sha512"
-  );
-
-  const now = Math.floor(Date.now() / 1000);
-
-  return await new EncryptJWT({ sub: userId, email })
-    .setProtectedHeader({ alg: "dir", enc: "A256CBC-HS512", kid: thumbprint })
-    .setIssuedAt(now)
-    .setExpirationTime(now + MAX_AGE)
-    .setJti(crypto.randomUUID())
-    .encrypt(encryptionSecret);
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -65,16 +36,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
     }
 
-    const sessionToken = await createSessionCookie(user.id as string, normalizedEmail);
     const response = NextResponse.json({ success: true });
-    response.cookies.set(COOKIE_NAME, sessionToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: MAX_AGE,
-    });
-
+    await setSessionCookie(response, user.id as string, normalizedEmail);
     return response;
   } catch (error) {
     console.error("Login error:", error);
