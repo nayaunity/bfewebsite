@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useRef, useCallback, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 type Step = "email" | "signin" | "set_password" | "create_account" | "magic_link_sent";
+
+interface EmailCheckResult {
+  status: "has_password" | "needs_password" | "new";
+  firstName?: string;
+}
 
 function AuthForm() {
   const searchParams = useSearchParams();
@@ -17,9 +22,64 @@ function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Prefetch email check result as user types
+  const prefetchCache = useRef<Record<string, EmailCheckResult>>({});
+  const prefetchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const prefetchEmailCheck = useCallback((emailValue: string) => {
+    const normalized = emailValue.trim().toLowerCase();
+    if (!normalized || !normalized.includes("@")) return;
+    if (prefetchCache.current[normalized]) return;
+
+    clearTimeout(prefetchTimer.current);
+    prefetchTimer.current = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/auth/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: normalized }),
+        });
+        const data = await res.json();
+        if (data.status) {
+          prefetchCache.current[normalized] = data;
+        }
+      } catch { /* silent prefetch failure */ }
+    }, 300);
+  }, []);
+
+  // Warm up the serverless function on page load
+  useEffect(() => {
+    fetch("/api/auth/check-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "warmup@warmup.com" }),
+    }).catch(() => {});
+  }, []);
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    prefetchEmailCheck(value);
+  };
+
   const checkEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    const normalized = email.trim().toLowerCase();
+    if (!normalized) return;
+
+    // Use prefetched result if available
+    const cached = prefetchCache.current[normalized];
+    if (cached) {
+      if (cached.status === "has_password") {
+        setFirstName(cached.firstName || "");
+        setStep("signin");
+      } else if (cached.status === "needs_password") {
+        setFirstName(cached.firstName || "");
+        setStep("set_password");
+      } else {
+        setStep("create_account");
+      }
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -28,7 +88,7 @@ function AuthForm() {
       const res = await fetch("/api/auth/check-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        body: JSON.stringify({ email: normalized }),
       });
       const data = await res.json();
 
@@ -209,7 +269,7 @@ function AuthForm() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleEmailChange(e.target.value)}
               placeholder="you@example.com"
               required
               autoFocus
