@@ -139,7 +139,7 @@ function SignInForm() {
               onClick={() => setShowMagicLink(true)}
               className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
             >
-              Sign in with magic link instead
+              Or sign in with magic link instead
             </button>
             <p className="text-sm text-[var(--gray-600)]">
               Don&apos;t have an account?{" "}
