@@ -83,7 +83,10 @@ export default function ApplicationsDashboard({
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
 
-  const filtered = initialApplications.filter((a) => {
+  // Hide failed applications from users
+  const visibleApplications = initialApplications.filter((a) => a.status !== "failed");
+
+  const filtered = visibleApplications.filter((a) => {
     if (filter !== "all") {
       if (filter === "submitted") {
         if (a.status !== "submitted" && a.status !== "applied") return false;
@@ -97,10 +100,9 @@ export default function ApplicationsDashboard({
   });
 
   const filterCounts = {
-    all: initialApplications.length,
-    submitted: initialApplications.filter((a) => a.status === "submitted" || a.status === "applied").length,
-    failed: initialApplications.filter((a) => a.status === "failed").length,
-    skipped: initialApplications.filter((a) => a.status === "skipped").length,
+    all: visibleApplications.length,
+    submitted: visibleApplications.filter((a) => a.status === "submitted" || a.status === "applied").length,
+    skipped: visibleApplications.filter((a) => a.status === "skipped").length,
   };
 
   const handleCardClick = (newFilter: string) => {
@@ -155,26 +157,6 @@ export default function ApplicationsDashboard({
           <p className="text-xs text-[var(--gray-600)] mt-1">Successfully submitted</p>
         </button>
 
-        <button
-          onClick={() => handleCardClick("failed")}
-          className={`rounded-2xl p-5 text-left transition-all hover:scale-[1.02] cursor-pointer border ${
-            filter === "failed"
-              ? "bg-red-50 border-red-300 ring-2 ring-red-400 ring-offset-2 ring-offset-[var(--background)]"
-              : "bg-[var(--card-bg)] border-[var(--card-border)]"
-          }`}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-              <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <span className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider">Failed</span>
-          </div>
-          <p className="text-3xl font-bold text-red-500">{stats.failed}</p>
-          <p className="text-xs text-[var(--gray-600)] mt-1">Could not complete</p>
-        </button>
-
       </div>
 
       {/* Today's Auto-Apply Activity */}
@@ -196,15 +178,12 @@ export default function ApplicationsDashboard({
             <div className="flex items-center gap-4 text-xs text-[var(--gray-600)]">
               <span>{todayActivity.jobsFound} found</span>
               <span className="text-green-600 font-medium">{todayActivity.jobsApplied} applied</span>
-              {todayActivity.jobsFailed > 0 && (
-                <span className="text-red-500">{todayActivity.jobsFailed} failed</span>
-              )}
             </div>
           </div>
 
-          {todayActivity.discoveries.length > 0 ? (
+          {todayActivity.discoveries.filter((d) => d.status !== "failed").length > 0 ? (
             <div className="divide-y divide-[var(--card-border)] max-h-64 overflow-y-auto">
-              {todayActivity.discoveries.map((d) => (
+              {todayActivity.discoveries.filter((d) => d.status !== "failed").map((d) => (
                 <div key={d.id} className="px-5 py-2.5 flex items-center justify-between">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-[var(--foreground)] truncate">{d.jobTitle}</p>
@@ -271,7 +250,7 @@ export default function ApplicationsDashboard({
             </div>
             {/* Filter */}
             <div className="flex gap-1">
-              {(["all", "submitted", "failed", "skipped"] as const).map((s) => (
+              {(["all", "submitted", "skipped"] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setFilter(s)}
