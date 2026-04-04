@@ -7,17 +7,6 @@ import Link from "next/link";
 
 type Step = "email" | "signin" | "set_password" | "create_account" | "magic_link_sent";
 
-// Always POST to www to avoid non-www → www redirect losing the body
-function apiPost(path: string, body: Record<string, unknown>) {
-  const base = typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "" : "https://www.theblackfemaleengineer.com";
-  return fetch(`${base}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-}
-
 function AuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile";
@@ -36,7 +25,11 @@ function AuthForm() {
     setError("");
 
     try {
-      const res = await apiPost("/api/auth/check-email", { email: email.trim().toLowerCase() });
+      const res = await fetch("/api/auth/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
       const data = await res.json();
 
       if (data.status === "has_password") {
@@ -84,7 +77,11 @@ function AuthForm() {
     setError("");
 
     try {
-      const res = await apiPost("/api/auth/signup", { email: email.trim().toLowerCase(), password });
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
       const data = await res.json();
 
       if (data.success) {
@@ -117,7 +114,11 @@ function AuthForm() {
     setError("");
 
     try {
-      const res = await apiPost("/api/auth/signup", { email: email.trim().toLowerCase(), password });
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
       const data = await res.json();
 
       if (data.success) {
