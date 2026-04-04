@@ -58,7 +58,10 @@ export function AuthButton() {
 
       {/* Dropdown menu */}
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-56 bg-[var(--card-bg)] rounded-lg shadow-lg border border-[var(--card-border)] py-2 z-50">
+        <div
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute right-0 mt-2 w-56 bg-[var(--card-bg)] rounded-lg shadow-lg border border-[var(--card-border)] py-2 z-50"
+        >
           {/* Email display */}
           <div className="px-4 py-2 border-b border-[var(--card-border)]">
             <p className="text-sm text-[var(--gray-600)]">Signed in as</p>
