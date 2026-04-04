@@ -56,11 +56,11 @@ function AuthForm() {
     }).catch(() => {});
   }, []);
 
-  // Warm up NextAuth serverless function when password step appears
-  // so signIn("credentials") is fast after the user finishes typing
+  // Warm up NextAuth serverless function when sign-in step appears
+  // (only the password sign-in flow still uses signIn("credentials"))
   const warmedNextAuth = useRef(false);
   useEffect(() => {
-    if ((step === "signin" || step === "set_password" || step === "create_account") && !warmedNextAuth.current) {
+    if (step === "signin" && !warmedNextAuth.current) {
       warmedNextAuth.current = true;
       fetch("/api/auth/csrf").catch(() => {});
     }
@@ -139,7 +139,7 @@ function AuthForm() {
     }
   };
 
-  const handleSetPassword = async (e: React.FormEvent) => {
+  const handleSignupAndRedirect = async (e: React.FormEvent, errorPrefix: string) => {
     e.preventDefault();
     if (!password || password.length < 8) return;
 
@@ -155,19 +155,10 @@ function AuthForm() {
       const data = await res.json();
 
       if (data.success) {
-        const result = await signIn("credentials", {
-          email: email.trim().toLowerCase(),
-          password,
-          redirect: false,
-        });
-        if (result?.error) {
-          setError("Password set but sign-in failed. Try signing in.");
-          setLoading(false);
-        } else {
-          window.location.href = callbackUrl;
-        }
+        // Signup endpoint sets the session cookie directly — just redirect
+        window.location.href = callbackUrl;
       } else {
-        setError(data.error || "Failed to set password.");
+        setError(data.error || `${errorPrefix} failed.`);
         setLoading(false);
       }
     } catch {
@@ -176,42 +167,8 @@ function AuthForm() {
     }
   };
 
-  const handleCreateAccount = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!password || password.length < 8) return;
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        const result = await signIn("credentials", {
-          email: email.trim().toLowerCase(),
-          password,
-          redirect: false,
-        });
-        if (result?.error) {
-          setError("Account created but sign-in failed. Try signing in.");
-          setLoading(false);
-        } else {
-          window.location.href = callbackUrl;
-        }
-      } else {
-        setError(data.error || "Failed to create account.");
-        setLoading(false);
-      }
-    } catch {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    }
-  };
+  const handleSetPassword = (e: React.FormEvent) => handleSignupAndRedirect(e, "Setting password");
+  const handleCreateAccount = (e: React.FormEvent) => handleSignupAndRedirect(e, "Creating account");
 
   const handleMagicLink = async () => {
     setLoading(true);
