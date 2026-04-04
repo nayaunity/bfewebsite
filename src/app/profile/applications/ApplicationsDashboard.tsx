@@ -62,11 +62,13 @@ export default function ApplicationsDashboard({
   stats,
   usage,
   todayActivity,
+  profileReady = false,
 }: {
   initialApplications: Application[];
   stats: Stats;
   usage?: { used: number; limit: number; tier: string } | null;
   todayActivity?: TodayActivity | null;
+  profileReady?: boolean;
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -266,33 +268,48 @@ export default function ApplicationsDashboard({
                 </div>
                 {!atLimit && !hasActiveSession && (
                   <div className="mt-4">
-                    <button
-                      onClick={handleStartApplying}
-                      disabled={starting}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {starting ? (
-                        <>
-                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    {profileReady ? (
+                      <>
+                        <button
+                          onClick={handleStartApplying}
+                          disabled={starting}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {starting ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                              Finding matching jobs...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              Start Applying Now
+                            </>
+                          )}
+                        </button>
+                        {startResult?.success && (
+                          <p className="mt-2 text-sm text-green-600">{startResult.message}</p>
+                        )}
+                        {startResult?.error && (
+                          <p className="mt-2 text-sm text-red-500">{startResult.error}</p>
+                        )}
+                      </>
+                    ) : (
+                      <div className="p-3 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
+                        <p className="text-sm text-[var(--foreground)] font-medium mb-1">Complete your profile to start applying</p>
+                        <p className="text-xs text-[var(--gray-600)] mb-3">You need at least your target roles and a resume before we can match you to jobs.</p>
+                        <Link href="/profile" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#ef562a] hover:underline">
+                          Go to Profile
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
-                          Finding matching jobs...
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                          Start Applying Now
-                        </>
-                      )}
-                    </button>
-                    {startResult?.success && (
-                      <p className="mt-2 text-sm text-green-600">{startResult.message}</p>
-                    )}
-                    {startResult?.error && (
-                      <p className="mt-2 text-sm text-red-500">{startResult.error}</p>
+                        </Link>
+                      </div>
                     )}
                   </div>
                 )}

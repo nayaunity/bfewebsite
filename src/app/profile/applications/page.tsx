@@ -24,7 +24,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 } },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -156,6 +156,7 @@ export default async function ApplicationsPage() {
             initialApplications={allApplications}
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
+            profileReady={!!(user?.targetRole && (user.resumeUrl || (user.resumes && user.resumes.length > 0)))}
             todayActivity={todaySession ? {
               status: todaySession.status,
               jobsFound: todaySession.jobsFound,
