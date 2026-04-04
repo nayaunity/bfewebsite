@@ -4,8 +4,8 @@ import { createClient } from "@libsql/client/web";
 export const runtime = "edge";
 
 const db = createClient({
-  url: process.env.DATABASE_URL!,
-  authToken: process.env.DATABASE_AUTH_TOKEN,
+  url: process.env.DATABASE_URL!.trim(),
+  authToken: process.env.DATABASE_AUTH_TOKEN?.trim(),
 });
 
 export async function POST(request: NextRequest) {
