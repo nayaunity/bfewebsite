@@ -29,10 +29,31 @@ function SignUpForm() {
           email: email.trim().toLowerCase(),
           password,
         }),
+        redirect: "follow",
       });
 
-      const data = await res.json();
-      if (!res.ok) {
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // If response isn't JSON (e.g., redirect issue), try again with absolute www URL
+        const retryRes = await fetch("https://www.theblackfemaleengineer.com/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            password,
+          }),
+        });
+        data = await retryRes.json();
+        if (!retryRes.ok) {
+          setError(data.error || "Failed to create account");
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!res.ok && !data.success) {
         setError(data.error || "Failed to create account");
         setLoading(false);
         return;

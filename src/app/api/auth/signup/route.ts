@@ -65,15 +65,17 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error("Signup error:", errMsg);
-    await logError({
-      endpoint: "/api/auth/signup",
-      method: "POST",
-      status: 500,
-      error: "Signup failed",
-      detail: errMsg,
-    });
+    try {
+      await logError({
+        endpoint: "/api/auth/signup",
+        method: "POST",
+        status: 500,
+        error: "Signup failed",
+        detail: errMsg,
+      });
+    } catch { /* don't let logging failure mask the real error */ }
     return NextResponse.json(
-      { error: "Failed to create account" },
+      { error: "Failed to create account. Please try again or use the sign-in page." },
       { status: 500 }
     );
   }
