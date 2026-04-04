@@ -138,6 +138,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
   if (session.matchedJobs) {
     const jobs: Array<{ title: string; applyUrl: string; company: string }> = JSON.parse(session.matchedJobs);
     log(session.id, "info", `Fast path: ${jobs.length} pre-matched jobs`);
+    let successCount = 0;
 
     await db.execute({
       sql: `UPDATE BrowseSession SET jobsFound = ? WHERE id = ?`,
@@ -206,14 +207,16 @@ export async function processNextBrowseSession(): Promise<boolean> {
       );
 
       if (applyResult.success) {
+        successCount++;
         await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
         await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
         await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
-        log(session.id, "info", `Applied: ${job.title} @ ${job.company}`);
+        log(session.id, "info", `Applied (${successCount}): ${job.title} @ ${job.company}`);
       } else {
         const errorWithSteps = applyResult.steps
           ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
           : applyResult.error || "Unknown error";
+        log(session.id, "warn", `Failed, trying next: ${job.title} — ${applyResult.error}`);
         await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
         await db.execute({ sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`, args: [session.id] });
         log(session.id, "warn", `Failed: ${job.title} — ${applyResult.error}`);

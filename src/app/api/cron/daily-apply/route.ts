@@ -109,8 +109,8 @@ export async function GET(request: NextRequest) {
 
         const remaining = Math.min(DAILY_CAP - todayApplied, usage.remaining);
 
-        // Match jobs for this user
-        const matchedJobs = await matchJobsForUser(user.id, remaining);
+        // Match 3x more jobs than needed so the worker has backups when applications fail
+        const matchedJobs = await matchJobsForUser(user.id, remaining * 3);
 
         if (matchedJobs.length === 0) {
           results.push({
