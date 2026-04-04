@@ -5,19 +5,64 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-function SignInForm() {
+type Step = "email" | "signin" | "set_password" | "create_account" | "magic_link_sent";
+
+function AuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [step, setStep] = useState<Step>("email");
+  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showMagicLink, setShowMagicLink] = useState(false);
-  const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const handlePasswordLogin = async (e: React.FormEvent) => {
+  const checkEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) return;
+    if (!email.trim()) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // Retry with absolute URL if redirect ate the response
+        const retry = await fetch("https://www.theblackfemaleengineer.com/api/auth/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        });
+        data = await retry.json();
+      }
+
+      if (data.status === "has_password") {
+        setFirstName(data.firstName || "");
+        setStep("signin");
+      } else if (data.status === "needs_password") {
+        setFirstName(data.firstName || "");
+        setStep("set_password");
+      } else {
+        setStep("create_account");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password) return;
 
     setLoading(true);
     setError("");
@@ -29,31 +74,123 @@ function SignInForm() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password. Try again or use a magic link.");
+      setError("Incorrect password. Try again or use a magic link.");
       setLoading(false);
     } else {
       window.location.href = callbackUrl;
     }
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
+  const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!password || password.length < 8) return;
 
     setLoading(true);
     setError("");
 
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        const retry = await fetch("https://www.theblackfemaleengineer.com/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+        });
+        data = await retry.json();
+      }
+
+      if (data.success) {
+        // Auto sign in with new password
+        const result = await signIn("credentials", {
+          email: email.trim().toLowerCase(),
+          password,
+          redirect: false,
+        });
+        if (result?.error) {
+          setError("Password set but sign-in failed. Try signing in.");
+          setLoading(false);
+        } else {
+          window.location.href = callbackUrl;
+        }
+      } else {
+        setError(data.error || "Failed to set password.");
+        setLoading(false);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleCreateAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password || password.length < 8) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        const retry = await fetch("https://www.theblackfemaleengineer.com/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+        });
+        data = await retry.json();
+      }
+
+      if (data.success) {
+        const result = await signIn("credentials", {
+          email: email.trim().toLowerCase(),
+          password,
+          redirect: false,
+        });
+        if (result?.error) {
+          setError("Account created but sign-in failed. Try signing in.");
+          setLoading(false);
+        } else {
+          window.location.href = callbackUrl;
+        }
+      } else {
+        setError(data.error || "Failed to create account.");
+        setLoading(false);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleMagicLink = async () => {
+    setLoading(true);
+    setError("");
     await signIn("resend", {
       email: email.trim().toLowerCase(),
       callbackUrl,
       redirect: false,
     });
-
-    setMagicLinkSent(true);
+    setStep("magic_link_sent");
     setLoading(false);
   };
 
-  if (magicLinkSent) {
+  if (step === "magic_link_sent") {
     return (
       <div className="text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
@@ -69,7 +206,7 @@ function SignInForm() {
           Check your spam folder if you don&apos;t see it.
         </p>
         <button
-          onClick={() => { setMagicLinkSent(false); setShowMagicLink(false); }}
+          onClick={() => { setStep("email"); setPassword(""); setError(""); }}
           className="mt-4 text-sm text-[#ef562a] hover:underline"
         >
           Try a different method
@@ -85,7 +222,10 @@ function SignInForm() {
           the<span className="text-[#ef562a]">BFE</span>
         </Link>
         <p className="text-sm text-[var(--gray-600)] mt-2">
-          Sign in to your account
+          {step === "email" && "Enter your email to get started"}
+          {step === "signin" && (firstName ? `Welcome back, ${firstName}` : "Welcome back")}
+          {step === "set_password" && "Create a password to speed up sign in"}
+          {step === "create_account" && "Create your account"}
         </p>
       </div>
 
@@ -95,21 +235,38 @@ function SignInForm() {
         </div>
       )}
 
-      {!showMagicLink ? (
+      {step === "email" && (
+        <form onSubmit={checkEmail} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoFocus
+              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading || !email.trim()}
+            className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {loading ? "Checking..." : "Continue"}
+          </button>
+        </form>
+      )}
+
+      {step === "signin" && (
         <>
-          <form onSubmit={handlePasswordLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
-              />
+          <form onSubmit={handleSignIn} className="space-y-4">
+            <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
+              {email}
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#ef562a] text-xs hover:underline">change</button>
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
@@ -121,69 +278,101 @@ function SignInForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
+                autoFocus
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || !password}
+              className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+          <button
+            onClick={handleMagicLink}
+            disabled={loading}
+            className="mt-3 w-full text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors text-center"
+          >
+            Or sign in with magic link instead
+          </button>
+        </>
+      )}
+
+      {step === "set_password" && (
+        <>
+          <form onSubmit={handleSetPassword} className="space-y-4">
+            <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
+              {email}
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#ef562a] text-xs hover:underline">change</button>
+            </div>
+            <p className="text-xs text-[var(--gray-600)]">
+              You previously signed in with a magic link. Set a password so you can sign in faster next time.
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
+                Create a password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                required
+                autoFocus
                 minLength={8}
                 className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
               />
             </div>
             <button
               type="submit"
-              disabled={loading || !email.trim() || !password}
+              disabled={loading || !password || password.length < 8}
               className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity disabled:opacity-50"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Setting password..." : "Set Password & Sign In"}
             </button>
           </form>
-
-          <div className="mt-4 text-center space-y-2">
-            <button
-              onClick={() => setShowMagicLink(true)}
-              className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
-            >
-              Or sign in with magic link instead
-            </button>
-            <p className="text-sm text-[var(--gray-600)]">
-              Don&apos;t have an account?{" "}
-              <Link href={`/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-[#ef562a] hover:underline">
-                Create one
-              </Link>
-            </p>
-          </div>
+          <button
+            onClick={handleMagicLink}
+            disabled={loading}
+            className="mt-3 w-full text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors text-center"
+          >
+            Or sign in with magic link instead
+          </button>
         </>
-      ) : (
+      )}
+
+      {step === "create_account" && (
         <>
-          <form onSubmit={handleMagicLink} className="space-y-4">
+          <form onSubmit={handleCreateAccount} className="space-y-4">
+            <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
+              {email}
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#ef562a] text-xs hover:underline">change</button>
+            </div>
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-                Email address
+                Create a password
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
                 required
+                autoFocus
+                minLength={8}
                 className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
               />
             </div>
             <button
               type="submit"
-              disabled={loading || !email.trim()}
+              disabled={loading || !password || password.length < 8}
               className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity disabled:opacity-50"
             >
-              {loading ? "Sending..." : "Send Magic Link"}
+              {loading ? "Creating account..." : "Create Account"}
             </button>
           </form>
-          <p className="text-xs text-[var(--gray-600)] text-center mt-3">
-            A sign-in link will be sent to your email. No password needed.
-          </p>
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setShowMagicLink(false)}
-              className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
-            >
-              Back to password sign in
-            </button>
-          </div>
         </>
       )}
     </>
@@ -195,7 +384,7 @@ export default function SignInPage() {
     <div className="min-h-screen bg-[var(--background)] flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <Suspense>
-          <SignInForm />
+          <AuthForm />
         </Suspense>
       </div>
       <Link
