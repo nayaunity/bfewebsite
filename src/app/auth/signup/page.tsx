@@ -8,8 +8,6 @@ import Link from "next/link";
 function SignUpForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile";
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +15,7 @@ function SignUpForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) return;
+    if (!email.trim() || !password) return;
 
     setLoading(true);
     setError("");
@@ -28,8 +26,6 @@ function SignUpForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
           email: email.trim().toLowerCase(),
           password,
         }),
@@ -79,34 +75,6 @@ function SignUpForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-              First name
-            </label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Jane"
-              required
-              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-              Last name
-            </label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Doe"
-              required
-              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
-            />
-          </div>
-        </div>
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
             Email
@@ -136,7 +104,7 @@ function SignUpForm() {
         </div>
         <button
           type="submit"
-          disabled={loading || !firstName.trim() || !lastName.trim() || !email.trim() || !password}
+          disabled={loading || !email.trim() || !password}
           className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           {loading ? "Creating account..." : "Create Account"}

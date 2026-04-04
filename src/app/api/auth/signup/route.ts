@@ -8,9 +8,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { firstName, lastName, email, password } = body;
 
-    if (!firstName?.trim() || !lastName?.trim() || !email?.trim() || !password) {
+    if (!email?.trim() || !password) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Email and password are required" },
         { status: 400 }
       );
     }
@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
       data: {
         email: normalizedEmail,
         passwordHash,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+        firstName: firstName?.trim() || null,
+        lastName: lastName?.trim() || null,
         emailVerified: new Date(),
       },
     });
