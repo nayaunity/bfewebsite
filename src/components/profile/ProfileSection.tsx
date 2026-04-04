@@ -5,6 +5,7 @@ import { useState, useEffect, ReactNode } from "react";
 interface ProfileSectionProps {
   title: string;
   description?: string;
+  badge?: string;
   icon: ReactNode;
   id?: string;
   defaultOpen?: boolean;
@@ -17,6 +18,7 @@ interface ProfileSectionProps {
 export function ProfileSection({
   title,
   description,
+  badge,
   icon,
   id,
   defaultOpen = false,
@@ -77,9 +79,16 @@ export function ProfileSection({
             {icon}
           </span>
           <div className="text-left">
-            <h3 className="font-serif text-lg text-[var(--foreground)]">
-              {title}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-serif text-lg text-[var(--foreground)]">
+                {title}
+              </h3>
+              {badge && (
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#ef562a]/10 text-[#ef562a]">
+                  {badge}
+                </span>
+              )}
+            </div>
             {description && (
               <p className="text-xs text-[var(--gray-600)] mt-0.5">
                 {description}

@@ -63,12 +63,16 @@ export default function ApplicationsDashboard({
   usage,
   todayActivity,
   profileReady = false,
+  missingRoles = false,
+  missingResume = false,
 }: {
   initialApplications: Application[];
   stats: Stats;
   usage?: { used: number; limit: number; tier: string } | null;
   todayActivity?: TodayActivity | null;
   profileReady?: boolean;
+  missingRoles?: boolean;
+  missingResume?: boolean;
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -301,14 +305,21 @@ export default function ApplicationsDashboard({
                       </>
                     ) : (
                       <div className="p-3 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
-                        <p className="text-sm text-[var(--foreground)] font-medium mb-1">Complete your profile to start applying</p>
-                        <p className="text-xs text-[var(--gray-600)] mb-3">You need at least your target roles and a resume before we can match you to jobs.</p>
-                        <Link href="/profile" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#ef562a] hover:underline">
-                          Go to Profile
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
+                        <p className="text-sm text-[var(--foreground)] font-medium mb-1">Almost there! Complete these to start applying:</p>
+                        <ul className="text-xs text-[var(--gray-600)] mb-3 space-y-1.5 ml-1">
+                          {missingRoles && (
+                            <li className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#ef562a]" />
+                              <Link href="/profile" className="hover:text-[#ef562a] hover:underline">Set your target roles</Link>
+                            </li>
+                          )}
+                          {missingResume && (
+                            <li className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#ef562a]" />
+                              <Link href="/auto-apply/next-steps" className="hover:text-[#ef562a] hover:underline">Upload a resume</Link>
+                            </li>
+                          )}
+                        </ul>
                       </div>
                     )}
                   </div>

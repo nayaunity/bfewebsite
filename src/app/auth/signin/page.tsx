@@ -14,7 +14,7 @@ interface EmailCheckResult {
 
 function AuthForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/profile";
+  const callbackUrl = searchParams.get("callbackUrl") || "/profile/applications";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [step, setStep] = useState<Step>("email");
@@ -135,7 +135,7 @@ function AuthForm() {
     }
   };
 
-  const handleSignupAndRedirect = async (e: React.FormEvent, errorPrefix: string) => {
+  const handleSignupAndRedirect = async (e: React.FormEvent, errorPrefix: string, redirectTo: string) => {
     e.preventDefault();
     if (!password || password.length < 8) return;
 
@@ -152,7 +152,7 @@ function AuthForm() {
 
       if (data.success) {
         // Signup endpoint sets the session cookie directly — just redirect
-        window.location.href = callbackUrl;
+        window.location.href = redirectTo;
       } else {
         setError(data.error || `${errorPrefix} failed.`);
         setLoading(false);
@@ -163,8 +163,10 @@ function AuthForm() {
     }
   };
 
-  const handleSetPassword = (e: React.FormEvent) => handleSignupAndRedirect(e, "Setting password");
-  const handleCreateAccount = (e: React.FormEvent) => handleSignupAndRedirect(e, "Creating account");
+  // Existing user setting password → go to their intended destination
+  const handleSetPassword = (e: React.FormEvent) => handleSignupAndRedirect(e, "Setting password", callbackUrl);
+  // New user creating account → go to onboarding wizard
+  const handleCreateAccount = (e: React.FormEvent) => handleSignupAndRedirect(e, "Creating account", "/auto-apply/get-started");
 
   const handleMagicLink = async () => {
     setLoading(true);

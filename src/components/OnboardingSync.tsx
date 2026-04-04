@@ -92,8 +92,9 @@ export function OnboardingSync() {
         profileUpdate.needsSponsorship = data.needsSponsorship === "Yes";
       }
 
-      // Save to profile
+      // Save to profile + mark onboarding complete
       if (Object.keys(profileUpdate).length > 0) {
+        profileUpdate.onboardingCompletedAt = new Date().toISOString();
         fetch("/api/profile", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

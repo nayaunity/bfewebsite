@@ -106,14 +106,11 @@ export default function NextStepsClient({
           <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-3">
             Welcome{userName ? `, ${userName}` : ""}!
           </h1>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            Auto-apply is ready
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ef562a]/10 text-[#ef562a] text-sm font-bold">
+            Last step!
           </div>
           <p className="mt-4 text-[var(--gray-600)] max-w-md mx-auto">
-            Upload your role-specific resumes below, then head to the applications page to start.
+            Upload at least one resume, then you can start auto-applying to jobs.
           </p>
         </div>
 

@@ -34,6 +34,7 @@ async function getUserData(userId: string) {
       email: true,
       createdAt: true,
       emailVerified: true,
+      onboardingCompletedAt: true,
       role: true,
       firstName: true,
       lastName: true,
@@ -186,6 +187,11 @@ export default async function ProfilePage() {
 
   if (!user) {
     redirect("/auth/signin");
+  }
+
+  // New users who haven't completed onboarding → send to wizard
+  if (!user.onboardingCompletedAt) {
+    redirect("/auto-apply/get-started");
   }
 
   // Backfill any missing profile fields from onboarding data

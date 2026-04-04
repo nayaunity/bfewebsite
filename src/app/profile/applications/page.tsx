@@ -157,6 +157,8 @@ export default async function ApplicationsPage() {
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
             profileReady={!!(user?.targetRole && (user.resumeUrl || (user.resumes && user.resumes.length > 0)))}
+            missingRoles={!user?.targetRole}
+            missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}
             todayActivity={todaySession ? {
               status: todaySession.status,
               jobsFound: todaySession.jobsFound,

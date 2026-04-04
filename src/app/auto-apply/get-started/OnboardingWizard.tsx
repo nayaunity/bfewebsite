@@ -85,7 +85,7 @@ interface WizardData {
   needsSponsorship: string;
 }
 
-export default function OnboardingWizard() {
+export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: boolean }) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<WizardData>({
     lookingForJob: "",
@@ -170,10 +170,17 @@ export default function OnboardingWizard() {
   };
 
   const handleCreateAccount = () => {
-    // Use localStorage so data survives magic link auth (new tab)
+    // Save wizard data so OnboardingSync can pick it up
     localStorage.setItem("onboarding_data", JSON.stringify(data));
     sessionStorage.setItem("onboarding_data", JSON.stringify(data));
-    window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent("/auto-apply/next-steps?onboarding=complete");
+
+    if (isSignedIn) {
+      // Already authenticated — go directly to next steps (skip re-auth)
+      window.location.href = "/auto-apply/next-steps?onboarding=complete";
+    } else {
+      // Not signed in — go through auth first, then next steps
+      window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent("/auto-apply/next-steps?onboarding=complete");
+    }
   };
 
   // ============================================================================
