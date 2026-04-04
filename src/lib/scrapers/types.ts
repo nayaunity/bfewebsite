@@ -1,6 +1,7 @@
 export interface ScrapedJob {
   externalId: string;
   title: string;
+  description?: string;
   location: string;
   type: string;
   remote: boolean;

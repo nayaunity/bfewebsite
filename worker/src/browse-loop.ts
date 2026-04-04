@@ -1,5 +1,5 @@
 import { getDb } from "./db";
-import { discoverJobs, applyToJob } from "./career-browser";
+import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-browser";
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -8,6 +8,7 @@ import targetCompanies from "../data/target-companies.json";
 const DELAY_BETWEEN_COMPANIES_MS = 10_000;
 const DELAY_BETWEEN_JOBS_MS = 5_000;
 const COMPANY_TIMEOUT_MS = 120_000;
+const DAILY_APP_CAP = 10;
 
 function log(sessionId: string, level: "info" | "warn" | "error", msg: string, meta?: Record<string, unknown>) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), sessionId, level, msg, ...meta }));
@@ -61,6 +62,10 @@ interface UserProfile {
 
 const companyUrlMap = new Map(
   targetCompanies.map((c) => [c.name, c.careersUrl])
+);
+
+const companySlugMap = new Map(
+  targetCompanies.map((c) => [c.name, (c as { slug?: string }).slug || ""])
 );
 
 /**
@@ -161,13 +166,39 @@ export async function processNextBrowseSession(): Promise<boolean> {
     const companyResult = { found: 0, applied: 0, skipped: 0, failed: 0 };
 
     try {
-      // Apply company timeout
-      const { jobs: discovered, log: discoveryLog } = await Promise.race([
-        discoverJobs(careersUrl, session.targetRole),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
-        ),
-      ]);
+      // Try catalog first (instant DB lookup), fall back to live scrape
+      const companySlug = companySlugMap.get(companyName) || "";
+      let discovered: import("./career-browser").DiscoveredJob[];
+      let discoveryLog: import("./career-browser").DiscoveryLog;
+
+      if (companySlug) {
+        const catalogJobs = await discoverJobsFromCatalog(companySlug, session.targetRole);
+        if (catalogJobs.length > 0) {
+          discovered = catalogJobs;
+          discoveryLog = { steps: [`Catalog: ${catalogJobs.length} jobs for ${companySlug}`] };
+        } else {
+          // Catalog empty — fall back to live scrape
+          const live = await Promise.race([
+            discoverJobs(careersUrl, session.targetRole),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
+            ),
+          ]);
+          discovered = live.jobs;
+          discoveryLog = live.log;
+          discoveryLog.steps.unshift("Catalog empty, fell back to live scrape");
+        }
+      } else {
+        // No slug — use live scrape (legacy path)
+        const live = await Promise.race([
+          discoverJobs(careersUrl, session.targetRole),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
+          ),
+        ]);
+        discovered = live.jobs;
+        discoveryLog = live.log;
+      }
 
       companyResult.found = discovered.length;
       console.log(`[Browse] ${companyName}: found ${discovered.length} matching jobs`);
@@ -212,6 +243,21 @@ export async function processNextBrowseSession(): Promise<boolean> {
         if (jobAppCheck.rows && jobAppCheck.rows.length > 0) {
           companyResult.skipped++;
           continue;
+        }
+
+        // Check daily cap (10 applications per day)
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const dailyCountResult = await db.execute({
+          sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d
+                JOIN BrowseSession s ON d.sessionId = s.id
+                WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= ?`,
+          args: [session.userId, todayStart.toISOString()],
+        });
+        const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
+        if (dailyCount >= DAILY_APP_CAP) {
+          log(session.id, "info", `Daily cap reached (${DAILY_APP_CAP}), stopping`);
+          break;
         }
 
         // Check monthly quota

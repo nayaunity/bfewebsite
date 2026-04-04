@@ -49,6 +49,20 @@ interface Stats {
   uniqueCompanies: number;
 }
 
+interface TodayActivity {
+  status: string;
+  jobsFound: number;
+  jobsApplied: number;
+  jobsFailed: number;
+  discoveries: Array<{
+    id: string;
+    company: string;
+    jobTitle: string;
+    status: string;
+    createdAt: string;
+  }>;
+}
+
 export default function ApplicationsDashboard({
   initialApplications,
   companies,
@@ -56,6 +70,7 @@ export default function ApplicationsDashboard({
   defaultRole,
   userRoles,
   usage,
+  todayActivity,
 }: {
   initialApplications: Application[];
   companies: Company[];
@@ -63,6 +78,7 @@ export default function ApplicationsDashboard({
   defaultRole?: string | null;
   userRoles?: string[];
   usage?: { used: number; limit: number; tier: string } | null;
+  todayActivity?: TodayActivity | null;
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -160,6 +176,76 @@ export default function ApplicationsDashboard({
         </button>
 
       </div>
+
+      {/* Today's Auto-Apply Activity */}
+      {todayActivity && (
+        <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-[var(--card-border)] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${
+                todayActivity.status === "processing" || todayActivity.status === "queued"
+                  ? "bg-blue-500 animate-pulse"
+                  : todayActivity.status === "completed"
+                    ? "bg-green-500"
+                    : "bg-red-500"
+              }`} />
+              <h2 className="text-sm font-semibold text-[var(--foreground)]">
+                Today&apos;s Auto-Apply
+              </h2>
+            </div>
+            <div className="flex items-center gap-4 text-xs text-[var(--gray-600)]">
+              <span>{todayActivity.jobsFound} found</span>
+              <span className="text-green-600 font-medium">{todayActivity.jobsApplied} applied</span>
+              {todayActivity.jobsFailed > 0 && (
+                <span className="text-red-500">{todayActivity.jobsFailed} failed</span>
+              )}
+            </div>
+          </div>
+
+          {todayActivity.discoveries.length > 0 ? (
+            <div className="divide-y divide-[var(--card-border)] max-h-64 overflow-y-auto">
+              {todayActivity.discoveries.map((d) => (
+                <div key={d.id} className="px-5 py-2.5 flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-[var(--foreground)] truncate">{d.jobTitle}</p>
+                    <p className="text-xs text-[var(--gray-600)]">{d.company}</p>
+                  </div>
+                  <span className={`ml-3 shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full ${
+                    d.status === "applied"
+                      ? "bg-green-100 text-green-700"
+                      : d.status === "applying"
+                        ? "bg-blue-50 text-blue-600"
+                        : d.status === "failed"
+                          ? "bg-red-50 text-red-600"
+                          : "bg-[var(--gray-100)] text-[var(--gray-600)]"
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      d.status === "applied"
+                        ? "bg-green-500"
+                        : d.status === "applying"
+                          ? "bg-blue-500 animate-pulse"
+                          : d.status === "failed"
+                            ? "bg-red-500"
+                            : "bg-[var(--gray-600)]"
+                    }`} />
+                    {d.status === "applied" ? "Applied" :
+                     d.status === "applying" ? "Applying..." :
+                     d.status === "failed" ? "Failed" : d.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="px-5 py-6 text-center text-sm text-[var(--gray-600)]">
+              {todayActivity.status === "queued"
+                ? "Your jobs are queued and will be processed shortly..."
+                : todayActivity.status === "processing"
+                  ? "Scanning for matching jobs..."
+                  : "No matching jobs found today. We'll check again tomorrow."}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Browse & Apply Form */}
       <BrowseApplyForm companies={companies} defaultRole={defaultRole} userRoles={userRoles} initialUsage={usage} />

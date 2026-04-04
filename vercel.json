@@ -1,8 +1,16 @@
 {
   "crons": [
     {
+      "path": "/api/cron/scrape-autoapply",
+      "schedule": "0 5 * * *"
+    },
+    {
       "path": "/api/cron/scrape-jobs",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/daily-apply",
+      "schedule": "30 6 * * *"
     },
     {
       "path": "/api/cron/auto-apply",

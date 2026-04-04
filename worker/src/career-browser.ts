@@ -1,6 +1,7 @@
 import type { Page } from "playwright";
 import Anthropic from "@anthropic-ai/sdk";
 import { createStealthContext, applyToJob, type ApplyResult } from "./apply-engine";
+import { getDb } from "./db";
 
 const anthropic = new Anthropic();
 
@@ -11,6 +12,48 @@ export interface DiscoveredJob {
 
 export interface DiscoveryLog {
   steps: string[];
+}
+
+/**
+ * Discover jobs from the pre-scraped catalog in the Job table.
+ * Returns matching jobs for a given company slug and target roles.
+ * Falls back gracefully — returns empty array if catalog is empty.
+ */
+export async function discoverJobsFromCatalog(
+  companySlug: string,
+  targetRole: string
+): Promise<DiscoveredJob[]> {
+  const db = getDb();
+  const roles = parseRoles(targetRole);
+  const roleKeywords = roles.map((r) =>
+    r.toLowerCase().split(/\s+/).filter((w) => w.length > 2)
+  );
+
+  const result = await db.execute({
+    sql: `SELECT title, applyUrl FROM Job WHERE companySlug = ? AND isActive = 1 AND source = 'auto-apply'`,
+    args: [companySlug],
+  });
+
+  if (!result.rows || result.rows.length === 0) return [];
+
+  const matched: DiscoveredJob[] = [];
+
+  for (const row of result.rows) {
+    const title = row.title as string;
+    const applyUrl = row.applyUrl as string;
+    const titleLower = title.toLowerCase();
+
+    const isMatch = roleKeywords.some((keywords) => {
+      const matches = keywords.filter((kw) => titleLower.includes(kw));
+      return matches.length >= 2 || (keywords.length === 1 && titleLower.includes(keywords[0]));
+    });
+
+    if (isMatch) {
+      matched.push({ title, applyUrl });
+    }
+  }
+
+  return matched.slice(0, 15);
 }
 
 /**

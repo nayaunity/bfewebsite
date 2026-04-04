@@ -19,7 +19,10 @@ export default async function ApplicationsPage() {
     redirect("/auth/signin?callbackUrl=/profile/applications");
   }
 
-  const [user, applications, browseDiscoveries, recentSessions, usageData] = await Promise.all([
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true },
@@ -57,6 +60,32 @@ export default async function ApplicationsPage() {
       },
     }),
     canApply(session.user.id),
+    prisma.browseSession.findFirst({
+      where: {
+        userId: session.user.id,
+        createdAt: { gte: todayStart },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        status: true,
+        targetRole: true,
+        jobsFound: true,
+        jobsApplied: true,
+        jobsFailed: true,
+        createdAt: true,
+        discoveries: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            company: true,
+            jobTitle: true,
+            status: true,
+            createdAt: true,
+          },
+        },
+      },
+    }),
   ]);
 
   const discoveryAsApplications = browseDiscoveries.map((d) => ({
@@ -131,6 +160,19 @@ export default async function ApplicationsPage() {
             defaultRole={userRoles[0] || null}
             userRoles={userRoles}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
+            todayActivity={todaySession ? {
+              status: todaySession.status,
+              jobsFound: todaySession.jobsFound,
+              jobsApplied: todaySession.jobsApplied,
+              jobsFailed: todaySession.jobsFailed,
+              discoveries: todaySession.discoveries.map((d) => ({
+                id: d.id,
+                company: d.company,
+                jobTitle: d.jobTitle,
+                status: d.status,
+                createdAt: d.createdAt.toISOString(),
+              })),
+            } : null}
           />
         </div>
         <TicketWidget page="applications" />

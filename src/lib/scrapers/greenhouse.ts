@@ -10,6 +10,7 @@ import {
 interface GreenhouseJob {
   id: number;
   title: string;
+  content?: string;
   location: {
     name: string;
   };
@@ -26,7 +27,8 @@ interface GreenhouseApiResponse {
 }
 
 export async function scrapeGreenhouse(
-  company: DEICompany
+  company: DEICompany,
+  options?: { skipRoleFilter?: boolean; source?: string }
 ): Promise<ScraperResult> {
   const config = company.atsConfig as GreenhouseConfig;
 
@@ -61,8 +63,8 @@ export async function scrapeGreenhouse(
     const jobs: ScrapedJob[] = [];
 
     for (const job of data.jobs) {
-      // Filter for tech roles only
-      if (!isTechRole(job.title)) {
+      // Filter for tech roles only (skip when scraping for auto-apply catalog)
+      if (!options?.skipRoleFilter && !isTechRole(job.title)) {
         continue;
       }
 
@@ -85,13 +87,14 @@ export async function scrapeGreenhouse(
       const scrapedJob: ScrapedJob = {
         externalId: `gh-${job.id}`,
         title: job.title,
+        description: job.content || undefined,
         location: location,
         type: employmentType,
         remote,
         postedAt: job.updated_at ? new Date(job.updated_at) : undefined,
         applyUrl: job.absolute_url,
         category: categorizeJob(job.title),
-        tags: extractTags(job.title),
+        tags: extractTags(job.title, job.content),
       };
 
       jobs.push(scrapedJob);

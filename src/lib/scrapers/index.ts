@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import deiCompanies from "@/data/dei-companies.json";
+import autoApplyCompanies from "@/data/auto-apply-companies.json";
 import type { DEICompany, ScrapedJob, ScraperResult } from "./types";
 import { scrapeGreenhouse } from "./greenhouse";
 import { scrapeWorkday } from "./workday";
 
 const companies = deiCompanies as DEICompany[];
+const autoApplyCompanyList = autoApplyCompanies as DEICompany[];
 
 type ScrapeStatus = "success" | "error" | "partial";
 
@@ -85,6 +87,7 @@ export async function scrapeCompany(
           company: company.name,
           companySlug: company.slug,
           title: job.title,
+          description: job.description,
           location: job.location,
           type: job.type,
           remote: job.remote,
@@ -98,6 +101,7 @@ export async function scrapeCompany(
         },
         update: {
           title: job.title,
+          description: job.description,
           location: job.location,
           type: job.type,
           remote: job.remote,
@@ -192,6 +196,133 @@ export async function scrapeAllCompanies(): Promise<{
     totalJobsFound,
     totalJobsSaved,
   };
+}
+
+export async function scrapeAutoApplyCompanies(): Promise<{
+  results: ScrapeCompanyResult[];
+  totalJobsFound: number;
+  totalJobsSaved: number;
+}> {
+  const results: ScrapeCompanyResult[] = [];
+  let totalJobsFound = 0;
+  let totalJobsSaved = 0;
+
+  for (const company of autoApplyCompanyList) {
+    console.log(`[Auto-Apply Scrape] ${company.name}...`);
+
+    try {
+      const result = await scrapeGreenhouse(company, { skipRoleFilter: true });
+
+      if (!result.success) {
+        results.push({
+          company: company.name,
+          status: "error",
+          jobsFound: 0,
+          jobsSaved: 0,
+          error: result.error,
+        });
+        continue;
+      }
+
+      await prisma.scrapeLog.create({
+        data: {
+          companySlug: company.slug,
+          status: result.jobs.length > 0 ? "success" : "partial",
+          jobsFound: result.jobs.length,
+        },
+      });
+
+      let jobsSaved = 0;
+      for (const job of result.jobs) {
+        try {
+          await prisma.job.upsert({
+            where: {
+              externalId_companySlug: {
+                externalId: job.externalId,
+                companySlug: company.slug,
+              },
+            },
+            create: {
+              externalId: job.externalId,
+              company: company.name,
+              companySlug: company.slug,
+              title: job.title,
+              description: job.description,
+              location: job.location,
+              type: job.type,
+              remote: job.remote,
+              salary: job.salary,
+              postedAt: job.postedAt,
+              applyUrl: job.applyUrl,
+              category: job.category,
+              tags: JSON.stringify(job.tags),
+              source: "auto-apply",
+              isActive: true,
+            },
+            update: {
+              title: job.title,
+              description: job.description,
+              location: job.location,
+              type: job.type,
+              remote: job.remote,
+              salary: job.salary,
+              postedAt: job.postedAt,
+              applyUrl: job.applyUrl,
+              category: job.category,
+              tags: JSON.stringify(job.tags),
+              source: "auto-apply",
+              isActive: true,
+              updatedAt: new Date(),
+            },
+          });
+          jobsSaved++;
+        } catch (error) {
+          console.error(
+            `[Auto-Apply Scrape] Failed to save ${job.externalId} for ${company.name}:`,
+            error
+          );
+        }
+      }
+
+      totalJobsFound += result.jobs.length;
+      totalJobsSaved += jobsSaved;
+      results.push({
+        company: company.name,
+        status: jobsSaved > 0 ? "success" : "partial",
+        jobsFound: result.jobs.length,
+        jobsSaved,
+      });
+
+      console.log(
+        `[Auto-Apply Scrape] ${company.name}: Found ${result.jobs.length}, saved ${jobsSaved}`
+      );
+    } catch (error) {
+      console.error(`[Auto-Apply Scrape] Error scraping ${company.name}:`, error);
+      results.push({
+        company: company.name,
+        status: "error",
+        jobsFound: 0,
+        jobsSaved: 0,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+
+    // Delay between companies to be nice to APIs
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+
+  // Mark auto-apply jobs inactive if not updated in 7 days
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  await prisma.job.updateMany({
+    where: {
+      source: "auto-apply",
+      updatedAt: { lt: sevenDaysAgo },
+      isActive: true,
+    },
+    data: { isActive: false },
+  });
+
+  return { results, totalJobsFound, totalJobsSaved };
 }
 
 export async function getScrapableCompanies(): Promise<DEICompany[]> {

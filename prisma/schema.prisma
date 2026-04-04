@@ -129,6 +129,7 @@ model Job {
   company     String
   companySlug String
   title       String
+  description String?
   location    String
   type        String
   remote      Boolean   @default(false)

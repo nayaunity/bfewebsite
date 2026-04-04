@@ -3,246 +3,328 @@
     "name": "Stripe",
     "slug": "stripe",
     "careersUrl": "https://job-boards.greenhouse.io/stripe",
-    "notes": "Fintech/payments — Greenhouse iframe on stripe.com"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "stripe" }
   },
   {
     "name": "Figma",
     "slug": "figma",
     "careersUrl": "https://boards.greenhouse.io/figma",
-    "notes": "Design tools — direct Greenhouse board"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "figma" }
   },
   {
     "name": "Databricks",
     "slug": "databricks",
     "careersUrl": "https://job-boards.greenhouse.io/databricks",
-    "notes": "Data/AI platform — Greenhouse iframe on databricks.com"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "databricks" }
   },
   {
     "name": "Twilio",
     "slug": "twilio",
     "careersUrl": "https://job-boards.greenhouse.io/twilio",
-    "notes": "Communications platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "twilio" }
   },
   {
     "name": "DoorDash",
     "slug": "doordashusa",
     "careersUrl": "https://job-boards.greenhouse.io/doordashusa",
-    "notes": "Delivery platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "doordashusa" }
   },
   {
     "name": "Anthropic",
     "slug": "anthropic",
     "careersUrl": "https://job-boards.greenhouse.io/anthropic",
-    "notes": "AI safety, maker of Claude"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "anthropic" }
   },
   {
     "name": "Glean",
     "slug": "gleanwork",
     "careersUrl": "https://job-boards.greenhouse.io/gleanwork",
-    "notes": "Enterprise AI search"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "gleanwork" }
   },
   {
     "name": "Cloudflare",
     "slug": "cloudflare",
     "careersUrl": "https://boards.greenhouse.io/cloudflare",
-    "notes": "Network/security infrastructure"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "cloudflare" }
   },
   {
     "name": "ZipRecruiter",
     "slug": "ziprecruiter",
     "careersUrl": "https://job-boards.greenhouse.io/ziprecruiter",
-    "notes": "Job marketplace"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "ziprecruiter" }
   },
   {
     "name": "ClickHouse",
     "slug": "clickhouse",
     "careersUrl": "https://job-boards.greenhouse.io/clickhouse",
-    "notes": "Real-time analytics database"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "clickhouse" }
   },
   {
     "name": "Affirm",
     "slug": "affirm",
     "careersUrl": "https://job-boards.greenhouse.io/affirm",
-    "notes": "Buy now pay later fintech"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "affirm" }
   },
   {
     "name": "GitLab",
     "slug": "gitlab",
     "careersUrl": "https://job-boards.greenhouse.io/gitlab",
-    "notes": "DevOps platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "gitlab" }
   },
   {
     "name": "Reddit",
     "slug": "reddit",
     "careersUrl": "https://job-boards.greenhouse.io/reddit",
-    "notes": "Social platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "reddit" }
   },
   {
     "name": "Gusto",
     "slug": "gusto",
     "careersUrl": "https://job-boards.greenhouse.io/gusto",
-    "notes": "HR/payroll platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "gusto" }
   },
   {
     "name": "Amplitude",
     "slug": "amplitude",
     "careersUrl": "https://job-boards.greenhouse.io/amplitude",
-    "notes": "Product analytics"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "amplitude" }
   },
   {
     "name": "Airtable",
     "slug": "airtable",
     "careersUrl": "https://job-boards.greenhouse.io/airtable",
-    "notes": "Spreadsheet-database hybrid"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "airtable" }
   },
   {
     "name": "Grammarly",
     "slug": "grammarly",
     "careersUrl": "https://job-boards.greenhouse.io/grammarly",
-    "notes": "AI writing assistant"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "grammarly" }
   },
   {
     "name": "Temporal",
     "slug": "temporaltechnologies",
     "careersUrl": "https://job-boards.greenhouse.io/temporaltechnologies",
-    "notes": "Workflow orchestration platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "temporaltechnologies" }
   },
   {
     "name": "LaunchDarkly",
     "slug": "launchdarkly",
     "careersUrl": "https://job-boards.greenhouse.io/launchdarkly",
-    "notes": "Feature management platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "launchdarkly" }
   },
   {
     "name": "Scale AI",
     "slug": "scaleai",
     "careersUrl": "https://job-boards.greenhouse.io/scaleai",
-    "notes": "AI data infrastructure"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "scaleai" }
   },
   {
     "name": "Together AI",
     "slug": "togetherai",
     "careersUrl": "https://job-boards.greenhouse.io/togetherai",
-    "notes": "Open source AI platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "togetherai" }
   },
   {
     "name": "Contentful",
     "slug": "contentful",
     "careersUrl": "https://job-boards.greenhouse.io/contentful",
-    "notes": "Headless CMS"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "contentful" }
   },
   {
     "name": "Fireblocks",
     "slug": "fireblocks",
     "careersUrl": "https://job-boards.greenhouse.io/fireblocks",
-    "notes": "Digital asset security"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "fireblocks" }
   },
   {
     "name": "SingleStore",
     "slug": "singlestore",
     "careersUrl": "https://job-boards.greenhouse.io/singlestore",
-    "notes": "Real-time distributed database"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "singlestore" }
   },
   {
     "name": "Labelbox",
     "slug": "labelbox",
     "careersUrl": "https://job-boards.greenhouse.io/labelbox",
-    "notes": "AI training data platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "labelbox" }
   },
   {
     "name": "Alchemy",
     "slug": "alchemy",
     "careersUrl": "https://job-boards.greenhouse.io/alchemy",
-    "notes": "Web3 developer platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "alchemy" }
   },
   {
     "name": "Materialize",
     "slug": "materialize",
     "careersUrl": "https://job-boards.greenhouse.io/materialize",
-    "notes": "Streaming SQL database"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "materialize" }
   },
   {
     "name": "Blockchain.com",
     "slug": "blockchain",
     "careersUrl": "https://job-boards.greenhouse.io/blockchain",
-    "notes": "Crypto financial services"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "blockchain" }
   },
   {
     "name": "PlanetScale",
     "slug": "planetscale",
     "careersUrl": "https://job-boards.greenhouse.io/planetscale",
-    "notes": "Serverless MySQL platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "planetscale" }
   },
   {
     "name": "project44",
     "slug": "project44",
     "careersUrl": "https://job-boards.greenhouse.io/project44",
-    "notes": "Supply chain visibility"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "project44" }
   },
   {
     "name": "Mercari",
     "slug": "mercari",
     "careersUrl": "https://job-boards.greenhouse.io/mercari",
-    "notes": "Online marketplace"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "mercari" }
   },
   {
     "name": "Grafana Labs",
     "slug": "grafanalabs",
     "careersUrl": "https://job-boards.greenhouse.io/grafanalabs",
-    "notes": "Observability platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "grafanalabs" }
   },
   {
     "name": "Attentive",
     "slug": "attentive",
     "careersUrl": "https://job-boards.greenhouse.io/attentive",
-    "notes": "SMS marketing platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "attentive" }
   },
   {
     "name": "Marqeta",
     "slug": "marqeta",
     "careersUrl": "https://job-boards.greenhouse.io/marqeta",
-    "notes": "Card issuing platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "marqeta" }
   },
   {
     "name": "Doximity",
     "slug": "doximity",
     "careersUrl": "https://job-boards.greenhouse.io/doximity",
-    "notes": "Medical professional network"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "doximity" }
   },
   {
     "name": "Culture Amp",
     "slug": "cultureamp",
     "careersUrl": "https://job-boards.greenhouse.io/cultureamp",
-    "notes": "Employee experience platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "cultureamp" }
   },
   {
     "name": "Apollo",
     "slug": "apollo",
     "careersUrl": "https://job-boards.greenhouse.io/apollo",
-    "notes": "GraphQL API platform"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "apollo" }
   },
   {
     "name": "Zscaler",
     "slug": "zscaler",
     "careersUrl": "https://job-boards.greenhouse.io/zscaler",
-    "notes": "Cloud security — 290 jobs"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "zscaler" }
   },
   {
     "name": "Klaviyo",
     "slug": "klaviyo",
     "careersUrl": "https://job-boards.greenhouse.io/klaviyo",
-    "notes": "Marketing platform — 243 jobs"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "klaviyo" }
   },
   {
     "name": "Asana",
     "slug": "asana",
     "careersUrl": "https://job-boards.greenhouse.io/asana",
-    "notes": "Work management — 151 jobs"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "asana" }
   },
   {
     "name": "Abnormal Security",
     "slug": "abnormalsecurity",
     "careersUrl": "https://job-boards.greenhouse.io/abnormalsecurity",
-    "notes": "Email security/AI — 97 jobs"
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "abnormalsecurity" }
   }
 ]
