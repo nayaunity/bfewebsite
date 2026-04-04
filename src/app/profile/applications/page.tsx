@@ -6,7 +6,6 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import ApplicationsDashboard from "./ApplicationsDashboard";
-import targetCompanies from "../../../../scripts/target-companies.json";
 import { TicketWidget } from "@/components/TicketWidget";
 import { canApply } from "@/lib/subscription";
 
@@ -155,10 +154,7 @@ export default async function ApplicationsPage() {
           {/* Main Dashboard */}
           <ApplicationsDashboard
             initialApplications={allApplications}
-            companies={targetCompanies}
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
-            defaultRole={userRoles[0] || null}
-            userRoles={userRoles}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
             todayActivity={todaySession ? {
               status: todaySession.status,

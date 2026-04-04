@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BrowseApplyForm } from "@/components/BrowseApplyForm";
+import Link from "next/link";
 
 interface Application {
   id: string;
@@ -36,12 +36,6 @@ function formatTime(dateStr: Date | string): string {
   });
 }
 
-interface Company {
-  name: string;
-  careersUrl: string;
-  notes: string;
-}
-
 interface Stats {
   total: number;
   applied: number;
@@ -65,18 +59,12 @@ interface TodayActivity {
 
 export default function ApplicationsDashboard({
   initialApplications,
-  companies,
   stats,
-  defaultRole,
-  userRoles,
   usage,
   todayActivity,
 }: {
   initialApplications: Application[];
-  companies: Company[];
   stats: Stats;
-  defaultRole?: string | null;
-  userRoles?: string[];
   usage?: { used: number; limit: number; tier: string } | null;
   todayActivity?: TodayActivity | null;
 }) {
@@ -247,8 +235,52 @@ export default function ApplicationsDashboard({
         </div>
       )}
 
-      {/* Browse & Apply Form */}
-      <BrowseApplyForm companies={companies} defaultRole={defaultRole} userRoles={userRoles} initialUsage={usage} />
+      {/* Auto-Apply Status */}
+      <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-[#ef562a]/10 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-base font-semibold text-[var(--foreground)]">Apply While You Sleep</h2>
+            <p className="text-sm text-[var(--gray-600)] mt-1">
+              Every morning at 3am MT, we scan 5,800+ jobs across 40 top tech companies and automatically apply to the ones that best match your profile, role preferences, and location.
+            </p>
+            {usage && (
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-xs text-[var(--gray-600)] mb-1.5">
+                  <span>Monthly applications</span>
+                  <span className="font-medium">{usage.used} / {usage.limit}</span>
+                </div>
+                <div className="w-full h-2 bg-[var(--gray-100)] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#ef562a] rounded-full transition-all"
+                    style={{ width: `${Math.min(100, (usage.used / usage.limit) * 100)}%` }}
+                  />
+                </div>
+                {usage.used >= usage.limit && usage.tier === "free" && (
+                  <div className="mt-4 p-3 rounded-xl bg-[#ef562a]/5 border border-[#ef562a]/20">
+                    <p className="text-sm text-[var(--foreground)]">
+                      You&apos;ve used all {usage.limit} free applications. Upgrade to apply to up to 100 jobs/month automatically.
+                    </p>
+                    <Link
+                      href="/pricing"
+                      className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors"
+                    >
+                      Upgrade Now
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Application Status Table */}
       <div id="application-table" className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden scroll-mt-4">
@@ -294,7 +326,7 @@ export default function ApplicationsDashboard({
           <div className="px-5 py-12 text-center">
             <p className="text-sm text-[var(--gray-600)]">
               {initialApplications.length === 0
-                ? "No applications yet. Select companies above and start applying."
+                ? "No applications yet. We\u2019ll start applying to matching jobs for you every morning at 3am MT."
                 : "No applications match your filter."}
             </p>
           </div>
