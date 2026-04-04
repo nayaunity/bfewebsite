@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 
 interface Application {
@@ -70,6 +70,31 @@ export default function ApplicationsDashboard({
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+  const [starting, setStarting] = useState(false);
+  const [startResult, setStartResult] = useState<{ success?: boolean; message?: string; error?: string } | null>(null);
+
+  const hasActiveSession = todayActivity?.status === "queued" || todayActivity?.status === "processing";
+  const atLimit = usage ? usage.used >= usage.limit : false;
+
+  const handleStartApplying = useCallback(async () => {
+    setStarting(true);
+    setStartResult(null);
+    try {
+      const res = await fetch("/api/auto-apply/start", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setStartResult({ success: true, message: data.message });
+        // Reload after a moment so the Today's Activity section picks up the new session
+        setTimeout(() => window.location.reload(), 2000);
+      } else {
+        setStartResult({ error: data.error || "Something went wrong" });
+      }
+    } catch {
+      setStartResult({ error: "Network error. Please try again." });
+    } finally {
+      setStarting(false);
+    }
+  }, []);
 
   // Hide failed applications from users
   const visibleApplications = initialApplications.filter((a) => a.status !== "failed");
@@ -239,6 +264,38 @@ export default function ApplicationsDashboard({
                     style={{ width: `${Math.min(100, (usage.used / usage.limit) * 100)}%` }}
                   />
                 </div>
+                {!atLimit && !hasActiveSession && (
+                  <div className="mt-4">
+                    <button
+                      onClick={handleStartApplying}
+                      disabled={starting}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {starting ? (
+                        <>
+                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          Finding matching jobs...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Start Applying Now
+                        </>
+                      )}
+                    </button>
+                    {startResult?.success && (
+                      <p className="mt-2 text-sm text-green-600">{startResult.message}</p>
+                    )}
+                    {startResult?.error && (
+                      <p className="mt-2 text-sm text-red-500">{startResult.error}</p>
+                    )}
+                  </div>
+                )}
                 {usage.used >= usage.limit && usage.tier === "free" && (
                   <div className="mt-4 p-3 rounded-xl bg-[#ef562a]/5 border border-[#ef562a]/20">
                     <p className="text-sm text-[var(--foreground)]">
