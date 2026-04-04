@@ -1,5 +1,9 @@
 # Claude Code Project Instructions
 
+## Session Start Checklist
+
+**At the start of every new session, read `HANDOFF.md` in the project root.** It contains the current state of the project, what was done in the last session, known issues, and next steps. This is critical context you need before making any changes.
+
 ## Database Architecture
 
 This project uses **two separate databases**:
