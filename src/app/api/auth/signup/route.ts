@@ -59,14 +59,15 @@ export async function POST(request: NextRequest) {
       const passwordHash = await bcrypt.hash(password, 12);
       userId = crypto.randomUUID();
       await db.execute({
-        sql: `INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified, role, subscriptionTier, subscriptionStatus, monthlyAppCount, autoApplyEnabled, createdAt)
-              VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', 'inactive', 0, 0, ?)`,
+        sql: `INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified, role, subscriptionTier, subscriptionStatus, monthlyAppCount, monthlyAppResetAt, autoApplyEnabled, createdAt)
+              VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', 'inactive', 0, ?, 0, ?)`,
         args: [
           userId,
           normalizedEmail,
           passwordHash,
           firstName?.trim() || null,
           lastName?.trim() || null,
+          new Date().toISOString(),
           new Date().toISOString(),
           new Date().toISOString(),
         ],
