@@ -56,16 +56,6 @@ function AuthForm() {
     }).catch(() => {});
   }, []);
 
-  // Warm up NextAuth serverless function when sign-in step appears
-  // (only the password sign-in flow still uses signIn("credentials"))
-  const warmedNextAuth = useRef(false);
-  useEffect(() => {
-    if (step === "signin" && !warmedNextAuth.current) {
-      warmedNextAuth.current = true;
-      fetch("/api/auth/csrf").catch(() => {});
-    }
-  }, [step]);
-
   const handleEmailChange = (value: string) => {
     setEmail(value);
     prefetchEmailCheck(value);
@@ -125,17 +115,23 @@ function AuthForm() {
     setLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email: email.trim().toLowerCase(),
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+      const data = await res.json();
 
-    if (result?.error) {
-      setError("Incorrect password. Try again or use a magic link.");
+      if (data.success) {
+        window.location.href = callbackUrl;
+      } else {
+        setError(data.error || "Incorrect password. Try again or use a magic link.");
+        setLoading(false);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
       setLoading(false);
-    } else {
-      window.location.href = callbackUrl;
     }
   };
 

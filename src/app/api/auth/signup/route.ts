@@ -88,17 +88,19 @@ export async function POST(request: NextRequest) {
       });
       userId = existingUser.id as string;
     } else {
-      // Create new user
+      // Create new user with all required defaults
       const passwordHash = await bcrypt.hash(password, 12);
       userId = crypto.randomUUID();
       await db.execute({
-        sql: "INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified) VALUES (?, ?, ?, ?, ?, ?)",
+        sql: `INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified, role, subscriptionTier, subscriptionStatus, monthlyAppCount, autoApplyEnabled, createdAt)
+              VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', 'inactive', 0, 0, ?)`,
         args: [
           userId,
           normalizedEmail,
           passwordHash,
           firstName?.trim() || null,
           lastName?.trim() || null,
+          new Date().toISOString(),
           new Date().toISOString(),
         ],
       });
