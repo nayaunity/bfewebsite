@@ -37,19 +37,12 @@ export async function POST(request: NextRequest) {
           { status: 409 }
         );
       }
-      // Existing user without password (magic link user) — set their password
-      // Only update name if they don't already have one set
+      // Existing user without password (magic link user) — just set their password
       const passwordHash = await bcrypt.hash(password, 12);
-      const existingUser = await prisma.user.findUnique({
-        where: { email: normalizedEmail },
-        select: { firstName: true, lastName: true },
-      });
       await prisma.user.update({
         where: { email: normalizedEmail },
         data: {
           passwordHash,
-          firstName: existingUser?.firstName || firstName.trim(),
-          lastName: existingUser?.lastName || lastName.trim(),
           emailVerified: new Date(),
         },
       });
