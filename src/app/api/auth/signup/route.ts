@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
-import { logError } from "@/lib/error-logger";
+import { createClient } from "@libsql/client/web";
+
+export const runtime = "edge";
+
+const db = createClient({
+  url: process.env.DATABASE_URL!.trim(),
+  authToken: process.env.DATABASE_AUTH_TOKEN?.trim(),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,13 +31,15 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.toLowerCase().trim();
 
     // Check if user already exists
-    const existing = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-      select: { id: true, passwordHash: true },
+    const existing = await db.execute({
+      sql: "SELECT id, passwordHash FROM User WHERE email = ?",
+      args: [normalizedEmail],
     });
 
-    if (existing) {
-      if (existing.passwordHash) {
+    const existingUser = existing.rows[0];
+
+    if (existingUser) {
+      if (existingUser.passwordHash) {
         return NextResponse.json(
           { error: "An account with this email already exists. Try signing in." },
           { status: 409 }
@@ -39,41 +47,32 @@ export async function POST(request: NextRequest) {
       }
       // Existing user without password (magic link user) — just set their password
       const passwordHash = await bcrypt.hash(password, 12);
-      await prisma.user.update({
-        where: { email: normalizedEmail },
-        data: {
-          passwordHash,
-          emailVerified: new Date(),
-        },
+      await db.execute({
+        sql: "UPDATE User SET passwordHash = ?, emailVerified = ? WHERE email = ?",
+        args: [passwordHash, new Date().toISOString(), normalizedEmail],
       });
       return NextResponse.json({ success: true, message: "Password set for existing account" });
     }
 
     // Create new user
     const passwordHash = await bcrypt.hash(password, 12);
-    await prisma.user.create({
-      data: {
-        email: normalizedEmail,
+    const id = crypto.randomUUID();
+    await db.execute({
+      sql: "INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified) VALUES (?, ?, ?, ?, ?, ?)",
+      args: [
+        id,
+        normalizedEmail,
         passwordHash,
-        firstName: firstName?.trim() || null,
-        lastName: lastName?.trim() || null,
-        emailVerified: new Date(),
-      },
+        firstName?.trim() || null,
+        lastName?.trim() || null,
+        new Date().toISOString(),
+      ],
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error("Signup error:", errMsg);
-    try {
-      await logError({
-        endpoint: "/api/auth/signup",
-        method: "POST",
-        status: 500,
-        error: "Signup failed",
-        detail: errMsg,
-      });
-    } catch { /* don't let logging failure mask the real error */ }
     return NextResponse.json(
       { error: "Failed to create account. Please try again or use the sign-in page." },
       { status: 500 }

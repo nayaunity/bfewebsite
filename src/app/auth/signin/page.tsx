@@ -56,6 +56,16 @@ function AuthForm() {
     }).catch(() => {});
   }, []);
 
+  // Warm up NextAuth serverless function when password step appears
+  // so signIn("credentials") is fast after the user finishes typing
+  const warmedNextAuth = useRef(false);
+  useEffect(() => {
+    if ((step === "signin" || step === "set_password" || step === "create_account") && !warmedNextAuth.current) {
+      warmedNextAuth.current = true;
+      fetch("/api/auth/csrf").catch(() => {});
+    }
+  }, [step]);
+
   const handleEmailChange = (value: string) => {
     setEmail(value);
     prefetchEmailCheck(value);
