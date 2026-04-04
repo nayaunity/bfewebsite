@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Resend from "next-auth/providers/resend";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
 // Emails that should automatically be granted admin access on first sign-in
@@ -18,17 +20,52 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       apiKey: process.env.RESEND_API_KEY,
       from: "The Black Female Engineer <noreply@theblackfemaleengineer.com>",
     }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const email = (credentials.email as string).toLowerCase().trim();
+        const password = credentials.password as string;
+
+        const user = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true, email: true, emailVerified: true, passwordHash: true },
+        });
+
+        if (!user || !user.passwordHash) return null;
+
+        const valid = await bcrypt.compare(password, user.passwordHash);
+        if (!valid) return null;
+
+        return { id: user.id, email: user.email, emailVerified: user.emailVerified };
+      },
+    }),
   ],
   pages: {
     signIn: "/auth/signin",
     verifyRequest: "/auth/verify-request",
   },
   callbacks: {
-    session({ session, user }) {
-      // Add user id to session
-      session.user.id = user.id;
-      // Role is fetched separately in admin.ts to avoid adapter issues
+    session({ session, user, token }) {
+      // For database sessions (magic link), user is available
+      // For JWT sessions (credentials), token has the user info
+      if (user) {
+        session.user.id = user.id;
+      } else if (token?.sub) {
+        session.user.id = token.sub;
+      }
       return session;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
     },
   },
   events: {
@@ -50,7 +87,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   trustHost: true,
 });
