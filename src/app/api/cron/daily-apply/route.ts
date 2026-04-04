@@ -22,11 +22,9 @@ export async function GET(request: NextRequest) {
     console.log("[Daily Apply] Starting automated job matching...");
     const startTime = Date.now();
 
-    // Find eligible users: active subscription, auto-apply enabled, profile complete
+    // Find eligible users: complete profile with apps remaining (any tier)
     const eligibleUsers = await prisma.user.findMany({
       where: {
-        subscriptionStatus: "active",
-        autoApplyEnabled: true,
         firstName: { not: null },
         lastName: { not: null },
         phone: { not: null },

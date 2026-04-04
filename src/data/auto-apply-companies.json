@@ -1,13 +1,5 @@
 [
   {
-    "name": "Stripe",
-    "slug": "stripe",
-    "careersUrl": "https://job-boards.greenhouse.io/stripe",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "stripe" }
-  },
-  {
     "name": "Figma",
     "slug": "figma",
     "careersUrl": "https://boards.greenhouse.io/figma",

@@ -1,11 +1,5 @@
 [
   {
-    "name": "Stripe",
-    "slug": "stripe",
-    "careersUrl": "https://job-boards.greenhouse.io/stripe",
-    "notes": "Fintech/payments — Greenhouse iframe on stripe.com"
-  },
-  {
     "name": "Figma",
     "slug": "figma",
     "careersUrl": "https://boards.greenhouse.io/figma",
