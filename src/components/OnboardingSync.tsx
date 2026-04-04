@@ -58,6 +58,14 @@ export function OnboardingSync() {
         profileUpdate.salaryExpectation = `$${Number(data.minSalary).toLocaleString()}+`;
       }
 
+      // Name
+      if (data.firstName?.trim()) {
+        profileUpdate.firstName = data.firstName.trim();
+      }
+      if (data.lastName?.trim()) {
+        profileUpdate.lastName = data.lastName.trim();
+      }
+
       // Phone
       if (data.phone?.trim()) {
         profileUpdate.phone = data.phone.trim();

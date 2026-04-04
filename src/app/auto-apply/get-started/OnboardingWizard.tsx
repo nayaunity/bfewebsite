@@ -75,6 +75,8 @@ interface WizardData {
   minSalary: number;
   goal: string;
   blocker: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   linkedinUrl: string;
   countryOfResidence: string;
@@ -97,6 +99,8 @@ export default function OnboardingWizard() {
     minSalary: 80000,
     goal: "",
     blocker: "",
+    firstName: "",
+    lastName: "",
     phone: "",
     linkedinUrl: "",
     countryOfResidence: "United States",
@@ -146,7 +150,7 @@ export default function OnboardingWizard() {
       case 12: return !!data.goal;
       case 13: return !!data.blocker;
       case 14: return true;
-      case 15: return !!data.phone.trim();
+      case 15: return !!data.firstName.trim() && !!data.lastName.trim() && !!data.phone.trim();
       case 16: return !!data.countryOfResidence.trim();
       case 17: return !!data.workAuthorized;
       case 18: return false; // auto-advances
@@ -630,6 +634,28 @@ export default function OnboardingWizard() {
               Companies need these on every application. Fill them in once, and BFE handles the rest.
             </p>
             <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-1">First name *</label>
+                  <input
+                    type="text"
+                    value={data.firstName}
+                    onChange={(e) => setData({ ...data, firstName: e.target.value })}
+                    placeholder="Jane"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Last name *</label>
+                  <input
+                    type="text"
+                    value={data.lastName}
+                    onChange={(e) => setData({ ...data, lastName: e.target.value })}
+                    placeholder="Doe"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Phone number *</label>
                 <input

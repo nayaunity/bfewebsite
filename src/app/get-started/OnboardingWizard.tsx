@@ -62,6 +62,8 @@ interface WizardData {
   minSalary: number;
   goal: string;
   blocker: string;
+  firstName: string;
+  lastName: string;
 }
 
 export default function OnboardingWizard() {
@@ -78,6 +80,8 @@ export default function OnboardingWizard() {
     minSalary: 80000,
     goal: "",
     blocker: "",
+    firstName: "",
+    lastName: "",
   });
   const [showMoreLocations, setShowMoreLocations] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(false);
