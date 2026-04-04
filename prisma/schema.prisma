@@ -241,6 +241,7 @@ model BrowseSession {
   userId         String
   targetRole     String
   companies      String
+  matchedJobs    String?
   resumeUrl      String
   resumeName     String
   status         String    @default("queued")

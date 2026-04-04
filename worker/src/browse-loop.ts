@@ -19,6 +19,7 @@ interface BrowseSessionRow {
   userId: string;
   targetRole: string;
   companies: string;
+  matchedJobs: string | null;
   resumeUrl: string;
   resumeName: string;
 }
@@ -96,7 +97,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
   const result = await db.execute({
     sql: `UPDATE BrowseSession SET status = 'processing', startedAt = datetime('now')
           WHERE id = (SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1)
-          RETURNING id, userId, targetRole, companies, resumeUrl, resumeName`,
+          RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName`,
     args: [],
   });
 
@@ -133,7 +134,105 @@ export async function processNextBrowseSession(): Promise<boolean> {
     return true;
   }
 
-  // Process each company
+  // FAST PATH: If matchedJobs is set, skip discovery entirely — apply directly
+  if (session.matchedJobs) {
+    const jobs: Array<{ title: string; applyUrl: string; company: string }> = JSON.parse(session.matchedJobs);
+    log(session.id, "info", `Fast path: ${jobs.length} pre-matched jobs`);
+
+    await db.execute({
+      sql: `UPDATE BrowseSession SET jobsFound = ? WHERE id = ?`,
+      args: [jobs.length, session.id],
+    });
+
+    for (const job of jobs) {
+      // Dedup
+      const dedupCheck = await db.execute({
+        sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying') LIMIT 1`,
+        args: [session.userId, job.applyUrl],
+      });
+      if (dedupCheck.rows && dedupCheck.rows.length > 0) continue;
+
+      // Daily cap
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const dailyCountResult = await db.execute({
+        sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d JOIN BrowseSession s ON d.sessionId = s.id WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= ?`,
+        args: [session.userId, todayStart.toISOString()],
+      });
+      const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
+      if (dailyCount >= DAILY_APP_CAP) {
+        log(session.id, "info", `Daily cap reached (${DAILY_APP_CAP}), stopping`);
+        break;
+      }
+
+      // Monthly quota
+      const quotaCheck = await db.execute({
+        sql: `SELECT monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
+        args: [session.userId],
+      });
+      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string } | undefined;
+      const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
+      const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
+      if (currentUser && currentUser.monthlyAppCount >= limit) {
+        log(session.id, "info", `Monthly limit reached (${currentUser.monthlyAppCount}/${limit}), stopping`);
+        break;
+      }
+
+      // Record & apply
+      await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null);
+      log(session.id, "info", `Applying: ${job.title} @ ${job.company}`);
+
+      const applyResult = await applyToJob(
+        job.applyUrl,
+        {
+          firstName: user.firstName, lastName: user.lastName,
+          email: user.applicationEmail || user.email, phone: user.phone,
+          preferredName: user.preferredName || undefined, pronouns: user.pronouns || undefined,
+          usState: user.usState || undefined, workAuthorized: user.workAuthorized === 1,
+          needsSponsorship: user.needsSponsorship === 1, countryOfResidence: user.countryOfResidence || undefined,
+          willingToRelocate: user.willingToRelocate === 1, remotePreference: user.remotePreference || undefined,
+          linkedinUrl: user.linkedinUrl || undefined, githubUrl: user.githubUrl || undefined,
+          websiteUrl: user.websiteUrl || undefined, currentEmployer: user.currentEmployer || undefined,
+          currentTitle: user.currentTitle || undefined, school: user.school || undefined,
+          degree: user.degree || undefined, graduationYear: user.graduationYear || undefined,
+          additionalCerts: user.additionalCerts || undefined, city: user.city || undefined,
+          yearsOfExperience: user.yearsOfExperience || undefined, salaryExpectation: user.salaryExpectation || undefined,
+          earliestStartDate: user.earliestStartDate || undefined, gender: user.gender || undefined,
+          race: user.race || undefined, hispanicOrLatino: user.hispanicOrLatino || undefined,
+          veteranStatus: user.veteranStatus || undefined, disabilityStatus: user.disabilityStatus || undefined,
+          applicationAnswers: user.applicationAnswers || undefined, targetCompany: job.company,
+        },
+        session.resumeUrl, session.resumeName, session.targetRole
+      );
+
+      if (applyResult.success) {
+        await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+        await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
+        await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
+        log(session.id, "info", `Applied: ${job.title} @ ${job.company}`);
+      } else {
+        const errorWithSteps = applyResult.steps
+          ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
+          : applyResult.error || "Unknown error";
+        await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
+        await db.execute({ sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`, args: [session.id] });
+        log(session.id, "warn", `Failed: ${job.title} — ${applyResult.error}`);
+      }
+
+      await delay(DELAY_BETWEEN_JOBS_MS);
+    }
+
+    // Clean up & complete
+    if (resumePath) { try { unlinkSync(resumePath); } catch {} }
+    await db.execute({
+      sql: `UPDATE BrowseSession SET status = 'completed', completedAt = datetime('now') WHERE id = ?`,
+      args: [session.id],
+    });
+    log(session.id, "info", "Fast path session completed");
+    return true;
+  }
+
+  // LEGACY PATH: Discovery-based company iteration
   let limitReached = false;
   for (const companyName of companies) {
     // Stop early if monthly limit was already hit

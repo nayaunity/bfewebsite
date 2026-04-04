@@ -151,12 +151,19 @@ export async function GET(request: NextRequest) {
         // Ensure application email exists
         await ensureApplicationEmail(user.id);
 
-        // Create browse session — worker picks this up automatically
+        // Create browse session with pre-matched jobs — worker skips discovery
         const session = await prisma.browseSession.create({
           data: {
             userId: user.id,
             targetRole: primaryRole,
             companies: JSON.stringify(companiesWithJobs),
+            matchedJobs: JSON.stringify(
+              matchedJobs.map((j) => ({
+                title: j.title,
+                applyUrl: j.applyUrl,
+                company: j.company,
+              }))
+            ),
             resumeUrl: resume.blobUrl,
             resumeName: resume.fileName,
             totalCompanies: companiesWithJobs.length,
