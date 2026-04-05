@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { ROLE_OPTIONS } from "@/lib/role-options";
+import Anthropic from "@anthropic-ai/sdk";
 
 export interface MatchedJob {
   id: string;
@@ -24,13 +25,23 @@ function parseRoles(raw: string | null): string[] {
   return raw.trim() ? [raw.trim()] : [];
 }
 
+// Words too generic to match on their own
+const GENERIC_WORDS = new Set([
+  "engineer", "manager", "developer", "designer", "lead",
+  "senior", "staff", "principal", "director", "head",
+  "associate", "junior", "intern",
+]);
+
 function getSearchKeywords(roleLabels: string[]): string[][] {
   return roleLabels.flatMap((label) => {
     const roleOption = ROLE_OPTIONS.find((r) => r.label === label);
     if (!roleOption) return [label.toLowerCase().split(/\s+/).filter((w) => w.length > 2)];
-    return roleOption.searchTerms.split(",").map((term) =>
-      term.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2)
-    );
+    return roleOption.searchTerms.split(",").map((term) => {
+      const words = term.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+      // Filter out keyword sets that are just a single generic word
+      if (words.length === 1 && GENERIC_WORDS.has(words[0])) return [];
+      return words;
+    }).filter((kws) => kws.length > 0);
   });
 }
 
@@ -39,7 +50,11 @@ function roleMatchScore(title: string, keywordSets: string[][]): number {
   let bestScore = 0;
 
   for (const keywords of keywordSets) {
-    const matches = keywords.filter((kw) => titleLower.includes(kw));
+    // Use word-boundary matching to avoid "products" matching "product"
+    const matches = keywords.filter((kw) => {
+      const regex = new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`);
+      return regex.test(titleLower);
+    });
     if (matches.length >= 2 || (keywords.length === 1 && matches.length === 1)) {
       const score = matches.length / keywords.length;
       bestScore = Math.max(bestScore, score);
@@ -64,10 +79,9 @@ const NON_US_INDICATORS = [
   "milan", "rome", "vienna", "brussels", "prague",
 ];
 
-// US indicators — if location contains these, it's likely a US job
+// US indicators
 const US_INDICATORS = [
   "united states", "usa", "us-remote", "remote - us", "remote-us",
-  // US states
   "alabama", "alaska", "arizona", "arkansas", "california", "colorado",
   "connecticut", "delaware", "florida", "georgia", "hawaii", "idaho",
   "illinois", "indiana", "iowa", "kansas", "kentucky", "louisiana",
@@ -78,21 +92,17 @@ const US_INDICATORS = [
   "rhode island", "south carolina", "south dakota", "tennessee", "texas",
   "utah", "vermont", "virginia", "washington", "west virginia", "wisconsin",
   "wyoming",
-  // Common US city names
   "san francisco", "los angeles", "chicago", "seattle", "denver",
   "new york", "boston", "austin", "portland", "atlanta", "miami",
   "dallas", "houston", "phoenix", "philadelphia", "san diego",
   "san jose", "sunnyvale", "mountain view", "palo alto", "menlo park",
-  // State abbreviations (with boundaries to avoid false matches)
   " ca", " ny", " wa", " tx", " il", " co", " ma", " ga", " pa",
   ", ca", ", ny", ", wa", ", tx", ", il", ", co", ", ma", ", ga", ", pa",
 ];
 
 function isUSJob(location: string): boolean {
   const loc = location.toLowerCase();
-  // Check if explicitly US
   if (US_INDICATORS.some((ind) => loc.includes(ind))) return true;
-  // "US" alone as the entire location
   if (loc.trim() === "us" || loc.trim() === "n/a") return true;
   return false;
 }
@@ -112,13 +122,12 @@ function locationMatchScore(
 ): number {
   const locLower = jobLocation.toLowerCase();
 
-  // Hard filter: skip foreign jobs for US-based users
   const userIsUS = !userCountry || userCountry.toLowerCase().includes("us") ||
     userCountry.toLowerCase().includes("united states") ||
     userCountry.toLowerCase().includes("america");
 
   if (userIsUS && isForeignJob(locLower) && !isUSJob(locLower)) {
-    return -1; // Signal to exclude this job
+    return -1;
   }
 
   if (!userPref) return 0.5;
@@ -127,7 +136,6 @@ function locationMatchScore(
     return jobRemote ? 1 : 0.3;
   }
 
-  // On-site or Hybrid
   if (jobRemote) return 0.6;
 
   let score = 0.3;
@@ -152,9 +160,7 @@ function seniorityMatchScore(
   const isSenior = /\b(senior|sr\.?|staff|principal|director|lead|head)\b/.test(titleLower);
   const isJunior = /\b(junior|jr\.?|associate)\b/.test(titleLower);
 
-  // Intern is a hard filter for anyone with 3+ years
   if (isIntern && years >= 3) return -1;
-  // New grad is a hard filter for anyone with 4+ years
   if (isNewGrad && years >= 4) return -1;
 
   if (years <= 2) {
@@ -174,6 +180,86 @@ function seniorityMatchScore(
   if (isSenior) return 1;
   return 0.7;
 }
+
+// ============================================================================
+// LLM QUALITY GATE
+// ============================================================================
+
+async function llmQualityFilter(
+  candidates: MatchedJob[],
+  userProfile: {
+    roles: string[];
+    experience: string | null;
+    city: string | null;
+    remotePreference: string | null;
+  },
+  jobDescriptions: Map<string, string>
+): Promise<MatchedJob[]> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || candidates.length === 0) return candidates;
+
+  const anthropic = new Anthropic({ apiKey });
+
+  // Build a batch prompt with all candidate jobs
+  const jobList = candidates.map((job, i) => {
+    const desc = jobDescriptions.get(job.id);
+    const descSnippet = desc
+      ? desc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 300)
+      : "(no description)";
+    return `${i + 1}. [${job.company}] ${job.title} — ${job.location}\n   ${descSnippet}`;
+  }).join("\n\n");
+
+  const prompt = `You are a job matching assistant. A candidate has the following profile:
+- Target roles: ${userProfile.roles.join(", ")}
+- Experience: ${userProfile.experience || "not specified"} years
+- Location: ${userProfile.city || "not specified"}, prefers ${userProfile.remotePreference || "any"}
+
+Below are ${candidates.length} job listings. For each, respond with ONLY the number and YES or NO — is this a genuine match for the candidate's target roles? Be strict: the job's actual function must align with what the candidate wants. "Associate Manager, Products Operations" is NOT a Product Manager role. "Data Engineer" is NOT a Frontend Engineer role.
+
+${jobList}
+
+Respond in this exact format, one per line:
+1. YES
+2. NO
+...`;
+
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 512,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const lines = text.trim().split("\n");
+
+    const approved: MatchedJob[] = [];
+    for (const line of lines) {
+      const match = line.match(/^(\d+)\.\s*(YES|NO)/i);
+      if (match) {
+        const idx = parseInt(match[1], 10) - 1;
+        if (match[2].toUpperCase() === "YES" && idx >= 0 && idx < candidates.length) {
+          approved.push(candidates[idx]);
+        }
+      }
+    }
+
+    // If LLM returned nothing useful, fall back to all candidates
+    if (approved.length === 0 && candidates.length > 0) {
+      console.warn("LLM quality gate returned no approvals — falling back to keyword matches");
+      return candidates;
+    }
+
+    return approved;
+  } catch (error) {
+    console.error("LLM quality gate failed, falling back to keyword matches:", error);
+    return candidates;
+  }
+}
+
+// ============================================================================
+// MAIN MATCHING FUNCTION
+// ============================================================================
 
 export async function matchJobsForUser(
   userId: string,
@@ -211,6 +297,7 @@ export async function matchJobsForUser(
       companySlug: true,
       location: true,
       remote: true,
+      description: true,
     },
   });
 
@@ -238,6 +325,7 @@ export async function matchJobsForUser(
   ]);
 
   const scored: MatchedJob[] = [];
+  const jobDescriptions = new Map<string, string>();
 
   for (const job of catalogJobs) {
     if (appliedUrls.has(job.applyUrl)) continue;
@@ -253,11 +341,9 @@ export async function matchJobsForUser(
       user.city,
       user.countryOfResidence
     );
-    // -1 means hard exclude (foreign job for US user)
     if (locScore === -1) continue;
 
     const seniorityScore = seniorityMatchScore(job.title, user.yearsOfExperience);
-    // -1 means hard exclude (intern for experienced user)
     if (seniorityScore === -1) continue;
 
     const score = roleScore * 0.5 + locScore * 0.3 + seniorityScore * 0.2;
@@ -272,8 +358,28 @@ export async function matchJobsForUser(
       remote: job.remote,
       score,
     });
+
+    if (job.description) {
+      jobDescriptions.set(job.id, job.description);
+    }
   }
 
   scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, maxJobs);
+
+  // Take top candidates (more than needed so LLM can filter)
+  const candidates = scored.slice(0, maxJobs * 2);
+
+  // LLM quality gate — verify matches are genuine
+  const verified = await llmQualityFilter(
+    candidates,
+    {
+      roles: roleLabels,
+      experience: user.yearsOfExperience,
+      city: user.city,
+      remotePreference: user.remotePreference,
+    },
+    jobDescriptions
+  );
+
+  return verified.slice(0, maxJobs);
 }
