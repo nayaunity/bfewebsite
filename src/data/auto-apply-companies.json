@@ -318,5 +318,85 @@
     "industry": "Technology",
     "atsType": "greenhouse",
     "atsConfig": { "boardToken": "abnormalsecurity" }
+  },
+  {
+    "name": "Carta",
+    "slug": "carta",
+    "careersUrl": "https://boards.greenhouse.io/carta",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "carta" }
+  },
+  {
+    "name": "Datadog",
+    "slug": "datadog",
+    "careersUrl": "https://boards.greenhouse.io/datadog",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "datadog" }
+  },
+  {
+    "name": "Discord",
+    "slug": "discord",
+    "careersUrl": "https://boards.greenhouse.io/discord",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "discord" }
+  },
+  {
+    "name": "Samsara",
+    "slug": "samsara",
+    "careersUrl": "https://boards.greenhouse.io/samsara",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "samsara" }
+  },
+  {
+    "name": "CockroachDB",
+    "slug": "cockroachlabs",
+    "careersUrl": "https://boards.greenhouse.io/cockroachlabs",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "cockroachlabs" }
+  },
+  {
+    "name": "Duolingo",
+    "slug": "duolingo",
+    "careersUrl": "https://boards.greenhouse.io/duolingo",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "duolingo" }
+  },
+  {
+    "name": "Elastic",
+    "slug": "elastic",
+    "careersUrl": "https://boards.greenhouse.io/elastic",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "elastic" }
+  },
+  {
+    "name": "Webflow",
+    "slug": "webflow",
+    "careersUrl": "https://boards.greenhouse.io/webflow",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "webflow" }
+  },
+  {
+    "name": "Postman",
+    "slug": "postman",
+    "careersUrl": "https://boards.greenhouse.io/postman",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "postman" }
+  },
+  {
+    "name": "Chime",
+    "slug": "chime",
+    "careersUrl": "https://boards.greenhouse.io/chime",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "chime" }
   }
 ]

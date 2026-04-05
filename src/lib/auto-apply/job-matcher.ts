@@ -209,12 +209,19 @@ async function llmQualityFilter(
     return `${i + 1}. [${job.company}] ${job.title} — ${job.location}\n   ${descSnippet}`;
   }).join("\n\n");
 
+  const expYears = parseInt(userProfile.experience || "", 10);
+  const isEarlyCareer = !isNaN(expYears) && expYears <= 2;
+
+  const internGuidance = isEarlyCareer
+    ? `\nIMPORTANT: This candidate is early-career (${expYears} years). General "Software Engineer Intern", "Engineering Intern", "New Grad", and "Early Career" roles ARE valid matches regardless of their specific role preference, since intern/new-grad programs are typically generalist. However, reject senior/staff/principal roles — those require far more experience.`
+    : "";
+
   const prompt = `You are a job matching assistant. A candidate has the following profile:
 - Target roles: ${userProfile.roles.join(", ")}
 - Experience: ${userProfile.experience || "not specified"} years
 - Location: ${userProfile.city || "not specified"}, prefers ${userProfile.remotePreference || "any"}
 
-Below are ${candidates.length} job listings. For each, respond with ONLY the number and YES or NO — is this a genuine match for the candidate's target roles? Be strict: the job's actual function must align with what the candidate wants. "Associate Manager, Products Operations" is NOT a Product Manager role. "Data Engineer" is NOT a Frontend Engineer role.
+Below are ${candidates.length} job listings. For each, respond with ONLY the number and YES or NO — is this a genuine match for the candidate's target roles? Be strict: the job's actual function must align with what the candidate wants. "Associate Manager, Products Operations" is NOT a Product Manager role. "Data Engineer" is NOT a Frontend Engineer role.${internGuidance}
 
 ${jobList}
 
@@ -283,6 +290,19 @@ export async function matchJobsForUser(
   if (roleLabels.length === 0) return [];
 
   const keywordSets = getSearchKeywords(roleLabels);
+
+  // For early-career candidates (0-2 years), also match generic intern/new-grad titles
+  const years = parseInt(user.yearsOfExperience || "", 10);
+  const isEarlyCareer = !isNaN(years) && years <= 2;
+  if (isEarlyCareer) {
+    keywordSets.push(
+      ["software", "engineer", "intern"],
+      ["software", "engineering", "intern"],
+      ["engineering", "intern"],
+      ["new", "grad"],
+      ["early", "career"],
+    );
+  }
 
   const catalogJobs = await prisma.job.findMany({
     where: {
