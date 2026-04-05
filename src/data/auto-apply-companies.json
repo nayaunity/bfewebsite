@@ -368,14 +368,6 @@
     "atsConfig": { "boardToken": "duolingo" }
   },
   {
-    "name": "Elastic",
-    "slug": "elastic",
-    "careersUrl": "https://boards.greenhouse.io/elastic",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "elastic" }
-  },
-  {
     "name": "Webflow",
     "slug": "webflow",
     "careersUrl": "https://boards.greenhouse.io/webflow",
