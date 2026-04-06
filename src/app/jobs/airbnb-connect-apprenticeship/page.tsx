@@ -71,23 +71,18 @@ export default function AirbnbConnectApprenticeship() {
             </div>
           </div>
 
-          {/* Apply Now CTA - prominent */}
+          {/* Auto-Apply CTA - prominent */}
           <div className="mb-10 p-6 md:p-8 bg-[#ef562a] rounded-2xl text-white">
-            <h2 className="font-serif text-2xl md:text-3xl mb-3">Applications are open &mdash; apply now!</h2>
+            <h2 className="font-serif text-2xl md:text-3xl mb-3">Apply to hundreds of jobs while you sleep</h2>
             <p className="text-white/80 mb-6">
-              Don&apos;t wait. The application window closes soon. If you took an unconventional path into tech, this program was built for you.
+              Love this opportunity? Use our auto-apply tool to automatically apply to roles like this and hundreds more. We&apos;ll match you to the right jobs and submit applications on your behalf.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
-                href="https://careers.airbnb.com/connect-engineering-apprenticeship/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-white text-[#ef562a] px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition-colors text-lg"
+                href="/auto-apply/landing"
+                className="inline-flex items-center justify-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-lg font-bold hover:bg-[#e6cf00] transition-colors text-lg"
               >
-                Apply on Airbnb Careers
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
+                Start Auto-Applying <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </div>
@@ -210,34 +205,7 @@ export default function AirbnbConnectApprenticeship() {
               </div>
             </section>
 
-            {/* Auto-Apply CTA */}
-            <section className="my-10">
-              <div className="p-6 md:p-8 bg-[#ffe500]/50 border border-[#ffe500] rounded-2xl">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-[#ef562a] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-xl text-[var(--foreground)] mb-1">
-                      Want to apply to more jobs like this?
-                    </h3>
-                    <p className="text-[var(--gray-600)] text-sm">
-                      Use our auto-apply tool to automatically apply to hundreds of engineering roles while you sleep. We&apos;ll match you to the right opportunities and submit applications on your behalf.
-                    </p>
-                  </div>
-                </div>
-                <a
-                  href="/auto-apply/landing"
-                  className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#d94a24] transition-colors"
-                >
-                  Start Auto-Applying <span aria-hidden="true">&rarr;</span>
-                </a>
-              </div>
-            </section>
-
-            {/* Final CTA */}
+            {/* Apply CTA */}
             <section className="pt-8 border-t border-[var(--card-border)]">
               <div className="text-center">
                 <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Ready to Apply?</h2>
