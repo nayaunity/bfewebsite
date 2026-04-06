@@ -185,7 +185,7 @@ export default function AirbnbConnectApprenticeship() {
             </section>
 
             {/* Auto-Apply CTA */}
-            <AutoApplyCTA />
+            <AutoApplyCTA variant="alt" />
 
             {/* Location Restrictions */}
             <section>

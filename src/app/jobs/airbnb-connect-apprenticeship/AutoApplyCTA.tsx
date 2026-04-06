@@ -1,4 +1,6 @@
-export default function AutoApplyCTA() {
+export default function AutoApplyCTA({ variant = "default" }: { variant?: "default" | "alt" }) {
+  const isAlt = variant === "alt";
+
   return (
     <section className="my-10">
       <div className="p-6 md:p-8 bg-[#ffe500]/50 border border-[#ffe500] rounded-2xl">
@@ -10,10 +12,12 @@ export default function AutoApplyCTA() {
           </div>
           <div>
             <h3 className="font-serif text-xl text-[var(--foreground)] mb-1">
-              Apply to jobs while you sleep
+              {isAlt ? "Don\u2019t stop at one application" : "Apply to jobs while you sleep"}
             </h3>
             <p className="text-[var(--gray-600)] text-sm">
-              Use our auto-apply tool to automatically apply to hundreds of engineering roles on your behalf. We&apos;ll match you to the right opportunities and submit applications while you focus on what matters.
+              {isAlt
+                ? "The average job search takes 100+ applications. Let us handle that \u2014 we\u2019ll auto-apply to roles that match your skills at top tech companies, every single night."
+                : "Use our auto-apply tool to automatically apply to hundreds of engineering roles on your behalf. We\u2019ll match you to the right opportunities and submit applications while you focus on what matters."}
             </p>
           </div>
         </div>
@@ -22,7 +26,7 @@ export default function AutoApplyCTA() {
           href="/auto-apply/landing"
           className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#d94a24] transition-colors"
         >
-          Start Auto-Applying <span aria-hidden="true">&rarr;</span>
+          {isAlt ? "Get Started Free" : "Start Auto-Applying"} <span aria-hidden="true">&rarr;</span>
         </a>
       </div>
     </section>
