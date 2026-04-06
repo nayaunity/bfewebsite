@@ -431,44 +431,32 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => router.push("/jobs/airbnb-connect-apprenticeship")}
-            className="block w-full text-left bg-[#ffe500] p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow group cursor-pointer"
+            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 mb-2">
                   <span className="text-[#ef562a] font-medium">Airbnb</span>
-                  <span className="text-xs px-2 py-1 bg-green-500 text-white rounded-full animate-pulse">
+                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
                     NOW OPEN
                   </span>
-                  <span className="text-xs px-2 py-1 bg-[#ef562a] text-white rounded-full font-medium">
-                    Featured
-                  </span>
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl text-black group-hover:text-[#ef562a] transition-colors">
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
                   Connect Engineering Apprenticeship
                 </h3>
-                <p className="mt-2 text-black/70 text-sm md:text-base">
-                  5-month paid apprenticeship for self-taught devs, bootcamp grads &amp; career changers. No CS degree required.
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-black/50">
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
                   <span>San Francisco (Hybrid)</span>
-                  <span className="w-1 h-1 bg-black/30 rounded-full"></span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
                   <span>~5 months</span>
-                  <span className="w-1 h-1 bg-black/30 rounded-full"></span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
                   <span>April 2026</span>
                 </div>
+                <p className="mt-3 text-sm text-[var(--gray-600)]">
+                  5-month paid apprenticeship for self-taught devs, bootcamp grads &amp; career changers. No CS degree required.
+                </p>
               </div>
-              <div className="flex flex-col items-end gap-3">
-                <span className="px-5 py-2 text-sm font-medium rounded-full bg-[#ef562a] text-white hover:bg-[#d94a24] transition-colors">
-                  Learn More &rarr;
-                </span>
-                <a
-                  href="/auto-apply/landing"
-                  onClick={(e) => e.stopPropagation()}
-                  className="px-5 py-2 text-sm font-medium rounded-full bg-black/10 text-black hover:bg-black/20 transition-colors"
-                >
-                  Auto-Apply to Jobs
-                </a>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-[#ef562a]">Learn More &rarr;</span>
               </div>
             </div>
           </button>
