@@ -1,13 +1,14 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import AutoApplyCTA from "./AutoApplyCTA";
 import BackToJobs from "../BackToJobs";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 
 export const metadata = {
   title: "Airbnb Connect Engineering Apprenticeship — NOW OPEN | The Black Female Engineer",
   description:
-    "Applications are NOW open for Airbnb's 5-month paid engineering apprenticeship for candidates from non-traditional backgrounds. Apply April 2026.",
+    "Applications are NOW open for Airbnb's 5-month paid engineering apprenticeship for candidates from non-traditional backgrounds.",
 };
 
 export default function AirbnbConnectApprenticeship() {
@@ -22,7 +23,7 @@ export default function AirbnbConnectApprenticeship() {
           jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "San Francisco", addressRegion: "CA", addressCountry: "US" } },
           employmentType: "OTHER",
           datePosted: "2026-04-06",
-          description: "5-month paid engineering apprenticeship at Airbnb for candidates from non-traditional backgrounds.",
+          description: "5-month engineering apprenticeship at Airbnb for candidates from non-traditional backgrounds.",
           validThrough: "2026-12-31T23:59:59Z",
         }}
       />
@@ -60,7 +61,7 @@ export default function AirbnbConnectApprenticeship() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                ~5 months (paid)
+                ~5 months
               </span>
               <span className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,22 +72,6 @@ export default function AirbnbConnectApprenticeship() {
             </div>
           </div>
 
-          {/* Auto-Apply CTA - prominent */}
-          <div className="mb-10 p-6 md:p-8 bg-[#ef562a] rounded-2xl text-white">
-            <h2 className="font-serif text-2xl md:text-3xl mb-3">Apply to hundreds of jobs while you sleep</h2>
-            <p className="text-white/80 mb-6">
-              Love this opportunity? Use our auto-apply tool to automatically apply to roles like this and hundreds more. We&apos;ll match you to the right jobs and submit applications on your behalf.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a
-                href="/auto-apply/landing"
-                className="inline-flex items-center justify-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-lg font-bold hover:bg-[#e6cf00] transition-colors text-lg"
-              >
-                Start Auto-Applying <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </div>
-
           {/* Content */}
           <div className="space-y-10">
             {/* About */}
@@ -94,39 +79,42 @@ export default function AirbnbConnectApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">About the Program</h2>
               <p className="text-[var(--foreground)] leading-relaxed">
                 The Connect Engineering Apprenticeship is Airbnb&apos;s initiative to bridge the opportunity gap
-                for entry-level engineering candidates. This ~5 month <strong>paid</strong> apprenticeship welcomes those from
-                non-traditional backgrounds &mdash; self-taught developers, bootcamp grads, and career changers.
-                You&apos;ll work on real projects, get mentorship from senior engineers, and ship features
-                impacting guests and hosts worldwide. Connect alumni have gone on to become full-time
-                Software Engineers at Airbnb.
+                for entry-level engineering candidates. The program welcomes those from underrepresented
+                backgrounds and non-traditional educational paths. As an apprentice, you&apos;ll contribute to
+                real projects that enhance experiences for Airbnb&apos;s guests and hosts worldwide.
               </p>
             </section>
 
-            {/* Who This Is For */}
+            {/* Auto-Apply CTA */}
+            <AutoApplyCTA />
+
+            {/* Eligibility */}
             <section>
-              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Who This Is For</h2>
+              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Eligibility Requirements</h2>
+              <p className="text-[var(--foreground)] mb-4">You must meet <strong>ALL</strong> of the following criteria:</p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">1</span>
-                  <span>Coding bootcamp grads</span>
+                  <span><strong>Education:</strong> No 4-year Computer Science degree</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">2</span>
-                  <span>Self-taught developers</span>
+                  <span><strong>Coding Background:</strong> Skills acquired through bootcamps, online courses, or community college</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">3</span>
-                  <span>Community college or associate degree holders</span>
+                  <span><strong>Work Experience:</strong> Minimum 2 years total work experience with less than 1 year of professional software engineering</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">4</span>
-                  <span>Career changers with 2+ years of work experience but less than 1 year of professional SWE experience</span>
-                </li>
-                <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">5</span>
-                  <span>Anyone who can code in JavaScript, Java, Kotlin, React, or Express</span>
+                  <span><strong>Technical Skills:</strong> Ability to convert problems to code, implement basic functions (conditionals, loops), and experience with React, Rails, or Express</span>
                 </li>
               </ul>
+              <div className="mt-6 p-4 bg-[var(--gray-100)] rounded-lg">
+                <p className="text-[var(--foreground)] text-sm">
+                  <strong>Ideal candidates:</strong> Bootcamp graduates, self-taught developers, and associate degree holders
+                </p>
+              </div>
             </section>
 
             {/* What You'll Get */}
@@ -136,12 +124,12 @@ export default function AirbnbConnectApprenticeship() {
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
                   <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Hands-on Engineering</h3>
+                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Curriculum</h3>
                   <p className="text-sm text-[var(--gray-600)]">
-                    Work on real projects with Airbnb&apos;s global-scale tech stack &mdash; ship features impacting millions
+                    Three-month foundational training on Airbnb&apos;s tech stack and large-scale codebase
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
@@ -150,20 +138,20 @@ export default function AirbnbConnectApprenticeship() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Senior Mentorship</h3>
+                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Mentorship</h3>
                   <p className="text-sm text-[var(--gray-600)]">
-                    Dedicated engineering mentor for technical guidance, code review, and career growth
+                    Dedicated engineering mentor for technical and professional guidance
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
                   <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-[var(--foreground)] mb-2">3-Month Training</h3>
+                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Hands-On Projects</h3>
                   <p className="text-sm text-[var(--gray-600)]">
-                    Foundational curriculum on Airbnb&apos;s large-scale codebase and engineering practices
+                    Real tasks with scoping, pairing, and code review support
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
@@ -172,40 +160,44 @@ export default function AirbnbConnectApprenticeship() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Path to Full-Time</h3>
+                  <h3 className="font-semibold text-[var(--foreground)] mb-2">Professional Development</h3>
                   <p className="text-sm text-[var(--gray-600)]">
-                    Connect alumni have been hired as full-time Software Engineers at Airbnb
+                    Leadership fireside chats and soft skills workshops
                   </p>
                 </div>
               </div>
             </section>
 
-            {/* Eligibility */}
+            {/* Timeline */}
             <section>
-              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Eligibility Requirements</h2>
-              <p className="text-[var(--foreground)] mb-4">You must meet <strong>ALL</strong> of the following:</p>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 mt-0.5 text-[#ef562a]">&#10003;</span>
-                  <span><strong>No 4-year CS degree</strong> &mdash; coding skills from bootcamps, online courses, or community college</span>
-                </li>
-                <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 mt-0.5 text-[#ef562a]">&#10003;</span>
-                  <span><strong>2+ years total work experience</strong> with less than 1 year of professional software engineering</span>
-                </li>
-                <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 mt-0.5 text-[#ef562a]">&#10003;</span>
-                  <span><strong>Technical skills:</strong> ability to convert problems to code, implement basic functions, experience with JavaScript, Java, Kotlin, React, or Express</span>
-                </li>
-              </ul>
-              <div className="mt-6 p-4 bg-[var(--gray-100)] rounded-lg">
-                <p className="text-[var(--foreground)] text-sm">
+              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Application Timeline</h2>
+              <div className="p-6 bg-[#ffe500]/10 border border-[#ffe500] rounded-xl">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-[#ffe500] flex items-center justify-center">
+                    <span className="text-black font-bold text-xl">NOW</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--foreground)] text-lg">Applications Are Open!</p>
+                    <p className="text-[var(--gray-600)]">Apply now for the 2026 cohort &mdash; don&apos;t wait</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Auto-Apply CTA */}
+            <AutoApplyCTA />
+
+            {/* Location Restrictions */}
+            <section>
+              <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Location Requirements</h2>
+              <div className="p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
+                <p className="text-[var(--foreground)]">
                   <strong>Note:</strong> Airbnb cannot employ candidates residing in Alaska, Mississippi, or North Dakota.
                 </p>
               </div>
             </section>
 
-            {/* Apply CTA */}
+            {/* CTA */}
             <section className="pt-8 border-t border-[var(--card-border)]">
               <div className="text-center">
                 <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Ready to Apply?</h2>

@@ -541,6 +541,7 @@ export default function JobBoard() {
                 .filter((job) => {
                   // Filter out jobs that are shown in the featured section
                   if (job.company === "JPMorgan" && job.title.includes("Emerging Talent")) return false;
+                  if (job.company === "Airbnb" && job.title.includes("Connect Engineering")) return false;
                   return true;
                 })
                 .map((job) => (
