@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/admin";
+import { computeRegion } from "@/lib/job-region";
 
 // GET /api/admin/jobs - List all jobs
 export async function GET(request: NextRequest) {
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
         category: body.category || "Software Engineering",
         tags: body.tags || "[]",
         source: body.source || "manual",
+        region: computeRegion(body.location),
         isActive: body.isActive ?? true,
         createdById: session?.user?.id || null,
       },

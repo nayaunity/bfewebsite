@@ -139,6 +139,7 @@ model Job {
   category    String
   tags        String
   source      String
+  region      String    @default("us") // "us", "international", "both"
   isActive    Boolean   @default(true)
   scrapedAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -154,6 +155,7 @@ model Job {
   @@index([isActive])
   @@index([companySlug])
   @@index([createdById])
+  @@index([isActive, region, postedAt])
 }
 
 model JobApplication {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { computeRegion } from "@/lib/job-region";
 import deiCompanies from "@/data/dei-companies.json";
 import autoApplyCompanies from "@/data/auto-apply-companies.json";
 import type { DEICompany, ScrapedJob, ScraperResult } from "./types";
@@ -97,6 +98,7 @@ export async function scrapeCompany(
           category: job.category,
           tags: JSON.stringify(job.tags),
           source: company.atsType,
+          region: computeRegion(job.location),
           isActive: true,
         },
         update: {
@@ -110,6 +112,7 @@ export async function scrapeCompany(
           applyUrl: job.applyUrl,
           category: job.category,
           tags: JSON.stringify(job.tags),
+          region: computeRegion(job.location),
           isActive: true,
           updatedAt: new Date(),
         },
@@ -257,6 +260,7 @@ export async function scrapeAutoApplyCompanies(): Promise<{
               category: job.category,
               tags: JSON.stringify(job.tags),
               source: "auto-apply",
+              region: computeRegion(job.location),
               isActive: true,
             },
             update: {
@@ -271,6 +275,7 @@ export async function scrapeAutoApplyCompanies(): Promise<{
               category: job.category,
               tags: JSON.stringify(job.tags),
               source: "auto-apply",
+              region: computeRegion(job.location),
               isActive: true,
               updatedAt: new Date(),
             },

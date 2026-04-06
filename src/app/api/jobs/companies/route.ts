@@ -31,7 +31,11 @@ export async function GET() {
         slug: c.companySlug.replace(/-+$/, ""), // Remove trailing dashes
       }));
 
-    return NextResponse.json({ companies });
+    return NextResponse.json({ companies }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
   } catch (error) {
     console.error("Error fetching companies:", error);
     return NextResponse.json(

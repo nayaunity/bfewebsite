@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { computeRegion, hasUSLocation, hasInternationalLocation } from "@/lib/job-region";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+
+const jobSelect = {
+  id: true,
+  company: true,
+  companySlug: true,
+  title: true,
+  location: true,
+  type: true,
+  remote: true,
+  salary: true,
+  postedAt: true,
+  scrapedAt: true,
+  applyUrl: true,
+  category: true,
+  tags: true,
+} as const;
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,16 +28,22 @@ export async function GET(request: NextRequest) {
     const company = searchParams.get("company");
     const remote = searchParams.get("remote");
     const search = searchParams.get("search");
-    const region = searchParams.get("region") || "us"; // Default to US jobs
+    const region = searchParams.get("region") || "us";
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 10);
     const offset = (page - 1) * limit;
 
-    // Build where clause with search support
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {
       isActive: true,
     };
+
+    // Region filter at DB level
+    if (region === "international") {
+      where.region = { in: ["international", "both"] };
+    } else {
+      where.region = { in: ["us", "both"] };
+    }
 
     if (category && category !== "All Jobs") {
       where.category = category;
@@ -35,14 +57,10 @@ export async function GET(request: NextRequest) {
       where.remote = true;
     }
 
-    // Fuzzy search on title, company, location, and tags
-    // Note: SQLite LIKE is case-insensitive by default for ASCII
-    // Supports comma-separated terms for OR search
     if (search && search.trim()) {
       const searchTerms = search.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
 
       if (searchTerms.length === 1) {
-        // Single term search
         where.OR = [
           { title: { contains: searchTerms[0] } },
           { company: { contains: searchTerms[0] } },
@@ -50,7 +68,6 @@ export async function GET(request: NextRequest) {
           { tags: { contains: searchTerms[0] } },
         ];
       } else {
-        // Multiple terms - OR across all terms
         where.OR = searchTerms.flatMap(term => [
           { title: { contains: term } },
           { company: { contains: term } },
@@ -60,37 +77,23 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get all jobs first, then filter by region (with hard limit to prevent memory issues)
-    const allJobs = await prisma.job.findMany({
-      where,
-      orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
-      take: 1000,
-    });
+    // DB-level pagination — only fetch the rows we need
+    const [jobs, total] = await Promise.all([
+      prisma.job.findMany({
+        where,
+        select: jobSelect,
+        orderBy: [{ postedAt: "desc" }, { scrapedAt: "desc" }],
+        skip: offset,
+        take: limit,
+      }),
+      prisma.job.count({ where }),
+    ]);
 
-    // Filter by region - jobs with both US and international locations appear in both filters
-    const filteredJobs = allJobs.filter((job) => {
-      const hasUS = hasUSLocation(job.location);
-      const hasIntl = hasInternationalLocation(job.location);
-
-      if (region === "international") {
-        return hasIntl; // Include if it has ANY international location
-      }
-      return hasUS; // Include if it has ANY US location
-    });
-
-    // Get total count for pagination (after filtering)
-    const total = filteredJobs.length;
-
-    // Apply pagination
-    const jobs = filteredJobs.slice(offset, offset + limit);
-
-    // Transform jobs for the frontend with region-aware location display
     const transformedJobs = jobs.map((job) => {
       let parsedTags: string[] = [];
       try {
         parsedTags = JSON.parse(job.tags) as string[];
       } catch {
-        // Handle corrupted tags gracefully
         parsedTags = [];
       }
       return {
@@ -122,7 +125,7 @@ export async function GET(request: NextRequest) {
       },
       {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
         },
       }
     );
@@ -161,6 +164,7 @@ export async function POST(request: NextRequest) {
             : []
         ),
         source: "manual",
+        region: computeRegion(data.location),
         isActive: true,
       },
     });
@@ -225,78 +229,6 @@ function formatPostedDate(date: Date): string {
 
   const months = Math.floor(diffDays / 30);
   return `${months} months ago`;
-}
-
-// US state abbreviations
-const US_STATES = [
-  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"
-];
-
-// US cities for multi-location detection
-const US_CITIES = [
-  "CHICAGO", "NEW YORK", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE",
-  "AUSTIN", "BOSTON", "DENVER", "PORTLAND", "ATLANTA", "MIAMI",
-  "DALLAS", "HOUSTON", "PHOENIX", "PHILADELPHIA", "SAN DIEGO",
-  "SAN JOSE", "WASHINGTON DC", "MINNEAPOLIS", "DETROIT", "CLEVELAND",
-  "PITTSBURGH", "BALTIMORE", "CHARLOTTE", "NASHVILLE", "RALEIGH"
-];
-
-// International indicators for multi-location detection
-const NON_US_INDICATORS = [
-  "AUSTRALIA", "INDIA", "CANADA", "UK", "UNITED KINGDOM", "GERMANY",
-  "FRANCE", "JAPAN", "CHINA", "BRAZIL", "MEXICO", "SPAIN", "ITALY",
-  "NETHERLANDS", "SINGAPORE", "IRELAND", "ISRAEL", "SWEDEN", "POLAND",
-  "TORONTO", "VANCOUVER", "LONDON", "BERLIN", "PARIS", "TOKYO", "SYDNEY",
-  "MELBOURNE", "BANGALORE", "MUMBAI", "DUBLIN"
-];
-
-// Check if location contains US cities/states
-function hasUSLocation(location: string): boolean {
-  const loc = location.toUpperCase();
-
-  // Check for explicit US indicators
-  if (loc.includes("UNITED STATES") || loc.includes(", USA") || loc.includes(", US") || loc.includes("NORTH AMERICA")) {
-    return true;
-  }
-
-  // Check for US state abbreviations anywhere in string
-  for (const state of US_STATES) {
-    const statePattern = new RegExp(`\\b${state}\\b`);
-    if (statePattern.test(loc)) {
-      return true;
-    }
-  }
-
-  // Check US city names (for multi-location entries like "Chicago, or Toronto")
-  for (const city of US_CITIES) {
-    if (loc.includes(city)) {
-      return true;
-    }
-  }
-
-  // Check for "Remote" without specific country (assume US)
-  if (loc === "REMOTE" || loc === "REMOTE, US" || loc === "US REMOTE" || loc === "REMOTE - US") {
-    return true;
-  }
-
-  return false;
-}
-
-// Check if location contains international cities/countries
-function hasInternationalLocation(location: string): boolean {
-  const loc = location.toUpperCase();
-
-  for (const indicator of NON_US_INDICATORS) {
-    if (loc.includes(indicator)) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 // Extract the relevant portion of location based on region filter
