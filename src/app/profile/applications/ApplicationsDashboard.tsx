@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 interface Application {
@@ -81,6 +81,29 @@ export default function ApplicationsDashboard({
 
   const hasActiveSession = todayActivity?.status === "queued" || todayActivity?.status === "processing";
   const atLimit = usage ? usage.used >= usage.limit : false;
+
+  const tips = [
+    "Each application uses the resume that best matches the role — that\u2019s why uploading role-specific resumes matters.",
+    "We scan 5,000+ open roles daily and only apply to the ones that match your profile, location, and target roles.",
+    "Applications go out at 3am MT each day. You can also click \u201cStart Applying Now\u201d anytime.",
+    "The more target roles and resumes you add, the more jobs we can match you to.",
+    "The average job search takes 3\u20136 months. Auto-apply keeps your pipeline full while you focus on prep.",
+    "Most roles receive 250+ applications. Applying early increases your chances of being reviewed.",
+    "Referred candidates are 4x more likely to be hired — but volume still matters for roles where you don\u2019t have a referral.",
+    "Companies often re-open roles after the first hire doesn\u2019t work out. Consistent applying catches these second chances.",
+  ];
+  const [tipIndex, setTipIndex] = useState(0);
+  const [tipFade, setTipFade] = useState(true);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTipFade(false);
+      setTimeout(() => {
+        setTipIndex((i) => (i + 1) % tips.length);
+        setTipFade(true);
+      }, 300);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [tips.length]);
 
   const handleStartApplying = useCallback(async () => {
     setStarting(true);
@@ -176,6 +199,24 @@ export default function ApplicationsDashboard({
           <p className="text-xs text-[var(--gray-600)] mt-1">Successfully submitted</p>
         </button>
 
+      </div>
+
+      {/* Rotating Tip */}
+      <div className="mb-8 flex items-start gap-3 px-5 py-4 rounded-2xl bg-[var(--accent-blue-bg)] border border-[var(--card-border)]">
+        <div className="w-8 h-8 rounded-lg bg-[var(--card-bg)] flex items-center justify-center shrink-0 mt-0.5">
+          <svg className="w-4 h-4 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-[var(--gray-600)] uppercase tracking-wider mb-1">Did you know?</p>
+          <p
+            className="text-sm text-[var(--foreground)] transition-opacity duration-300"
+            style={{ opacity: tipFade ? 1 : 0 }}
+          >
+            {tips[tipIndex]}
+          </p>
+        </div>
       </div>
 
       {/* Today's Auto-Apply Activity */}

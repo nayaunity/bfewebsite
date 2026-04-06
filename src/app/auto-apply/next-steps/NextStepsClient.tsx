@@ -129,7 +129,7 @@ export default function NextStepsClient({
                   </h2>
                 </div>
                 <p className="text-sm text-[var(--gray-600)] ml-8">
-                  Different roles need different resumes. Upload at least 3 tailored to the types of jobs you want, and BFE will match the right one to each application.
+                  When we apply to a job for you, we automatically pick the resume that best fits that role. A Backend Engineer resume goes to backend jobs, your PM resume goes to PM roles — so each application puts your strongest foot forward.
                 </p>
               </div>
             </div>
@@ -255,7 +255,7 @@ export default function NextStepsClient({
           >
             <div>
               <span className="text-lg font-serif">Start Applying to Jobs</span>
-              <p className="text-sm text-white/80 mt-0.5">Select companies, choose a role, and let BFE apply for you</p>
+              <p className="text-sm text-white/80 mt-0.5">We&apos;ll match you to the best jobs and apply with your strongest resume</p>
             </div>
             <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
