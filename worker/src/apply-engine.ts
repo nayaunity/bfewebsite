@@ -250,17 +250,20 @@ const MAX_STEPS = 25;
 // FRAME HELPERS
 // ============================================================================
 
-import type { Frame } from "playwright";
+import type { Frame, Locator } from "playwright";
 
 async function withFrameFallback(
   page: Page,
   fn: (frame: Frame) => Promise<void>
 ): Promise<void> {
+  let lastError = "";
   // Try main frame first
   try {
     await fn(page.mainFrame());
     return;
-  } catch {}
+  } catch (e) {
+    lastError = e instanceof Error ? e.message : String(e);
+  }
   // Try child frames (Greenhouse forms live in iframes)
   for (const frame of page.frames()) {
     if (frame === page.mainFrame()) continue;
@@ -268,9 +271,11 @@ async function withFrameFallback(
     try {
       await fn(frame);
       return;
-    } catch {}
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : String(e);
+    }
   }
-  throw new Error("Action failed on all frames");
+  throw new Error(`Action failed on all frames: ${lastError}`);
 }
 
 function getGreenhouseFrame(page: Page): Frame | null {
@@ -353,6 +358,85 @@ async function handleFileUpload(page: Page, resumePath: string): Promise<void> {
 // GREENHOUSE STATIC DROPDOWN HELPER
 // ============================================================================
 
+/**
+ * Check if a Greenhouse dropdown still shows "Select..." (unset).
+ * The DOM structure is: parent > generic("Select...") + combobox + toggle button
+ */
+async function isDropdownStillUnset(frame: Frame, combobox: Locator): Promise<boolean> {
+  try {
+    const parent = combobox.locator("xpath=ancestor::*[1]");
+    const text = await parent.textContent({ timeout: 2000 });
+    return !text || /Select\.\.\./i.test(text);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Open the Greenhouse flyout dropdown for a given combobox.
+ * Tries 3 strategies in order.
+ */
+async function openFlyout(frame: Frame, combobox: Locator): Promise<void> {
+  // Strategy 1: Find the NEXT Toggle flyout button in document order and click it
+  try {
+    const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
+    await toggle.click({ timeout: 3000 });
+    return;
+  } catch {}
+  // Strategy 2: Click the combobox itself (works on many Greenhouse forms)
+  try {
+    await combobox.click({ timeout: 3000 });
+    return;
+  } catch {}
+  // Strategy 3: Try finding toggle as a sibling in a shared parent container
+  try {
+    const parentToggle = combobox.locator('xpath=ancestor::*[position() <= 3]//button[@aria-label="Toggle flyout"]').first();
+    await parentToggle.click({ timeout: 3000 });
+    return;
+  } catch {}
+  throw new Error(`Could not open dropdown`);
+}
+
+/**
+ * Keyboard fallback: type to filter the dropdown list, then ArrowDown + Enter.
+ */
+async function selectViaKeyboard(
+  frame: Frame,
+  combobox: Locator,
+  optionName: string | RegExp
+): Promise<void> {
+  // Extract a short search string from the option pattern
+  let searchStr: string;
+  if (typeof optionName === "string") {
+    searchStr = optionName;
+  } else {
+    // Strip regex metacharacters to get plain text
+    searchStr = optionName.source
+      .replace(/\\/g, "")
+      .replace(/[\\^$.*+?()[\]{}|]/g, "")
+      .split("|")[0]; // Take first alternative from patterns like "Yes|No"
+  }
+  searchStr = searchStr.slice(0, 8); // Keep it short for filtering
+
+  // Open the flyout
+  await openFlyout(frame, combobox);
+  await frame.waitForTimeout(300);
+
+  // Type to filter the options list
+  await combobox.pressSequentially(searchStr, { delay: 50 });
+  await frame.waitForTimeout(500);
+
+  // Select first matching option via keyboard
+  await frame.page().keyboard.press("ArrowDown");
+  await frame.waitForTimeout(200);
+  await frame.page().keyboard.press("Enter");
+  await frame.waitForTimeout(300);
+
+  // Blur to trigger validation
+  await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
+  await frame.waitForTimeout(300);
+}
+
 async function selectStaticDropdown(
   frame: Frame,
   comboboxNamePattern: string | RegExp,
@@ -364,45 +448,48 @@ async function selectStaticDropdown(
 
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
 
-  // Strategy 1: Find the NEXT Toggle flyout button in document order and click it
-  let flyoutOpened = false;
-  try {
-    const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
-    await toggle.click({ timeout: 3000 });
-    flyoutOpened = true;
-  } catch {
-    // Strategy 2: Click the combobox itself (works on many Greenhouse forms)
-    try {
-      await combobox.click({ timeout: 3000 });
-      flyoutOpened = true;
-    } catch {
-      // Strategy 3: Try finding toggle as a sibling in a shared parent container
-      try {
-        const parentToggle = combobox.locator('xpath=ancestor::*[position() <= 3]//button[@aria-label="Toggle flyout"]').first();
-        await parentToggle.click({ timeout: 3000 });
-        flyoutOpened = true;
-      } catch {}
-    }
-  }
-
-  if (!flyoutOpened) {
-    throw new Error(`Could not open dropdown "${String(comboboxNamePattern)}"`);
-  }
-
+  // --- Attempt 1: Click-based selection (existing approach) ---
+  await openFlyout(frame, combobox);
   await frame.waitForTimeout(1000);
 
   const useExact = typeof optionName === "string" && optionName.length <= 3;
+  let clickSucceeded = false;
   try {
     await frame.getByRole("option", { name: optionName, exact: useExact }).first().click({ timeout: 5000 });
+    clickSucceeded = true;
   } catch {
-    // Close the flyout if option wasn't found to prevent blocking other dropdowns
+    // Close the flyout if option wasn't found
     await frame.page().keyboard.press("Escape").catch(() => {});
     await frame.waitForTimeout(300);
-    throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}"`);
   }
-  // Click elsewhere to trigger blur/validation — Greenhouse forms need this to register the selection
-  await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
-  await frame.waitForTimeout(500);
+
+  if (clickSucceeded) {
+    // Blur to trigger validation
+    await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
+    await frame.waitForTimeout(500);
+
+    // Verify the selection registered in React state
+    if (!(await isDropdownStillUnset(frame, combobox))) {
+      return; // Success — value registered
+    }
+    // Click appeared to work but value didn't register in React state — fall through to keyboard
+  }
+
+  // --- Attempt 2: Keyboard-based selection (fallback) ---
+  // Close any residual state
+  await frame.page().keyboard.press("Escape").catch(() => {});
+  await frame.waitForTimeout(300);
+
+  // Clear any text that might be in the combobox from failed attempt
+  await combobox.fill("").catch(() => {});
+  await frame.waitForTimeout(200);
+
+  await selectViaKeyboard(frame, combobox, optionName);
+
+  // Verify again
+  if (await isDropdownStillUnset(frame, combobox)) {
+    throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (click + keyboard both failed)`);
+  }
 }
 
 async function selectStaticDropdownSafe(
@@ -920,6 +1007,21 @@ async function greenhouseDeterministicFill(
 
   // Located in specific locations (GitLab — "Are you located in one of the following...")
   await selectStaticDropdownSafe(frame, /located in.*following|located in one of/i, /^Yes/i, steps);
+
+  // BrightHire consent (Stripe)
+  await selectStaticDropdownSafe(frame, /BrightHire/i, /Yes|I consent|I agree|confirm/i, steps);
+  // Certification acknowledgment (Datadog)
+  await selectStaticDropdownSafe(frame, /certification|certified/i, /^Yes|I confirm|I certify/i, steps);
+  // Location eligibility (Airtable — "Are you eligible to work in this location?")
+  await selectStaticDropdownSafe(frame, /eligible.*work.*location|location.*eligib/i, /^Yes/i, steps);
+  // Highest degree / education level (Twilio variant label)
+  await selectStaticDropdownSafe(frame, /highest.*degree|level.*education|education.*level/i, /Bachelor/i, steps);
+  // Start date month (broader pattern for Stripe/Coinbase employment sections)
+  await selectStaticDropdownSafe(frame, /start.*month|month.*start/i, /January|February|March|April|May|June|July|August|September|October|November|December/i, steps);
+  // Self-identification acknowledgment (Stripe)
+  await selectStaticDropdownSafe(frame, /self.identification|voluntary.*self/i, /acknowledge|I acknowledge|Yes/i, steps);
+  // "Are you currently based in" / location-based eligibility (Airtable, Stripe)
+  await selectStaticDropdownSafe(frame, /currently based in|based in.*or willing/i, /^Yes/i, steps);
 
   // Technical experience yes/no questions (ZipRecruiter, etc.)
   await selectStaticDropdownSafe(frame, /experience with.*big data|experience with.*Hadoop|experience with.*Spark/i, /^Yes/i, steps);
@@ -1582,9 +1684,11 @@ export async function applyToJob(
         return { success: false, error: errMsg, steps };
       }
 
-      // Track field attempts
-      const fieldKey = `${action.role}:${action.name}`;
-      if (action.action === "fill" || action.action === "type_slowly") {
+      // Track field attempts (including select_dropdown to prevent infinite loops on stuck dropdowns)
+      const fieldKey = action.action === "select_dropdown"
+        ? `combobox:${action.name}`
+        : `${action.role}:${action.name}`;
+      if (action.action === "fill" || action.action === "type_slowly" || action.action === "select_dropdown") {
         fieldAttempts[fieldKey] = (fieldAttempts[fieldKey] || 0) + 1;
         if (fieldAttempts[fieldKey] >= 3 && !skippedFields.includes(fieldKey)) {
           skippedFields.push(fieldKey);
