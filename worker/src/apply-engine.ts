@@ -245,6 +245,7 @@ interface RoleAction {
 }
 
 const MAX_STEPS = 25;
+const APPLICATION_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes max per application
 
 // ============================================================================
 // FRAME HELPERS
@@ -296,6 +297,26 @@ function getGreenhouseFrame(page: Page): Frame | null {
     if (frame.url() !== "about:blank" && frame.url() !== "") return frame;
   }
   return null;
+}
+
+/**
+ * Wait for the Greenhouse iframe to load and have a non-empty accessibility tree.
+ * Retries up to 5 times with 3s waits (15s total) before giving up.
+ */
+async function waitForGreenhouseFrame(page: Page): Promise<Frame | null> {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const frame = getGreenhouseFrame(page);
+    if (frame) {
+      try {
+        const snapshot = await frame.locator("body").ariaSnapshot({ timeout: 5000 });
+        // Check that the snapshot has meaningful content (not just a loading spinner)
+        if (snapshot && snapshot.length > 200) return frame;
+      } catch {}
+    }
+    await page.waitForTimeout(3000);
+  }
+  // Return whatever we have, even if snapshot is short
+  return getGreenhouseFrame(page);
 }
 
 // ============================================================================
@@ -1327,10 +1348,16 @@ async function getAccessibilitySnapshot(page: Page): Promise<string> {
   const ghFrame = getGreenhouseFrame(page);
   if (ghFrame && ghFrame !== page.mainFrame()) {
     // Greenhouse is in an iframe — snapshot ONLY the iframe content
-    try {
-      const frameSnapshot = await ghFrame.locator("body").ariaSnapshot({ timeout: 10000 });
-      return `URL: ${url}\nTitle: ${title}\nForm iframe: ${ghFrame.url()}\n\nAccessibility Tree (Greenhouse form only):\n${frameSnapshot.slice(0, 15000)}`;
-    } catch {}
+    // Retry up to 3 times if snapshot is empty (iframe still loading)
+    for (let retry = 0; retry < 3; retry++) {
+      try {
+        const frameSnapshot = await ghFrame.locator("body").ariaSnapshot({ timeout: 10000 });
+        if (frameSnapshot && frameSnapshot.length > 200) {
+          return `URL: ${url}\nTitle: ${title}\nForm iframe: ${ghFrame.url()}\n\nAccessibility Tree (Greenhouse form only):\n${frameSnapshot.slice(0, 15000)}`;
+        }
+      } catch {}
+      if (retry < 2) await page.waitForTimeout(3000);
+    }
   }
 
   // Default: snapshot the whole page (for direct Greenhouse URLs or non-Greenhouse forms)
@@ -1566,6 +1593,31 @@ export async function applyToJob(
   resumeName: string,
   targetRole?: string
 ): Promise<ApplyResult> {
+  // Wrap entire application in a timeout to prevent hanging
+  const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
+    setTimeout(() => reject(new Error("Application timed out after 5 minutes")), APPLICATION_TIMEOUT_MS)
+  );
+
+  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole);
+
+  try {
+    return await Promise.race([applyPromise, timeoutPromise]);
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Application timed out",
+      steps: ["Timed out after 5 minutes"],
+    };
+  }
+}
+
+async function _applyToJobInner(
+  applyUrl: string,
+  applicant: ApplicantData,
+  resumeUrl: string,
+  resumeName: string,
+  targetRole?: string
+): Promise<ApplyResult> {
   const context = await createStealthContext();
   const page = await context.newPage();
   const steps: string[] = [];
@@ -1624,6 +1676,14 @@ export async function applyToJob(
       }
     }
     steps.push(`Detected ATS: ${ats}`);
+
+    // Ensure iframe is actually loaded with content before proceeding
+    if (ats === "Greenhouse") {
+      const readyFrame = await waitForGreenhouseFrame(page);
+      if (!readyFrame) {
+        return { success: false, error: "Greenhouse form iframe is not loading or accessible tree is empty — cannot proceed with form filling", steps };
+      }
+    }
 
     // FAST PATH: Greenhouse deterministic handler
     if (ats === "Greenhouse") {
@@ -1721,6 +1781,15 @@ export async function applyToJob(
               const verResult = await handleVerificationCode(ghFrame, page, applicant, steps);
               if (verResult) return verResult;
             }
+            // Check for validation errors — scan for common error patterns
+            try {
+              const errorTexts = await ghFrame.locator('[class*="error"], [class*="invalid"], [role="alert"]')
+                .allTextContents().catch(() => [] as string[]);
+              const visibleErrors = errorTexts.filter(t => t.trim().length > 0).slice(0, 5);
+              if (visibleErrors.length > 0) {
+                steps.push(`Validation errors after submit: ${visibleErrors.join("; ")}`);
+              }
+            } catch {}
           }
         }
       } catch (err) {
