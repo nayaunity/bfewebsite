@@ -208,11 +208,15 @@ export default function ApplicationsDashboard({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 overflow-hidden">
           <p className="text-xs font-semibold text-[var(--gray-600)] uppercase tracking-wider mb-1">Did you know?</p>
           <p
-            className="text-sm text-[var(--foreground)] transition-opacity duration-300"
-            style={{ opacity: tipFade ? 1 : 0 }}
+            className="text-sm text-[var(--foreground)]"
+            style={{
+              opacity: tipFade ? 1 : 0,
+              transform: tipFade ? "translateY(0)" : "translateY(-8px)",
+              transition: "opacity 0.4s ease, transform 0.4s ease",
+            }}
           >
             {tips[tipIndex]}
           </p>
