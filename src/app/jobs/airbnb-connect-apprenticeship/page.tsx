@@ -206,7 +206,7 @@ export default function AirbnbConnectApprenticeship() {
                   big tech. Applications are open now &mdash; don&apos;t wait.
                 </p>
                 <a
-                  href="https://careers.airbnb.com/connect-engineering-apprenticeship/"
+                  href="https://careers.airbnb.com/positions/7773917/?gh_jid=7773917"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
