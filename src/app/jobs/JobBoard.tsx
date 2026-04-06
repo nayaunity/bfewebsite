@@ -426,28 +426,8 @@ export default function JobBoard() {
       </section>
 
 
-      {/* Auto-Apply Banner */}
-      <section className="bg-[#ef562a] py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h2 className="font-serif text-2xl md:text-3xl text-white">
-              Apply to hundreds of jobs while you sleep
-            </h2>
-            <p className="mt-1 text-sm text-white/80">
-              Use Maticaly and get 10X interviews
-            </p>
-          </div>
-          <a
-            href="/auto-apply/landing"
-            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
-          >
-            Get Started <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </section>
-
       {/* Featured Opportunity */}
-      <section className="bg-[var(--gray-50)] pt-8 md:pt-12">
+      <section className="bg-[var(--background)] pt-8 md:pt-12 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => router.push("/jobs/airbnb-connect-apprenticeship")}
@@ -492,6 +472,26 @@ export default function JobBoard() {
               </div>
             </div>
           </button>
+        </div>
+      </section>
+
+      {/* Auto-Apply Banner */}
+      <section className="bg-[#ef562a] py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-2xl md:text-3xl text-white">
+              Apply to hundreds of jobs while you sleep
+            </h2>
+            <p className="mt-1 text-sm text-white/80">
+              Use Maticaly and get 10X interviews
+            </p>
+          </div>
+          <a
+            href="/auto-apply/landing"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
+          >
+            Get Started <span aria-hidden="true">&rarr;</span>
+          </a>
         </div>
       </section>
 
