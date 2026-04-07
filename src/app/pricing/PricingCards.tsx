@@ -11,8 +11,8 @@ const tiers = [
     key: "free" as const,
     features: [
       "5 applications per month",
-      "Up to 3 resumes",
       "1 tailored resume per month",
+      "Upload up to 3 resumes to your profile",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
@@ -27,8 +27,8 @@ const tiers = [
     key: "starter" as const,
     features: [
       "100 applications per month",
-      "Up to 5 resumes",
       "Unlimited tailored resumes",
+      "Upload up to 5 resumes to your profile",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
@@ -44,8 +44,8 @@ const tiers = [
     key: "pro" as const,
     features: [
       "300 applications per month",
-      "Up to 10 resumes",
       "Unlimited tailored resumes",
+      "Upload up to 10 resumes to your profile",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
