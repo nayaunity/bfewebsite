@@ -496,11 +496,6 @@ export default function ApplicationsDashboard({
                       {app.status === "submitted" || app.status === "applied" ? "Applied" :
                        app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
-                    {app.resumeTailored && (
-                      <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 text-purple-700">
-                        Tailored
-                      </span>
-                    )}
                   </div>
 
                   {/* Date */}
@@ -511,29 +506,7 @@ export default function ApplicationsDashboard({
                   </div>
 
                   {/* Action */}
-                  <div className="mt-2 md:mt-0 md:text-right flex flex-col items-end gap-1">
-                    {app.resumeTailored && app.tailoredResumeUrl && (
-                      <span className="flex items-center gap-2">
-                        {app.originalResumeUrl && (
-                          <a
-                            href={app.originalResumeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] text-[var(--gray-600)] hover:underline"
-                          >
-                            Original
-                          </a>
-                        )}
-                        <a
-                          href={app.tailoredResumeUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] text-purple-600 font-medium hover:underline"
-                        >
-                          Tailored
-                        </a>
-                      </span>
-                    )}
+                  <div className="mt-2 md:mt-0 md:text-right">
                     {app.applyUrl && (
                       <a
                         href={app.applyUrl}
@@ -548,6 +521,44 @@ export default function ApplicationsDashboard({
                       </a>
                     )}
                   </div>
+
+                  {/* Resume comparison row — spans full width */}
+                  {app.resumeTailored && app.tailoredResumeUrl && (
+                    <div className="md:col-span-4 mt-2 md:mt-0 bg-purple-50 border border-purple-200 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                      <div className="flex items-center gap-2 text-xs text-purple-800 font-medium">
+                        <svg className="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Resume customized for this role
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {app.originalResumeUrl && (
+                          <a
+                            href={app.originalResumeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md border border-[var(--gray-200)] bg-[var(--card-bg)] text-[var(--gray-800)] hover:bg-[var(--gray-50)] transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Original Resume
+                          </a>
+                        )}
+                        <a
+                          href={app.tailoredResumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Tailored Resume
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
