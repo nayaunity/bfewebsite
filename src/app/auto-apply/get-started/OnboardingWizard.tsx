@@ -6,6 +6,34 @@ import { ROLE_OPTIONS } from "@/lib/role-options";
 
 const TOTAL_STEPS = 25;
 
+const STEP_LABELS: Record<number, string> = {
+  0: "Looking for job?",
+  1: "Job priorities",
+  2: "Tried other apps?",
+  3: "Value prop",
+  4: "Timeline",
+  5: "Interview goal",
+  6: "Affirmation",
+  7: "Target roles",
+  8: "Experience level",
+  9: "Locations",
+  10: "Salary",
+  11: "Value prop 2",
+  12: "Goal",
+  13: "Blocker",
+  14: "Timeline chart",
+  15: "Contact info",
+  16: "Location/state",
+  17: "Work authorization",
+  18: "Creating plan",
+  19: "Feature: matching",
+  20: "Feature: auto-fill",
+  21: "Feature: autopilot",
+  22: "Feature: handled",
+  23: "Plan summary",
+  24: "Start applying",
+};
+
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
   "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -111,10 +139,36 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
   const [showMoreLocations, setShowMoreLocations] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(false);
 
+  // Track wizard opened (step 0)
+  useEffect(() => {
+    fetch("/api/activity", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "onboarding_step",
+        message: "Step 0: Looking for job?",
+        metadata: { step: 0, label: "Looking for job?" },
+      }),
+    }).catch(() => {});
+  }, []);
+
   const progress = ((step + 1) / TOTAL_STEPS) * 100;
 
   const next = useCallback(() => {
-    if (step < TOTAL_STEPS - 1) setStep(step + 1);
+    if (step < TOTAL_STEPS - 1) {
+      const nextStep = step + 1;
+      setStep(nextStep);
+      // Track step completion (fire and forget)
+      fetch("/api/activity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "onboarding_step",
+          message: `Step ${nextStep}: ${STEP_LABELS[nextStep] || "unknown"}`,
+          metadata: { step: nextStep, label: STEP_LABELS[nextStep] },
+        }),
+      }).catch(() => {});
+    }
   }, [step]);
 
   const back = useCallback(() => {

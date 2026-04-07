@@ -3,8 +3,36 @@ import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
+const STEP_LABELS: Record<number, string> = {
+  0: "Opened wizard",
+  1: "Job priorities",
+  2: "Tried other apps?",
+  3: "Value prop",
+  4: "Timeline",
+  5: "Interview goal",
+  6: "Affirmation",
+  7: "Target roles",
+  8: "Experience level",
+  9: "Locations",
+  10: "Salary",
+  11: "Value prop 2",
+  12: "Goal",
+  13: "Blocker",
+  14: "Timeline chart",
+  15: "Contact info",
+  16: "Location/state",
+  17: "Work authorization",
+  18: "Creating plan",
+  19: "Feature: matching",
+  20: "Feature: auto-fill",
+  21: "Feature: autopilot",
+  22: "Feature: handled",
+  23: "Plan summary",
+  24: "Start applying",
+};
+
 async function getOnboardingData() {
-  const [users, totalUsers] = await Promise.all([
+  const [users, totalUsers, stepActivities] = await Promise.all([
     prisma.user.findMany({
       where: { onboardingCompletedAt: { not: null } },
       select: {
@@ -21,9 +49,25 @@ async function getOnboardingData() {
       orderBy: { onboardingCompletedAt: "desc" },
     }),
     prisma.user.count(),
+    prisma.activity.findMany({
+      where: { type: "onboarding_step" },
+      select: { metadata: true },
+    }),
   ]);
 
-  return { users, totalUsers };
+  // Build step funnel counts
+  const stepCounts: Record<number, number> = {};
+  for (const a of stepActivities) {
+    try {
+      const meta = JSON.parse(a.metadata || "{}");
+      const step = meta.step as number;
+      if (typeof step === "number") {
+        stepCounts[step] = (stepCounts[step] || 0) + 1;
+      }
+    } catch {}
+  }
+
+  return { users, totalUsers, stepCounts };
 }
 
 function formatDate(date: Date) {
@@ -38,7 +82,9 @@ function formatDate(date: Date) {
 
 export default async function OnboardingPage() {
   await requireFullAdmin();
-  const { users, totalUsers } = await getOnboardingData();
+  const { users, totalUsers, stepCounts } = await getOnboardingData();
+  const hasStepData = Object.keys(stepCounts).length > 0;
+  const maxStepCount = Math.max(...Object.values(stepCounts), 1);
 
   return (
     <div className="pb-20 lg:pb-0">
@@ -50,6 +96,40 @@ export default async function OnboardingPage() {
           {users.length} of {totalUsers} users completed onboarding
         </p>
       </div>
+
+      {/* Step Funnel */}
+      {hasStepData && (
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 mb-8">
+          <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">Step-by-Step Funnel</h2>
+          <p className="text-xs text-[var(--gray-600)] mb-4">Where users drop off in the 25-step onboarding wizard</p>
+          <div className="space-y-1.5">
+            {Array.from({ length: 25 }, (_, i) => {
+              const count = stepCounts[i] || 0;
+              const pct = maxStepCount > 0 ? (count / maxStepCount) * 100 : 0;
+              const dropOff = i > 0 && stepCounts[i - 1] ? (((stepCounts[i - 1] - count) / stepCounts[i - 1]) * 100).toFixed(0) : null;
+              const isHighDrop = dropOff !== null && parseInt(dropOff) > 20;
+              return (
+                <div key={i} className="flex items-center gap-3 text-xs">
+                  <span className="w-5 text-right text-[var(--gray-600)] font-mono">{i}</span>
+                  <span className="w-36 truncate text-[var(--gray-600)]">{STEP_LABELS[i] || `Step ${i}`}</span>
+                  <div className="flex-1 h-5 bg-[var(--gray-100)] rounded overflow-hidden">
+                    <div
+                      className={`h-full rounded ${isHighDrop ? "bg-red-400" : "bg-[#ef562a]"}`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="w-10 text-right font-medium text-[var(--foreground)]">{count}</span>
+                  {dropOff !== null && parseInt(dropOff) > 0 && (
+                    <span className={`w-12 text-right text-[10px] ${isHighDrop ? "text-red-500 font-bold" : "text-[var(--gray-600)]"}`}>
+                      -{dropOff}%
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

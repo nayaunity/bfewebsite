@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Allowed activity types
-const ALLOWED_ACTIVITY_TYPES = ["micro_win", "lesson_complete", "job_click", "link_click", "blog_view"];
+const ALLOWED_ACTIVITY_TYPES = ["micro_win", "lesson_complete", "job_click", "link_click", "blog_view", "onboarding_step"];
 
 // POST /api/activity - Record a new activity event
 export async function POST(request: NextRequest) {
