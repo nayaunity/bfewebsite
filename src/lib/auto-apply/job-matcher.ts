@@ -32,12 +32,19 @@ const GENERIC_WORDS = new Set([
   "associate", "junior", "intern",
 ]);
 
+// Short abbreviations that are meaningful in job titles (don't filter by length)
+const KNOWN_SHORT_TERMS = new Set(["ai", "ml", "ui", "ux", "qa", "sre", "nlp", "llm", "cv", "devops"]);
+
+function isSignificantWord(w: string): boolean {
+  return w.length > 2 || KNOWN_SHORT_TERMS.has(w);
+}
+
 function getSearchKeywords(roleLabels: string[]): string[][] {
   return roleLabels.flatMap((label) => {
     const roleOption = ROLE_OPTIONS.find((r) => r.label === label);
-    if (!roleOption) return [label.toLowerCase().split(/\s+/).filter((w) => w.length > 2)];
+    if (!roleOption) return [label.toLowerCase().split(/\s+/).filter(isSignificantWord)];
     return roleOption.searchTerms.split(",").map((term) => {
-      const words = term.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+      const words = term.trim().toLowerCase().split(/\s+/).filter(isSignificantWord);
       // Filter out keyword sets that are just a single generic word
       if (words.length === 1 && GENERIC_WORDS.has(words[0])) return [];
       return words;

@@ -26,7 +26,7 @@ export const ROLE_OPTIONS = [
   },
   {
     label: "AI / ML Engineer",
-    searchTerms: "AI Engineer, Machine Learning Engineer, ML Infrastructure, Data Scientist",
+    searchTerms: "Machine Learning Engineer, Data Scientist, Applied Scientist, Research Scientist, NLP Engineer, Computer Vision Engineer, ML Platform Engineer, ML Infrastructure Engineer, Deep Learning Engineer, LLM Engineer, Generative AI Engineer",
     description: "Machine learning, LLMs, NLP, computer vision, data science",
   },
   {
