@@ -1375,7 +1375,7 @@ async function getAccessibilitySnapshot(page: Page): Promise<string> {
       try {
         const frameSnapshot = await ghFrame.locator("body").ariaSnapshot({ timeout: 10000 });
         if (frameSnapshot && frameSnapshot.length > 200) {
-          return `URL: ${url}\nTitle: ${title}\nForm iframe: ${ghFrame.url()}\n\nAccessibility Tree (Greenhouse form only):\n${frameSnapshot.slice(0, 15000)}`;
+          return `URL: ${url}\nTitle: ${title}\nForm iframe: ${ghFrame.url()}\n\nAccessibility Tree (Greenhouse form only):\n${frameSnapshot.slice(0, 40000)}`;
         }
       } catch {}
       if (retry < 2) await page.waitForTimeout(3000);
@@ -1402,7 +1402,7 @@ async function getAccessibilitySnapshot(page: Page): Promise<string> {
     }
   }
 
-  const truncated = snapshot.slice(0, 15000);
+  const truncated = snapshot.slice(0, 40000);
   return `URL: ${url}\nTitle: ${title}\n\nAccessibility Tree:\n${truncated}`;
 }
 
