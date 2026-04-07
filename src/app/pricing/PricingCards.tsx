@@ -98,14 +98,14 @@ export function PricingCards({
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
       {tiers.map((tier) => {
         const isCurrent = currentTier === tier.key;
 
         return (
           <div
             key={tier.key}
-            className={`relative bg-[var(--card-bg)] border-2 rounded-2xl p-6 flex flex-col ${
+            className={`relative bg-[var(--card-bg)] border-2 rounded-2xl p-8 flex flex-col ${
               tier.highlighted
                 ? "border-[#ef562a]"
                 : "border-[var(--card-border)]"
@@ -117,11 +117,11 @@ export function PricingCards({
               </span>
             )}
 
-            <h3 className="font-serif text-xl text-[var(--foreground)]">
+            <h3 className="font-serif text-2xl text-[var(--foreground)]">
               {tier.name}
             </h3>
-            <div className="mt-2 mb-4">
-              <span className="text-3xl font-bold text-[var(--foreground)]">
+            <div className="mt-3 mb-6">
+              <span className="text-4xl font-bold text-[var(--foreground)]">
                 {tier.price}
               </span>
               <span className="text-sm text-[var(--gray-600)]">
@@ -129,14 +129,14 @@ export function PricingCards({
               </span>
             </div>
 
-            <ul className="space-y-2 mb-6 flex-1">
+            <ul className="space-y-3 mb-8 flex-1">
               {tier.features.map((feature) => (
                 <li
                   key={feature}
-                  className="flex items-start gap-2 text-sm text-[var(--gray-600)]"
+                  className="flex items-start gap-2.5 text-[15px] text-[var(--gray-600)]"
                 >
                   <svg
-                    className="w-4 h-4 text-[#ef562a] mt-0.5 flex-shrink-0"
+                    className="w-5 h-5 text-[#ef562a] mt-0.5 flex-shrink-0"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -154,7 +154,7 @@ export function PricingCards({
             {isCurrent ? (
               <button
                 disabled
-                className="w-full py-2.5 text-sm font-medium rounded-lg bg-[var(--gray-100)] text-[var(--gray-600)] cursor-default"
+                className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--gray-100)] text-[var(--gray-600)] cursor-default"
               >
                 Current Plan
               </button>
@@ -165,7 +165,7 @@ export function PricingCards({
                     ? router.push("/profile")
                     : router.push("/auth/signin?callbackUrl=/profile")
                 }
-                className="w-full py-2.5 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity"
+                className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity"
               >
                 {tier.cta}
               </button>
@@ -173,7 +173,7 @@ export function PricingCards({
               <button
                 onClick={() => handleSubscribe(tier.key)}
                 disabled={loading === tier.key}
-                className={`w-full py-2.5 text-sm font-medium rounded-lg transition-opacity disabled:opacity-50 ${
+                className={`w-full py-3 text-sm font-medium rounded-lg transition-opacity disabled:opacity-50 ${
                   tier.highlighted
                     ? "bg-[#ef562a] text-white hover:opacity-90"
                     : "bg-[var(--foreground)] text-[var(--background)] hover:opacity-90"
