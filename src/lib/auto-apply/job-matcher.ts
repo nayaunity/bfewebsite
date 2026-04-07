@@ -393,8 +393,27 @@ export async function matchJobsForUser(
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Take top candidates (more than needed so LLM can filter)
-  const candidates = scored.slice(0, maxJobs * 2);
+  // Take top candidates — ensure diversity across target roles so one broad role
+  // (like "Product Marketing") doesn't drown out more specific roles (like "AI / ML Engineer")
+  const candidatePool = scored.slice(0, maxJobs * 5);
+  const perRoleLimit = Math.ceil((maxJobs * 2) / roleLabels.length);
+  const roleCounts: Record<string, number> = {};
+  const candidates: MatchedJob[] = [];
+  for (const job of candidatePool) {
+    // Find which role this job best matches
+    let bestRole = roleLabels[0];
+    let bestRoleScore = 0;
+    for (const label of roleLabels) {
+      const roleKws = getSearchKeywords([label]);
+      const score = roleMatchScore(job.title, roleKws);
+      if (score > bestRoleScore) { bestRoleScore = score; bestRole = label; }
+    }
+    roleCounts[bestRole] = (roleCounts[bestRole] || 0) + 1;
+    if (roleCounts[bestRole] <= perRoleLimit) {
+      candidates.push(job);
+    }
+    if (candidates.length >= maxJobs * 3) break;
+  }
 
   // LLM quality gate — verify matches are genuine
   const verified = await llmQualityFilter(
