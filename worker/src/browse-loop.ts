@@ -359,6 +359,25 @@ export async function processNextBrowseSession(): Promise<boolean> {
           continue;
         }
 
+        // Location filter — skip foreign jobs for US-based users
+        if (isUserUS(user.countryOfResidence)) {
+          const jobLoc = await db.execute({
+            sql: "SELECT location, region FROM Job WHERE applyUrl = ? LIMIT 1",
+            args: [job.applyUrl],
+          });
+          const loc = jobLoc.rows?.[0];
+          if (loc) {
+            const location = (loc.location as string || "").toLowerCase();
+            const region = loc.region as string || "";
+            if (region === "international" || isForeignLocation(location)) {
+              companyResult.skipped++;
+              await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", "Location mismatch (non-US)");
+              console.log(`[Browse] Skipped ${job.title} — non-US location: ${loc.location}`);
+              continue;
+            }
+          }
+        }
+
         // Check daily cap (10 applications per day)
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
@@ -585,4 +604,28 @@ async function updateDiscoveryStatus(
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const NON_US_INDICATORS = [
+  "india", "ireland", "uk", "united kingdom", "england", "germany", "france",
+  "japan", "singapore", "australia", "brazil", "canada", "italy", "spain",
+  "netherlands", "sweden", "denmark", "norway", "finland", "poland", "czech",
+  "israel", "korea", "china", "hong kong", "taiwan", "mexico", "argentina",
+  "colombia", "chile", "peru", "bangalore", "bengaluru", "hyderabad", "mumbai",
+  "pune", "delhi", "chennai", "london", "berlin", "paris", "tokyo", "sydney",
+  "melbourne", "toronto", "vancouver", "montreal", "dublin", "amsterdam",
+  "são paulo", "sao paulo", "tel aviv", "seoul", "shanghai", "beijing",
+  "krakow", "warsaw", "stockholm", "copenhagen", "oslo", "helsinki",
+  "zurich", "geneva", "munich", "hamburg", "barcelona", "madrid", "lisbon",
+  "milan", "rome", "vienna", "brussels", "prague",
+];
+
+function isUserUS(country: string | null | undefined): boolean {
+  if (!country) return true; // default to US if unset
+  const c = country.toLowerCase();
+  return c.includes("us") || c.includes("united states") || c.includes("america");
+}
+
+function isForeignLocation(location: string): boolean {
+  return NON_US_INDICATORS.some((ind) => location.includes(ind));
 }
