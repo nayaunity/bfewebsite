@@ -211,7 +211,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         successCount++;
         await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
         if (applyResult.tailored) {
-          await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1 WHERE sessionId = ? AND applyUrl = ?`, args: [session.id, job.applyUrl] });
+          await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
         }
         await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
         await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
@@ -441,7 +441,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           companyResult.applied++;
           await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
           if (applyResult.tailored) {
-            await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1 WHERE sessionId = ? AND applyUrl = ?`, args: [session.id, job.applyUrl] });
+            await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
           }
           await db.execute({
             sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`,

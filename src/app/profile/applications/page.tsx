@@ -38,7 +38,7 @@ export default async function ApplicationsPage() {
       orderBy: { createdAt: "desc" },
       take: 200,
       include: {
-        session: { select: { targetRole: true, createdAt: true } },
+        session: { select: { targetRole: true, resumeUrl: true, createdAt: true } },
       },
     }),
     prisma.browseSession.findMany({
@@ -99,10 +99,12 @@ export default async function ApplicationsPage() {
     source: "browse" as const,
     targetRole: d.session?.targetRole || null,
     resumeTailored: d.resumeTailored || false,
+    tailoredResumeUrl: d.tailoredResumeUrl || null,
+    originalResumeUrl: d.session?.resumeUrl || null,
   }));
 
   const allApplications = [
-    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null, resumeTailored: false })),
+    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null, resumeTailored: false, tailoredResumeUrl: null as string | null, originalResumeUrl: null as string | null })),
     ...discoveryAsApplications,
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 

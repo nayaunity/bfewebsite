@@ -276,8 +276,9 @@ model BrowseDiscovery {
   applyUrl        String
   status          String   @default("found")
   errorMessage    String?
-  resumeTailored  Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  resumeTailored     Boolean  @default(false)
+  tailoredResumeUrl  String?
+  createdAt          DateTime @default(now())
 
   session BrowseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 

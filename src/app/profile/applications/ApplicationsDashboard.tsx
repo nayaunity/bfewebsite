@@ -15,6 +15,8 @@ interface Application {
   source: "browse" | "api";
   targetRole: string | null;
   resumeTailored?: boolean;
+  tailoredResumeUrl?: string | null;
+  originalResumeUrl?: string | null;
 }
 
 function friendlyError(error: string): string {
@@ -509,7 +511,29 @@ export default function ApplicationsDashboard({
                   </div>
 
                   {/* Action */}
-                  <div className="mt-2 md:mt-0 md:text-right">
+                  <div className="mt-2 md:mt-0 md:text-right flex flex-col items-end gap-1">
+                    {app.resumeTailored && app.tailoredResumeUrl && (
+                      <span className="flex items-center gap-2">
+                        {app.originalResumeUrl && (
+                          <a
+                            href={app.originalResumeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-[var(--gray-600)] hover:underline"
+                          >
+                            Original
+                          </a>
+                        )}
+                        <a
+                          href={app.tailoredResumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-purple-600 font-medium hover:underline"
+                        >
+                          Tailored
+                        </a>
+                      </span>
+                    )}
                     {app.applyUrl && (
                       <a
                         href={app.applyUrl}

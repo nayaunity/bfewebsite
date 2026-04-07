@@ -255,6 +255,7 @@ export interface ApplyResult {
   error?: string;
   steps?: string[];
   tailored?: boolean;
+  tailoredResumeUrl?: string;
 }
 
 // --- New role-based action interface (replaces CSS-selector-based AgentAction) ---
@@ -1656,6 +1657,7 @@ async function _applyToJobInner(
   let tmpPath: string | null = null;
   let tailoredPath: string | null = null;
   let tailored = false;
+  let tailoredResumeUrl: string | undefined;
   let resumeBuffer: Buffer;
   try {
     tmpPath = join(tmpdir(), `resume-${Date.now()}.pdf`);
@@ -1684,6 +1686,7 @@ async function _applyToJobInner(
             tailoredPath = result.tailoredPath;
             tmpPath = tailoredPath;
             tailored = true;
+            tailoredResumeUrl = result.blobUrl;
             steps.push("Resume tailored for this job description");
           } else {
             steps.push(`Resume tailoring skipped: ${result.error}`);
@@ -1757,7 +1760,7 @@ async function _applyToJobInner(
       steps.push(...(ghResult.steps || []));
 
       if (ghResult.success) {
-        return { success: true, steps, tailored };
+        return { success: true, steps, tailored, tailoredResumeUrl };
       }
       steps.push("Deterministic handler did not complete — falling back to Claude agent loop");
     }
@@ -1788,7 +1791,7 @@ async function _applyToJobInner(
       steps.push(`Claude: ${action.action} — ${action.reason}`);
 
       if (action.action === "done") {
-        return { success: true, steps, tailored };
+        return { success: true, steps, tailored, tailoredResumeUrl };
       }
 
       if (action.action === "error") {
@@ -1837,7 +1840,7 @@ async function _applyToJobInner(
           if (ghFrame) {
             // Check for success first
             if (await checkThankYou(ghFrame, page)) {
-              return { success: true, steps: [...steps, "Application submitted successfully"], tailored };
+              return { success: true, steps: [...steps, "Application submitted successfully"], tailored, tailoredResumeUrl };
             }
             // Check for verification code
             const hasVerification = await ghFrame.getByText(/verification code was sent/i).first()

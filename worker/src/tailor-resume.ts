@@ -3,6 +3,7 @@ import { getBrowser } from "./apply-engine";
 import { getDb } from "./db";
 import { tmpdir } from "os";
 import { join } from "path";
+import { readFileSync } from "fs";
 
 // pdf-parse ships as CJS — use require
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -25,6 +26,7 @@ interface TailorResult {
   tailoredPath: string;
   success: boolean;
   error?: string;
+  blobUrl?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -128,7 +130,15 @@ Output the complete HTML resume now:`;
     return { tailoredPath: "", success: false, error: `PDF generation failed: ${err instanceof Error ? err.message : "unknown"}` };
   }
 
-  return { tailoredPath, success: true };
+  // Step 4: Upload tailored PDF to Vercel Blob for before/after viewing
+  let blobUrl: string | undefined;
+  try {
+    blobUrl = await uploadToBlob(tailoredPath, `tailored-${applicant.firstName}-${applicant.lastName}-${Date.now()}.pdf`);
+  } catch {
+    // Non-fatal — the tailored PDF was still used for the application
+  }
+
+  return { tailoredPath, success: true, blobUrl };
 }
 
 // ---------------------------------------------------------------------------
@@ -204,6 +214,26 @@ export async function checkAndIncrementTailorQuota(
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+async function uploadToBlob(filePath: string, fileName: string): Promise<string> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) throw new Error("BLOB_READ_WRITE_TOKEN not set");
+
+  const fileBuffer = readFileSync(filePath);
+  const resp = await fetch(`https://blob.vercel-storage.com/tailored-resumes/${fileName}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "x-api-version": "7",
+      "x-content-type": "application/pdf",
+    },
+    body: fileBuffer,
+  });
+
+  if (!resp.ok) throw new Error(`Blob upload failed: ${resp.status}`);
+  const data = (await resp.json()) as { url: string };
+  return data.url;
+}
 
 async function incrementTailorCount(userId: string): Promise<void> {
   const db = getDb();
