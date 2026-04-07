@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireFullAdmin } from "@/lib/admin";
+import { OnboardingTabs } from "./OnboardingTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -97,82 +98,92 @@ export default async function OnboardingPage() {
         </p>
       </div>
 
-      {/* Step Funnel */}
-      {hasStepData && (
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 mb-8">
-          <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">Step-by-Step Funnel</h2>
-          <p className="text-xs text-[var(--gray-600)] mb-4">Where users drop off in the 25-step onboarding wizard</p>
-          <div className="space-y-1.5">
-            {Array.from({ length: 25 }, (_, i) => {
-              const count = stepCounts[i] || 0;
-              const pct = maxStepCount > 0 ? (count / maxStepCount) * 100 : 0;
-              const dropOff = i > 0 && stepCounts[i - 1] ? (((stepCounts[i - 1] - count) / stepCounts[i - 1]) * 100).toFixed(0) : null;
-              const isHighDrop = dropOff !== null && parseInt(dropOff) > 20;
-              return (
-                <div key={i} className="flex items-center gap-3 text-xs">
-                  <span className="w-5 text-right text-[var(--gray-600)] font-mono">{i}</span>
-                  <span className="w-36 truncate text-[var(--gray-600)]">{STEP_LABELS[i] || `Step ${i}`}</span>
-                  <div className="flex-1 h-5 bg-[var(--gray-100)] rounded overflow-hidden">
-                    <div
-                      className={`h-full rounded ${isHighDrop ? "bg-red-400" : "bg-[#ef562a]"}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <span className="w-10 text-right font-medium text-[var(--foreground)]">{count}</span>
-                  {dropOff !== null && parseInt(dropOff) > 0 && (
-                    <span className={`w-12 text-right text-[10px] ${isHighDrop ? "text-red-500 font-bold" : "text-[var(--gray-600)]"}`}>
-                      -{dropOff}%
-                    </span>
-                  )}
+      <OnboardingTabs
+        funnelTab={
+          <>
+            {/* Step Funnel */}
+            {hasStepData ? (
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 mb-8">
+                <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">Step-by-Step Funnel</h2>
+                <p className="text-xs text-[var(--gray-600)] mb-4">Where users drop off in the 25-step onboarding wizard. Steps with {">"}20% drop-off are highlighted in red.</p>
+                <div className="space-y-1.5">
+                  {Array.from({ length: 25 }, (_, i) => {
+                    const count = stepCounts[i] || 0;
+                    const pct = maxStepCount > 0 ? (count / maxStepCount) * 100 : 0;
+                    const dropOff = i > 0 && stepCounts[i - 1] ? (((stepCounts[i - 1] - count) / stepCounts[i - 1]) * 100).toFixed(0) : null;
+                    const isHighDrop = dropOff !== null && parseInt(dropOff) > 20;
+                    return (
+                      <div key={i} className="flex items-center gap-3 text-xs">
+                        <span className="w-5 text-right text-[var(--gray-600)] font-mono">{i}</span>
+                        <span className="w-36 truncate text-[var(--gray-600)]">{STEP_LABELS[i] || `Step ${i}`}</span>
+                        <div className="flex-1 h-5 bg-[var(--gray-100)] rounded overflow-hidden">
+                          <div
+                            className={`h-full rounded ${isHighDrop ? "bg-red-400" : "bg-[#ef562a]"}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="w-10 text-right font-medium text-[var(--foreground)]">{count}</span>
+                        {dropOff !== null && parseInt(dropOff) > 0 ? (
+                          <span className={`w-12 text-right text-[10px] ${isHighDrop ? "text-red-500 font-bold" : "text-[var(--gray-600)]"}`}>
+                            -{dropOff}%
+                          </span>
+                        ) : <span className="w-12" />}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+              </div>
+            ) : (
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-12 mb-8 text-center text-[var(--gray-600)]">
+                No step data yet. The funnel will populate as new users go through onboarding.
+              </div>
+            )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-          <p className="text-sm text-[var(--gray-600)]">Completed</p>
-          <p className="text-2xl font-bold text-[var(--foreground)] mt-1">{users.length}</p>
-        </div>
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-          <p className="text-sm text-[var(--gray-600)]">Conversion</p>
-          <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
-            {totalUsers > 0 ? ((users.length / totalUsers) * 100).toFixed(1) : 0}%
-          </p>
-        </div>
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-          <p className="text-sm text-[var(--gray-600)]">Top Blocker</p>
-          <p className="text-lg font-bold text-[var(--foreground)] mt-1">
-            {(() => {
-              const blockers: Record<string, number> = {};
-              users.forEach((u) => {
-                try {
-                  const d = JSON.parse(u.onboardingData || "{}");
-                  if (d.blocker) blockers[d.blocker] = (blockers[d.blocker] || 0) + 1;
-                } catch {}
-              });
-              const top = Object.entries(blockers).sort((a, b) => b[1] - a[1])[0];
-              return top ? top[0] : "—";
-            })()}
-          </p>
-        </div>
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-          <p className="text-sm text-[var(--gray-600)]">Avg Salary Target</p>
-          <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
-            ${(() => {
-              const salaries = users.map((u) => {
-                try { return JSON.parse(u.onboardingData || "{}").minSalary || 0; } catch { return 0; }
-              }).filter((s) => s > 0);
-              return salaries.length > 0 ? (salaries.reduce((a, b) => a + b, 0) / salaries.length / 1000).toFixed(0) : "0";
-            })()}K
-          </p>
-        </div>
-      </div>
-
-      {/* User list */}
+            {/* Stats */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+                <p className="text-sm text-[var(--gray-600)]">Completed</p>
+                <p className="text-2xl font-bold text-[var(--foreground)] mt-1">{users.length}</p>
+              </div>
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+                <p className="text-sm text-[var(--gray-600)]">Conversion</p>
+                <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+                  {totalUsers > 0 ? ((users.length / totalUsers) * 100).toFixed(1) : 0}%
+                </p>
+              </div>
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+                <p className="text-sm text-[var(--gray-600)]">Top Blocker</p>
+                <p className="text-lg font-bold text-[var(--foreground)] mt-1">
+                  {(() => {
+                    const blockers: Record<string, number> = {};
+                    users.forEach((u) => {
+                      try {
+                        const d = JSON.parse(u.onboardingData || "{}");
+                        if (d.blocker) blockers[d.blocker] = (blockers[d.blocker] || 0) + 1;
+                      } catch {}
+                    });
+                    const top = Object.entries(blockers).sort((a, b) => b[1] - a[1])[0];
+                    return top ? top[0] : "—";
+                  })()}
+                </p>
+              </div>
+              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+                <p className="text-sm text-[var(--gray-600)]">Avg Salary Target</p>
+                <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+                  ${(() => {
+                    const salaries = users.map((u) => {
+                      try { return JSON.parse(u.onboardingData || "{}").minSalary || 0; } catch { return 0; }
+                    }).filter((s) => s > 0);
+                    return salaries.length > 0 ? (salaries.reduce((a, b) => a + b, 0) / salaries.length / 1000).toFixed(0) : "0";
+                  })()}K
+                </p>
+              </div>
+            </div>
+          </>
+        }
+        usersTab={
+          <>
+            {/* User list */}
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
         <div className="divide-y divide-[var(--card-border)]">
           {users.map((user) => {
@@ -261,6 +272,9 @@ export default async function OnboardingPage() {
           )}
         </div>
       </div>
+          </>
+        }
+      />
     </div>
   );
 }
