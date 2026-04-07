@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { TicketWidget } from "@/components/TicketWidget";
 import { OnboardingSync } from "@/components/OnboardingSync";
+import { StripeSync } from "@/components/StripeSync";
 import { Suspense } from "react";
 import { TIER_LIMITS } from "@/lib/stripe";
 import { canApply } from "@/lib/subscription";
@@ -210,6 +211,7 @@ export default async function ProfilePage() {
   return (
     <>
       <Suspense><OnboardingSync /></Suspense>
+      <Suspense><StripeSync /></Suspense>
       <Navigation />
       <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 py-12">
