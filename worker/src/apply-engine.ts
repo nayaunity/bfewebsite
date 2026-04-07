@@ -38,6 +38,29 @@ async function findATSApplyLink(page: Page): Promise<string | null> {
   if (/\/careers\/positions\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
     return currentUrl.replace(/\/?$/, "/apply");
   }
+  // Stripe-style: stripe.com/jobs/search?gh_jid=XXX → direct Greenhouse URL
+  const ghJidMatch = currentUrl.match(/[?&]gh_jid=(\d+)/);
+  if (ghJidMatch) {
+    // Try to find the company's Greenhouse board from the page or construct a direct URL
+    const ghJobId = ghJidMatch[1];
+    // Look for a Greenhouse iframe or link on the page first
+    for (const frame of page.frames()) {
+      const frameUrl = frame.url();
+      if (frameUrl.includes("greenhouse.io") && frameUrl.includes(ghJobId)) {
+        return frameUrl.includes("/apply") ? frameUrl : frameUrl.replace(/\/?$/, "");
+      }
+    }
+    // Fallback: construct board URL from page links
+    const ghBoardUrl = await page.evaluate((jobId) => {
+      const links = Array.from(document.querySelectorAll("a[href], iframe[src]"));
+      for (const el of links) {
+        const url = (el as HTMLAnchorElement).href || (el as HTMLIFrameElement).src || "";
+        if (url.includes("greenhouse.io") && url.includes(jobId)) return url;
+      }
+      return null;
+    }, ghJobId);
+    if (ghBoardUrl) return ghBoardUrl;
+  }
 
   // Strategy 1: Look for "Apply" links on the page
   const applyUrlSuffix = await page.evaluate(() => {
