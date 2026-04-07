@@ -523,7 +523,7 @@ export default function ApplicationsDashboard({
                   </div>
 
                   {/* Resume comparison row — spans full width */}
-                  {app.resumeTailored && app.tailoredResumeUrl && (
+                  {app.resumeTailored && app.tailoredResumeUrl ? (
                     <div className="md:col-span-4 mt-2 md:mt-0 bg-purple-50 border border-purple-200 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                       <div className="flex items-center gap-2 text-xs text-purple-800 font-medium">
                         <svg className="w-4 h-4 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -558,6 +558,23 @@ export default function ApplicationsDashboard({
                         </a>
                       </div>
                     </div>
+                  ) : (
+                    !app.resumeTailored && (app.status === "submitted" || app.status === "applied") && usage?.tier === "free" && (
+                      <div className="md:col-span-4 mt-2 md:mt-0 bg-[var(--gray-50)] border border-[var(--gray-200)] border-dashed rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div className="flex items-center gap-2 text-xs text-[var(--gray-600)]">
+                          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          This application used your generic resume. Upgrade to tailor every resume automatically.
+                        </div>
+                        <Link
+                          href="/pricing"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-[#ef562a] text-white hover:bg-[#d94a22] transition-colors whitespace-nowrap"
+                        >
+                          Upgrade Plan
+                        </Link>
+                      </div>
+                    )
                   )}
                 </div>
               ))}
