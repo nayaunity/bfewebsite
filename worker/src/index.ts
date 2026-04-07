@@ -51,8 +51,8 @@ async function startPolling() {
         processNextJob().catch((err) => console.error("Queue job error:", err));
       }
 
-      // Process browse sessions — up to MAX_CONCURRENT in parallel
-      if (activeBrowseSessions < MAX_CONCURRENT) {
+      // Process browse sessions — fill up to MAX_CONCURRENT slots per poll
+      while (activeBrowseSessions < MAX_CONCURRENT) {
         activeBrowseSessions++;
         processNextBrowseSession()
           .then((found) => {
@@ -63,6 +63,8 @@ async function startPolling() {
           })
           .catch((err) => console.error("Browse session error:", err))
           .finally(() => { activeBrowseSessions--; });
+        // Small delay between launches to avoid racing for the same session
+        await delay(1000);
       }
     } catch (error) {
       console.error("Polling error:", error);
