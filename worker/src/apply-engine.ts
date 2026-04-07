@@ -407,13 +407,19 @@ async function handleFileUpload(page: Page, resumePath: string): Promise<void> {
 
 /**
  * Check if a Greenhouse dropdown still shows "Select..." (unset).
- * The DOM structure is: parent > generic("Select...") + combobox + toggle button
+ * Walks up to 3 ancestor levels — the combobox's immediate parent can be an
+ * empty wrapper, with "Select..." / selected-value text at grandparent level.
  */
 async function isDropdownStillUnset(frame: Frame, combobox: Locator): Promise<boolean> {
   try {
-    const parent = combobox.locator("xpath=ancestor::*[1]");
-    const text = await parent.textContent({ timeout: 2000 });
-    return !text || /Select\.\.\./i.test(text);
+    for (let level = 1; level <= 3; level++) {
+      const ancestor = combobox.locator(`xpath=ancestor::*[${level}]`);
+      const text = await ancestor.textContent({ timeout: 2000 });
+      if (text && text.trim().length > 0) {
+        return /Select\.\.\./i.test(text);
+      }
+    }
+    return true; // No text found at any level
   } catch {
     return true;
   }

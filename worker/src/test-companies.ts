@@ -4,7 +4,7 @@ import { applyToJob, closeBrowser } from "./apply-engine";
 const COMPANIES = [
   // Batch 1: Known-good patterns
   { name: "Twilio", url: "https://job-boards.greenhouse.io/twilio/jobs/7738955" },
-  { name: "DoorDash", url: "https://job-boards.greenhouse.io/doordashusa/jobs/5630445" },
+  { name: "DoorDash", url: "https://job-boards.greenhouse.io/doordashusa/jobs/7651870" },
   { name: "Anthropic", url: "https://job-boards.greenhouse.io/anthropic/jobs/4955107008" },
   { name: "Glean", url: "https://job-boards.greenhouse.io/gleanwork/jobs/4006734005" },
   // Batch 2: Companies with live URLs found
