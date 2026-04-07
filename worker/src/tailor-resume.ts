@@ -185,30 +185,28 @@ export async function fetchJobDescription(applyUrl: string): Promise<string | nu
 }
 
 /**
- * Check and increment the tailor quota for a user.
- * Returns true if the user is allowed to tailor (and increments the counter).
+ * Check if user can tailor (without incrementing).
  */
-export async function checkAndIncrementTailorQuota(
+export async function canTailorResume(
   userId: string,
   subscriptionTier: string
 ): Promise<boolean> {
-  // Paid tiers: always allowed
-  if (subscriptionTier === "starter" || subscriptionTier === "pro") {
-    await incrementTailorCount(userId);
-    return true;
-  }
+  if (subscriptionTier === "starter" || subscriptionTier === "pro") return true;
 
-  // Free tier: check limit (1/month)
   const db = getDb();
   const result = await db.execute({
     sql: "SELECT monthlyTailorCount FROM User WHERE id = ?",
     args: [userId],
   });
   const count = (result.rows?.[0]?.monthlyTailorCount as number) || 0;
-  if (count >= 1) return false;
+  return count < 1;
+}
 
+/**
+ * Increment the tailor count. Call only after a successful tailored apply.
+ */
+export async function incrementTailorQuota(userId: string): Promise<void> {
   await incrementTailorCount(userId);
-  return true;
 }
 
 // ---------------------------------------------------------------------------

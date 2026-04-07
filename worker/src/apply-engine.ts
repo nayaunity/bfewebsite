@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { waitForVerificationCode } from "./verification";
-import { tailorResume, fetchJobDescription, checkAndIncrementTailorQuota } from "./tailor-resume";
+import { tailorResume, fetchJobDescription, canTailorResume, incrementTailorQuota } from "./tailor-resume";
 
 const anthropic = new Anthropic();
 
@@ -1672,7 +1672,7 @@ async function _applyToJobInner(
   // Resume tailoring — swap tmpPath if successful
   if (subscriptionTier && userId) {
     try {
-      const canTailor = await checkAndIncrementTailorQuota(userId, subscriptionTier);
+      const canTailor = await canTailorResume(userId, subscriptionTier);
       if (canTailor) {
         const jd = await fetchJobDescription(applyUrl);
         if (jd) {

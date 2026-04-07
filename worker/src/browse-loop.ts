@@ -220,6 +220,9 @@ export async function processNextBrowseSession(): Promise<boolean> {
         await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
         if (applyResult.tailored) {
           await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
+          // Only count against quota after successful tailored apply
+          const { incrementTailorQuota } = await import("./tailor-resume");
+          await incrementTailorQuota(session.userId);
         }
         await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
         await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
@@ -469,6 +472,8 @@ export async function processNextBrowseSession(): Promise<boolean> {
           await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
           if (applyResult.tailored) {
             await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
+            const { incrementTailorQuota } = await import("./tailor-resume");
+            await incrementTailorQuota(session.userId);
           }
           await db.execute({
             sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`,
