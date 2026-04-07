@@ -220,7 +220,7 @@ async function llmQualityFilter(
   const isEarlyCareer = !isNaN(expYears) && expYears <= 2;
 
   const internGuidance = isEarlyCareer
-    ? `\nIMPORTANT: This candidate is early-career (${expYears} years). General "Software Engineer Intern", "Engineering Intern", "New Grad", and "Early Career" roles ARE valid matches regardless of their specific role preference, since intern/new-grad programs are typically generalist. However, reject senior/staff/principal roles — those require far more experience.`
+    ? `\nThis candidate is early-career (${expYears} years). Intern, New Grad, and Early Career roles ARE valid matches. Do NOT reject roles solely because the title says "Senior" or "Staff" — let the candidate decide if they want to apply.`
     : "";
 
   const prompt = `You are a job matching assistant. A candidate has the following profile:
@@ -228,7 +228,7 @@ async function llmQualityFilter(
 - Experience: ${userProfile.experience || "not specified"} years
 - Location: ${userProfile.city || "not specified"}, prefers ${userProfile.remotePreference || "any"}
 
-Below are ${candidates.length} job listings. For each, respond with ONLY the number and YES or NO — is this a genuine match for the candidate's target roles? Be strict: the job's actual function must align with what the candidate wants. "Associate Manager, Products Operations" is NOT a Product Manager role. "Data Engineer" is NOT a Frontend Engineer role.${internGuidance}
+Below are ${candidates.length} job listings. For each, respond YES or NO — does this job's core function match one of the candidate's target roles? Focus ONLY on whether the role type matches, NOT seniority level or location. "Machine Learning Engineer" matches "AI / ML Engineer". "Data Scientist" matches "AI / ML Engineer". Be generous with role matching — if the job is in the same domain, say YES.${internGuidance}
 
 ${jobList}
 
