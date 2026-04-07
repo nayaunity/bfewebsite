@@ -81,6 +81,19 @@ export default async function PricingPage() {
             </div>
             <div>
               <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
+                What is resume tailoring?
+              </h3>
+              <p className="text-sm text-[var(--gray-600)]">
+                For each application, we customize your resume to match the job
+                description — rewriting your summary, reordering your experience
+                bullets, and weaving in relevant keywords. Nothing is invented;
+                we only reorganize and rephrase what&apos;s already on your resume.
+                You can compare the original and tailored versions on your
+                dashboard.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
                 Can I cancel anytime?
               </h3>
               <p className="text-sm text-[var(--gray-600)]">

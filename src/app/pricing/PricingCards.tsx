@@ -12,6 +12,7 @@ const tiers = [
     features: [
       "5 applications per month",
       "Up to 3 resumes",
+      "1 tailored resume per month",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
@@ -27,6 +28,7 @@ const tiers = [
     features: [
       "100 applications per month",
       "Up to 5 resumes",
+      "Unlimited tailored resumes",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
@@ -43,6 +45,7 @@ const tiers = [
     features: [
       "300 applications per month",
       "Up to 10 resumes",
+      "Unlimited tailored resumes",
       "30+ companies",
       "Smart resume matching",
       "Application tracking",
