@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import { OnboardingTabs } from "./OnboardingTabs";
 
 export const dynamic = "force-dynamic";
@@ -82,7 +82,7 @@ function formatDate(date: Date) {
 }
 
 export default async function OnboardingPage() {
-  await requireFullAdmin();
+  await requireAdmin();
   const { users, totalUsers, stepCounts } = await getOnboardingData();
   const hasStepData = Object.keys(stepCounts).length > 0;
   const maxStepCount = Math.max(...Object.values(stepCounts), 1);

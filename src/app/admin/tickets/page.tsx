@@ -1,11 +1,11 @@
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import TicketKanban from "./TicketKanban";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminTicketsPage() {
-  await requireFullAdmin();
+  await requireAdmin();
 
   const tickets = await prisma.ticket.findMany({
     orderBy: { createdAt: "desc" },

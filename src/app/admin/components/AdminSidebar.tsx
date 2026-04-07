@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserRole } from "@/lib/admin";
 
+const OPERATIONS_PAGES = new Set(["/admin/onboarding", "/admin/auto-apply", "/admin/errors", "/admin/tickets"]);
+
 const navigation = [
   {
     name: "Dashboard",
@@ -113,6 +115,7 @@ export default function AdminSidebar({ role }: { role: UserRole }) {
   // Filter navigation based on role
   const filteredNavigation = navigation.filter(item => {
     if (role === "admin") return true;
+    if (role === "operations") return OPERATIONS_PAGES.has(item.href);
     if (role === "contributor") return !item.adminOnly;
     return false;
   });

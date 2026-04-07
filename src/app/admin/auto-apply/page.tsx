@@ -1,11 +1,11 @@
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import UserTable from "./UserTable";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminAutoApplyPage() {
-  await requireFullAdmin();
+  await requireAdmin();
 
   const [
     totalDiscoveries,

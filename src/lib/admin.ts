@@ -2,7 +2,7 @@ import { auth } from "./auth";
 import { prisma } from "./prisma";
 import { redirect } from "next/navigation";
 
-export type UserRole = "admin" | "contributor" | "user" | null;
+export type UserRole = "admin" | "contributor" | "operations" | "user" | null;
 
 /**
  * Check if the current user has admin panel access (admin or contributor).
@@ -24,8 +24,8 @@ export async function requireAdmin() {
 
   const role = user?.role as UserRole;
 
-  // Allow both admin and contributor roles
-  if (role !== "admin" && role !== "contributor") {
+  // Allow admin, contributor, and operations roles
+  if (role !== "admin" && role !== "contributor" && role !== "operations") {
     redirect("/");
   }
 
@@ -73,7 +73,8 @@ export async function requireFullAdmin() {
   });
 
   if (user?.role !== "admin") {
-    // Contributors get redirected to jobs page
+    // Non-admin roles get redirected to their landing page
+    if (user?.role === "operations") redirect("/admin/auto-apply");
     redirect("/admin/jobs");
   }
 
