@@ -268,7 +268,7 @@ interface RoleAction {
 }
 
 const MAX_STEPS = 25;
-const APPLICATION_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes max per application
+const APPLICATION_TIMEOUT_MS = 8 * 60 * 1000; // 8 minutes max per application
 
 // ============================================================================
 // FRAME HELPERS
@@ -378,7 +378,7 @@ async function handleFileUpload(page: Page, resumePath: string): Promise<void> {
     if (frame.url() === "about:blank" || frame.url() === "") continue;
     try {
       const attachButton = frame.getByRole("button", { name: "Attach" }).first();
-      if (!(await attachButton.isVisible({ timeout: 2000 }).catch(() => false))) continue;
+      if (!(await attachButton.isVisible({ timeout: 500 }).catch(() => false))) continue;
       const [fileChooser] = await Promise.all([
         page.waitForEvent("filechooser", { timeout: 5000 }),
         attachButton.click({ timeout: 5000 }),
@@ -544,9 +544,8 @@ async function selectStaticDropdownSafe(
 ): Promise<void> {
   try {
     const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
-    if (!(await combobox.isVisible({ timeout: 2000 }).catch(() => false))) {
-      steps.push(`Dropdown not found: ${comboboxNamePattern}`);
-      return;
+    if (!(await combobox.isVisible({ timeout: 500 }).catch(() => false))) {
+      return; // Field not present on this form — skip silently
     }
     await selectStaticDropdown(frame, comboboxNamePattern, optionName);
     steps.push(`Selected dropdown ${String(comboboxNamePattern)}: ${String(optionName)}`);
@@ -564,7 +563,7 @@ async function checkThankYou(frame: Frame, page: Page): Promise<boolean> {
   const patterns = [/thank you/i, /thanks for applying/i, /application.*received/i, /application.*submitted/i, /successfully.*submitted/i, /application complete/i, /we received your/i, /apply.*again/i, /your information has been/i];
   for (const pattern of patterns) {
     const frameCheck = await frame.getByText(pattern).first()
-      .isVisible({ timeout: 2000 }).catch(() => false);
+      .isVisible({ timeout: 500 }).catch(() => false);
     if (frameCheck) return true;
   }
   for (const pattern of patterns) {
@@ -649,7 +648,7 @@ async function handleVerificationCode(
     // Also check: if the URL changed or the submit button disappeared, submission likely succeeded
     const urlAfter = page.url();
     const submitStillVisible = await frame.getByRole("button", { name: /Submit application/i }).first()
-      .isVisible({ timeout: 2000 }).catch(() => false);
+      .isVisible({ timeout: 500 }).catch(() => false);
     if (urlAfter !== urlBefore || !submitStillVisible) {
       steps.push("Application likely submitted (URL changed or submit button gone)");
       return { success: true, steps };
@@ -706,7 +705,7 @@ async function greenhouseDeterministicFill(
   for (const field of textFields) {
     try {
       const textbox = frame.getByRole("textbox", { name: field.name }).first();
-      if (await textbox.isVisible({ timeout: 2000 }).catch(() => false)) {
+      if (await textbox.isVisible({ timeout: 500 }).catch(() => false)) {
         await textbox.fill(field.value);
         steps.push(`Filled ${String(field.name)}: ${field.value.slice(0, 20)}`);
       }
@@ -718,7 +717,7 @@ async function greenhouseDeterministicFill(
   // Phase 2: Location autocomplete
   try {
     const locationCombobox = frame.getByRole("combobox", { name: /Location/i }).first();
-    if (await locationCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await locationCombobox.isVisible({ timeout: 500 }).catch(() => false)) {
       await locationCombobox.clear();
       const citySearch = applicant.city || "Denver";
       await locationCombobox.pressSequentially(citySearch, { delay: 80 });
@@ -738,7 +737,7 @@ async function greenhouseDeterministicFill(
   // Phase 2b: "Current Location" autocomplete (Intercom, Abnormal Security)
   try {
     const currentLocCombobox = frame.getByRole("combobox", { name: /Current Location/i }).first();
-    if (await currentLocCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await currentLocCombobox.isVisible({ timeout: 500 }).catch(() => false)) {
       await currentLocCombobox.clear();
       const citySearch = applicant.city || "Denver";
       await currentLocCombobox.pressSequentially(citySearch, { delay: 80 });
@@ -754,7 +753,7 @@ async function greenhouseDeterministicFill(
   // Phase 3: Resume upload
   try {
     const attachButton = frame.getByRole("button", { name: "Attach" }).first();
-    if (await attachButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await attachButton.isVisible({ timeout: 500 }).catch(() => false)) {
       const [fileChooser] = await Promise.all([
         page.waitForEvent("filechooser", { timeout: 5000 }),
         attachButton.click(),
@@ -772,7 +771,7 @@ async function greenhouseDeterministicFill(
     const coverLetterGroup = frame.getByRole("group").filter({
       hasText: /cover letter/i,
     }).first();
-    if (await coverLetterGroup.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await coverLetterGroup.isVisible({ timeout: 500 }).catch(() => false)) {
       // Check if it has "Enter manually" button — use that to type a cover letter
       const enterManually = coverLetterGroup.getByRole("button", { name: /Enter manually/i }).first();
       if (await enterManually.isVisible({ timeout: 1000 }).catch(() => false)) {
@@ -780,7 +779,7 @@ async function greenhouseDeterministicFill(
         await frame.waitForTimeout(500);
         // Find the textarea that appears
         const textarea = coverLetterGroup.locator("textarea").first();
-        if (await textarea.isVisible({ timeout: 2000 }).catch(() => false)) {
+        if (await textarea.isVisible({ timeout: 500 }).catch(() => false)) {
           const coverText = generateCoverLetter(applicant);
           await textarea.fill(coverText);
           steps.push("Filled cover letter (text)");
@@ -805,7 +804,7 @@ async function greenhouseDeterministicFill(
   // Phase 3c: Phone country code (do this BEFORE employment to avoid Toggle flyout conflicts)
   try {
     const phoneGroup = frame.getByRole("group", { name: /Phone/i }).first();
-    if (await phoneGroup.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await phoneGroup.isVisible({ timeout: 500 }).catch(() => false)) {
       // Only set if not already set (check if "+1" is already showing)
       const alreadySet = await phoneGroup.getByText("+1").isVisible({ timeout: 1000 }).catch(() => false);
       if (!alreadySet) {
@@ -825,7 +824,7 @@ async function greenhouseDeterministicFill(
   // Phase 4: Employment history (Coinbase-style — some forms have this section)
   try {
     const companyNameField = frame.getByRole("textbox", { name: /Company name/i }).first();
-    if (await companyNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await companyNameField.isVisible({ timeout: 500 }).catch(() => false)) {
       await companyNameField.fill(applicant.currentEmployer || "");
       steps.push("Filled employment: Company name");
 
@@ -862,7 +861,7 @@ async function greenhouseDeterministicFill(
   // Phase 4b: Education section (School/Degree/Discipline as comboboxes)
   try {
     const schoolCombobox = frame.getByRole("combobox", { name: /^School$/i }).first();
-    if (await schoolCombobox.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await schoolCombobox.isVisible({ timeout: 500 }).catch(() => false)) {
       // School is a combobox — try autocomplete first (type slowly to filter)
       await schoolCombobox.clear();
       const schoolSearch = applicant.school || "University";
@@ -904,14 +903,14 @@ async function greenhouseDeterministicFill(
   // Phase 4c: LinkedIn URL and Website/Portfolio
   try {
     const linkedinField = frame.getByRole("textbox", { name: /LinkedIn/i }).first();
-    if (await linkedinField.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await linkedinField.isVisible({ timeout: 500 }).catch(() => false)) {
       await linkedinField.fill(applicant.linkedinUrl || "");
       steps.push("Filled LinkedIn URL");
     }
   } catch {}
   try {
     const websiteField = frame.getByRole("textbox", { name: /website|portfolio|github/i }).first();
-    if (await websiteField.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await websiteField.isVisible({ timeout: 500 }).catch(() => false)) {
       await websiteField.fill(applicant.websiteUrl || "");
       steps.push("Filled website/portfolio");
     }
@@ -1120,7 +1119,7 @@ async function greenhouseDeterministicFill(
   // Phase 5b: Checkboxes
   try {
     const usCheckbox = frame.getByRole("checkbox", { name: "US", exact: true }).first();
-    if (await usCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await usCheckbox.isVisible({ timeout: 500 }).catch(() => false)) {
       await usCheckbox.check();
       steps.push("Checked US work country");
     }
@@ -1128,7 +1127,7 @@ async function greenhouseDeterministicFill(
   // Databricks sanctions/export control checkbox
   try {
     const noneAbove = frame.getByRole("checkbox", { name: /None of the above/i }).first();
-    if (await noneAbove.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await noneAbove.isVisible({ timeout: 500 }).catch(() => false)) {
       await noneAbove.check();
       steps.push("Checked 'None of the above' (sanctions)");
     }
@@ -1136,7 +1135,7 @@ async function greenhouseDeterministicFill(
   // Databricks conditional follow-up checkbox
   try {
     const notApplicable = frame.getByRole("checkbox", { name: /Not applicable/i }).first();
-    if (await notApplicable.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await notApplicable.isVisible({ timeout: 500 }).catch(() => false)) {
       await notApplicable.check();
       steps.push("Checked 'Not applicable' (sanctions follow-up)");
     }
@@ -1168,7 +1167,7 @@ async function greenhouseDeterministicFill(
   // "LinkedIn" checkbox in "How did you hear" groups (Twilio, etc.)
   try {
     const linkedinCb = frame.getByRole("checkbox", { name: "LinkedIn" }).first();
-    if (await linkedinCb.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (await linkedinCb.isVisible({ timeout: 500 }).catch(() => false)) {
       await linkedinCb.check();
       steps.push("Checked LinkedIn (how did you hear)");
     }
@@ -1238,7 +1237,7 @@ async function greenhouseDeterministicFill(
   for (const field of additionalFields) {
     try {
       const textbox = frame.getByRole("textbox", { name: field.name }).first();
-      if (await textbox.isVisible({ timeout: 2000 }).catch(() => false)) {
+      if (await textbox.isVisible({ timeout: 500 }).catch(() => false)) {
         await textbox.fill(field.value);
         steps.push(`Filled ${field.label}`);
       } else {
@@ -1322,7 +1321,7 @@ async function greenhouseDeterministicFill(
     if (isDisabled) {
       steps.push("Submit button is disabled — checking for verification code");
       const hasVerification = await frame.getByText(/verification code was sent/i).first()
-        .isVisible({ timeout: 2000 }).catch(() => false);
+        .isVisible({ timeout: 500 }).catch(() => false);
       if (hasVerification) {
         const result = await handleVerificationCode(frame, page, applicant, steps);
         if (result) return result;
@@ -1618,7 +1617,7 @@ export async function applyToJob(
 ): Promise<ApplyResult> {
   // Wrap entire application in a timeout to prevent hanging
   const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
-    setTimeout(() => reject(new Error("Application timed out after 5 minutes")), APPLICATION_TIMEOUT_MS)
+    setTimeout(() => reject(new Error("Application timed out after 8 minutes")), APPLICATION_TIMEOUT_MS)
   );
 
   const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole);
@@ -1799,7 +1798,7 @@ async function _applyToJobInner(
             }
             // Check for verification code
             const hasVerification = await ghFrame.getByText(/verification code was sent/i).first()
-              .isVisible({ timeout: 2000 }).catch(() => false);
+              .isVisible({ timeout: 500 }).catch(() => false);
             if (hasVerification) {
               const verResult = await handleVerificationCode(ghFrame, page, applicant, steps);
               if (verResult) return verResult;
