@@ -207,6 +207,14 @@ export async function processNextBrowseSession(): Promise<boolean> {
         user.subscriptionTier as string | undefined, job.title, session.userId
       );
 
+      // Log tailor-related steps regardless of success
+      if (applyResult.steps) {
+        const tailorSteps = applyResult.steps.filter(s => s.toLowerCase().includes("tailor") || s.toLowerCase().includes("resume"));
+        if (tailorSteps.length > 0) {
+          log(session.id, "info", `Tailor steps: ${tailorSteps.join(" | ")}`);
+        }
+      }
+
       if (applyResult.success) {
         successCount++;
         await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);

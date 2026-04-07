@@ -1687,9 +1687,9 @@ async function _applyToJobInner(
             tmpPath = tailoredPath;
             tailored = true;
             tailoredResumeUrl = result.blobUrl;
-            steps.push("Resume tailored for this job description");
+            steps.push(`Resume tailored for this job description${result.blobUrl ? " (saved)" : " (no blob)"}`);
           } else {
-            steps.push(`Resume tailoring skipped: ${result.error}`);
+            steps.push(`Resume tailoring failed: ${result.error}`);
           }
         } else {
           steps.push("Resume tailoring skipped: no job description found");
