@@ -321,12 +321,12 @@ export async function matchJobsForUser(
     },
   });
 
-  // Dedup — jobs user already applied to
-  const [browseApplied, directApplied] = await Promise.all([
+  // Dedup — jobs user already applied to OR that failed (don't retry broken forms)
+  const [browseAttempted, directApplied] = await Promise.all([
     prisma.browseDiscovery.findMany({
       where: {
         session: { userId },
-        status: { in: ["applied", "applying"] },
+        status: { in: ["applied", "applying", "failed"] },
       },
       select: { applyUrl: true },
     }),
@@ -340,7 +340,7 @@ export async function matchJobsForUser(
   ]);
 
   const appliedUrls = new Set([
-    ...browseApplied.map((d) => d.applyUrl),
+    ...browseAttempted.map((d) => d.applyUrl),
     ...directApplied.map((a) => a.job.applyUrl),
   ]);
 
