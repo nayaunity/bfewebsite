@@ -13,6 +13,7 @@
     "@libsql/client": "^0.14.0",
     "dotenv": "^16.4.0",
     "express": "^4.21.0",
+    "pdf-parse": "^1.1.1",
     "playwright": "^1.52.0"
   },
   "devDependencies": {

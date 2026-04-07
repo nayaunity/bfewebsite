@@ -98,10 +98,11 @@ export default async function ApplicationsPage() {
     createdAt: d.createdAt,
     source: "browse" as const,
     targetRole: d.session?.targetRole || null,
+    resumeTailored: d.resumeTailored || false,
   }));
 
   const allApplications = [
-    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null })),
+    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null, resumeTailored: false })),
     ...discoveryAsApplications,
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 

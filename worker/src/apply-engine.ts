@@ -4,6 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { waitForVerificationCode } from "./verification";
+import { tailorResume, fetchJobDescription, checkAndIncrementTailorQuota } from "./tailor-resume";
 
 const anthropic = new Anthropic();
 
@@ -253,6 +254,7 @@ export interface ApplyResult {
   success: boolean;
   error?: string;
   steps?: string[];
+  tailored?: boolean;
 }
 
 // --- New role-based action interface (replaces CSS-selector-based AgentAction) ---
@@ -1613,14 +1615,17 @@ export async function applyToJob(
   applicant: ApplicantData,
   resumeUrl: string,
   resumeName: string,
-  targetRole?: string
+  targetRole?: string,
+  subscriptionTier?: string,
+  jobTitle?: string,
+  userId?: string
 ): Promise<ApplyResult> {
   // Wrap entire application in a timeout to prevent hanging
   const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
     setTimeout(() => reject(new Error("Application timed out after 8 minutes")), APPLICATION_TIMEOUT_MS)
   );
 
-  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole);
+  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole, subscriptionTier, jobTitle, userId);
 
   try {
     return await Promise.race([applyPromise, timeoutPromise]);
@@ -1638,7 +1643,10 @@ async function _applyToJobInner(
   applicant: ApplicantData,
   resumeUrl: string,
   resumeName: string,
-  targetRole?: string
+  targetRole?: string,
+  subscriptionTier?: string,
+  jobTitle?: string,
+  userId?: string
 ): Promise<ApplyResult> {
   const context = await createStealthContext();
   const page = await context.newPage();
@@ -1646,14 +1654,49 @@ async function _applyToJobInner(
 
   // Download resume to temp file
   let tmpPath: string | null = null;
+  let tailoredPath: string | null = null;
+  let tailored = false;
+  let resumeBuffer: Buffer;
   try {
     tmpPath = join(tmpdir(), `resume-${Date.now()}.pdf`);
     const resumeResponse = await fetch(resumeUrl);
-    const resumeBuffer = Buffer.from(await resumeResponse.arrayBuffer());
+    resumeBuffer = Buffer.from(await resumeResponse.arrayBuffer());
     writeFileSync(tmpPath, resumeBuffer);
     steps.push(`Resume downloaded: ${resumeName}`);
   } catch {
     return { success: false, error: "Failed to download resume", steps };
+  }
+
+  // Resume tailoring — swap tmpPath if successful
+  if (subscriptionTier && userId) {
+    try {
+      const canTailor = await checkAndIncrementTailorQuota(userId, subscriptionTier);
+      if (canTailor) {
+        const jd = await fetchJobDescription(applyUrl);
+        if (jd) {
+          const result = await tailorResume({
+            resumeBuffer,
+            jobTitle: jobTitle || targetRole || "Unknown Role",
+            jobDescription: jd,
+            applicant: { firstName: applicant.firstName, lastName: applicant.lastName, currentTitle: applicant.currentTitle },
+          });
+          if (result.success) {
+            tailoredPath = result.tailoredPath;
+            tmpPath = tailoredPath;
+            tailored = true;
+            steps.push("Resume tailored for this job description");
+          } else {
+            steps.push(`Resume tailoring skipped: ${result.error}`);
+          }
+        } else {
+          steps.push("Resume tailoring skipped: no job description found");
+        }
+      } else {
+        steps.push("Resume tailoring skipped: monthly limit reached");
+      }
+    } catch (err) {
+      steps.push(`Resume tailoring failed: ${err instanceof Error ? err.message : "unknown error"}`);
+    }
   }
 
   try {
@@ -1714,7 +1757,7 @@ async function _applyToJobInner(
       steps.push(...(ghResult.steps || []));
 
       if (ghResult.success) {
-        return { success: true, steps };
+        return { success: true, steps, tailored };
       }
       steps.push("Deterministic handler did not complete — falling back to Claude agent loop");
     }
@@ -1745,7 +1788,7 @@ async function _applyToJobInner(
       steps.push(`Claude: ${action.action} — ${action.reason}`);
 
       if (action.action === "done") {
-        return { success: true, steps };
+        return { success: true, steps, tailored };
       }
 
       if (action.action === "error") {
@@ -1794,7 +1837,7 @@ async function _applyToJobInner(
           if (ghFrame) {
             // Check for success first
             if (await checkThankYou(ghFrame, page)) {
-              return { success: true, steps: [...steps, "Application submitted successfully"] };
+              return { success: true, steps: [...steps, "Application submitted successfully"], tailored };
             }
             // Check for verification code
             const hasVerification = await ghFrame.getByText(/verification code was sent/i).first()
@@ -1829,6 +1872,7 @@ async function _applyToJobInner(
     };
   } finally {
     if (tmpPath) try { unlinkSync(tmpPath); } catch {}
+    if (tailoredPath && tailoredPath !== tmpPath) try { unlinkSync(tailoredPath); } catch {}
     await context.close();
   }
 }

@@ -57,6 +57,7 @@ model User {
   stripeSubscriptionId String?         @unique
   currentPeriodEnd    DateTime?
   monthlyAppCount     Int              @default(0)
+  monthlyTailorCount  Int              @default(0)
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
   accounts            Account[]
@@ -268,14 +269,15 @@ model BrowseSession {
 }
 
 model BrowseDiscovery {
-  id           String   @id @default(cuid())
-  sessionId    String
-  company      String
-  jobTitle     String
-  applyUrl     String
-  status       String   @default("found")
-  errorMessage String?
-  createdAt    DateTime @default(now())
+  id              String   @id @default(cuid())
+  sessionId       String
+  company         String
+  jobTitle        String
+  applyUrl        String
+  status          String   @default("found")
+  errorMessage    String?
+  resumeTailored  Boolean  @default(false)
+  createdAt       DateTime @default(now())
 
   session BrowseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 

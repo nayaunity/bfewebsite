@@ -14,6 +14,7 @@ interface Application {
   createdAt: Date | string;
   source: "browse" | "api";
   targetRole: string | null;
+  resumeTailored?: boolean;
 }
 
 function friendlyError(error: string): string {
@@ -493,6 +494,11 @@ export default function ApplicationsDashboard({
                       {app.status === "submitted" || app.status === "applied" ? "Applied" :
                        app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
+                    {app.resumeTailored && (
+                      <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 text-purple-700">
+                        Tailored
+                      </span>
+                    )}
                   </div>
 
                   {/* Date */}

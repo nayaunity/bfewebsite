@@ -203,15 +203,19 @@ export async function processNextBrowseSession(): Promise<boolean> {
           veteranStatus: user.veteranStatus || undefined, disabilityStatus: user.disabilityStatus || undefined,
           applicationAnswers: user.applicationAnswers || undefined, targetCompany: job.company,
         },
-        session.resumeUrl, session.resumeName, session.targetRole
+        session.resumeUrl, session.resumeName, session.targetRole,
+        user.subscriptionTier as string | undefined, job.title, session.userId
       );
 
       if (applyResult.success) {
         successCount++;
         await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+        if (applyResult.tailored) {
+          await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1 WHERE sessionId = ? AND applyUrl = ?`, args: [session.id, job.applyUrl] });
+        }
         await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
         await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
-        log(session.id, "info", `Applied (${successCount}): ${job.title} @ ${job.company}`);
+        log(session.id, "info", `Applied (${successCount}${applyResult.tailored ? ", tailored" : ""}): ${job.title} @ ${job.company}`);
       } else {
         const errorWithSteps = applyResult.steps
           ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
@@ -420,7 +424,10 @@ export async function processNextBrowseSession(): Promise<boolean> {
           },
           session.resumeUrl,
           session.resumeName,
-          session.targetRole
+          session.targetRole,
+          user.subscriptionTier as string | undefined,
+          job.title,
+          session.userId
         );
 
         // Log the apply steps if available
@@ -433,6 +440,9 @@ export async function processNextBrowseSession(): Promise<boolean> {
         if (applyResult.success) {
           companyResult.applied++;
           await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+          if (applyResult.tailored) {
+            await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1 WHERE sessionId = ? AND applyUrl = ?`, args: [session.id, job.applyUrl] });
+          }
           await db.execute({
             sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`,
             args: [session.id],

@@ -12,6 +12,7 @@ export async function getUserTier(userId: string) {
       subscriptionTier: true,
       subscriptionStatus: true,
       monthlyAppCount: true,
+      monthlyTailorCount: true,
       monthlyAppResetAt: true,
       currentPeriodEnd: true,
     },
@@ -28,7 +29,7 @@ export async function getUserTier(userId: string) {
   ) {
     await prisma.user.update({
       where: { id: userId },
-      data: { monthlyAppCount: 0, monthlyAppResetAt: now },
+      data: { monthlyAppCount: 0, monthlyTailorCount: 0, monthlyAppResetAt: now },
     });
     return { ...user, monthlyAppCount: 0 };
   }
@@ -82,4 +83,32 @@ export async function incrementAppCount(
  */
 export function getMaxResumes(tier: string): number {
   return (TIER_LIMITS[tier] || TIER_LIMITS.free).maxResumes;
+}
+
+/**
+ * Check if a user can tailor resumes this month.
+ */
+export async function canTailorResume(userId: string): Promise<{
+  allowed: boolean;
+  remaining: number;
+  tier: string;
+  used: number;
+  limit: number;
+}> {
+  const user = await getUserTier(userId);
+  if (!user)
+    return { allowed: false, remaining: 0, tier: "free", used: 0, limit: 0 };
+
+  const tier = user.subscriptionTier || "free";
+  const limits = TIER_LIMITS[tier] || TIER_LIMITS.free;
+  const used = user.monthlyTailorCount;
+  const remaining = Math.max(0, limits.tailoredPerMonth - used);
+
+  return {
+    allowed: remaining > 0,
+    remaining,
+    tier,
+    used,
+    limit: limits.tailoredPerMonth,
+  };
 }

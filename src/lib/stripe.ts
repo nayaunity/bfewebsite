@@ -10,9 +10,9 @@ export const STRIPE_PRICES = {
 
 export const TIER_LIMITS: Record<
   string,
-  { appsPerMonth: number; maxResumes: number }
+  { appsPerMonth: number; maxResumes: number; tailoredPerMonth: number }
 > = {
-  free: { appsPerMonth: 5, maxResumes: 3 },
-  starter: { appsPerMonth: 100, maxResumes: 5 },
-  pro: { appsPerMonth: 300, maxResumes: 10 },
+  free: { appsPerMonth: 5, maxResumes: 3, tailoredPerMonth: 1 },
+  starter: { appsPerMonth: 100, maxResumes: 5, tailoredPerMonth: 9999 },
+  pro: { appsPerMonth: 300, maxResumes: 10, tailoredPerMonth: 9999 },
 };
