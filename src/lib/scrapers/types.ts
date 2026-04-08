@@ -23,8 +23,8 @@ export interface DEICompany {
   slug: string;
   careersUrl: string;
   industry: string;
-  atsType: "greenhouse" | "workday" | "custom";
-  atsConfig: GreenhouseConfig | WorkdayConfig | null;
+  atsType: "greenhouse" | "workday" | "lever" | "ashby" | "custom";
+  atsConfig: GreenhouseConfig | WorkdayConfig | LeverConfig | AshbyConfig | null;
 }
 
 export interface GreenhouseConfig {
@@ -35,6 +35,14 @@ export interface WorkdayConfig {
   baseUrl: string;
   company: string;
   siteName: string;
+}
+
+export interface LeverConfig {
+  companySlug: string;
+}
+
+export interface AshbyConfig {
+  boardSlug: string;
 }
 
 export type ScraperFunction = (

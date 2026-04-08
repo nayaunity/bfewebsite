@@ -366,5 +366,77 @@
     "industry": "Fintech",
     "atsType": "greenhouse",
     "atsConfig": { "boardToken": "chime" }
+  },
+  {
+    "name": "Notion",
+    "slug": "notion",
+    "careersUrl": "https://jobs.ashbyhq.com/notion",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "notion" }
+  },
+  {
+    "name": "OpenAI",
+    "slug": "openai",
+    "careersUrl": "https://jobs.ashbyhq.com/openai",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "openai" }
+  },
+  {
+    "name": "Ramp",
+    "slug": "ramp",
+    "careersUrl": "https://jobs.ashbyhq.com/ramp",
+    "industry": "Fintech",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "ramp" }
+  },
+  {
+    "name": "ElevenLabs",
+    "slug": "elevenlabs",
+    "careersUrl": "https://jobs.ashbyhq.com/elevenlabs",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "elevenlabs" }
+  },
+  {
+    "name": "Plaid",
+    "slug": "plaid",
+    "careersUrl": "https://jobs.ashbyhq.com/plaid",
+    "industry": "Fintech",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "plaid" }
+  },
+  {
+    "name": "Cursor",
+    "slug": "cursor",
+    "careersUrl": "https://jobs.ashbyhq.com/cursor",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "cursor" }
+  },
+  {
+    "name": "Perplexity",
+    "slug": "perplexity",
+    "careersUrl": "https://jobs.ashbyhq.com/perplexity",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "perplexity" }
+  },
+  {
+    "name": "Linear",
+    "slug": "linear",
+    "careersUrl": "https://jobs.ashbyhq.com/linear",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "linear" }
+  },
+  {
+    "name": "Spotify",
+    "slug": "spotify",
+    "careersUrl": "https://jobs.lever.co/spotify",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": { "companySlug": "spotify" }
   }
 ]

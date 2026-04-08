@@ -5,6 +5,8 @@ import autoApplyCompanies from "@/data/auto-apply-companies.json";
 import type { DEICompany, ScrapedJob, ScraperResult } from "./types";
 import { scrapeGreenhouse } from "./greenhouse";
 import { scrapeWorkday } from "./workday";
+import { scrapeLever } from "./lever";
+import { scrapeAshby } from "./ashby";
 
 const companies = deiCompanies as DEICompany[];
 const autoApplyCompanyList = autoApplyCompanies as DEICompany[];
@@ -31,6 +33,12 @@ export async function scrapeCompany(
       break;
     case "workday":
       result = await scrapeWorkday(company);
+      break;
+    case "lever":
+      result = await scrapeLever(company);
+      break;
+    case "ashby":
+      result = await scrapeAshby(company);
       break;
     case "custom":
     default:
@@ -148,7 +156,7 @@ export async function scrapeAllCompanies(): Promise<{
 
   // Get companies with supported ATS types
   const scrapableCompanies = companies.filter(
-    (c) => c.atsType === "greenhouse" || c.atsType === "workday"
+    (c) => c.atsType === "greenhouse" || c.atsType === "workday" || c.atsType === "lever" || c.atsType === "ashby"
   );
 
   // Process companies sequentially to avoid rate limits
@@ -214,7 +222,20 @@ export async function scrapeAutoApplyCompanies(): Promise<{
     console.log(`[Auto-Apply Scrape] ${company.name}...`);
 
     try {
-      const result = await scrapeGreenhouse(company, { skipRoleFilter: true });
+      let result: ScraperResult;
+      switch (company.atsType) {
+        case "greenhouse":
+          result = await scrapeGreenhouse(company, { skipRoleFilter: true });
+          break;
+        case "lever":
+          result = await scrapeLever(company, { skipRoleFilter: true });
+          break;
+        case "ashby":
+          result = await scrapeAshby(company, { skipRoleFilter: true });
+          break;
+        default:
+          result = { success: false, jobs: [], error: `Unsupported ATS: ${company.atsType}` };
+      }
 
       if (!result.success) {
         results.push({
@@ -332,7 +353,7 @@ export async function scrapeAutoApplyCompanies(): Promise<{
 
 export async function getScrapableCompanies(): Promise<DEICompany[]> {
   return companies.filter(
-    (c) => c.atsType === "greenhouse" || c.atsType === "workday"
+    (c) => c.atsType === "greenhouse" || c.atsType === "workday" || c.atsType === "lever" || c.atsType === "ashby"
   );
 }
 

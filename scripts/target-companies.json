@@ -232,5 +232,59 @@
     "slug": "abnormalsecurity",
     "careersUrl": "https://job-boards.greenhouse.io/abnormalsecurity",
     "notes": "Email security/AI — 97 jobs"
+  },
+  {
+    "name": "Notion",
+    "slug": "notion",
+    "careersUrl": "https://jobs.ashbyhq.com/notion",
+    "notes": "Workspace platform — Ashby — 161 jobs"
+  },
+  {
+    "name": "OpenAI",
+    "slug": "openai",
+    "careersUrl": "https://jobs.ashbyhq.com/openai",
+    "notes": "AI research — Ashby — 639 jobs"
+  },
+  {
+    "name": "Ramp",
+    "slug": "ramp",
+    "careersUrl": "https://jobs.ashbyhq.com/ramp",
+    "notes": "Corporate card/finance — Ashby — 132 jobs"
+  },
+  {
+    "name": "ElevenLabs",
+    "slug": "elevenlabs",
+    "careersUrl": "https://jobs.ashbyhq.com/elevenlabs",
+    "notes": "AI voice/audio — Ashby — 104 jobs"
+  },
+  {
+    "name": "Plaid",
+    "slug": "plaid",
+    "careersUrl": "https://jobs.ashbyhq.com/plaid",
+    "notes": "Fintech infrastructure — Ashby — 101 jobs"
+  },
+  {
+    "name": "Cursor",
+    "slug": "cursor",
+    "careersUrl": "https://jobs.ashbyhq.com/cursor",
+    "notes": "AI code editor — Ashby — 78 jobs"
+  },
+  {
+    "name": "Perplexity",
+    "slug": "perplexity",
+    "careersUrl": "https://jobs.ashbyhq.com/perplexity",
+    "notes": "AI search — Ashby — 78 jobs"
+  },
+  {
+    "name": "Linear",
+    "slug": "linear",
+    "careersUrl": "https://jobs.ashbyhq.com/linear",
+    "notes": "Issue tracking — Ashby — 20 jobs"
+  },
+  {
+    "name": "Spotify",
+    "slug": "spotify",
+    "careersUrl": "https://jobs.lever.co/spotify",
+    "notes": "Music streaming — Lever — 100+ jobs"
   }
 ]
