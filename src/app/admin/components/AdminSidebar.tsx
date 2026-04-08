@@ -68,6 +68,16 @@ const navigation = [
     ),
   },
   {
+    name: "Resume Quiz",
+    href: "/admin/resume-quiz",
+    adminOnly: true,
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+  },
+  {
     name: "Auto-Apply",
     href: "/admin/auto-apply",
     adminOnly: true,

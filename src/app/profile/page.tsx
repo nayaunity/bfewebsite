@@ -264,7 +264,7 @@ export default async function ProfilePage() {
           </div>
 
           {/* Completion bar */}
-          <div className="mb-8">
+          <div className="mb-6">
             <ProfileCompletionBar filled={completion.filled} total={completion.total} />
           </div>
 
