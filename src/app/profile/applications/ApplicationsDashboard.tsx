@@ -68,6 +68,7 @@ export default function ApplicationsDashboard({
   profileReady = false,
   missingRoles = false,
   missingResume = false,
+  showResumeQuiz = false,
 }: {
   initialApplications: Application[];
   stats: Stats;
@@ -76,6 +77,7 @@ export default function ApplicationsDashboard({
   profileReady?: boolean;
   missingRoles?: boolean;
   missingResume?: boolean;
+  showResumeQuiz?: boolean;
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -157,26 +159,28 @@ export default function ApplicationsDashboard({
 
   return (
     <div>
-      {/* Resume Quiz CTA */}
-      <Link
-        href="/profile/resume-quiz"
-        className="group flex items-center justify-between w-full mb-6 px-5 py-4 bg-gradient-to-r from-[#ffe500] to-[#f0d000] text-black rounded-2xl hover:opacity-95 transition-all hover:shadow-lg"
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-black/10 flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+      {/* Resume Quiz CTA — only shown to specific users */}
+      {showResumeQuiz && (
+        <Link
+          href="/profile/resume-quiz"
+          className="group flex items-center justify-between w-full mb-6 px-5 py-4 bg-gradient-to-r from-[#ffe500] to-[#f0d000] text-black rounded-2xl hover:opacity-95 transition-all hover:shadow-lg"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-black/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-base font-serif font-bold">Boost Your Resume</span>
+              <p className="text-sm text-black/70 mt-0.5">Answer 10 quick questions and we&apos;ll optimize your resume for PM roles</p>
+            </div>
           </div>
-          <div>
-            <span className="text-base font-serif font-bold">Boost Your Resume</span>
-            <p className="text-sm text-black/70 mt-0.5">Answer 10 quick questions and we&apos;ll optimize your resume for PM roles</p>
-          </div>
-        </div>
-        <svg className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      </Link>
+          <svg className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

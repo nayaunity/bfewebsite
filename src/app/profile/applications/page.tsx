@@ -162,6 +162,7 @@ export default async function ApplicationsPage() {
             profileReady={!!(user?.targetRole && (user.resumeUrl || (user.resumes && user.resumes.length > 0)))}
             missingRoles={!user?.targetRole}
             missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}
+            showResumeQuiz={session.user.email === "anika.ahmed04@gmail.com"}
             todayActivity={todaySession ? {
               status: todaySession.status,
               jobsFound: todaySession.jobsFound,
