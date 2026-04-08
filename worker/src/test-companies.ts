@@ -21,7 +21,6 @@ const COMPANIES = [
   { name: "Gusto", url: "https://job-boards.greenhouse.io/gusto/jobs/7235805" },
   { name: "Amplitude", url: "https://job-boards.greenhouse.io/amplitude/jobs/8453527002" },
   { name: "Airtable", url: "https://job-boards.greenhouse.io/airtable/jobs/8409166002" },
-  { name: "Grammarly", url: "https://job-boards.greenhouse.io/grammarly/jobs/7536540" },
 ];
 
 const applicant = {

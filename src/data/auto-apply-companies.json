@@ -120,14 +120,6 @@
     "atsConfig": { "boardToken": "airtable" }
   },
   {
-    "name": "Grammarly",
-    "slug": "grammarly",
-    "careersUrl": "https://job-boards.greenhouse.io/grammarly",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "grammarly" }
-  },
-  {
     "name": "Temporal",
     "slug": "temporaltechnologies",
     "careersUrl": "https://job-boards.greenhouse.io/temporaltechnologies",
@@ -344,28 +336,12 @@
     "atsConfig": { "boardToken": "discord" }
   },
   {
-    "name": "Samsara",
-    "slug": "samsara",
-    "careersUrl": "https://boards.greenhouse.io/samsara",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "samsara" }
-  },
-  {
     "name": "CockroachDB",
     "slug": "cockroachlabs",
     "careersUrl": "https://boards.greenhouse.io/cockroachlabs",
     "industry": "Technology",
     "atsType": "greenhouse",
     "atsConfig": { "boardToken": "cockroachlabs" }
-  },
-  {
-    "name": "Duolingo",
-    "slug": "duolingo",
-    "careersUrl": "https://boards.greenhouse.io/duolingo",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "duolingo" }
   },
   {
     "name": "Webflow",

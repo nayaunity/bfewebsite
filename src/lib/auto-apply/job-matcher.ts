@@ -164,6 +164,7 @@ function seniorityMatchScore(
   const titleLower = title.toLowerCase();
   const isIntern = /\bintern\b/.test(titleLower);
   const isNewGrad = /\bnew grad\b|\bentry.level\b|\bgraduate\b/.test(titleLower);
+  const isHardSenior = /\b(staff|principal|director|head|vp|vice president|chief)\b/.test(titleLower);
   const isSenior = /\b(senior|sr\.?|staff|principal|director|lead|head)\b/.test(titleLower);
   const isJunior = /\b(junior|jr\.?|associate)\b/.test(titleLower);
 
@@ -171,14 +172,15 @@ function seniorityMatchScore(
   if (isNewGrad && years >= 4) return -1;
 
   if (years <= 2) {
-    if (isSenior) return 0.1;
+    if (isHardSenior) return -1;   // Hard-block Staff/Principal/Director/Head/VP/Chief
+    if (isSenior) return 0.1;      // Soft-penalize Senior/Sr/Lead
     if (isJunior || isIntern || isNewGrad) return 1;
     return 0.6;
   }
 
   if (years <= 5) {
+    if (isHardSenior) return -1;   // Hard-block Staff/Principal/Director/Head/VP/Chief
     if (isJunior) return 0.3;
-    if (/\b(principal|director|head)\b/.test(titleLower)) return 0.2;
     return 0.8;
   }
 
@@ -228,7 +230,14 @@ async function llmQualityFilter(
 - Experience: ${userProfile.experience || "not specified"} years
 - Location: ${userProfile.city || "not specified"}, prefers ${userProfile.remotePreference || "any"}
 
-Below are ${candidates.length} job listings. For each, respond YES or NO — does this job's core function match one of the candidate's target roles? Focus ONLY on whether the role type matches, NOT seniority level or location. "Machine Learning Engineer" matches "AI / ML Engineer". "Data Scientist" matches "AI / ML Engineer". Be generous with role matching — if the job is in the same domain, say YES.${internGuidance}
+Below are ${candidates.length} job listings. For each, respond YES or NO — does this job's PRIMARY function match one of the candidate's target roles?
+
+Rules:
+- The job's core responsibility must align with the target role. "Solutions Architect" does NOT match "Frontend Engineer". "Product Operations Manager" does NOT match "Software Engineer".
+- Seniority differences are OK (Senior, Staff, Lead versions of the same role = YES).
+- Adjacent technical roles are OK: "ML Engineer" matches "AI / ML Engineer", "Data Scientist" matches "Data Engineer".
+- Non-technical roles do NOT match technical roles: "Program Manager" does NOT match "DevOps / SRE". "Marketing Manager" does NOT match "Frontend Engineer".
+- When in doubt, say NO. It is better to skip a borderline job than to waste the candidate's application on a role they didn't ask for.${internGuidance}
 
 ${jobList}
 
@@ -258,10 +267,10 @@ Respond in this exact format, one per line:
       }
     }
 
-    // If LLM returned nothing useful, fall back to all candidates
+    // If LLM approved nothing, return empty — don't send irrelevant jobs
     if (approved.length === 0 && candidates.length > 0) {
-      console.warn("LLM quality gate returned no approvals — falling back to keyword matches");
-      return candidates;
+      console.warn("LLM quality gate approved 0 of", candidates.length, "candidates — returning empty");
+      return [];
     }
 
     return approved;
@@ -270,6 +279,13 @@ Respond in this exact format, one per line:
     return candidates;
   }
 }
+
+// Companies with 100% application failure rates — skip entirely
+const BLOCKED_COMPANIES = new Set([
+  "duolingo",    // Requires ATS login
+  "samsara",     // Empty iframes — form never loads
+  "grammarly",   // Job board deactivated
+]);
 
 // ============================================================================
 // MAIN MATCHING FUNCTION
@@ -355,6 +371,7 @@ export async function matchJobsForUser(
   const jobDescriptions = new Map<string, string>();
 
   for (const job of catalogJobs) {
+    if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
     if (appliedUrls.has(job.applyUrl)) continue;
 
     const roleScore = roleMatchScore(job.title, keywordSets);

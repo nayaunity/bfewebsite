@@ -1,145 +1,153 @@
-# Session Handoff — April 4, 2026
+# Session Handoff — April 8, 2026 (Early Morning)
 
 ## Current State
 
 ### Branches
 - **main** — production code, deployed to Vercel
-- **applications** — current working branch (in sync with main)
-- **auto-apply-saas** — Railway worker deploys from this branch. **Needs sync with latest main.**
-- **profile** — old branch, can be deleted
+- **applications** — current working branch (job matching fix not yet committed/deployed)
+- **auto-apply-saas** — Railway worker deploys from this branch (needs the matching fix merged too)
 
 ### Infrastructure
-- **Vercel** — frontend deployment (theblackfemaleengineer.com)
+- **Vercel** — frontend deployment (www.theblackfemaleengineer.com)
 - **Railway** — worker deployment (browse-loop + apply-engine), deploys from `auto-apply-saas` branch
 - **Turso** — production database (libsql)
-- **Stripe** — LIVE mode. Starter $29/mo, Pro $59/mo
-- **Resend** — email sending (magic links, transactional, application notifications)
+- **Stripe** — LIVE mode. Starter $29/mo, Pro $59/mo. Webhook fixed (was 307 redirecting, now points to www)
+- **Resend** — email sending (from `naya@theblackfemaleengineer.com`). No inbox for this address. Using `reply_to: theblackfemaleengineer@gmail.com` header so replies land in Gmail. Long-term fix: set up Google Workspace.
+- **Anthropic API** — Used by worker (Haiku for form filling + resume tailoring) and Vercel (Haiku for job matching quality gate). Switched from Sonnet to Haiku for form filling to cut costs ~10x.
 
----
-
-## CRITICAL UNRESOLVED BUG: Auth Page Slow (13+ seconds)
-
-### The Problem
-The unified sign-in page (`/auth/signin`) takes **13+ seconds** after clicking "Continue" (email check step) before showing the password screen. This happens consistently for the user in both regular and incognito browsers.
-
-### The Flow
-1. User enters email → clicks "Continue"
-2. Frontend POSTs to `/api/auth/check-email` to determine: new user / magic link user / has password
-3. Based on response, shows the right next step (create account / set password / sign in)
-4. **Step 2 is where the 13-second delay happens**
-
-### What Was Tried (None Fixed It)
-1. **Non-www → www redirect issue** — Discovered that `theblackfemaleengineer.com` 307-redirects to `www`, which could lose POST body. Added `src/middleware.ts` to redirect non-www → www at the Next.js level with a 301. **Didn't fix it.**
-
-2. **Hardcoded absolute www URL** — Changed all fetch calls to POST directly to `https://www.theblackfemaleengineer.com/api/...` to skip redirects. **Created CORS issues instead (cross-origin from non-www to www).**
-
-3. **Prefetch on typing** — Added background prefetch that fires 300ms after user stops typing, plus a warmup request on page load. If cached result exists, Continue uses it instantly. **Still 13+ seconds for the user.**
-
-4. **Direct curl test** — API responds in **248ms cold, 342ms warm** from the command line. The server is fast. The delay is client-side.
-
-### What Hasn't Been Tried
-- **The delay might be Vercel's edge middleware** — The new `src/middleware.ts` runs on EVERY request (matcher: `/((?!_next/static|_next/image|favicon.ico).*)`) which could add latency on the edge before the function even starts.
-- **Double redirect** — Vercel's built-in non-www redirect (307) + our middleware redirect (301) might be creating a redirect loop or double-hop.
-- **Remove middleware entirely** — Go back to relative URLs and just let the 307 happen. The POST body IS preserved on 307 redirects per spec. The real issue might be something else entirely.
-- **Edge runtime** — Move `/api/auth/check-email` to `export const runtime = "edge"` for near-zero cold starts.
-- **Browser DevTools** — Need user to check Network tab to see actual request timing breakdown (DNS, TCP, SSL, TTFB, download).
-
-### Key Files
-- `src/middleware.ts` — Non-www → www redirect (may be causing issues)
-- `src/app/auth/signin/page.tsx` — Unified auth form with prefetch logic
-- `src/app/api/auth/check-email/route.ts` — Email status check endpoint
-- `src/app/api/auth/signup/route.ts` — Account creation / password setting
-- `src/app/api/auth/login/route.ts` — Created but unused (was going to be single-step login)
+### Key Env Variables
+- `ANTHROPIC_API_KEY` — Vercel env variable + Railway env variable
+- `BLOB_READ_WRITE_TOKEN` — Railway env variable (for tailored resume uploads)
+- `CRON_SECRET` — Vercel env variable
+- `STRIPE_WEBHOOK_SECRET` — Vercel env variable. Webhook URL: `https://www.theblackfemaleengineer.com/api/stripe/webhook`
 
 ---
 
 ## What Was Done This Session
 
-### Centralized Job Catalog
-- **5,799 jobs scraped** from 40 companies via Greenhouse API, stored in `Job` table with `source: "auto-apply"`
-- Full HTML descriptions, locations, tags stored per job
-- `description` column added to Job model
-- Grammarly removed (404), **Stripe removed** (too many form failures — iframe/verification issues)
-- 494 Stripe jobs deactivated in DB
-- 7-day TTL for auto-apply catalog jobs
+### 1. Anika Ahmed Consumer Profile & Resume Overhaul
 
-### Automated Job Matching
-- `src/lib/auto-apply/job-matcher.ts` — scores by role (50%), location/remote (30%), seniority (20%)
-- Hard filters: foreign jobs excluded for US users, intern/new-grad filtered by experience
-- Matches 3x more jobs than needed so failures don't waste user's app count
-- Worker moves to next job on failure, stops when enough successful applications submitted
+Anika Ahmed is our first paying user (Starter $29/mo). Investigated her full profile, onboarding data, and platform activity.
 
-### Fast Path Worker
-- `matchedJobs` field on BrowseSession — worker skips all discovery and applies directly to pre-matched URLs
-- No Greenhouse API calls, no catalog queries, no Claude matching — just apply
+**Resume rewrite**: Her original resume framed her as a "Salesforce Business Analyst." Rewrote it as a PM resume — new summary, PM-framed titles, outcome-focused bullets, restructured skills section, CSPO promoted. Initially uploaded without metrics, then Anika completed the resume quiz and we updated with her real numbers: 4,000+ users, 90% agent accuracy, 5 LLMs benchmarked, 13 pipeline deals, 40% onboarding reduction, 5 integrated systems, 12-person team, 30+ releases. Final resume uploaded as `Anika.Ahmed.ProductManager.pdf` (naming convention: `first.last.[ROLE]`).
 
-### Cron Schedule (vercel.json, deployed)
-- **3:00am MT** (9:00 UTC) — Scrape job catalog
-- **3:10am MT** (9:10 UTC) — Public job board scraper
-- **3:30am MT** (9:30 UTC) — Match users to jobs, create FAST sessions
-- Legacy auto-apply cron removed
-- **Crons ARE running** — confirmed scrape-autoapply ran at 9:03 UTC. daily-apply ran but found 0 users because it required `subscriptionStatus: 'active'`. **Fixed** — now includes all users regardless of tier.
+**Resume quiz**: Built a 10-question conversational quiz at `/profile/resume-quiz` to collect the specific metrics needed for her resume (team size, user count, release cadence, etc.). Quiz saves answers to `applicationAnswers.resumeQuiz` JSON field. CTA banner on her applications dashboard (scoped to her email only). Admin page at `/admin/resume-quiz` to view submitted responses. Emailed Anika prompting her to complete it.
 
-### Live Test Results — 24 Successful Applications
-| User | Applied | Companies |
-|------|---------|-----------|
-| Carly | 5 | DoorDash |
-| Kendall | 5 | DoorDash, Anthropic |
-| Zaki | 5 | Stripe |
-| Jake | 4 | DoorDash |
-| Heather | 2 | Zscaler |
-| Nyaradzo | 1 | Zscaler |
-| Damarcus | 1 | Stripe |
-| Brittany | 1 | Anthropic |
-| Joseph, Chidinma, Sarah, Langston | 0 | All Stripe — all failed |
+**Targeted PM applications**: Queried 121 location-fit PM jobs for her profile. Created a browse session with 20 best-fit roles across Stripe, Twilio, Affirm, Scale AI, Attentive, and Marqeta. All using the new PM base resume with per-application tailoring. Session ran successfully — confirmed tailored resumes generated for each application (unique PDFs in blob storage). Emailed Anika with her new resume PDF link, application update, and asked what drove her to subscribe.
 
-### Notification Emails Sent
-- 8 emails sent via Resend to users who got applications through
-- From: `noreply@theblackfemaleengineer.com`, reply-to: `theblackfemaleengineer@gmail.com`
-- Sign-off: "Talk soon, Naya"
+**Emails sent to Anika this session:**
+1. Resume quiz prompt (asking her to complete the 10 questions)
+2. Resume ready + application update + subscriber feedback ask (with reply-to set to Gmail)
 
-### Applications Dashboard UI
-- Manual company selection removed
-- "Apply While You Sleep" section with usage bar + upgrade CTA
-- **"Start Applying Now" button** — on-demand auto-apply via `/api/auto-apply/start`
-- Failed applications hidden from users
-- Today's Auto-Apply live feed
+**Files created:**
+- `src/app/profile/resume-quiz/page.tsx` + `ResumeQuiz.tsx` — quiz page
+- `src/app/api/profile/resume-quiz/route.ts` — quiz API
+- `src/app/admin/resume-quiz/page.tsx` — admin view
+- `src/app/preview/dashboard/page.tsx` + `src/app/preview/resume-quiz/page.tsx` — auth-free dev previews (delete before deploy)
 
-### Unified Auth Flow
-- Single entry at `/auth/signin` — email first, then right next step
-- `/auth/signup` redirects to `/auth/signin`
-- `/api/auth/check-email` — checks email state (new / magic link / has password)
-- **BUG: 13-second delay on this check — see above**
+**Files modified:**
+- `src/app/profile/applications/ApplicationsDashboard.tsx` — added `showResumeQuiz` prop with yellow CTA
+- `src/app/profile/applications/page.tsx` — gates CTA to `anika.ahmed04@gmail.com`
+- `src/app/admin/components/AdminSidebar.tsx` — added Resume Quiz nav item
 
-### Signup Changes
-- Name fields removed from signup (collected during onboarding)
-- API accepts email + password only, names optional
+### 2. Job Matching Tightened (Code Changed, NOT Yet Deployed to Worker)
+
+Investigated new users' application results and found widespread bad matching: entry-level frontend users getting Senior Staff roles, DevOps users getting PM roles, etc.
+
+**4 fixes applied locally:**
+
+1. **LLM quality gate prompt** (`src/lib/auto-apply/job-matcher.ts`): Replaced "Be generous with role matching" with strict rules and explicit NO examples
+2. **Fallback trap removed** (`src/lib/auto-apply/job-matcher.ts`): If LLM approves 0 jobs, returns empty array instead of all candidates
+3. **Word-boundary matching** (`worker/src/career-browser.ts`): Both `discoverJobsFromCatalog` and `discoverViaGreenhouseAPI` now use `\b` regex instead of `.includes()`
+4. **Claude link analysis** (`worker/src/career-browser.ts`): Changed "Match broadly" to "Match precisely" with exclusion examples
+
+**Status: Changes are on `applications` branch but NOT committed/deployed.** The Vercel deploy only covers fix 1 and 2. Fixes 3 and 4 are in the worker code which deploys from `auto-apply-saas` via Railway. Need to commit, merge to both main and auto-apply-saas, push, and redeploy Railway.
+
+### 3. User Credit-Backs for Bad Matches
+
+Ran the new LLM quality gate against all recent users' applied jobs to identify bad matches. Found 33 bad applications across 16 users. Decremented their `monthlyAppCount` accordingly. Emailed all 16 users explaining the issue, the fix, and the credit-back.
+
+### 4. New User Investigation (57 users since yesterday afternoon)
+
+Detailed walkthrough of every engaged user's experience with the tool. Key findings documented below in Known Issues.
 
 ---
 
-## User Stats
-- **265 total users** (all free tier)
-- **18** complete profiles (ready for matching)
-- **24 applications** submitted this session
-- **8 notification emails** sent
+## Known Issues
 
-## DB Schema Changes This Session
-- `Job.description` — TEXT column (full HTML job description)
-- `BrowseSession.matchedJobs` — TEXT column (JSON array of pre-matched jobs for fast path)
+### Critical
 
-## Files Created This Session
-- `src/middleware.ts` — Non-www redirect (may need removal)
-- `src/data/auto-apply-companies.json` — 40 companies for catalog scraper
-- `src/lib/auto-apply/job-matcher.ts` — Job matching engine
-- `src/app/api/cron/scrape-autoapply/route.ts` — Catalog scraper cron
-- `src/app/api/cron/daily-apply/route.ts` — Automated daily apply cron
-- `src/app/api/auto-apply/start/route.ts` — On-demand apply trigger
-- `src/app/api/auth/check-email/route.ts` — Email status check
-- `src/app/api/auth/login/route.ts` — Created but unused
+1. **Anthropic API credits ran out** — Caused 100% failure rate for ~7 users during the outage window. 100+ applications failed with "credit balance too low." Credits have been restored but need monitoring.
+
+2. **Job matching still allows seniority mismatches for entry-level users** — The seniority filter gives Senior/Staff roles a score of 0.1 for 0-2 year users but never hard-blocks them (-1). With only 49 entry-level SWE jobs in the catalog vs 1,100+ Senior/Staff jobs, Senior roles dominate the candidate pool by volume. The 0.18 score difference is not enough to keep them out.
+
+3. **Entry-level job supply is critically low** — Only 49 entry-level SWE jobs (33 intern, 14 new grad, 2 junior) out of 1,957 total SWE jobs (2.5%). Many entry-level users have almost nothing appropriate to apply to. Expanding catalog via Lever + Ashby APIs (see Next Steps) would help significantly.
+
+### Ongoing
+
+4. **Figma dropdown failures** — "page state unchanged" on experience/sponsorship dropdowns. Affects nearly every user hitting Figma forms.
+5. **Stripe forms timeout at 8 min** — Intern/New Grad/PhD forms consistently fail.
+6. **Duolingo requires ATS login** — 100% failure on all Duolingo jobs. Should be excluded.
+7. **DoorDash redirects to listings page** — Some job URLs resolve to search page instead of application form.
+8. **Discord forms — Haiku gets stuck in agent loop** — Deterministic handler fills dropdowns correctly, but Claude agent loop gets stuck after.
+9. **Samsara forms consistently fail** — Empty iframes, form not loading. Consider excluding.
+10. **No inbox for naya@ email** — `naya@theblackfemaleengineer.com` can send but not receive. Workaround: `reply_to` header set to Gmail. Long-term: set up Google Workspace.
+
+---
+
+## Next Steps (Prioritized)
+
+### 1. Deploy Job Matching Fixes to Worker (Urgent)
+The 4 matching fixes are applied locally but not deployed to Railway. Need to:
+- Commit changes on `applications`
+- Push and merge to `main` + `auto-apply-saas`
+- Redeploy Railway worker
+
+### 2. Harden Seniority Filter for Entry-Level Users
+Currently Staff/Principal/Director roles pass with score 0.1 for 0-year users. Should hard-block (`-1`) Staff, Principal, Director, and Head roles for users with 0-2 years experience.
+
+### 3. Expand Job Catalog — Lever + Ashby Scraping (Medium)
+The catalog is 95% Greenhouse. Adding Lever and Ashby would dramatically increase entry-level supply.
+
+**Lever API:** `https://api.lever.co/v0/postings/{company}?limit=100`
+**Ashby API:** `https://api.ashbyhq.com/posting-api/job-board/{company}`
+
+**Companies to add:**
+- **Ashby**: Notion, Linear, Vercel, Ramp, Brex, Plaid, Rippling, Scale AI, Perplexity, Cursor, OpenAI, ElevenLabs
+- **Lever**: Netflix, others
+
+### 4. Match Score on Dashboard (Small)
+Show users why each job was matched with a 1-5 score and one-line reason. Schema change needed on `BrowseDiscovery`.
+
+### 5. Exclude Broken ATS Companies
+- Duolingo (requires login)
+- Samsara (empty iframes)
+- Grammarly (job board deactivated)
+
+### 6. Onboarding Optimization
+Once step tracking has enough data, analyze drop-off points and cut/merge low-value steps (currently 25).
+
+---
+
+## User Stats (as of April 8 morning)
+- **~380 total signups** (57 new since yesterday afternoon)
+- **~85 onboarded users**
+- **6,186 active jobs** in catalog (all Greenhouse, source: auto-apply)
+- **1 paid subscriber** (Anika Ahmed, Starter $29/mo) — completed resume quiz, new PM resume uploaded, 20 targeted PM apps sent, awaiting her reply on what drove subscription
+- **49 entry-level SWE jobs** in catalog (2.5% of SWE jobs) — critical supply gap for intern/new grad users
+- Free tier: 5 apps/month, 1 tailored resume/month, 10/day cap
+- **16 users credited back** 33 applications due to bad matching (emails sent)
+
+## Admin Users
+- **Nyaradzo (Naya)** — `admin` (full access)
+- **Sarah Comlan** (`Sarah.comlan@gmail.com`) — `operations` (Onboarding, Auto-Apply, Errors, Tickets)
 
 ## Technical Debt
-- `worker/data/target-companies.json` and `scripts/target-companies.json` must stay in sync
-- `auto-apply-saas` branch needs sync with main (last synced before auth changes)
-- Dead code: `src/components/BrowseApplyForm.tsx`, `src/components/profile/ResumesSection.tsx`
-- `src/app/api/auth/login/route.ts` — unused, can be deleted
+- `src/app/preview/dashboard/page.tsx` and `src/app/preview/resume-quiz/page.tsx` — auth-free dev preview routes, delete before production cleanup
+- `src/components/BrowseApplyForm.tsx` — orphaned, unused
+- `src/app/api/auth/login/route.ts` — unused
 - `src/app/api/cron/auto-apply/route.ts` — legacy, removed from vercel.json but file exists
+- `worker/data/target-companies.json` and `scripts/target-companies.json` must stay in sync
+- `.env.vercel-prod` file exists locally — contains prod secrets, don't commit. Anthropic API key in this file has a trailing `\n` character that causes auth failures if used raw.
+- `worker/src/test-quick.ts` — temporary test script, can be deleted
+- Grammarly entry in `worker/src/test-companies.ts` — job board is dead, remove

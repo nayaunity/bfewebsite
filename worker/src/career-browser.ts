@@ -44,8 +44,8 @@ export async function discoverJobsFromCatalog(
     const titleLower = title.toLowerCase();
 
     const isMatch = roleKeywords.some((keywords) => {
-      const matches = keywords.filter((kw) => titleLower.includes(kw));
-      return matches.length >= 2 || (keywords.length === 1 && titleLower.includes(keywords[0]));
+      const matches = keywords.filter((kw) => new RegExp(`\\b${kw}\\b`, "i").test(title));
+      return matches.length >= 2 || (keywords.length === 1 && matches.length === 1);
     });
 
     if (isMatch) {
@@ -96,11 +96,10 @@ async function discoverViaGreenhouseAPI(
     const roleKeywords = roles.map(r => r.toLowerCase().split(/\s+/).filter(w => w.length > 2));
 
     const matched = allJobs.filter(job => {
-      const titleLower = job.title.toLowerCase();
-      // Check if any role has at least 2 keyword matches in the job title
+      // Check if any role has at least 2 keyword matches in the job title (word-boundary)
       return roleKeywords.some(keywords => {
-        const matches = keywords.filter(kw => titleLower.includes(kw));
-        return matches.length >= 2 || (keywords.length === 1 && titleLower.includes(keywords[0]));
+        const matches = keywords.filter(kw => new RegExp(`\\b${kw}\\b`, "i").test(job.title));
+        return matches.length >= 2 || (keywords.length === 1 && matches.length === 1);
       });
     });
 
@@ -309,8 +308,8 @@ async function matchJobsWithClaude(
 Rules:
 - Only include actual job postings (not navigation, footer, language, or category links)
 - STRONGLY prefer links with URLs containing "greenhouse.io" — these are the ones we can apply to
-- Match broadly: "Software Engineer" should match "Senior Software Engineer", "Staff Engineer", "ML Engineer", etc.
-- Match related roles: "AI Engineer" should match "Machine Learning Engineer", "ML Infrastructure Engineer", etc.
+- Match precisely: only include jobs where the core role function matches the target roles. "Software Engineer" matches "Senior Software Engineer" and "Staff Engineer" but NOT "Solutions Architect", "Sales Engineer", or "Program Manager".
+- Adjacent technical roles are OK: "AI Engineer" matches "Machine Learning Engineer", "ML Infrastructure Engineer", etc.
 - Extract a CLEAN job title (just the role name, no location/metadata)
 - Include the exact URL from the link
 - Return at most 15 of the MOST relevant matches. Prefer exact role matches over loose matches.
