@@ -12,6 +12,7 @@ export interface MatchedJob {
   location: string;
   remote: boolean;
   score: number;
+  matchReason?: string;
 }
 
 function parseRoles(raw: string | null): string[] {
@@ -392,6 +393,15 @@ export async function matchJobsForUser(
 
     const score = roleScore * 0.5 + locScore * 0.3 + seniorityScore * 0.2;
 
+    // Build human-readable match reason
+    const reasons: string[] = [];
+    if (roleScore >= 0.8) reasons.push("Strong role match");
+    else if (roleScore >= 0.4) reasons.push("Partial role match");
+    if (job.remote) reasons.push("Remote");
+    else if (locScore >= 0.8) reasons.push("Location match");
+    if (seniorityScore >= 0.8) reasons.push("Level match");
+    else if (seniorityScore >= 0.4) reasons.push("Level okay");
+
     scored.push({
       id: job.id,
       title: job.title,
@@ -401,6 +411,7 @@ export async function matchJobsForUser(
       location: job.location,
       remote: job.remote,
       score,
+      matchReason: reasons.join(" · ") || "General match",
     });
 
     if (job.description) {

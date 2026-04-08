@@ -17,6 +17,8 @@ interface Application {
   resumeTailored?: boolean;
   tailoredResumeUrl?: string | null;
   originalResumeUrl?: string | null;
+  matchScore?: number | null;
+  matchReason?: string | null;
 }
 
 function friendlyError(error: string): string {
@@ -489,6 +491,9 @@ export default function ApplicationsDashboard({
                       {app.jobTitle}
                     </p>
                     <p className="text-xs text-[var(--gray-600)] mt-0.5">{app.company}</p>
+                    {app.matchReason && (
+                      <p className="text-[10px] text-[var(--gray-600)] mt-0.5">{app.matchReason}</p>
+                    )}
                     {app.errorMessage && app.status === "failed" && (
                       <p className="text-[10px] text-red-500 mt-0.5" title={app.errorMessage}>
                         {friendlyError(app.errorMessage)}

@@ -101,10 +101,12 @@ export default async function ApplicationsPage() {
     resumeTailored: d.resumeTailored || false,
     tailoredResumeUrl: d.tailoredResumeUrl || null,
     originalResumeUrl: d.session?.resumeUrl || null,
+    matchScore: d.matchScore,
+    matchReason: d.matchReason,
   }));
 
   const allApplications = [
-    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null, resumeTailored: false, tailoredResumeUrl: null as string | null, originalResumeUrl: null as string | null })),
+    ...applications.map((a) => ({ ...a, source: "api" as const, applyUrl: null as string | null, targetRole: null as string | null, resumeTailored: false, tailoredResumeUrl: null as string | null, originalResumeUrl: null as string | null, matchScore: null as number | null, matchReason: null as string | null })),
     ...discoveryAsApplications,
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 

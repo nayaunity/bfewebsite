@@ -276,6 +276,8 @@ model BrowseDiscovery {
   applyUrl        String
   status          String   @default("found")
   errorMessage    String?
+  matchScore         Float?
+  matchReason        String?
   resumeTailored     Boolean  @default(false)
   tailoredResumeUrl  String?
   createdAt          DateTime @default(now())

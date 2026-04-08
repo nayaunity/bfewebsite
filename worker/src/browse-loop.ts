@@ -136,7 +136,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
   // FAST PATH: If matchedJobs is set, skip discovery entirely — apply directly
   if (session.matchedJobs) {
-    const jobs: Array<{ title: string; applyUrl: string; company: string }> = JSON.parse(session.matchedJobs);
+    const jobs: Array<{ title: string; applyUrl: string; company: string; matchScore?: number; matchReason?: string }> = JSON.parse(session.matchedJobs);
     log(session.id, "info", `Fast path: ${jobs.length} pre-matched jobs`);
     let successCount = 0;
 
@@ -180,7 +180,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
       }
 
       // Record & apply
-      await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null);
+      await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null, job.matchScore, job.matchReason);
       log(session.id, "info", `Applying: ${job.title} @ ${job.company}`);
 
       const applyResult = await applyToJob(
@@ -584,13 +584,15 @@ async function createDiscovery(
   jobTitle: string,
   applyUrl: string,
   status: string,
-  errorMessage: string | null
+  errorMessage: string | null,
+  matchScore?: number | null,
+  matchReason?: string | null
 ) {
   const db = getDb();
   const id = `disc_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   await db.execute({
-    sql: `INSERT OR IGNORE INTO BrowseDiscovery (id, sessionId, company, jobTitle, applyUrl, status, errorMessage, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [id, sessionId, company, jobTitle, applyUrl, status, errorMessage],
+    sql: `INSERT OR IGNORE INTO BrowseDiscovery (id, sessionId, company, jobTitle, applyUrl, status, errorMessage, matchScore, matchReason, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [id, sessionId, company, jobTitle, applyUrl, status, errorMessage, matchScore ?? null, matchReason ?? null],
   });
 }
 

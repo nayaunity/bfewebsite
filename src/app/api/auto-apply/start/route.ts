@@ -123,6 +123,8 @@ export async function POST() {
           title: j.title,
           applyUrl: j.applyUrl,
           company: j.company,
+          matchScore: j.score,
+          matchReason: j.matchReason,
         }))
       ),
       resumeUrl: resume.blobUrl,
