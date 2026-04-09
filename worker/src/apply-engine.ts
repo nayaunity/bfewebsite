@@ -1123,8 +1123,8 @@ async function greenhouseDeterministicFill(
   await selectStaticDropdownSafe(frame, /region.*reside|what region/i, /North America|NORAM|West|Mountain|don.*wish/i, steps);
   // First-generation professional (Gusto)
   await selectStaticDropdownSafe(frame, /first.generation/i, /don.*wish|prefer not|No/i, steps);
-  // Consent / retain personal info (Webflow)
-  await selectStaticDropdownSafe(frame, /consent.*personal.*information|retain.*personal/i, /Yes|I consent|agree/i, steps);
+  // Consent / retain personal info (Webflow, generic)
+  await selectStaticDropdownSafe(frame, /consent.*personal.*information|retain.*personal|I consent.*have my/i, /Yes|I consent|agree/i, steps);
   // Racial/ethnic background (Webflow)
   await selectStaticDropdownSafe(frame, /racial.*ethnic.*background/i, earlyRacePattern, steps);
 
@@ -1166,13 +1166,16 @@ async function greenhouseDeterministicFill(
     }
     if (ackCount > 0) steps.push(`Checked ${ackCount} Acknowledge checkbox(es)`);
   } catch {}
-  // "I agree" / "I confirm" / "I consent" checkboxes
+  // "I agree" / "I confirm" / "I consent" / privacy policy checkboxes
   try {
-    for (const pattern of [/I agree/i, /I confirm/i, /I consent/i, /I certify/i]) {
+    for (const pattern of [/I agree/i, /I confirm/i, /I consent/i, /I certify/i, /I acknowledge/i, /privacy policy/i, /Privacy Policy/i]) {
       const cb = frame.getByRole("checkbox", { name: pattern }).first();
       if (await cb.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await cb.check();
-        steps.push(`Checked '${pattern.source}' checkbox`);
+        const checked = await cb.isChecked().catch(() => false);
+        if (!checked) {
+          await cb.check();
+          steps.push(`Checked '${pattern.source}' checkbox`);
+        }
       }
     }
   } catch {}
@@ -1263,19 +1266,19 @@ async function greenhouseDeterministicFill(
   // Phase 8: EEO fields — use applicant profile data
   const genderPattern = applicant.gender
     ? new RegExp(applicant.gender.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
-    : /Female|Woman|decline|prefer not/i;
+    : /Female|Woman|decline|prefer not|Not Specified/i;
   const racePattern = applicant.race
     ? new RegExp(applicant.race.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
-    : /Black|decline|prefer not/i;
+    : /Black|decline|prefer not|Not Specified/i;
   const hispanicPattern = applicant.hispanicOrLatino === "Yes" ? /^Yes/i
     : applicant.hispanicOrLatino === "No" ? /^No/i
-    : /^No|decline|prefer not/i;
+    : /^No|decline|prefer not|Not Specified/i;
   const veteranPattern = applicant.veteranStatus
     ? new RegExp(applicant.veteranStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
-    : /not a protected veteran|No.*Not.*Veteran|don.*wish|prefer not/i;
+    : /not a protected veteran|Not a Veteran|not to disclose|don.*wish|prefer not|Not Specified/i;
   const disabilityPattern = applicant.disabilityStatus
     ? new RegExp(applicant.disabilityStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
-    : /^No$|No.*do not have|don.*wish|prefer not/i;
+    : /^No|No.*do not have|don.*wish.*answer|don.*t wish|prefer not|Not Specified/i;
 
   await selectStaticDropdownSafe(frame, /gender/i, genderPattern, steps);
   await selectStaticDropdownSafe(frame, /hispanic/i, hispanicPattern, steps);
