@@ -240,54 +240,61 @@ async function scrapeOneAutoApplyCompany(company: DEICompany): Promise<ScrapeCom
       },
     });
 
+    // Batch upserts in chunks of 50 within a transaction to reduce DB round-trips
     let jobsSaved = 0;
-    for (const job of result.jobs) {
+    const UPSERT_BATCH = 50;
+    for (let j = 0; j < result.jobs.length; j += UPSERT_BATCH) {
+      const chunk = result.jobs.slice(j, j + UPSERT_BATCH);
       try {
-        await prisma.job.upsert({
-          where: {
-            externalId_companySlug: {
-              externalId: job.externalId,
-              companySlug: company.slug,
-            },
-          },
-          create: {
-            externalId: job.externalId,
-            company: company.name,
-            companySlug: company.slug,
-            title: job.title,
-            description: job.description,
-            location: job.location,
-            type: job.type,
-            remote: job.remote,
-            salary: job.salary,
-            postedAt: job.postedAt,
-            applyUrl: job.applyUrl,
-            category: job.category,
-            tags: JSON.stringify(job.tags),
-            source: "auto-apply",
-            region: computeRegion(job.location),
-            isActive: true,
-          },
-          update: {
-            title: job.title,
-            description: job.description,
-            location: job.location,
-            type: job.type,
-            remote: job.remote,
-            salary: job.salary,
-            postedAt: job.postedAt,
-            applyUrl: job.applyUrl,
-            category: job.category,
-            tags: JSON.stringify(job.tags),
-            source: "auto-apply",
-            region: computeRegion(job.location),
-            isActive: true,
-            updatedAt: new Date(),
-          },
-        });
-        jobsSaved++;
+        await prisma.$transaction(
+          chunk.map((job) =>
+            prisma.job.upsert({
+              where: {
+                externalId_companySlug: {
+                  externalId: job.externalId,
+                  companySlug: company.slug,
+                },
+              },
+              create: {
+                externalId: job.externalId,
+                company: company.name,
+                companySlug: company.slug,
+                title: job.title,
+                description: job.description,
+                location: job.location,
+                type: job.type,
+                remote: job.remote,
+                salary: job.salary,
+                postedAt: job.postedAt,
+                applyUrl: job.applyUrl,
+                category: job.category,
+                tags: JSON.stringify(job.tags),
+                source: "auto-apply",
+                region: computeRegion(job.location),
+                isActive: true,
+              },
+              update: {
+                title: job.title,
+                description: job.description,
+                location: job.location,
+                type: job.type,
+                remote: job.remote,
+                salary: job.salary,
+                postedAt: job.postedAt,
+                applyUrl: job.applyUrl,
+                category: job.category,
+                tags: JSON.stringify(job.tags),
+                source: "auto-apply",
+                region: computeRegion(job.location),
+                isActive: true,
+                updatedAt: new Date(),
+              },
+            })
+          )
+        );
+        jobsSaved += chunk.length;
       } catch (error) {
-        console.error(`[Auto-Apply Scrape] Failed to save ${job.externalId} for ${company.name}:`, error);
+        console.error(`[Auto-Apply Scrape] Batch save failed for ${company.name} (${chunk.length} jobs):`, error);
       }
     }
 
