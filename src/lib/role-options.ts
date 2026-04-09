@@ -56,7 +56,7 @@ export const ROLE_OPTIONS = [
   },
   {
     label: "Product Manager",
-    searchTerms: "Product Manager, Technical Product Manager, Program Manager",
+    searchTerms: "Product Manager, Technical Product Manager, Group Product Manager",
     description: "Product strategy, roadmaps, cross-functional leadership",
   },
   {
