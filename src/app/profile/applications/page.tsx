@@ -21,7 +21,7 @@ export default async function ApplicationsPage() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession] = await Promise.all([
+  const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 } },
@@ -84,6 +84,9 @@ export default async function ApplicationsPage() {
           },
         },
       },
+    }),
+    prisma.job.count({
+      where: { source: "auto-apply", isActive: true, region: { in: ["us", "both"] } },
     }),
   ]);
 
@@ -161,6 +164,8 @@ export default async function ApplicationsPage() {
             initialApplications={allApplications}
             stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
+            totalActiveJobs={totalActiveJobs}
+            appliedCompanies={[...new Set(allApplications.filter(a => a.status === "submitted" || a.status === "applied").map(a => a.company))].slice(0, 5)}
             profileReady={!!(user?.targetRole && (user.resumeUrl || (user.resumes && user.resumes.length > 0)))}
             missingRoles={!user?.targetRole}
             missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}

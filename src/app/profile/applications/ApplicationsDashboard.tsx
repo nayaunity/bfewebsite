@@ -66,6 +66,8 @@ export default function ApplicationsDashboard({
   initialApplications,
   stats,
   usage,
+  totalActiveJobs,
+  appliedCompanies,
   todayActivity,
   profileReady = false,
   missingRoles = false,
@@ -75,6 +77,8 @@ export default function ApplicationsDashboard({
   initialApplications: Application[];
   stats: Stats;
   usage?: { used: number; limit: number; tier: string } | null;
+  totalActiveJobs?: number;
+  appliedCompanies?: string[];
   todayActivity?: TodayActivity | null;
   profileReady?: boolean;
   missingRoles?: boolean;
@@ -88,6 +92,23 @@ export default function ApplicationsDashboard({
 
   const hasActiveSession = todayActivity?.status === "queued" || todayActivity?.status === "processing";
   const atLimit = usage ? usage.used >= usage.limit : false;
+  const [checkingOut, setCheckingOut] = useState(false);
+
+  const handleCheckout = useCallback(async (tier: "starter" | "pro") => {
+    setCheckingOut(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {}
+    setCheckingOut(false);
+  }, []);
 
   const tips = [
     "Each application uses the resume that best matches the role — that\u2019s why uploading role-specific resumes matters.",
@@ -400,19 +421,63 @@ export default function ApplicationsDashboard({
                   </div>
                 )}
                 {usage.used >= usage.limit && usage.tier === "free" && (
-                  <div className="mt-4 p-3 rounded-xl bg-[#ef562a]/5 border border-[#ef562a]/20">
-                    <p className="text-sm text-[var(--foreground)]">
-                      You&apos;ve used all {usage.limit} free applications. Upgrade to apply to up to 100 jobs/month automatically.
+                  <div className="mt-6 p-5 rounded-2xl bg-[var(--card-bg)] border-2 border-[#ef562a]/30">
+                    <h3 className="font-serif text-lg text-[var(--foreground)] mb-2">
+                      You&apos;ve used all {usage.limit} free applications this month
+                    </h3>
+
+                    {stats.applied > 0 && (
+                      <p className="text-sm text-[var(--gray-600)] mb-1">
+                        Your results so far: {stats.applied} application{stats.applied !== 1 ? "s" : ""} submitted
+                        {appliedCompanies && appliedCompanies.length > 0 && (
+                          <> to {appliedCompanies.slice(0, 3).join(", ")}{appliedCompanies.length > 3 ? ` and ${appliedCompanies.length - 3} more` : ""}</>
+                        )}
+                      </p>
+                    )}
+
+                    {totalActiveJobs && totalActiveJobs > 0 && (
+                      <p className="text-sm font-medium text-[#ef562a] mb-4">
+                        {totalActiveJobs.toLocaleString()}+ matching jobs are waiting for you.
+                      </p>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                      <div className="p-4 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
+                        <p className="text-sm font-medium text-[var(--foreground)]">Starter</p>
+                        <p className="text-2xl font-bold text-[var(--foreground)] mt-1">$29<span className="text-sm font-normal text-[var(--gray-600)]">/mo</span></p>
+                        <ul className="mt-2 space-y-1 text-xs text-[var(--gray-600)]">
+                          <li>100 applications/month</li>
+                          <li>Tailored resumes for every role</li>
+                        </ul>
+                        <button
+                          onClick={() => handleCheckout("starter")}
+                          disabled={checkingOut}
+                          className="mt-3 w-full py-2 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50"
+                        >
+                          {checkingOut ? "Loading..." : "Start Starter"}
+                        </button>
+                      </div>
+                      <div className="p-4 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
+                        <p className="text-sm font-medium text-[var(--foreground)]">Pro</p>
+                        <p className="text-2xl font-bold text-[var(--foreground)] mt-1">$59<span className="text-sm font-normal text-[var(--gray-600)]">/mo</span></p>
+                        <ul className="mt-2 space-y-1 text-xs text-[var(--gray-600)]">
+                          <li>300 applications/month</li>
+                          <li>Everything in Starter</li>
+                          <li>Priority application processing</li>
+                        </ul>
+                        <button
+                          onClick={() => handleCheckout("pro")}
+                          disabled={checkingOut}
+                          className="mt-3 w-full py-2 text-sm font-medium text-white bg-[var(--foreground)] rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
+                        >
+                          {checkingOut ? "Loading..." : "Start Pro"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-center text-[var(--gray-600)]">
+                      Continue with Free — your limit resets next month
                     </p>
-                    <Link
-                      href="/pricing"
-                      className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors"
-                    >
-                      Upgrade Now
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
                   </div>
                 )}
               </div>
