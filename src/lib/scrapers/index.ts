@@ -209,6 +209,107 @@ export async function scrapeAllCompanies(): Promise<{
   };
 }
 
+async function scrapeOneAutoApplyCompany(company: DEICompany): Promise<ScrapeCompanyResult> {
+  console.log(`[Auto-Apply Scrape] ${company.name}...`);
+
+  try {
+    let result: ScraperResult;
+    switch (company.atsType) {
+      case "greenhouse":
+        result = await scrapeGreenhouse(company, { skipRoleFilter: true });
+        break;
+      case "lever":
+        result = await scrapeLever(company, { skipRoleFilter: true });
+        break;
+      case "ashby":
+        result = await scrapeAshby(company, { skipRoleFilter: true });
+        break;
+      default:
+        result = { success: false, jobs: [], error: `Unsupported ATS: ${company.atsType}` };
+    }
+
+    if (!result.success) {
+      return { company: company.name, status: "error", jobsFound: 0, jobsSaved: 0, error: result.error };
+    }
+
+    await prisma.scrapeLog.create({
+      data: {
+        companySlug: company.slug,
+        status: result.jobs.length > 0 ? "success" : "partial",
+        jobsFound: result.jobs.length,
+      },
+    });
+
+    let jobsSaved = 0;
+    for (const job of result.jobs) {
+      try {
+        await prisma.job.upsert({
+          where: {
+            externalId_companySlug: {
+              externalId: job.externalId,
+              companySlug: company.slug,
+            },
+          },
+          create: {
+            externalId: job.externalId,
+            company: company.name,
+            companySlug: company.slug,
+            title: job.title,
+            description: job.description,
+            location: job.location,
+            type: job.type,
+            remote: job.remote,
+            salary: job.salary,
+            postedAt: job.postedAt,
+            applyUrl: job.applyUrl,
+            category: job.category,
+            tags: JSON.stringify(job.tags),
+            source: "auto-apply",
+            region: computeRegion(job.location),
+            isActive: true,
+          },
+          update: {
+            title: job.title,
+            description: job.description,
+            location: job.location,
+            type: job.type,
+            remote: job.remote,
+            salary: job.salary,
+            postedAt: job.postedAt,
+            applyUrl: job.applyUrl,
+            category: job.category,
+            tags: JSON.stringify(job.tags),
+            source: "auto-apply",
+            region: computeRegion(job.location),
+            isActive: true,
+            updatedAt: new Date(),
+          },
+        });
+        jobsSaved++;
+      } catch (error) {
+        console.error(`[Auto-Apply Scrape] Failed to save ${job.externalId} for ${company.name}:`, error);
+      }
+    }
+
+    console.log(`[Auto-Apply Scrape] ${company.name}: Found ${result.jobs.length}, saved ${jobsSaved}`);
+    return {
+      company: company.name,
+      status: jobsSaved > 0 ? "success" : "partial",
+      jobsFound: result.jobs.length,
+      jobsSaved,
+    };
+  } catch (error) {
+    console.error(`[Auto-Apply Scrape] Error scraping ${company.name}:`, error);
+    return {
+      company: company.name,
+      status: "error",
+      jobsFound: 0,
+      jobsSaved: 0,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
 export async function scrapeAutoApplyCompanies(): Promise<{
   results: ScrapeCompanyResult[];
   totalJobsFound: number;
@@ -218,123 +319,33 @@ export async function scrapeAutoApplyCompanies(): Promise<{
   let totalJobsFound = 0;
   let totalJobsSaved = 0;
 
-  for (const company of autoApplyCompanyList) {
-    console.log(`[Auto-Apply Scrape] ${company.name}...`);
+  // Process in parallel batches of 5 to stay within Vercel 300s timeout
+  const BATCH_SIZE = 5;
+  for (let i = 0; i < autoApplyCompanyList.length; i += BATCH_SIZE) {
+    const batch = autoApplyCompanyList.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.allSettled(
+      batch.map((company) => scrapeOneAutoApplyCompany(company))
+    );
 
-    try {
-      let result: ScraperResult;
-      switch (company.atsType) {
-        case "greenhouse":
-          result = await scrapeGreenhouse(company, { skipRoleFilter: true });
-          break;
-        case "lever":
-          result = await scrapeLever(company, { skipRoleFilter: true });
-          break;
-        case "ashby":
-          result = await scrapeAshby(company, { skipRoleFilter: true });
-          break;
-        default:
-          result = { success: false, jobs: [], error: `Unsupported ATS: ${company.atsType}` };
-      }
-
-      if (!result.success) {
+    for (const settled of batchResults) {
+      if (settled.status === "fulfilled") {
+        const r = settled.value;
+        results.push(r);
+        totalJobsFound += r.jobsFound;
+        totalJobsSaved += r.jobsSaved;
+      } else {
         results.push({
-          company: company.name,
+          company: "unknown",
           status: "error",
           jobsFound: 0,
           jobsSaved: 0,
-          error: result.error,
+          error: settled.reason?.message || "Unknown error",
         });
-        continue;
       }
-
-      await prisma.scrapeLog.create({
-        data: {
-          companySlug: company.slug,
-          status: result.jobs.length > 0 ? "success" : "partial",
-          jobsFound: result.jobs.length,
-        },
-      });
-
-      let jobsSaved = 0;
-      for (const job of result.jobs) {
-        try {
-          await prisma.job.upsert({
-            where: {
-              externalId_companySlug: {
-                externalId: job.externalId,
-                companySlug: company.slug,
-              },
-            },
-            create: {
-              externalId: job.externalId,
-              company: company.name,
-              companySlug: company.slug,
-              title: job.title,
-              description: job.description,
-              location: job.location,
-              type: job.type,
-              remote: job.remote,
-              salary: job.salary,
-              postedAt: job.postedAt,
-              applyUrl: job.applyUrl,
-              category: job.category,
-              tags: JSON.stringify(job.tags),
-              source: "auto-apply",
-              region: computeRegion(job.location),
-              isActive: true,
-            },
-            update: {
-              title: job.title,
-              description: job.description,
-              location: job.location,
-              type: job.type,
-              remote: job.remote,
-              salary: job.salary,
-              postedAt: job.postedAt,
-              applyUrl: job.applyUrl,
-              category: job.category,
-              tags: JSON.stringify(job.tags),
-              source: "auto-apply",
-              region: computeRegion(job.location),
-              isActive: true,
-              updatedAt: new Date(),
-            },
-          });
-          jobsSaved++;
-        } catch (error) {
-          console.error(
-            `[Auto-Apply Scrape] Failed to save ${job.externalId} for ${company.name}:`,
-            error
-          );
-        }
-      }
-
-      totalJobsFound += result.jobs.length;
-      totalJobsSaved += jobsSaved;
-      results.push({
-        company: company.name,
-        status: jobsSaved > 0 ? "success" : "partial",
-        jobsFound: result.jobs.length,
-        jobsSaved,
-      });
-
-      console.log(
-        `[Auto-Apply Scrape] ${company.name}: Found ${result.jobs.length}, saved ${jobsSaved}`
-      );
-    } catch (error) {
-      console.error(`[Auto-Apply Scrape] Error scraping ${company.name}:`, error);
-      results.push({
-        company: company.name,
-        status: "error",
-        jobsFound: 0,
-        jobsSaved: 0,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
     }
 
-    // Delay between companies to be nice to APIs
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Brief delay between batches
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
   // Mark auto-apply jobs inactive if not updated in 7 days
