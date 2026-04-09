@@ -376,19 +376,22 @@ async function checkByRole(page: Page, name: string, exact?: boolean): Promise<v
 }
 
 async function handleFileUpload(page: Page, resumePath: string): Promise<void> {
-  // Try clicking "Attach" and catching the file chooser in each frame
+  // Try multiple button patterns across all frames
+  const buttonNames = ["Attach", "Upload File", "Upload file", "Choose File", "Resume*", "ATTACH RESUME/CV"];
   for (const frame of page.frames()) {
     if (frame.url() === "about:blank" || frame.url() === "") continue;
-    try {
-      const attachButton = frame.getByRole("button", { name: "Attach" }).first();
-      if (!(await attachButton.isVisible({ timeout: 500 }).catch(() => false))) continue;
-      const [fileChooser] = await Promise.all([
-        page.waitForEvent("filechooser", { timeout: 5000 }),
-        attachButton.click({ timeout: 5000 }),
-      ]);
-      await fileChooser.setFiles(resumePath);
-      return;
-    } catch {}
+    for (const btnName of buttonNames) {
+      try {
+        const btn = frame.getByRole("button", { name: btnName }).first();
+        if (!(await btn.isVisible({ timeout: 500 }).catch(() => false))) continue;
+        const [fileChooser] = await Promise.all([
+          page.waitForEvent("filechooser", { timeout: 5000 }),
+          btn.click({ timeout: 5000 }),
+        ]);
+        await fileChooser.setFiles(resumePath);
+        return;
+      } catch {}
+    }
   }
   // Fallback: find hidden file input and set directly
   for (const frame of page.frames()) {
@@ -1581,7 +1584,14 @@ async function executeRoleAction(page: Page, action: RoleAction, resumePath: str
   switch (action.action) {
     case "click":
       if (action.role && action.name) {
-        await clickByRole(page, action.role, action.name, action.exact);
+        // Detect clicks on file upload buttons and handle with fileChooser
+        const isUploadClick = action.role === "button" &&
+          /upload file|choose file|attach.*resume|attach file|resume.*attach|resume\*/i.test(action.name);
+        if (isUploadClick) {
+          await handleFileUpload(page, resumePath);
+        } else {
+          await clickByRole(page, action.role, action.name, action.exact);
+        }
       }
       break;
     case "fill":

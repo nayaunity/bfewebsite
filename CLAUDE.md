@@ -1,5 +1,13 @@
 # Claude Code Project Instructions
 
+## Emails
+
+**NEVER send emails without explicit user approval.** When asked to draft, compose, or write an email, ONLY output the draft text. Do NOT call the Resend API or any email-sending code. Wait for the user to explicitly say "send it" or "looks good, send" before executing. This applies to ALL emails — user communications, notifications, updates, everything. No exceptions.
+
+## Testing
+
+**Always test changes before asking to commit/deploy.** If you modified worker logic (apply-engine, career-browser, browse-loop), form handling, or UI components — test it with Playwright or a local dev server before saying "ready to commit." Do not wait to be told to test. If you can't test it end-to-end (e.g., requires a real user session), explain what you tested and what you couldn't.
+
 ## Session Start Checklist
 
 **At the start of every new session, read `HANDOFF.md` in the project root.** It contains the current state of the project, what was done in the last session, known issues, and next steps. This is critical context you need before making any changes.
