@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       mode: "subscription",
       line_items: [{ price: STRIPE_PRICES[tier], quantity: 1 }],
       success_url: `${request.nextUrl.origin}/profile?subscription=success`,
-      cancel_url: `${request.nextUrl.origin}/pricing?subscription=canceled`,
+      cancel_url: `${request.nextUrl.origin}/profile/applications`,
       metadata: { userId: session.user.id, tier },
     });
 
