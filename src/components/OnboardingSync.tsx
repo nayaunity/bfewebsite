@@ -11,12 +11,30 @@ export function OnboardingSync() {
     if (searchParams.get("onboarding") !== "complete") return;
     if (synced) return;
 
-    // Check both storage types — localStorage survives magic link auth (new tab)
-    const raw = sessionStorage.getItem("onboarding_data") || localStorage.getItem("onboarding_data");
-    if (!raw) return;
+    async function loadAndSync() {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any = null;
 
-    try {
-      const data = JSON.parse(raw);
+      // Try DB-based retrieval first (survives device/tab switches)
+      const tempId = searchParams.get("tempId");
+      if (tempId) {
+        try {
+          const res = await fetch(`/api/onboarding/temp-save?tempId=${tempId}`);
+          if (res.ok) {
+            const json = await res.json();
+            data = json.data;
+          }
+        } catch {}
+      }
+
+      // Fallback to localStorage/sessionStorage
+      if (!data) {
+        const raw = sessionStorage.getItem("onboarding_data") || localStorage.getItem("onboarding_data");
+        if (!raw) return;
+        try { data = JSON.parse(raw); } catch { return; }
+      }
+
+      if (!data) return;
 
       // Map wizard answers to profile fields
       const profileUpdate: Record<string, unknown> = {};
@@ -116,7 +134,9 @@ export function OnboardingSync() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).catch(() => {}); // fire and forget
-    } catch {}
+    }
+
+    loadAndSync();
   }, [searchParams, synced]);
 
   return null; // invisible component

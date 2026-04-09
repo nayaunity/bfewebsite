@@ -289,6 +289,14 @@ model BrowseDiscovery {
   @@index([status])
 }
 
+model TempOnboarding {
+  id        String   @id @default(cuid())
+  data      String   // JSON wizard data
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model ScrapeLog {
   id           String   @id @default(cuid())
   companySlug  String

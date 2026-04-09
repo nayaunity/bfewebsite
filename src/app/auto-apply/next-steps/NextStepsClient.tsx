@@ -29,7 +29,7 @@ export default function NextStepsClient({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const resumeCount = resumes.length;
-  const goal = 3;
+  const goal = 1;
   const goalMet = resumeCount >= goal;
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,7 +125,7 @@ export default function NextStepsClient({
                     1
                   </span>
                   <h2 className="font-serif text-xl text-[var(--foreground)]">
-                    Upload 3 role-specific resumes
+                    Upload your resume
                   </h2>
                 </div>
                 <p className="text-sm text-[var(--gray-600)] ml-8">

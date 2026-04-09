@@ -223,17 +223,29 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
     });
   };
 
-  const handleCreateAccount = () => {
-    // Save wizard data so OnboardingSync can pick it up
+  const handleCreateAccount = async () => {
+    // Save wizard data to localStorage as fallback
     localStorage.setItem("onboarding_data", JSON.stringify(data));
     sessionStorage.setItem("onboarding_data", JSON.stringify(data));
 
+    // Also save to DB (survives device/tab switches during auth)
+    let tempId = "";
+    try {
+      const res = await fetch("/api/onboarding/temp-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      tempId = json.tempId || "";
+    } catch {}
+
+    const nextStepsUrl = `/auto-apply/next-steps?onboarding=complete${tempId ? `&tempId=${tempId}` : ""}`;
+
     if (isSignedIn) {
-      // Already authenticated — go directly to next steps (skip re-auth)
-      window.location.href = "/auto-apply/next-steps?onboarding=complete";
+      window.location.href = nextStepsUrl;
     } else {
-      // Not signed in — go through auth first, then next steps
-      window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent("/auto-apply/next-steps?onboarding=complete");
+      window.location.href = "/auth/signin?callbackUrl=" + encodeURIComponent(nextStepsUrl);
     }
   };
 
