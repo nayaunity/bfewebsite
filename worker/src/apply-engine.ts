@@ -1521,6 +1521,9 @@ CRITICAL RULES:
 - If a field value is empty/blank in APPLICATION ANSWERS and the field is optional, SKIP it.
 - If you've tried filling a field 2+ times and it keeps failing, SKIP it and move to the next field.
 - For free-text questions, use the ROLE ANSWERS above, adapted to the specific company.
+- BEFORE clicking Submit: scan the page for any required fields (marked with *) that are still empty or show placeholder text. If you find any, fill them FIRST. Do NOT click Submit until all required fields have values.
+- For date fields ("Pick date...", "Start date"): use format MM/DD/YYYY. If the applicant says "Immediately", use today's date.
+- For location autocomplete comboboxes ("Start typing..."): use type_slowly with the city name, then click the matching option.
 
 PREVIOUS STEPS:
 ${recentSteps || "(first step)"}
@@ -1855,9 +1858,21 @@ async function _applyToJobInner(
           return { success: false, error: "Redirected to login page", steps };
         }
 
-        // After clicking Submit in Claude loop, check for verification code
+        // After clicking Submit in Claude loop, check for success/errors
         if (action.action === "click" && action.name && /submit/i.test(action.name)) {
           await page.waitForTimeout(3000);
+
+          // Check main page for thank-you/confirmation (Ashby, Lever — no iframes)
+          const mainText = await page.locator("body").innerText({ timeout: 2000 }).catch(() => "");
+          if (/thank you|thanks for applying|application.*received|application.*submitted|successfully.*submitted|application complete/i.test(mainText.slice(0, 3000))) {
+            return { success: true, steps: [...steps, "Application submitted successfully"], tailored, tailoredResumeUrl };
+          }
+
+          // Check for spam/flagged alerts (Ashby)
+          if (/flagged.*spam|possible spam|spam.*detected/i.test(mainText.slice(0, 3000))) {
+            return { success: false, error: "Application flagged as spam by the platform", steps };
+          }
+
           const ghFrame = getGreenhouseFrame(page);
           if (ghFrame) {
             // Check for success first
