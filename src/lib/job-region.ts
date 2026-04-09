@@ -56,6 +56,13 @@ export function hasInternationalLocation(location: string): boolean {
   return false;
 }
 
+/** Check if a user is US-based given their countryOfResidence field. */
+export function isUserUS(countryOfResidence: string | null | undefined): boolean {
+  if (!countryOfResidence) return true; // Default assumption: US
+  const c = countryOfResidence.toLowerCase();
+  return c.includes("us") || c.includes("united states") || c.includes("america");
+}
+
 /** Classify a job's location into "us", "international", or "both". */
 export function computeRegion(location: string): "us" | "international" | "both" {
   const isUS = hasUSLocation(location);

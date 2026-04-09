@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { ROLE_OPTIONS } from "@/lib/role-options";
+import { isUserUS } from "@/lib/job-region";
 import Anthropic from "@anthropic-ai/sdk";
 
 export interface MatchedJob {
@@ -123,24 +124,31 @@ function isForeignJob(location: string): boolean {
 function locationMatchScore(
   jobLocation: string,
   jobRemote: boolean,
+  jobRegion: string,
   userPref: string | null,
   userState: string | null,
   userCity: string | null,
   userCountry: string | null
 ): number {
+  const userUS = isUserUS(userCountry);
+
+  // Primary gate: use pre-computed region field from DB
+  if (userUS && jobRegion === "international") {
+    return -1;
+  }
+
+  // Belt-and-suspenders: string-based check as secondary safety net
   const locLower = jobLocation.toLowerCase();
-
-  const userIsUS = !userCountry || userCountry.toLowerCase().includes("us") ||
-    userCountry.toLowerCase().includes("united states") ||
-    userCountry.toLowerCase().includes("america");
-
-  if (userIsUS && isForeignJob(locLower) && !isUSJob(locLower)) {
+  if (userUS && isForeignJob(locLower) && !isUSJob(locLower)) {
     return -1;
   }
 
   if (!userPref) return 0.5;
 
-  if (userPref === "Remote") {
+  // Handle all remote preference variants ("Remote", "Remote or Hybrid")
+  const prefersRemote = userPref.toLowerCase().includes("remote");
+
+  if (prefersRemote) {
     return jobRemote ? 1 : 0.3;
   }
 
@@ -331,10 +339,14 @@ export async function matchJobsForUser(
     );
   }
 
+  // DB-level region filter: US users only see "us" or "both" jobs
+  const userUS = isUserUS(user.countryOfResidence);
+
   const catalogJobs = await prisma.job.findMany({
     where: {
       source: "auto-apply",
       isActive: true,
+      ...(userUS ? { region: { in: ["us", "both"] } } : {}),
     },
     select: {
       id: true,
@@ -344,6 +356,7 @@ export async function matchJobsForUser(
       companySlug: true,
       location: true,
       remote: true,
+      region: true,
       description: true,
     },
   });
@@ -384,6 +397,7 @@ export async function matchJobsForUser(
     const locScore = locationMatchScore(
       job.location,
       job.remote,
+      job.region,
       user.remotePreference,
       user.usState,
       user.city,
