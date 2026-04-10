@@ -3,13 +3,19 @@
 export function UsageMeter({
   used,
   limit,
+  tier,
+  onUpgrade,
 }: {
   used: number;
   limit: number;
+  tier?: string;
+  onUpgrade?: (tier: "starter" | "pro") => void;
 }) {
   const isUnlimited = limit === Infinity || limit > 9999;
   const percentage = isUnlimited ? 0 : Math.min(100, (used / limit) * 100);
   const atLimit = !isUnlimited && used >= limit;
+  const remaining = limit - used;
+  const isFree = tier === "free";
 
   return (
     <div className="space-y-1">
@@ -40,6 +46,31 @@ export function UsageMeter({
             Upgrade
           </a>{" "}
           for more.
+        </p>
+      )}
+      {!atLimit && isFree && percentage >= 80 && (
+        <div className="flex items-center justify-between mt-1">
+          <p className="text-xs text-[var(--gray-600)]">
+            {remaining} application{remaining !== 1 ? "s" : ""} remaining
+          </p>
+          {onUpgrade ? (
+            <button
+              onClick={() => onUpgrade("starter")}
+              className="text-xs font-medium text-[#ef562a] hover:underline"
+            >
+              Upgrade to 100/mo
+            </button>
+          ) : (
+            <a href="/pricing" className="text-xs font-medium text-[#ef562a] hover:underline">
+              Upgrade to 100/mo
+            </a>
+          )}
+        </div>
+      )}
+      {!atLimit && isFree && percentage >= 60 && percentage < 80 && (
+        <p className="text-xs text-[var(--gray-600)] mt-1">
+          {remaining} application{remaining !== 1 ? "s" : ""} remaining this month.{" "}
+          <a href="/pricing" className="text-[#ef562a] hover:underline">Plans start at $29/mo</a>
         </p>
       )}
     </div>

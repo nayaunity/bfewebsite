@@ -25,6 +25,7 @@ export default async function NextStepsPage() {
       id: true,
       email: true,
       firstName: true,
+      subscriptionTier: true,
       resumes: {
         orderBy: { uploadedAt: "desc" },
         select: {
@@ -52,6 +53,7 @@ export default async function NextStepsPage() {
       <NextStepsClient
         userName={user.firstName || user.email?.split("@")[0] || ""}
         initialResumes={user.resumes}
+        tier={user.subscriptionTier || "free"}
       />
     </>
   );

@@ -93,6 +93,8 @@ export default function ApplicationsDashboard({
   const hasActiveSession = todayActivity?.status === "queued" || todayActivity?.status === "processing";
   const atLimit = usage ? usage.used >= usage.limit : false;
   const [checkingOut, setCheckingOut] = useState(false);
+  const [celebrationDismissed, setCelebrationDismissed] = useState(false);
+  const [dismissedTailorRows, setDismissedTailorRows] = useState<Set<string>>(new Set());
 
   const handleCheckout = useCallback(async (tier: "starter" | "pro") => {
     setCheckingOut(true);
@@ -338,6 +340,47 @@ export default function ApplicationsDashboard({
                   : "No matching jobs found today. We'll check again tomorrow."}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Celebration Banner — shown after first success, before hitting limit */}
+      {usage && usage.tier === "free" && stats.applied >= 1 && !atLimit && !celebrationDismissed && (
+        <div className="mb-8 relative bg-gradient-to-r from-[#ef562a]/5 to-[#ef562a]/10 border border-[#ef562a]/20 rounded-2xl p-5">
+          <button
+            onClick={() => setCelebrationDismissed(true)}
+            className="absolute top-3 right-3 text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
+            aria-label="Dismiss"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h3 className="font-serif text-lg text-[var(--foreground)] mb-1">
+            Your first applications are out there
+          </h3>
+          <p className="text-sm text-[var(--gray-600)] mb-1">
+            {stats.applied} application{stats.applied !== 1 ? "s" : ""} submitted
+            {appliedCompanies && appliedCompanies.length > 0 && (
+              <> to {appliedCompanies.slice(0, 3).join(", ")}{appliedCompanies.length > 3 ? ` and ${appliedCompanies.length - 3} more` : ""}</>
+            )}.
+          </p>
+          {totalActiveJobs && totalActiveJobs > 0 && (
+            <p className="text-sm font-medium text-[#ef562a] mb-3">
+              {totalActiveJobs.toLocaleString()}+ more matching jobs are waiting. Starter members apply to 100/month.
+            </p>
+          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => handleCheckout("starter")}
+              disabled={checkingOut}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#ef562a] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50"
+            >
+              Unlock 100 Apps/Mo — $29
+            </button>
+            <Link href="/pricing" className="text-xs text-[var(--gray-600)] hover:text-[var(--foreground)] hover:underline">
+              See all plans
+            </Link>
+          </div>
         </div>
       )}
 
@@ -654,20 +697,38 @@ export default function ApplicationsDashboard({
                       </div>
                     </div>
                   ) : (
-                    !app.resumeTailored && (app.status === "submitted" || app.status === "applied") && usage?.tier === "free" && (
-                      <div className="md:col-span-4 mt-2 md:mt-0 bg-[var(--gray-50)] border border-[var(--gray-200)] border-dashed rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div className="flex items-center gap-2 text-xs text-[var(--gray-600)]">
-                          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                          This application used your generic resume. Upgrade to tailor every resume automatically.
+                    !app.resumeTailored && (app.status === "submitted" || app.status === "applied") && usage?.tier === "free" && !dismissedTailorRows.has(app.id) && (
+                      <div className="md:col-span-4 mt-2 md:mt-0 bg-purple-50 border border-purple-200/60 rounded-lg px-4 py-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                            <svg className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            <div>
+                              <p className="text-xs text-purple-900">
+                                Your resume was submitted as-is to <span className="font-medium">{app.company}</span>. With Starter, we rewrite your resume for every job — highlighting the exact skills each company is looking for.
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => setDismissedTailorRows(prev => new Set(prev).add(app.id))}
+                            className="text-purple-400 hover:text-purple-600 shrink-0"
+                            aria-label="Dismiss"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
                         </div>
-                        <Link
-                          href="/pricing"
-                          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-[#ef562a] text-white hover:bg-[#d94a22] transition-colors whitespace-nowrap"
-                        >
-                          Upgrade Plan
-                        </Link>
+                        <div className="flex items-center gap-3 mt-2 ml-6.5">
+                          <button
+                            onClick={() => handleCheckout("starter")}
+                            disabled={checkingOut}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors whitespace-nowrap disabled:opacity-50"
+                          >
+                            Upgrade to Auto-Tailor — $29/mo
+                          </button>
+                        </div>
                       </div>
                     )
                   )}

@@ -18,9 +18,11 @@ import { ROLE_OPTIONS } from "@/lib/role-options";
 export default function NextStepsClient({
   userName,
   initialResumes,
+  tier = "free",
 }: {
   userName: string;
   initialResumes: Resume[];
+  tier?: string;
 }) {
   const [resumes, setResumes] = useState<Resume[]>(initialResumes);
   const [uploading, setUploading] = useState(false);
@@ -247,11 +249,42 @@ export default function NextStepsClient({
           </div>
         </div>
 
+        {/* Plan Awareness Card — shown to free users after resume upload */}
+        {goalMet && tier === "free" && (
+          <div className="mt-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5">
+            <p className="text-xs font-semibold text-[var(--gray-600)] uppercase tracking-wider mb-3">Your Free Plan</p>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div className="p-3 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
+                <p className="text-xs font-medium text-[var(--gray-600)] mb-1">Free</p>
+                <p className="text-lg font-bold text-[var(--foreground)]">5</p>
+                <p className="text-[10px] text-[var(--gray-600)]">apps/month</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[#ef562a]/5 border border-[#ef562a]/20">
+                <p className="text-xs font-medium text-[#ef562a] mb-1">Starter</p>
+                <p className="text-lg font-bold text-[var(--foreground)]">100</p>
+                <p className="text-[10px] text-[var(--gray-600)]">apps/month</p>
+                <p className="text-[10px] text-[#ef562a] font-medium mt-0.5">+ tailored resumes</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[var(--gray-50)] border border-[var(--card-border)]">
+                <p className="text-xs font-medium text-[var(--gray-600)] mb-1">Pro</p>
+                <p className="text-lg font-bold text-[var(--foreground)]">300</p>
+                <p className="text-[10px] text-[var(--gray-600)]">apps/month</p>
+                <p className="text-[10px] text-[var(--gray-600)] font-medium mt-0.5">+ priority queue</p>
+              </div>
+            </div>
+            <div className="mt-3 text-center">
+              <Link href="/pricing" className="text-xs text-[#ef562a] hover:underline">
+                Unlock more from day one →
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Applications CTA */}
         {resumes.length > 0 && (
           <Link
             href="/profile/applications"
-            className="flex items-center justify-between w-full mt-8 px-6 py-4 bg-gradient-to-r from-[#ef562a] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
+            className="flex items-center justify-between w-full mt-6 px-6 py-4 bg-gradient-to-r from-[#ef562a] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
           >
             <div>
               <span className="text-lg font-serif">Start Applying to Jobs</span>
