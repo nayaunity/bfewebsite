@@ -29,8 +29,18 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.metadata?.userId;
+        let userId = session.metadata?.userId;
         const tier = session.metadata?.tier;
+
+        // Fallback: look up user by email if userId is missing
+        if (!userId && session.customer_email) {
+          const userByEmail = await prisma.user.findUnique({
+            where: { email: session.customer_email },
+            select: { id: true },
+          });
+          if (userByEmail) userId = userByEmail.id;
+        }
+
         if (!userId || !tier) {
           console.error("Webhook: missing metadata in checkout.session.completed", {
             sessionId: session.id,
