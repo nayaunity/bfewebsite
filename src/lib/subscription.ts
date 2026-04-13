@@ -1,6 +1,55 @@
 import "server-only";
+import type Stripe from "stripe";
 import { prisma } from "./prisma";
 import { TIER_LIMITS } from "./stripe";
+
+/**
+ * Apply subscription state from a Stripe subscription to a user row.
+ * Idempotent — safe to call from the webhook and from fallback sync paths.
+ *
+ * Used by: webhook handler, /api/stripe/sync, /api/stripe/sync-by-session,
+ * /api/admin/stripe/reconcile.
+ */
+export async function activateSubscription(params: {
+  userId: string;
+  subscription: Stripe.Subscription;
+  tier: "starter" | "pro";
+}): Promise<void> {
+  const { userId, subscription, tier } = params;
+  // Newer Stripe API versions expose current_period_end on the subscription
+  // item rather than the root. Read both for forward compatibility.
+  const rootPeriodEnd = (
+    subscription as unknown as { current_period_end?: number }
+  ).current_period_end;
+  const itemPeriodEnd = (
+    subscription.items.data[0] as unknown as { current_period_end?: number }
+  )?.current_period_end;
+  const currentPeriodEnd = rootPeriodEnd ?? itemPeriodEnd;
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      subscriptionTier: tier,
+      subscriptionStatus:
+        subscription.status === "active" ? "active" : subscription.status,
+      stripeSubscriptionId: subscription.id,
+      currentPeriodEnd: currentPeriodEnd
+        ? new Date(currentPeriodEnd * 1000)
+        : null,
+    },
+  });
+}
+
+/**
+ * Resolve the tier string from a Stripe price ID.
+ * Returns null if the price doesn't map to a known paid tier.
+ */
+export function tierFromPriceId(priceId: string | undefined): "starter" | "pro" | null {
+  if (!priceId) return null;
+  if (priceId === process.env.STRIPE_STARTER_PRICE_ID) return "starter";
+  if (priceId === process.env.STRIPE_PRO_PRICE_ID) return "pro";
+  return null;
+}
 
 /**
  * Get user's subscription tier, resetting the monthly counter if needed.

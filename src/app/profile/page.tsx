@@ -177,11 +177,23 @@ function countFilledFields(user: NonNullable<Awaited<ReturnType<typeof getUserDa
   return { filled, total };
 }
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/auth/signin?callbackUrl=/profile");
+    const sp = (await searchParams) ?? {};
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(sp)) {
+      if (typeof v === "string") qs.set(k, v);
+    }
+    const callbackUrl = qs.toString()
+      ? `/profile?${qs.toString()}`
+      : "/profile";
+    redirect(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }
 
   const user = await getUserData(session.user.id);

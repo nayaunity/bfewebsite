@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       mode: "subscription",
       line_items: [{ price: STRIPE_PRICES[tier], quantity: 1 }],
       ...(coupon ? { discounts: [{ coupon }] } : {}),
-      success_url: `${request.nextUrl.origin}/profile?subscription=success`,
+      success_url: `${request.nextUrl.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${request.nextUrl.origin}/profile/applications`,
       metadata: { userId: user.id, tier, source: "conversion-email" },
     });

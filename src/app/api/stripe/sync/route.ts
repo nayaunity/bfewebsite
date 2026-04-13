@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { activateSubscription, tierFromPriceId } from "@/lib/subscription";
 
 /**
  * POST /api/stripe/sync
@@ -45,23 +46,12 @@ export async function POST() {
     }
 
     const sub = subscriptions.data[0];
-    const priceId = sub.items.data[0]?.price?.id;
+    const tier = tierFromPriceId(sub.items.data[0]?.price?.id);
+    if (!tier) {
+      return NextResponse.json({ synced: false, reason: "Unknown tier" });
+    }
 
-    let tier = "free";
-    if (priceId === process.env.STRIPE_STARTER_PRICE_ID) tier = "starter";
-    if (priceId === process.env.STRIPE_PRO_PRICE_ID) tier = "pro";
-
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        subscriptionTier: tier,
-        subscriptionStatus: "active",
-        stripeSubscriptionId: sub.id,
-        currentPeriodEnd: new Date(
-          (sub as unknown as { current_period_end: number }).current_period_end * 1000
-        ),
-      },
-    });
+    await activateSubscription({ userId: session.user.id, subscription: sub, tier });
 
     console.log(`[Stripe Sync] Updated ${session.user.id} to ${tier} (webhook fallback)`);
     return NextResponse.json({ synced: true, tier });
