@@ -110,9 +110,12 @@ export function OnboardingSync() {
         profileUpdate.needsSponsorship = data.needsSponsorship === "Yes";
       }
 
-      // Save to profile + mark onboarding complete
+      // Save to profile + mark onboarding complete. autoApplyEnabled is the
+      // product promise; flip it on here as defense-in-depth in addition to
+      // the POST /api/profile/onboarding call below.
       if (Object.keys(profileUpdate).length > 0) {
         profileUpdate.onboardingCompletedAt = new Date().toISOString();
+        profileUpdate.autoApplyEnabled = true;
         fetch("/api/profile", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

@@ -1,5 +1,7 @@
 import { getDb } from "./db";
 import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-browser";
+import { checkAnthropicCredits, isCreditExhaustionError } from "./apply-engine";
+import { postCreditAlert } from "./alerts";
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -122,6 +124,17 @@ export async function processNextBrowseSession(): Promise<boolean> {
   const user = userResult.rows[0] as unknown as UserProfile;
   const companies: string[] = JSON.parse(session.companies);
 
+  // Preflight: bail out before Playwright / resume download if Anthropic
+  // credits are exhausted. This is the single most harmful silent-failure mode
+  // (we've had 268 apply attempts eaten by it across 3 outages).
+  const creditCheck = await checkAnthropicCredits();
+  if (!creditCheck.ok) {
+    log(session.id, "error", `Anthropic credits exhausted — pausing session`, { error: creditCheck.error });
+    await markSessionPaused(session.id, "paused: Anthropic credits exhausted — no application attempts made");
+    await postCreditAlert({ sessionId: session.id, userId: session.userId, rawError: creditCheck.error });
+    return true;
+  }
+
   // Download resume once for the whole session
   let resumePath: string | null = null;
   try {
@@ -227,6 +240,15 @@ export async function processNextBrowseSession(): Promise<boolean> {
         await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`, args: [session.id] });
         await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
         log(session.id, "info", `Applied (${successCount}${applyResult.tailored ? ", tailored" : ""}): ${job.title} @ ${job.company}`);
+      } else if (isCreditExhaustionError(applyResult.error)) {
+        // Defense in depth: credits ran out mid-session after the preflight passed.
+        // Don't charge the user, don't fail the discovery, pause the session, alert.
+        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", "[skipped — Anthropic credits exhausted mid-session]");
+        log(session.id, "error", `Anthropic credits exhausted mid-session — pausing`, { error: applyResult.error });
+        await postCreditAlert({ sessionId: session.id, userId: session.userId, rawError: applyResult.error || "credit balance too low" });
+        await markSessionPaused(session.id, "paused: Anthropic credits exhausted mid-session");
+        if (resumePath) { try { unlinkSync(resumePath); } catch {} }
+        return true;
       } else {
         const errorWithSteps = applyResult.steps
           ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
@@ -547,6 +569,14 @@ async function markSessionFailed(sessionId: string, error: string) {
   const db = getDb();
   await db.execute({
     sql: `UPDATE BrowseSession SET status = 'failed', errorMessage = ?, completedAt = datetime('now') WHERE id = ?`,
+    args: [error, sessionId],
+  });
+}
+
+async function markSessionPaused(sessionId: string, error: string) {
+  const db = getDb();
+  await db.execute({
+    sql: `UPDATE BrowseSession SET status = 'paused', errorMessage = ?, completedAt = datetime('now') WHERE id = ?`,
     args: [error, sessionId],
   });
 }

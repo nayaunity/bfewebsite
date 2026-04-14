@@ -11,12 +11,16 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
-    // Store full onboarding wizard data as JSON in user record
+    // Store full onboarding wizard data as JSON in user record.
+    // Auto-apply is the product promise — flip it on by default when the user
+    // finishes the wizard so they don't have to hunt for a toggle. They can
+    // still turn it off later from the profile page.
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
         onboardingData: JSON.stringify(data),
         onboardingCompletedAt: new Date(),
+        autoApplyEnabled: true,
       },
     });
 

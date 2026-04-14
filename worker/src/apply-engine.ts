@@ -8,6 +8,36 @@ import { tailorResume, fetchJobDescription, canTailorResume, incrementTailorQuot
 
 const anthropic = new Anthropic();
 
+/**
+ * Cheap 1-token probe to detect Anthropic credit exhaustion before Playwright
+ * ever opens. Returns `{ ok: false, error }` ONLY for billing/credit errors;
+ * other transient failures bubble up as `ok: true` so the caller proceeds and
+ * lets the real call surface them.
+ */
+export async function checkAnthropicCredits(): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1,
+      messages: [{ role: "user", content: "ok" }],
+    });
+    return { ok: true };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (isCreditExhaustionError(msg)) return { ok: false, error: msg };
+    return { ok: true };
+  }
+}
+
+/**
+ * Shared detector for the Anthropic "credit balance is too low" error family.
+ * Used by both the preflight probe and the per-job defense-in-depth check.
+ */
+export function isCreditExhaustionError(msg: string | null | undefined): boolean {
+  if (!msg) return false;
+  return /credit balance is too low|insufficient.*credit/i.test(msg);
+}
+
 let browser: Browser | null = null;
 
 const USER_AGENTS = [

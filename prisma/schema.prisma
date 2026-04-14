@@ -309,6 +309,19 @@ model ScrapeLog {
   @@index([createdAt])
 }
 
+model AdminAlert {
+  id         String    @id @default(cuid())
+  kind       String
+  severity   String    @default("high")
+  message    String
+  metadata   String?
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  @@index([kind, createdAt])
+  @@index([resolvedAt])
+}
+
 model ScrapeRun {
   id                  String    @id @default(cuid())
   cron                String

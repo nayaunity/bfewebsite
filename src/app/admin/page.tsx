@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireFullAdmin } from "@/lib/admin";
+import { AlertBanner } from "./AlertBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -111,9 +112,25 @@ async function getStats() {
   };
 }
 
+async function getOpenAlerts() {
+  const rows = await prisma.adminAlert.findMany({
+    where: { resolvedAt: null },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    kind: r.kind,
+    severity: r.severity,
+    message: r.message,
+    metadata: r.metadata,
+    createdAt: r.createdAt.toISOString(),
+  }));
+}
+
 export default async function AdminDashboard() {
   await requireFullAdmin();
-  const stats = await getStats();
+  const [stats, openAlerts] = await Promise.all([getStats(), getOpenAlerts()]);
 
   const contentCards = [
     {
@@ -164,6 +181,8 @@ export default async function AdminDashboard() {
           Site overview and analytics
         </p>
       </div>
+
+      <AlertBanner alerts={openAlerts} />
 
       {/* Live Stats Banner */}
       <div className="mb-8 bg-[#1a1a1a] rounded-2xl p-6 md:p-8">
