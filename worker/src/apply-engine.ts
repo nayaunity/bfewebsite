@@ -621,6 +621,51 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
     log(`S4 ancestor-toggle err: ${(e as Error).message?.slice(0, 60)}`);
   }
 
+  // Strategy 5: raw page.mouse.click() at the toggle's bounding box center.
+  // We've seen on Linux Chromium (Railway) that element.click() dispatches
+  // but react-select's onMouseDown handler doesn't respond. page.mouse.click
+  // sends a full mousedown → mouseup → click event chain at real coordinates
+  // via CDP, which behaves closer to a true user click.
+  try {
+    const wrapper = combobox.locator('xpath=ancestor::*[contains(@class, "select__control")][1]').first();
+    const toggle = wrapper.locator('button[aria-label="Toggle flyout"]').first();
+    await toggle.scrollIntoViewIfNeeded({ timeout: 2000 });
+    await frame.waitForTimeout(200);
+    const box = await toggle.boundingBox({ timeout: 2000 });
+    if (box) {
+      const x = box.x + box.width / 2;
+      const y = box.y + box.height / 2;
+      await frame.page().mouse.move(x, y);
+      await frame.waitForTimeout(50 + Math.random() * 100);
+      await frame.page().mouse.down();
+      await frame.waitForTimeout(20 + Math.random() * 40);
+      await frame.page().mouse.up();
+      if (await isListboxOpen(frame, combobox)) { log("S5 mouse-coords ok"); return; }
+      log("S5 mouse-coords clicked but no listbox");
+    } else {
+      log("S5 mouse-coords no bounding box");
+    }
+  } catch (e) {
+    log(`S5 mouse-coords err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  // Strategy 6: JS dispatchEvent fallback for react-select — pure onMouseDown.
+  try {
+    await combobox.evaluate((el: Element) => {
+      const wrapper = el.closest('.select__control');
+      if (!wrapper) return;
+      const btn = wrapper.querySelector('button[aria-label="Toggle flyout"]') as HTMLElement | null;
+      const target = btn || (wrapper as HTMLElement);
+      target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, button: 0, view: window }));
+      target.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, button: 0, view: window }));
+      target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0, view: window }));
+    });
+    if (await isListboxOpen(frame, combobox)) { log("S6 dispatchEvent ok"); return; }
+    log("S6 dispatchEvent no listbox");
+  } catch (e) {
+    log(`S6 dispatchEvent err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
   throw new Error(`Could not open dropdown`);
 }
 

@@ -287,7 +287,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         log(session.id, "warn", `Spam flag at ${job.company} — 24h cooldown applied, skipping`);
       } else {
         const errorWithSteps = applyResult.steps
-          ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
+          ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-8).join(" → ")}`
           : applyResult.error || "Unknown error";
         log(session.id, "warn", `Failed, trying next: ${job.title} — ${applyResult.error}`);
         await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
