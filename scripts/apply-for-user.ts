@@ -98,10 +98,15 @@ async function findMatchingJobs(
     },
   });
 
+  // Match the worker's dedup: exclude only URLs currently applied/applying.
+  // Failed URLs SHOULD be re-queueable (e.g. after a form-handling fix ships,
+  // or to retry a transient server outage). Skipped URLs (company cooldown,
+  // anti-bot flag, credit outage) re-queue too — the worker will skip them
+  // again if still on cooldown, but otherwise gets another shot.
   const appliedUrls = new Set(
     (
       await prisma.browseDiscovery.findMany({
-        where: { session: { userId: user.id } },
+        where: { session: { userId: user.id }, status: { in: ["applied", "applying"] } },
         select: { applyUrl: true },
       })
     ).map((d) => d.applyUrl)

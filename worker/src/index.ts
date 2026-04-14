@@ -9,6 +9,7 @@ import {
 } from "./db";
 import { applyToJob, closeBrowser } from "./apply-engine";
 import { processNextBrowseSession } from "./browse-loop";
+import { logEgressIpOnce } from "./diagnostics";
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "3001", 10);
@@ -38,6 +39,7 @@ app.get("/health", (_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Worker running on port ${PORT} (max ${MAX_CONCURRENT} concurrent sessions)`);
+  logEgressIpOnce().catch(() => { /* non-fatal */ });
   startPolling();
 });
 

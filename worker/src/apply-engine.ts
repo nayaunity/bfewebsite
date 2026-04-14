@@ -5,6 +5,7 @@ import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { waitForVerificationCode } from "./verification";
 import { tailorResume, fetchJobDescription, canTailorResume, incrementTailorQuota } from "./tailor-resume";
+import { captureFailureSnapshot } from "./diagnostics";
 
 const anthropic = new Anthropic();
 
@@ -2016,7 +2017,9 @@ async function _applyToJobInner(
       if (snapshot === previousSnapshot) {
         stuckCount++;
         if (stuckCount >= 4) {
-          return { success: false, error: "Stuck: page state unchanged after multiple actions", steps };
+          const snap = await captureFailureSnapshot(page, `stuck-${new URL(applyUrl).hostname}`);
+          const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
+          return { success: false, error: `Stuck: page state unchanged after multiple actions${suffix}`, steps };
         }
       } else {
         stuckCount = 0;
@@ -2116,7 +2119,11 @@ async function _applyToJobInner(
       }
     }
 
-    return { success: false, error: `Reached max steps (${MAX_STEPS}) without completing`, steps };
+    {
+      const snap = await captureFailureSnapshot(page, `max-steps-${new URL(applyUrl).hostname}`);
+      const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
+      return { success: false, error: `Reached max steps (${MAX_STEPS}) without completing${suffix}`, steps };
+    }
   } catch (error) {
     return {
       success: false,
