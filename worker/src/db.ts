@@ -126,3 +126,66 @@ export async function incrementUserAppCount(userId: string): Promise<void> {
     args: [userId],
   });
 }
+
+/**
+ * Returns reason string if the company is currently in cooldown (don't apply),
+ * or null if it's safe to attempt.
+ */
+export async function getCompanyCooldown(companySlug: string): Promise<string | null> {
+  if (!companySlug) return null;
+  const db = getDb();
+  const res = await db.execute({
+    sql: `SELECT reason, cooldownUntil FROM CompanyCooldown WHERE companySlug = ? AND cooldownUntil > datetime('now') LIMIT 1`,
+    args: [companySlug],
+  });
+  if (res.rows.length === 0) return null;
+  const row = res.rows[0] as unknown as { reason: string; cooldownUntil: string };
+  return `${row.reason} (until ${row.cooldownUntil})`;
+}
+
+/**
+ * Set or extend a 24h cooldown for a company (e.g. after a spam flag).
+ */
+export async function setCompanyCooldown(companySlug: string, reason: string, hours = 24): Promise<void> {
+  if (!companySlug) return;
+  const db = getDb();
+  const id = `cuid_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const cooldownUntil = new Date(Date.now() + hours * 60 * 60 * 1000).toISOString();
+  await db.execute({
+    sql: `INSERT INTO CompanyCooldown (id, companySlug, reason, cooldownUntil, createdAt, updatedAt)
+          VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))
+          ON CONFLICT(companySlug) DO UPDATE SET reason = excluded.reason, cooldownUntil = excluded.cooldownUntil, updatedAt = datetime('now')`,
+    args: [id, companySlug, reason, cooldownUntil],
+  });
+}
+
+/**
+ * Log a stuck-field event for later analysis. Free-form failureType:
+ * "could-not-open-dropdown" | "stuck-page" | "max-steps" | "spam-flag" | etc.
+ */
+export async function logStuckField(params: {
+  discoveryId?: string;
+  company: string;
+  fieldLabel: string;
+  fieldRole: string;
+  failureType: string;
+  pageUrl: string;
+  attemptCount?: number;
+}): Promise<void> {
+  const db = getDb();
+  const id = `cuid_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  await db.execute({
+    sql: `INSERT INTO StuckField (id, discoveryId, company, fieldLabel, fieldRole, failureType, attemptCount, pageUrl, createdAt)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [
+      id,
+      params.discoveryId || null,
+      params.company.slice(0, 200),
+      params.fieldLabel.slice(0, 500),
+      params.fieldRole.slice(0, 50),
+      params.failureType.slice(0, 100),
+      params.attemptCount ?? 1,
+      params.pageUrl.slice(0, 1000),
+    ],
+  });
+}

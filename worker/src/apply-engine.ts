@@ -203,12 +203,74 @@ export async function createStealthContext(): Promise<BrowserContext> {
     timezoneId: "America/Denver",
   });
 
-  // Use string-based init script to avoid esbuild __name injection
+  // Stealth init script — reduces reCAPTCHA Enterprise / Ashby spam scoring.
+  // Each patch targets a specific signal that bot-detectors check.
   await context.addInitScript(`
+    // 1. webdriver flag (oldest tell)
     Object.defineProperty(navigator, "webdriver", { get: function() { return undefined; } });
-    Object.defineProperty(navigator, "plugins", { get: function() { return [1, 2, 3, 4, 5]; } });
+
+    // 2. Plugins array — must look like a real PluginArray with named entries
+    Object.defineProperty(navigator, "plugins", {
+      get: function() {
+        const fakePlugins = [
+          { name: "PDF Viewer", filename: "internal-pdf-viewer", description: "Portable Document Format" },
+          { name: "Chrome PDF Viewer", filename: "internal-pdf-viewer", description: "Portable Document Format" },
+          { name: "Chromium PDF Viewer", filename: "internal-pdf-viewer", description: "Portable Document Format" },
+          { name: "Microsoft Edge PDF Viewer", filename: "internal-pdf-viewer", description: "Portable Document Format" },
+          { name: "WebKit built-in PDF", filename: "internal-pdf-viewer", description: "Portable Document Format" },
+        ];
+        Object.setPrototypeOf(fakePlugins, PluginArray.prototype);
+        return fakePlugins;
+      },
+    });
+
+    // 3. Languages
     Object.defineProperty(navigator, "languages", { get: function() { return ["en-US", "en"]; } });
-    window.chrome = { runtime: {} };
+
+    // 4. window.chrome — needs to look like a real Chrome runtime
+    if (!window.chrome) {
+      window.chrome = {};
+    }
+    window.chrome.runtime = window.chrome.runtime || {};
+    window.chrome.csi = window.chrome.csi || function() {};
+    window.chrome.loadTimes = window.chrome.loadTimes || function() {
+      return { connectionInfo: "h2", finishDocumentLoadTime: Date.now() / 1000 };
+    };
+    window.chrome.app = window.chrome.app || { isInstalled: false, InstallState: {}, RunningState: {} };
+
+    // 5. Permissions API — reCAPTCHA explicitly checks notification permissions
+    if (navigator.permissions && navigator.permissions.query) {
+      const originalQuery = navigator.permissions.query.bind(navigator.permissions);
+      navigator.permissions.query = function(parameters) {
+        if (parameters && parameters.name === "notifications") {
+          return Promise.resolve({ state: Notification.permission, name: "notifications", onchange: null });
+        }
+        return originalQuery(parameters);
+      };
+    }
+
+    // 6. WebGL vendor/renderer — many bot detectors flag swiftshader / virtual GPU
+    try {
+      const getParameterProxyHandler = {
+        apply: function(target, ctx, args) {
+          const param = args[0];
+          if (param === 37445) return "Intel Inc."; // UNMASKED_VENDOR_WEBGL
+          if (param === 37446) return "Intel Iris OpenGL Engine"; // UNMASKED_RENDERER_WEBGL
+          return target.apply(ctx, args);
+        },
+      };
+      WebGLRenderingContext.prototype.getParameter = new Proxy(
+        WebGLRenderingContext.prototype.getParameter,
+        getParameterProxyHandler
+      );
+    } catch {}
+
+    // 7. Hardware concurrency — match a typical Mac
+    Object.defineProperty(navigator, "hardwareConcurrency", { get: function() { return 8; } });
+
+    // 8. deviceMemory
+    Object.defineProperty(navigator, "deviceMemory", { get: function() { return 8; } });
+
     // Polyfill __name for esbuild keepNames — tsx injects __name(fn, "name") wrappers
     // into page.evaluate callbacks, but __name only exists in Node.js, not the browser
     if (typeof globalThis.__name === "undefined") {
@@ -217,6 +279,24 @@ export async function createStealthContext(): Promise<BrowserContext> {
   `);
 
   return context;
+}
+
+/**
+ * Random delay between min/max ms — for humanization.
+ */
+export function humanDelay(minMs = 100, maxMs = 400): Promise<void> {
+  const ms = minMs + Math.floor(Math.random() * (maxMs - minMs));
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Variable typing delay — humans don't type at a constant rate.
+ * Returns a delay value that bot-detectors won't flag as machine-typed.
+ */
+export function humanTypingDelay(): number {
+  // Most keys 60-140ms; occasional 200-400ms "thinking" pause
+  if (Math.random() < 0.08) return 200 + Math.floor(Math.random() * 200);
+  return 60 + Math.floor(Math.random() * 80);
 }
 
 export async function closeBrowser(): Promise<void> {
@@ -302,6 +382,7 @@ interface RoleAction {
 
 const MAX_STEPS = 25;
 const APPLICATION_TIMEOUT_MS = 8 * 60 * 1000; // 8 minutes max per application
+const APPLICATION_TIMEOUT_LABEL = `${Math.round(APPLICATION_TIMEOUT_MS / 60000)} minutes`;
 
 // ============================================================================
 // FRAME HELPERS
@@ -458,29 +539,123 @@ async function isDropdownStillUnset(frame: Frame, combobox: Locator): Promise<bo
   }
 }
 
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 /**
- * Open the Greenhouse flyout dropdown for a given combobox.
- * Tries 3 strategies in order.
+ * Verify a react-select listbox actually opened for a SPECIFIC combobox.
+ * react-select renders the menu inside the same `.select-shell` ancestor as
+ * the combobox; checking globally for `[role="listbox"]` matches stale
+ * menus from other dropdowns. We scope to the combobox's own shell.
  */
-async function openFlyout(frame: Frame, combobox: Locator): Promise<void> {
-  // Strategy 1: Find the NEXT Toggle flyout button in document order and click it
+async function isListboxOpen(frame: Frame, combobox?: Locator, timeoutMs = 2000): Promise<boolean> {
+  try {
+    if (combobox) {
+      const shell = combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first();
+      // react-select uses .select__menu; some custom themes also expose role=listbox
+      const menu = shell.locator('.select__menu, .select__menu-list, [role="listbox"]').first();
+      await menu.waitFor({ state: "visible", timeout: timeoutMs });
+      return true;
+    }
+    await frame.locator('[role="listbox"], .select__menu').first().waitFor({ state: "visible", timeout: timeoutMs });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Open the Greenhouse react-select flyout for a given combobox.
+ * Tries 4 strategies in order, verifying the listbox actually opens after
+ * each one. Pushes per-strategy diagnostics to `steps` for post-hoc debugging.
+ */
+async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Promise<void> {
+  const log = (msg: string) => steps?.push(`openFlyout: ${msg}`);
+
+  // Strategy 1 (most reliable): toggle constrained to the combobox's own
+  // react-select wrapper. The DOM structure is:
+  //   input[role=combobox]
+  //     ↑ div.select__input-container
+  //       ↑ div.select__value-container
+  //         ↑ div.select__control          ← toggle button lives inside here
+  // We target select__control (the React Select root for THIS combobox) so we
+  // can't accidentally click the toggle of an adjacent dropdown.
+  try {
+    const wrapper = combobox.locator('xpath=ancestor::*[contains(@class, "select__control")][1]').first();
+    const toggle = wrapper.locator('button[aria-label="Toggle flyout"]').first();
+    await toggle.click({ timeout: 3000 });
+    if (await isListboxOpen(frame, combobox)) { log("S1 wrapper-toggle ok"); return; }
+    log("S1 wrapper-toggle clicked but no listbox");
+  } catch (e) {
+    log(`S1 wrapper-toggle err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  // Strategy 2: NEXT Toggle flyout button in document order
   try {
     const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
     await toggle.click({ timeout: 3000 });
-    return;
-  } catch {}
-  // Strategy 2: Click the combobox itself (works on many Greenhouse forms)
+    if (await isListboxOpen(frame, combobox)) { log("S2 following-toggle ok"); return; }
+    log("S2 following-toggle clicked but no listbox");
+  } catch (e) {
+    log(`S2 following-toggle err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  // Strategy 3: Click the combobox itself
   try {
     await combobox.click({ timeout: 3000 });
-    return;
-  } catch {}
-  // Strategy 3: Try finding toggle as a sibling in a shared parent container
+    if (await isListboxOpen(frame, combobox)) { log("S3 self-click ok"); return; }
+    log("S3 self-click no listbox");
+  } catch (e) {
+    log(`S3 self-click err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  // Strategy 4: toggle as descendant of a shared 1-3-level ancestor
   try {
     const parentToggle = combobox.locator('xpath=ancestor::*[position() <= 3]//button[@aria-label="Toggle flyout"]').first();
     await parentToggle.click({ timeout: 3000 });
-    return;
-  } catch {}
+    if (await isListboxOpen(frame, combobox)) { log("S4 ancestor-toggle ok"); return; }
+    log("S4 ancestor-toggle no listbox");
+  } catch (e) {
+    log(`S4 ancestor-toggle err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
   throw new Error(`Could not open dropdown`);
+}
+
+/**
+ * Find the option element matching `valueText`. Tries exact match, then
+ * starts-with-word-boundary, then word-boundary anywhere. This prevents
+ * "United States" from matching "United States Minor Outlying Islands"
+ * (alphabetically first), and "Yes" from matching "Yesterday".
+ *
+ * If `combobox` is provided, scope the search to that combobox's react-select
+ * shell so options from a different open dropdown can't be selected.
+ */
+async function findOption(frame: Frame, valueText: string | RegExp, combobox?: Locator): Promise<Locator> {
+  // Scope to the combobox's own shell when possible
+  const scope: Locator = combobox
+    ? combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first()
+    : frame.locator("body");
+
+  if (typeof valueText === "string") {
+    // 1) exact text match (scoped)
+    const exact = scope.getByRole("option", { name: valueText, exact: true }).first();
+    if (await exact.isVisible({ timeout: 500 }).catch(() => false)) return exact;
+    // 2) starts-with on word boundary (e.g. value "Yes" matches "Yes, ..." but NOT "Yesterday")
+    const escaped = escapeRegex(valueText);
+    const startsWith = scope.getByRole("option").filter({ hasText: new RegExp(`^${escaped}\\b`, "i") }).first();
+    if (await startsWith.isVisible({ timeout: 500 }).catch(() => false)) return startsWith;
+    // 3) anywhere on word boundary (scoped)
+    const fuzzy = scope.getByRole("option").filter({ hasText: new RegExp(`\\b${escaped}\\b`, "i") }).first();
+    if (await fuzzy.isVisible({ timeout: 500 }).catch(() => false)) return fuzzy;
+    // 4) last resort — frame-wide word-boundary
+    return frame.getByRole("option").filter({ hasText: new RegExp(`\\b${escaped}\\b`, "i") }).first();
+  }
+  // Caller passed an explicit regex — trust it (scoped first, then global)
+  const scoped = scope.getByRole("option", { name: valueText }).first();
+  if (await scoped.isVisible({ timeout: 500 }).catch(() => false)) return scoped;
+  return frame.getByRole("option", { name: valueText }).first();
 }
 
 /**
@@ -508,8 +683,11 @@ async function selectViaKeyboard(
   await openFlyout(frame, combobox);
   await frame.waitForTimeout(300);
 
-  // Type to filter the options list
-  await combobox.pressSequentially(searchStr, { delay: 50 });
+  // Type to filter the options list — humanized delay reduces bot-detection score
+  for (const ch of searchStr) {
+    await combobox.pressSequentially(ch, { delay: 0 });
+    await frame.waitForTimeout(humanTypingDelay());
+  }
   await frame.waitForTimeout(500);
 
   // Select first matching option via keyboard
@@ -526,7 +704,8 @@ async function selectViaKeyboard(
 async function selectStaticDropdown(
   frame: Frame,
   comboboxNamePattern: string | RegExp,
-  optionName: string | RegExp
+  optionName: string | RegExp,
+  steps?: string[]
 ): Promise<void> {
   // Close any previously open flyouts first (prevents intercept issues)
   await frame.page().keyboard.press("Escape").catch(() => {});
@@ -534,17 +713,17 @@ async function selectStaticDropdown(
 
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
 
-  // --- Attempt 1: Click-based selection (existing approach) ---
-  await openFlyout(frame, combobox);
-  await frame.waitForTimeout(1000);
+  // --- Attempt 1: Click-based selection ---
+  await openFlyout(frame, combobox, steps);
+  await frame.waitForTimeout(500);
+  await isListboxOpen(frame, combobox, 2000); // settle the menu before option lookup
 
-  const useExact = typeof optionName === "string" && optionName.length <= 3;
   let clickSucceeded = false;
   try {
-    await frame.getByRole("option", { name: optionName, exact: useExact }).first().click({ timeout: 5000 });
+    const option = await findOption(frame, optionName, combobox);
+    await option.click({ timeout: 5000 });
     clickSucceeded = true;
   } catch {
-    // Close the flyout if option wasn't found
     await frame.page().keyboard.press("Escape").catch(() => {});
     await frame.waitForTimeout(300);
   }
@@ -556,26 +735,24 @@ async function selectStaticDropdown(
 
     // Verify the selection registered in React state
     if (!(await isDropdownStillUnset(frame, combobox))) {
-      return; // Success — value registered
+      steps?.push(`selectStaticDropdown: click+findOption ok`);
+      return;
     }
-    // Click appeared to work but value didn't register in React state — fall through to keyboard
+    steps?.push(`selectStaticDropdown: click registered but state still unset`);
   }
 
   // --- Attempt 2: Keyboard-based selection (fallback) ---
-  // Close any residual state
   await frame.page().keyboard.press("Escape").catch(() => {});
   await frame.waitForTimeout(300);
-
-  // Clear any text that might be in the combobox from failed attempt
   await combobox.fill("").catch(() => {});
   await frame.waitForTimeout(200);
 
   await selectViaKeyboard(frame, combobox, optionName);
 
-  // Verify again
   if (await isDropdownStillUnset(frame, combobox)) {
     throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (click + keyboard both failed)`);
   }
+  steps?.push(`selectStaticDropdown: keyboard fallback ok`);
 }
 
 async function selectStaticDropdownSafe(
@@ -589,7 +766,7 @@ async function selectStaticDropdownSafe(
     if (!(await combobox.isVisible({ timeout: 500 }).catch(() => false))) {
       return; // Field not present on this form — skip silently
     }
-    await selectStaticDropdown(frame, comboboxNamePattern, optionName);
+    await selectStaticDropdown(frame, comboboxNamePattern, optionName, steps);
     steps.push(`Selected dropdown ${String(comboboxNamePattern)}: ${String(optionName)}`);
   } catch (e) {
     steps.push(`Dropdown failed ${String(comboboxNamePattern)}: ${e instanceof Error ? e.message : String(e)}`);
@@ -1616,7 +1793,7 @@ Respond with ONLY a JSON object:
 // ACTION EXECUTION (role-based)
 // ============================================================================
 
-async function executeRoleAction(page: Page, action: RoleAction, resumePath: string): Promise<void> {
+async function executeRoleAction(page: Page, action: RoleAction, resumePath: string, steps?: string[]): Promise<void> {
   switch (action.action) {
     case "click":
       if (action.role && action.name) {
@@ -1652,10 +1829,13 @@ async function executeRoleAction(page: Page, action: RoleAction, resumePath: str
         // Build forgiving regex: split name into keywords, match any combobox
         // whose accessible name contains all keywords (case-insensitive).
         const keywords = action.name!.split(/\s+/).filter(w => w.length > 2);
-        const namePattern = new RegExp(keywords.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".*"), "i");
-        const valuePattern = new RegExp(action.value!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+        const namePattern = new RegExp(keywords.map(w => escapeRegex(w)).join(".*"), "i");
+        // Pass action.value as a string (not pre-built regex) so findOption()
+        // can try exact → starts-with → word-boundary in that order. Building
+        // a fuzzy regex here would defeat the exact-match attempt and reproduce
+        // the "United States" → "United States Minor Outlying Islands" bug.
         await withFrameFallback(page, async (frame) => {
-          await selectStaticDropdown(frame, namePattern, valuePattern);
+          await selectStaticDropdown(frame, namePattern, action.value!, steps);
         });
       }
       break;
@@ -1681,7 +1861,7 @@ export async function applyToJob(
 ): Promise<ApplyResult> {
   // Wrap entire application in a timeout to prevent hanging
   const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
-    setTimeout(() => reject(new Error("Application timed out after 8 minutes")), APPLICATION_TIMEOUT_MS)
+    setTimeout(() => reject(new Error(`Application timed out after ${APPLICATION_TIMEOUT_LABEL}`)), APPLICATION_TIMEOUT_MS)
   );
 
   const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole, subscriptionTier, jobTitle, userId);
@@ -1692,7 +1872,7 @@ export async function applyToJob(
     return {
       success: false,
       error: err instanceof Error ? err.message : "Application timed out",
-      steps: ["Timed out after 5 minutes"],
+      steps: [`Timed out after ${APPLICATION_TIMEOUT_LABEL}`],
     };
   }
 }
@@ -1884,7 +2064,7 @@ async function _applyToJobInner(
       }
 
       try {
-        await executeRoleAction(page, action, tmpPath);
+        await executeRoleAction(page, action, tmpPath, steps);
         await page.waitForTimeout(2000);
 
         if (await isLoginPage(page)) {

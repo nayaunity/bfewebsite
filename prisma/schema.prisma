@@ -322,6 +322,32 @@ model AdminAlert {
   @@index([resolvedAt])
 }
 
+model CompanyCooldown {
+  id            String   @id @default(cuid())
+  companySlug   String   @unique
+  reason        String
+  cooldownUntil DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([cooldownUntil])
+}
+
+model StuckField {
+  id            String   @id @default(cuid())
+  discoveryId   String?
+  company       String
+  fieldLabel    String
+  fieldRole     String
+  failureType   String
+  attemptCount  Int      @default(1)
+  pageUrl       String
+  createdAt     DateTime @default(now())
+
+  @@index([company, fieldLabel])
+  @@index([failureType, createdAt])
+}
+
 model ScrapeRun {
   id                  String    @id @default(cuid())
   cron                String

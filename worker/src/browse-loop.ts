@@ -1,7 +1,16 @@
-import { getDb } from "./db";
+import { getDb, getCompanyCooldown, setCompanyCooldown, logStuckField } from "./db";
 import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-browser";
 import { checkAnthropicCredits, isCreditExhaustionError } from "./apply-engine";
 import { postCreditAlert } from "./alerts";
+
+function companyKey(company: string): string {
+  return company.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function isSpamFlagError(msg: string | null | undefined): boolean {
+  if (!msg) return false;
+  return /flagged as spam|spam by the platform/i.test(msg);
+}
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -166,6 +175,16 @@ export async function processNextBrowseSession(): Promise<boolean> {
       });
       if (dedupCheck.rows && dedupCheck.rows.length > 0) continue;
 
+      // Company cooldown — skip (don't fail) jobs at companies that recently
+      // flagged us as spam. Doesn't charge user quota.
+      const slug = companyKey(job.company);
+      const cooldownReason = await getCompanyCooldown(slug);
+      if (cooldownReason) {
+        await createDiscovery(session.id, job.company, job.title, job.applyUrl, "skipped", `[skipped — company on cooldown] ${cooldownReason}`, job.matchScore, job.matchReason);
+        log(session.id, "info", `Cooldown skip: ${job.company} — ${cooldownReason.slice(0, 80)}`);
+        continue;
+      }
+
       // Daily cap
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
@@ -249,6 +268,23 @@ export async function processNextBrowseSession(): Promise<boolean> {
         await markSessionPaused(session.id, "paused: Anthropic credits exhausted mid-session");
         if (resumePath) { try { unlinkSync(resumePath); } catch {} }
         return true;
+      } else if (isSpamFlagError(applyResult.error)) {
+        // Ashby/Greenhouse anti-bot flagged us. Mark the discovery as
+        // "skipped" (don't show as red failure to user, don't charge quota),
+        // and put the company on a 24h cooldown so other queued jobs at the
+        // same company are short-circuited too.
+        const slug = companyKey(job.company);
+        await setCompanyCooldown(slug, `Spam-flag at ${job.company}`, 24);
+        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", `[skipped — anti-bot flag] ${applyResult.error}`);
+        await logStuckField({
+          discoveryId: session.id, // closest available; per-discovery id not exposed here
+          company: job.company,
+          fieldLabel: "(submission blocked)",
+          fieldRole: "submit",
+          failureType: "spam-flag",
+          pageUrl: job.applyUrl,
+        }).catch(() => {});
+        log(session.id, "warn", `Spam flag at ${job.company} — 24h cooldown applied, skipping`);
       } else {
         const errorWithSteps = applyResult.steps
           ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
@@ -256,6 +292,20 @@ export async function processNextBrowseSession(): Promise<boolean> {
         log(session.id, "warn", `Failed, trying next: ${job.title} — ${applyResult.error}`);
         await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
         await db.execute({ sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`, args: [session.id] });
+        // Telemetry: log a categorized stuck-field row for later triage
+        const category = /could not open dropdown/i.test(applyResult.error || "") ? "could-not-open-dropdown"
+          : /reached max steps/i.test(applyResult.error || "") ? "max-steps"
+          : /stuck.*page state/i.test(applyResult.error || "") ? "stuck-page"
+          : /timed out/i.test(applyResult.error || "") ? "timeout"
+          : "other";
+        await logStuckField({
+          discoveryId: session.id,
+          company: job.company,
+          fieldLabel: (applyResult.error || "").slice(0, 200),
+          fieldRole: "unknown",
+          failureType: category,
+          pageUrl: job.applyUrl,
+        }).catch(() => {});
         log(session.id, "warn", `Failed: ${job.title} — ${applyResult.error}`);
       }
 

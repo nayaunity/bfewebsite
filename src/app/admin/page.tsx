@@ -412,6 +412,25 @@ export default async function AdminDashboard() {
             </svg>
             Scrape Runs
           </Link>
+          <Link
+            href="/admin/stuck-fields"
+            className="flex items-center justify-center px-5 py-3.5 border border-[var(--card-border)] rounded-full text-sm font-medium text-[var(--foreground)] bg-[var(--card-bg)] hover:border-black hover:text-black transition-colors"
+          >
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.732-3L13.732 4a2 2 0 00-3.464 0L3.268 16A2 2 0 005 19z"
+              />
+            </svg>
+            Stuck Fields
+          </Link>
         </div>
       </div>
     </div>

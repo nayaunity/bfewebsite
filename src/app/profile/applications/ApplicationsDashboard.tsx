@@ -22,12 +22,23 @@ interface Application {
 }
 
 function friendlyError(error: string): string {
-  if (error.includes("Stuck")) return "Form didn't respond";
-  if (error.includes("max steps")) return "Form too complex";
-  if (error.includes("Login") || error.includes("authentication")) return "Login required";
-  if (error.includes("resume")) return "Resume issue";
-  if (error.includes("Verification")) return "Verification timed out";
-  if (error.includes("iframe not found") || error.includes("not right")) return "Form not found";
+  // Tagged statuses we set ourselves
+  if (error.startsWith("[refunded")) return "We refunded this — service was down";
+  if (/\[skipped — anti-bot/i.test(error)) return "Company blocked our submission, retrying later";
+  if (/\[skipped — company on cooldown\]/i.test(error)) return "Skipped — recently blocked, will retry tomorrow";
+  if (/\[skipped — Anthropic/i.test(error)) return "Briefly paused — service has resumed";
+  // Common form-failure categories
+  if (/credit balance is too low/i.test(error)) return "Briefly paused — service has resumed";
+  if (/flagged as spam|spam by the platform/i.test(error)) return "Company blocked our submission";
+  if (/could not open dropdown/i.test(error)) return "Form dropdown wouldn't open";
+  if (/timed out|timeout/i.test(error)) return "Form took too long to load";
+  if (/Stuck/i.test(error)) return "Form didn't respond";
+  if (/max steps/i.test(error)) return "Form too complex";
+  if (/Cannot proceed/i.test(error)) return "Role conflicts with your preferences";
+  if (/Login|authentication/i.test(error)) return "Login required";
+  if (/resume/i.test(error)) return "Resume issue";
+  if (/Verification/i.test(error)) return "Verification timed out";
+  if (/iframe not found|not right/i.test(error)) return "Form not found";
   return "Couldn't complete";
 }
 
@@ -602,8 +613,11 @@ export default function ApplicationsDashboard({
                     {app.matchReason && (
                       <p className="text-[10px] text-[var(--gray-600)] mt-0.5">{app.matchReason}</p>
                     )}
-                    {app.errorMessage && app.status === "failed" && (
-                      <p className="text-[10px] text-red-500 mt-0.5" title={app.errorMessage}>
+                    {app.errorMessage && (app.status === "failed" || app.status === "skipped") && (
+                      <p
+                        className={`text-[10px] mt-0.5 ${app.status === "skipped" ? "text-[var(--gray-600)]" : "text-red-500"}`}
+                        title={app.errorMessage}
+                      >
                         {friendlyError(app.errorMessage)}
                       </p>
                     )}
