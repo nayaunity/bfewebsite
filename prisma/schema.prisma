@@ -309,6 +309,26 @@ model ScrapeLog {
   @@index([createdAt])
 }
 
+model ScrapeRun {
+  id                  String    @id @default(cuid())
+  cron                String
+  startedAt           DateTime  @default(now())
+  completedAt         DateTime?
+  durationMs          Int?
+  status              String    @default("running")
+  companiesTotal      Int       @default(0)
+  companiesSuccessful Int       @default(0)
+  companiesFailed     Int       @default(0)
+  jobsFound           Int       @default(0)
+  jobsSaved           Int       @default(0)
+  jobsDeactivated     Int       @default(0)
+  error               String?
+  details             String?
+
+  @@index([cron, startedAt])
+  @@index([status])
+}
+
 model ErrorLog {
   id        String   @id @default(cuid())
   userId    String?
