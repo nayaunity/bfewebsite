@@ -46,6 +46,9 @@ export async function logBrowserBinaryOnce(): Promise<void> {
       chromiumChannelPath,
       isHeadlessShell,
       browsersPath: process.env.PLAYWRIGHT_BROWSERS_PATH ?? null,
+      // Verify xvfb / headed setup:
+      headlessEnv: process.env.HEADLESS ?? null,
+      display: process.env.DISPLAY ?? null,
     }));
   } catch (err) {
     console.log(JSON.stringify({
