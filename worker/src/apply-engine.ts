@@ -388,7 +388,7 @@ interface RoleAction {
 }
 
 const MAX_STEPS = 25;
-const APPLICATION_TIMEOUT_MS = 8 * 60 * 1000; // 8 minutes max per application
+const APPLICATION_TIMEOUT_MS = 12 * 60 * 1000; // 12 minutes max per application (bumped from 8 to accommodate humanized typing + full chromium)
 const APPLICATION_TIMEOUT_LABEL = `${Math.round(APPLICATION_TIMEOUT_MS / 60000)} minutes`;
 
 // ============================================================================
@@ -794,10 +794,12 @@ async function selectStaticDropdown(
     await combobox.press("Control+a").catch(() => {});
     await combobox.press("Backspace").catch(() => {});
     await frame.waitForTimeout(100);
-    // Type to filter — humanized delay
+    // Type to filter — fast delay (internal UI filtering, not a form field;
+    // anti-bot mimicry doesn't apply here, and slower typing × multiple
+    // dropdowns × multiple sessions adds significant time per application).
     for (const ch of searchStr) {
       await combobox.press(ch).catch(() => {});
-      await frame.waitForTimeout(humanTypingDelay());
+      await frame.waitForTimeout(30 + Math.floor(Math.random() * 30));
     }
     // Wait for a menu to render in the combobox's shell
     const shell = combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first();
