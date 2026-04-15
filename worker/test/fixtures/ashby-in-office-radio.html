@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Fixture: Ashby-style in-office radio gate</title></head>
+<body>
+  <form id="application">
+    <fieldset role="radiogroup" aria-labelledby="io-label">
+      <legend id="io-label">Do you acknowledge Notion's in-office three anchor days requirement?</legend>
+      <label><input type="radio" name="inoffice" value="yes" /> Yes</label>
+      <label><input type="radio" name="inoffice" value="no" /> No</label>
+    </fieldset>
+
+    <fieldset role="radiogroup" aria-labelledby="wa-label">
+      <legend id="wa-label">Are you authorized to work in the United States?</legend>
+      <label><input type="radio" name="workauth" value="yes" /> Yes</label>
+      <label><input type="radio" name="workauth" value="no" /> No</label>
+    </fieldset>
+
+    <fieldset role="radiogroup" aria-labelledby="sp-label">
+      <legend id="sp-label">Will you require visa sponsorship now or in the future?</legend>
+      <label><input type="radio" name="sponsor" value="yes" /> Yes</label>
+      <label><input type="radio" name="sponsor" value="no" /> No</label>
+    </fieldset>
+
+    <label>
+      <input type="checkbox" name="cert" id="cert" />
+      I certify that the information provided is accurate and truthful.
+    </label>
+  </form>
+</body>
+</html>

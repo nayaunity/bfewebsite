@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "lastReviewed": "2026-04-15",
+  "comment": "Curated URLs for the real-URL integration suite. Refresh quarterly (URLs expire when roles close). Keep ~30 URLs spread across Greenhouse/Ashby/Lever + known failure patterns + known successes. When adding, pair 'expected' with the most likely outcome so a regression is obvious.",
+  "urls": [
+    {
+      "url": "https://boards.greenhouse.io/doximity/jobs/6573710",
+      "ats": "Greenhouse",
+      "role": "Software Engineer",
+      "expected": "apply",
+      "notes": "Known success from BrowseDiscovery history."
+    },
+    {
+      "url": "https://jobs.ashbyhq.com/Perplexity/00000000-0000-0000-0000-000000000000",
+      "ats": "Ashby",
+      "role": "Software Engineer",
+      "expected": "apply",
+      "notes": "PLACEHOLDER — replace with a real Perplexity Ashby URL. Perplexity had 1 of 2 Ashby successes in 30d."
+    }
+  ]
+}

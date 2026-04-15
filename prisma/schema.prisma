@@ -350,6 +350,25 @@ model StuckField {
   @@index([failureType, createdAt])
 }
 
+model IntegrationRun {
+  id           String   @id @default(cuid())
+  kind         String   // "nightly" | "canary" | "ad-hoc"
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+  durationMs   Int?
+  status       String   @default("running") // running | success | partial | failed
+  urlsTotal    Int      @default(0)
+  urlsApplied  Int      @default(0)
+  urlsFailed   Int      @default(0)
+  urlsSkipped  Int      @default(0)
+  useBrowserbase Boolean @default(false)
+  errorMessage String?
+  details      String?  // JSON: [{url, status, errorMessage, durationMs}]
+
+  @@index([kind, startedAt])
+  @@index([status])
+}
+
 model ScrapeRun {
   id                  String    @id @default(cuid())
   cron                String

@@ -26,35 +26,48 @@ async function selectDropdown(
 ): Promise<void> {
   try {
     const combobox = target.getByRole("combobox", { name: comboboxNamePattern }).first();
-    const visible = await combobox.isVisible({ timeout: 300 }).catch(() => false);
+    const visible = await combobox.isVisible({ timeout: 150 }).catch(() => false);
     if (!visible) return;
 
-    // Keyboard pattern: focus → clear → type → Enter (matches the Greenhouse
-    // dropdown strategy that already works well on Railway).
+    // Focus + clear
+    const page = "page" in target ? target.page() : target;
+    await combobox.evaluate((el: HTMLInputElement) => {
+      el.focus();
+      if ("value" in el) el.value = "";
+    }).catch(() => {});
+    await target.waitForTimeout(100);
+
+    // Try to click the exact option directly (some dropdowns open listbox on
+    // focus alone). Fast path: if the option is already clickable, take it.
+    let option = target.getByRole("option", { name: optionName }).first();
+    if (await option.isVisible({ timeout: 200 }).catch(() => false)) {
+      await option.click({ timeout: 1500 }).catch(() => {});
+      steps.push(`Gate dropdown set (direct): ${comboboxNamePattern.source}`);
+      return;
+    }
+
+    // Type a filter derived from the option regex
     const valueText = optionName.source
       .replace(/\\/g, "")
-      .replace(/[\^$.*+?()[\]{}|]/g, "")
-      .split("|")[0];
+      .replace(/[\^$.*+?()[\]{}|]/g, " ")
+      .split(" ")
+      .filter(Boolean)[0] || "";
     const search = valueText.slice(0, 12);
-
-    await combobox.evaluate((el) => (el as HTMLElement).focus()).catch(() => {});
-    await target.waitForTimeout(150);
-    const page = "page" in target ? target.page() : target;
-    await page.keyboard.press("Control+a").catch(() => {});
-    await page.keyboard.press("Backspace").catch(() => {});
-    await page.waitForTimeout(80);
+    if (!search) {
+      await page.keyboard.press("Enter").catch(() => {});
+      return;
+    }
     await page.keyboard.type(search, { delay: 35 });
-    await target.waitForTimeout(400);
-    // Try to click the exact option if visible, else press Enter.
-    const option = target.getByRole("option", { name: optionName }).first();
-    const opt = await option.isVisible({ timeout: 1000 }).catch(() => false);
-    if (opt) {
-      await option.click({ timeout: 2000 }).catch(() => {});
+    await target.waitForTimeout(350);
+
+    option = target.getByRole("option", { name: optionName }).first();
+    if (await option.isVisible({ timeout: 500 }).catch(() => false)) {
+      await option.click({ timeout: 1500 }).catch(() => {});
+      steps.push(`Gate dropdown set: ${comboboxNamePattern.source} → ${optionName.source}`);
     } else {
       await page.keyboard.press("Enter").catch(() => {});
     }
-    await target.waitForTimeout(200);
-    steps.push(`Gate dropdown set: ${comboboxNamePattern.source} → ${optionName.source}`);
+    await target.waitForTimeout(150);
   } catch (e) {
     steps.push(
       `Gate dropdown failed ${comboboxNamePattern.source}: ${e instanceof Error ? e.message : String(e)}`
@@ -74,24 +87,16 @@ async function clickRadio(
   steps: string[]
 ): Promise<void> {
   try {
-    // Ashby + many React forms: role=radiogroup parent with role=radio children.
     const group = target.getByRole("radiogroup", { name: labelPattern }).first();
-    const groupVisible = await group.isVisible({ timeout: 300 }).catch(() => false);
-    if (groupVisible) {
-      const option = group.getByRole("radio", { name: new RegExp(`^${choice}$`, "i") }).first();
-      if (await option.isVisible({ timeout: 500 }).catch(() => false)) {
-        await option.click({ timeout: 1500 }).catch(() => {});
-        steps.push(`Gate radio: ${labelPattern.source} → ${choice}`);
-        return;
-      }
-    }
-    // Fallback: loose role=radio with the label nearby.
-    const loose = target.getByRole("radio", {
-      name: new RegExp(`${labelPattern.source}.*${choice}|${choice}.*${labelPattern.source}`, "i"),
-    }).first();
-    if (await loose.isVisible({ timeout: 300 }).catch(() => false)) {
-      await loose.click({ timeout: 1500 }).catch(() => {});
-      steps.push(`Gate radio (loose): ${labelPattern.source} → ${choice}`);
+    const groupVisible = await group.isVisible({ timeout: 150 }).catch(() => false);
+    if (!groupVisible) return;
+    // Find the specific Yes/No option inside this group.
+    const option = group
+      .getByRole("radio", { name: new RegExp(`^${choice}$`, "i") })
+      .first();
+    if (await option.isVisible({ timeout: 200 }).catch(() => false)) {
+      await option.check({ timeout: 1500, force: true }).catch(() => {});
+      steps.push(`Gate radio: ${labelPattern.source} → ${choice}`);
     }
   } catch (e) {
     steps.push(`Gate radio failed ${labelPattern.source}: ${e instanceof Error ? e.message : String(e)}`);
@@ -108,7 +113,7 @@ async function checkCheckbox(
 ): Promise<void> {
   try {
     const box = target.getByRole("checkbox", { name: labelPattern }).first();
-    if (!(await box.isVisible({ timeout: 300 }).catch(() => false))) return;
+    if (!(await box.isVisible({ timeout: 150 }).catch(() => false))) return;
     if (await box.isChecked().catch(() => false)) return;
     await box.check({ timeout: 1500, force: true }).catch(() => {});
     steps.push(`Gate checkbox checked: ${labelPattern.source}`);
@@ -144,7 +149,9 @@ export async function fillCommonGates(
   // --- In-office / anchor days acknowledgement ---
   // Most companies phrase this as a required "I acknowledge" / "I understand".
   // Default to "Yes" / check-it behavior since declining usually blocks the app.
-  await selectDropdown(target, /anchor.*days|anchor days|three anchor|hybrid.*model|in.office.*day|days per week.*office|acknowledge.*in.office|understand.*in.office/i, /^Yes|I acknowledge|I understand|confirm|agree/i, steps);
+  const inOfficePattern = /anchor.*days|anchor days|three anchor|hybrid.*model|in.office.*day|days per week.*office|acknowledge.*in.office|understand.*in.office/i;
+  await selectDropdown(target, inOfficePattern, /^Yes|I acknowledge|I understand|confirm|agree/i, steps);
+  await clickRadio(target, inOfficePattern, "Yes", steps);
   await checkCheckbox(target, /anchor.*days|three anchor|in.office.*requirement|understand.*in.office|acknowledge.*office/i, steps);
 
   // --- Country of residence ---

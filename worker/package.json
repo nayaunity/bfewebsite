@@ -6,7 +6,10 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "browse": "HEADLESS=false tsx src/browse-worker.ts"
+    "browse": "HEADLESS=false tsx src/browse-worker.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "tsx test/integration/real-urls.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
@@ -20,6 +23,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.4"
   }
 }

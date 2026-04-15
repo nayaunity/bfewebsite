@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Fixture: demographic dropdowns (race/veteran/disability)</title>
+<style>
+  .listbox { display: none; border: 1px solid #ccc; position: absolute; background: white; }
+  .listbox.open { display: block; }
+  .option { padding: 4px 8px; cursor: pointer; }
+  .option:hover { background: #eef; }
+  input[role="combobox"] { width: 260px; padding: 4px; }
+</style>
+</head>
+<body>
+  <form id="application">
+    <label for="race">Please identify your race</label>
+    <input id="race" role="combobox" aria-label="Please identify your race" aria-controls="race-lb" aria-expanded="false" autocomplete="off" />
+    <ul id="race-lb" role="listbox" class="listbox">
+      <li role="option" class="option">Black or African American</li>
+      <li role="option" class="option">Asian</li>
+      <li role="option" class="option">White</li>
+      <li role="option" class="option">Decline to self-identify</li>
+    </ul>
+
+    <br><br>
+
+    <label for="vet">Veteran status</label>
+    <input id="vet" role="combobox" aria-label="Veteran status" aria-controls="vet-lb" aria-expanded="false" autocomplete="off" />
+    <ul id="vet-lb" role="listbox" class="listbox">
+      <li role="option" class="option">I am a veteran</li>
+      <li role="option" class="option">I am not a veteran</li>
+      <li role="option" class="option">Decline to self-identify</li>
+    </ul>
+
+    <br><br>
+
+    <label for="dis">Disability status</label>
+    <input id="dis" role="combobox" aria-label="Disability status" aria-controls="dis-lb" aria-expanded="false" autocomplete="off" />
+    <ul id="dis-lb" role="listbox" class="listbox">
+      <li role="option" class="option">Yes, I have a disability</li>
+      <li role="option" class="option">No, I do not have a disability</li>
+      <li role="option" class="option">I don't wish to answer</li>
+    </ul>
+  </form>
+
+  <script>
+    // Minimal combobox behavior: open on focus+type, filter options, click option to set value.
+    document.querySelectorAll('input[role="combobox"]').forEach((cb) => {
+      const lb = document.getElementById(cb.getAttribute('aria-controls'));
+      cb.addEventListener('focus', () => { lb.classList.add('open'); cb.setAttribute('aria-expanded', 'true'); });
+      cb.addEventListener('input', () => {
+        const q = cb.value.toLowerCase();
+        lb.querySelectorAll('.option').forEach(o => {
+          o.style.display = o.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
+      lb.querySelectorAll('.option').forEach(o => {
+        o.addEventListener('click', () => {
+          cb.value = o.textContent;
+          lb.classList.remove('open');
+          cb.setAttribute('aria-expanded', 'false');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
