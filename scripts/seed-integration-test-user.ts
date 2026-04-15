@@ -54,6 +54,10 @@ async function main() {
     args: [TEST_EMAIL],
   });
 
+  // Use ISO 8601 strings — Prisma's libsql adapter rejects SQLite's default
+  // "YYYY-MM-DD HH:MM:SS" format from CURRENT_TIMESTAMP.
+  const now = new Date().toISOString();
+
   let testUserId: string;
   if (existing.rows.length > 0) {
     testUserId = existing.rows[0].id as string;
@@ -67,8 +71,8 @@ async function main() {
               resumeUrl = ?, resumeName = ?,
               currentEmployer = ?, currentTitle = ?, school = ?, degree = ?,
               graduationYear = ?, salaryExpectation = ?,
-              role = 'test', emailVerified = CURRENT_TIMESTAMP,
-              onboardingCompletedAt = CURRENT_TIMESTAMP,
+              role = 'test', emailVerified = ?,
+              onboardingCompletedAt = ?,
               autoApplyEnabled = 0
             WHERE id = ?`,
       args: [
@@ -79,6 +83,7 @@ async function main() {
         r.resumeUrl, r.resumeName,
         r.currentEmployer, r.currentTitle, r.school, r.degree,
         r.graduationYear, r.salaryExpectation,
+        now, now,
         testUserId,
       ],
     });
@@ -93,19 +98,23 @@ async function main() {
               needsSponsorship, remotePreference, race, pronouns,
               resumeUrl, resumeName, currentEmployer, currentTitle,
               school, degree, graduationYear, salaryExpectation,
-              onboardingCompletedAt, autoApplyEnabled, subscriptionTier
+              onboardingCompletedAt, autoApplyEnabled, subscriptionTier,
+              createdAt, monthlyAppResetAt
             ) VALUES (
-              ?, ?, 'test', CURRENT_TIMESTAMP,
+              ?, ?, 'test', ?,
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-              CURRENT_TIMESTAMP, 0, 'free'
+              ?, 0, 'free',
+              ?, ?
             )`,
       args: [
-        testUserId, TEST_EMAIL,
+        testUserId, TEST_EMAIL, now,
         r.firstName, r.lastName, r.phone, r.city, r.usState, r.countryOfResidence,
         r.linkedinUrl, r.yearsOfExperience, r.targetRole, r.workAuthorized,
         r.needsSponsorship, r.remotePreference, r.race, r.pronouns,
         r.resumeUrl, r.resumeName, r.currentEmployer, r.currentTitle,
         r.school, r.degree, r.graduationYear, r.salaryExpectation,
+        now,
+        now, now,
       ],
     });
   }
