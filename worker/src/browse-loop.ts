@@ -117,6 +117,19 @@ export async function processNextBrowseSession(): Promise<boolean> {
   }
 
   const session = result.rows[0] as unknown as BrowseSessionRow;
+
+  // Browserbase A/B: enable for a hashed percentage of userIds when a rollout
+  // percentage is configured. Session-scoped so concurrent sessions stay
+  // consistent with their bucket. Reads BROWSERBASE_ROLLOUT_PCT (0-100); if
+  // unset the env respects USE_BROWSERBASE as-is.
+  const bbRollout = parseInt(process.env.BROWSERBASE_ROLLOUT_PCT || "", 10);
+  if (!isNaN(bbRollout) && bbRollout >= 0 && bbRollout <= 100) {
+    const bucket = Array.from(session.userId).reduce((a, c) => (a + c.charCodeAt(0)) & 0xff, 0) % 100;
+    const useBB = bucket < bbRollout;
+    process.env.USE_BROWSERBASE = useBB ? "true" : "false";
+    log(session.id, "info", `Browserbase rollout: ${useBB ? "ENABLED" : "disabled"} (bucket=${bucket} threshold=${bbRollout})`, { userId: session.userId });
+  }
+
   log(session.id, "info", `Processing session for role: ${session.targetRole}`, { userId: session.userId });
 
   // Fetch user profile
