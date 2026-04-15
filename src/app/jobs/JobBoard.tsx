@@ -48,6 +48,7 @@ const internalJobPages: Record<string, string> = {
   "opp/1279": "/jobs/nomura-summer-analyst-program",
   "jobId=43140": "/jobs/ibm-software-engineer-apprentice",
   "connect-engineering-apprenticeship": "/jobs/airbnb-connect-apprenticeship",
+  "anthropic/jobs/5023394008": "/jobs/anthropic-fellows-program",
 };
 
 const TARGET_COMPANIES = new Set([
@@ -426,33 +427,33 @@ export default function JobBoard() {
       </section>
 
 
-      {/* Featured Opportunity */}
+      {/* Featured Opportunities */}
       <section className="bg-[var(--background)] pt-8 md:pt-12 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <button
-            onClick={() => router.push("/jobs/airbnb-connect-apprenticeship")}
+            onClick={() => router.push("/jobs/anthropic-fellows-program")}
             className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#ef562a] font-medium">Airbnb</span>
+                  <span className="text-[#ef562a] font-medium">Anthropic</span>
                   <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
-                    NOW OPEN
+                    APPLY BY APR 26
                   </span>
                 </div>
                 <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
-                  Connect Engineering Apprenticeship
+                  Anthropic Fellows Program
                 </h3>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
-                  <span>San Francisco (Hybrid)</span>
+                  <span>SF, London, Ontario or Remote (US)</span>
                   <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>~5 months</span>
+                  <span>4 months</span>
                   <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
-                  <span>April 2026</span>
+                  <span>$3,850/week + compute</span>
                 </div>
                 <p className="mt-3 text-sm text-[var(--gray-600)]">
-                  5-month paid apprenticeship for self-taught devs, bootcamp grads &amp; career changers. No CS degree required.
+                  4-month funded AI safety research fellowship with mentorship from Anthropic researchers. Python + US/UK/CA work auth required.
                 </p>
               </div>
               <div className="flex items-center gap-4">
@@ -530,6 +531,7 @@ export default function JobBoard() {
                   // Filter out jobs that are shown in the featured section
                   if (job.company === "JPMorgan" && job.title.includes("Emerging Talent")) return false;
                   if (job.company === "Airbnb" && job.title.includes("Connect Engineering")) return false;
+                  if (job.company === "Anthropic" && job.title.includes("Fellows")) return false;
                   return true;
                 })
                 .map((job) => (
