@@ -9,9 +9,53 @@
  *     our local machine saw. Upload to Vercel Blob.
  */
 
-import type { Page } from "playwright";
+import { chromium, type Page } from "playwright";
 
 let loggedEgressIp = false;
+let loggedBrowserBinary = false;
+
+/**
+ * On worker startup, log which Playwright browser binary is actually being
+ * resolved. We pin `channel: 'chromium'` in launch options to opt out of
+ * `chromium-headless-shell` (the stripped-down binary used by Playwright's
+ * default headless mode since v1.49). If the executable path still contains
+ * "headless-shell", the channel setting isn't taking effect — likely because
+ * the Dockerfile didn't `npx playwright install chromium` for the version
+ * we're actually running.
+ */
+export async function logBrowserBinaryOnce(): Promise<void> {
+  if (loggedBrowserBinary) return;
+  loggedBrowserBinary = true;
+  try {
+    const defaultPath = chromium.executablePath();
+    let chromiumChannelPath: string | null = null;
+    try {
+      // Newer Playwright supports passing options to executablePath()
+      chromiumChannelPath = (chromium as unknown as {
+        executablePath: (opts?: { channel?: string }) => string;
+      }).executablePath({ channel: "chromium" });
+    } catch {
+      chromiumChannelPath = "(unable to resolve channel:chromium path)";
+    }
+    const isHeadlessShell = /headless[-_]shell/i.test(chromiumChannelPath || defaultPath);
+    console.log(JSON.stringify({
+      ts: new Date().toISOString(),
+      level: isHeadlessShell ? "warn" : "info",
+      event: "browser_binary",
+      defaultPath,
+      chromiumChannelPath,
+      isHeadlessShell,
+      browsersPath: process.env.PLAYWRIGHT_BROWSERS_PATH ?? null,
+    }));
+  } catch (err) {
+    console.log(JSON.stringify({
+      ts: new Date().toISOString(),
+      level: "warn",
+      event: "browser_binary",
+      error: err instanceof Error ? err.message : String(err),
+    }));
+  }
+}
 
 export async function logEgressIpOnce(): Promise<void> {
   if (loggedEgressIp) return;

@@ -195,6 +195,16 @@ export async function getBrowser(): Promise<Browser> {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
+        // No GPU on Railway; software rasterization is the only path
+        "--disable-gpu",
+        "--disable-software-rasterizer",
+        // Renderer backgrounding throttles JS in headless windows (always
+        // "hidden") and contributes to perpetual instability of CSS animations
+        // — the dominant cause of locator.focus / .click timeouts.
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-renderer-backgrounding",
+        "--force-color-profile=srgb",
       ],
     });
   }
@@ -783,24 +793,26 @@ async function selectStaticDropdown(
     : optionName.source.replace(/\\/g, "").replace(/[\\^$.*+?()[\]{}|]/g, "").split("|")[0];
   const searchStr = valueText.slice(0, 12);
 
-  // --- Strategy A (PRIMARY): keyboard pattern ---
-  // Focus → clear any prior text → type to filter → wait for menu → Enter.
-  // This is the most reliable pattern because it doesn't depend on mouse
-  // events firing react-select's onMouseDown handler.
+  // --- Strategy A (PRIMARY): keyboard pattern with DOM-level focus ---
+  // Focus → clear → type to filter → wait for menu → Enter.
+  //
+  // Crucial: focus via element.focus() inside page.evaluate, NOT
+  // combobox.focus(). Linux headless Chromium often keeps React elements in
+  // a perpetually-unstable state (the bounding box changes every frame from
+  // CSS animations or React re-renders), and combobox.focus() will time out
+  // at the actionability layer even though the element is fully visible.
+  // element.focus() is a pure DOM call that bypasses Playwright's wait
+  // machinery entirely — it cannot time out for actionability reasons.
   try {
-    await combobox.focus({ timeout: 3000 });
+    await combobox.evaluate((el: HTMLElement) => el.focus()).catch(() => {});
     await frame.waitForTimeout(150);
-    // Clear any prior input
-    await combobox.press("Control+a").catch(() => {});
-    await combobox.press("Backspace").catch(() => {});
+    // Clear any prior input via raw keyboard (page-level, no actionability check)
+    await frame.page().keyboard.press("Control+a").catch(() => {});
+    await frame.page().keyboard.press("Backspace").catch(() => {});
     await frame.waitForTimeout(100);
-    // Type to filter — fast delay (internal UI filtering, not a form field;
-    // anti-bot mimicry doesn't apply here, and slower typing × multiple
-    // dropdowns × multiple sessions adds significant time per application).
-    for (const ch of searchStr) {
-      await combobox.press(ch).catch(() => {});
-      await frame.waitForTimeout(30 + Math.floor(Math.random() * 30));
-    }
+    // Type to filter — fast delay (internal UI filtering, not a form field).
+    // Use page.keyboard.type so we don't go through actionability checks per char.
+    await frame.page().keyboard.type(searchStr, { delay: 35 });
     // Wait for a menu to render in the combobox's shell
     const shell = combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first();
     const menuOpened = await shell.locator('.select__menu, .select__menu-list, [role="listbox"]')
@@ -810,7 +822,6 @@ async function selectStaticDropdown(
       .catch(() => false);
 
     if (menuOpened) {
-      // Try to click the exact option first (cleaner than Enter for common cases)
       let optionClicked = false;
       try {
         const option = await findOption(frame, optionName, combobox);
@@ -862,7 +873,48 @@ async function selectStaticDropdown(
     steps?.push(`selectStaticDropdown: toggle fallback err: ${(e as Error).message?.slice(0, 60)}`);
   }
 
-  throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (keyboard + toggle both failed)`);
+  // --- Strategy C (FORCE BYPASS): for elements that never reach "stable" ---
+  // Skips Playwright's stable + receives-events checks while keeping visible
+  // + enabled. Mouse events still dispatch normally and React's event
+  // delegation catches them. Used when the page is in a perpetual re-render
+  // cycle from CSS animations or cascading state updates.
+  try {
+    await combobox.waitFor({ state: "visible", timeout: 2000 });
+    await combobox.evaluate((el: HTMLElement) => el.focus()).catch(() => {});
+    await frame.waitForTimeout(150);
+    await frame.page().keyboard.press("Control+a").catch(() => {});
+    await frame.page().keyboard.press("Backspace").catch(() => {});
+    await frame.waitForTimeout(100);
+    await frame.page().keyboard.type(searchStr, { delay: 40 });
+    await frame.waitForTimeout(500);
+    const shell = combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first();
+    const menu = shell.locator('.select__menu, .select__menu-list, [role="listbox"]').first();
+    if (await menu.isVisible({ timeout: 1500 }).catch(() => false)) {
+      let clicked = false;
+      try {
+        const option = await findOption(frame, optionName, combobox);
+        await option.click({ force: true, timeout: 2000 });
+        clicked = true;
+      } catch {
+        // fall through to Enter
+      }
+      if (!clicked) {
+        await frame.page().keyboard.press("Enter");
+      }
+      await frame.waitForTimeout(400);
+      if (!(await isDropdownStillUnset(frame, combobox))) {
+        steps?.push(`selectStaticDropdown: force:true ok`);
+        return;
+      }
+      steps?.push(`selectStaticDropdown: force:true clicked but state unset`);
+    } else {
+      steps?.push(`selectStaticDropdown: force:true menu didn't open`);
+    }
+  } catch (e) {
+    steps?.push(`selectStaticDropdown: force:true err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (keyboard + toggle + force all failed)`);
 }
 
 async function selectStaticDropdownSafe(
@@ -2056,11 +2108,27 @@ async function _applyToJobInner(
     }
   }
 
+  // Disable CSS animations + reduced-motion media. React UI libraries inject
+  // pulse/skeleton/fade animations that change bounding boxes every animation
+  // frame, making Playwright's "stable" actionability check mathematically
+  // impossible to satisfy. Without this, locator.focus / .click / .scroll
+  // time out at the actionability layer even when the element is visible.
+  // Set up early so it applies to every navigation in this context.
+  await page.emulateMedia({ reducedMotion: "reduce" }).catch(() => {});
+  const animKillerCss = `*, *::before, *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }`;
+
   try {
     // Navigate to job page
     await page.goto(applyUrl, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {
       steps.push("networkidle timed out — proceeding");
     });
+    await page.addStyleTag({ content: animKillerCss }).catch(() => {});
     await page.waitForTimeout(2000);
     steps.push(`Navigated to: ${page.url()}`);
 
@@ -2079,6 +2147,7 @@ async function _applyToJobInner(
       await page.goto(atsApplyUrl, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {
         steps.push("ATS page networkidle timed out — proceeding");
       });
+      await page.addStyleTag({ content: animKillerCss }).catch(() => {});
       await page.waitForTimeout(2000);
       steps.push(`Navigated to ATS: ${page.url()}`);
 
