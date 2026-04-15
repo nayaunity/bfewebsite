@@ -183,6 +183,12 @@ export async function getBrowser(): Promise<Browser> {
   if (!browser || !browser.isConnected()) {
     const headless = process.env.HEADLESS !== "false";
     browser = await chromium.launch({
+      // channel: 'chromium' opts out of Playwright's `chromium-headless-shell`
+      // (a stripped-down binary used by default since Playwright 1.49) and uses
+      // the full Chromium binary. This restores headed-mode event semantics
+      // (mousedown handlers fire correctly on react-select) without requiring
+      // a graphical display. Critical for Linux Chromium on Railway.
+      channel: "chromium",
       headless,
       args: [
         "--disable-blink-features=AutomationControlled",
@@ -747,58 +753,114 @@ async function selectViaKeyboard(
   await frame.waitForTimeout(300);
 }
 
+/**
+ * Select a value in a react-select combobox.
+ *
+ * Strategy ordering reflects what actually works against react-select v5 on
+ * Linux Chromium (Railway). React-select binds the open-menu logic to
+ * `onMouseDown` on the control div — Playwright's `.click()` on the input
+ * focuses but doesn't always trigger the handler on Linux headless Chromium.
+ *
+ * The keyboard pattern (focus → clear → type → wait → Enter) is what
+ * `react-select-event` uses internally for its own tests. It avoids the
+ * mousedown discrepancy entirely because typing into a focused combobox
+ * native-opens the menu via React's onChange chain.
+ */
 async function selectStaticDropdown(
   frame: Frame,
   comboboxNamePattern: string | RegExp,
   optionName: string | RegExp,
   steps?: string[]
 ): Promise<void> {
-  // Close any previously open flyouts first (prevents intercept issues)
   await frame.page().keyboard.press("Escape").catch(() => {});
   await frame.waitForTimeout(300);
 
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
 
-  // --- Attempt 1: Click-based selection ---
-  await openFlyout(frame, combobox, steps);
-  await frame.waitForTimeout(500);
-  await isListboxOpen(frame, combobox, 2000); // settle the menu before option lookup
+  // Extract a short search string for typing
+  const valueText = typeof optionName === "string"
+    ? optionName
+    : optionName.source.replace(/\\/g, "").replace(/[\\^$.*+?()[\]{}|]/g, "").split("|")[0];
+  const searchStr = valueText.slice(0, 12);
 
-  let clickSucceeded = false;
+  // --- Strategy A (PRIMARY): keyboard pattern ---
+  // Focus → clear any prior text → type to filter → wait for menu → Enter.
+  // This is the most reliable pattern because it doesn't depend on mouse
+  // events firing react-select's onMouseDown handler.
   try {
-    const option = await findOption(frame, optionName, combobox);
-    await option.click({ timeout: 5000 });
-    clickSucceeded = true;
-  } catch {
-    await frame.page().keyboard.press("Escape").catch(() => {});
-    await frame.waitForTimeout(300);
-  }
-
-  if (clickSucceeded) {
-    // Blur to trigger validation
-    await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
-    await frame.waitForTimeout(500);
-
-    // Verify the selection registered in React state
-    if (!(await isDropdownStillUnset(frame, combobox))) {
-      steps?.push(`selectStaticDropdown: click+findOption ok`);
-      return;
+    await combobox.focus({ timeout: 3000 });
+    await frame.waitForTimeout(150);
+    // Clear any prior input
+    await combobox.press("Control+a").catch(() => {});
+    await combobox.press("Backspace").catch(() => {});
+    await frame.waitForTimeout(100);
+    // Type to filter — humanized delay
+    for (const ch of searchStr) {
+      await combobox.press(ch).catch(() => {});
+      await frame.waitForTimeout(humanTypingDelay());
     }
-    steps?.push(`selectStaticDropdown: click registered but state still unset`);
+    // Wait for a menu to render in the combobox's shell
+    const shell = combobox.locator('xpath=ancestor::*[contains(@class, "select-shell") or contains(@class, "select__container")][1]').first();
+    const menuOpened = await shell.locator('.select__menu, .select__menu-list, [role="listbox"]')
+      .first()
+      .waitFor({ state: "visible", timeout: 2500 })
+      .then(() => true)
+      .catch(() => false);
+
+    if (menuOpened) {
+      // Try to click the exact option first (cleaner than Enter for common cases)
+      let optionClicked = false;
+      try {
+        const option = await findOption(frame, optionName, combobox);
+        await option.click({ timeout: 2000 });
+        optionClicked = true;
+      } catch {
+        // Fall through to Enter
+      }
+      if (!optionClicked) {
+        await frame.page().keyboard.press("ArrowDown");
+        await frame.waitForTimeout(150);
+        await frame.page().keyboard.press("Enter");
+        await frame.waitForTimeout(300);
+      }
+      // Blur to commit
+      await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
+      await frame.waitForTimeout(400);
+      if (!(await isDropdownStillUnset(frame, combobox))) {
+        steps?.push(`selectStaticDropdown: keyboard pattern ok`);
+        return;
+      }
+      steps?.push(`selectStaticDropdown: keyboard typed but state still unset`);
+    } else {
+      steps?.push(`selectStaticDropdown: keyboard typed but menu didn't open`);
+    }
+  } catch (e) {
+    steps?.push(`selectStaticDropdown: keyboard err: ${(e as Error).message?.slice(0, 60)}`);
   }
 
-  // --- Attempt 2: Keyboard-based selection (fallback) ---
+  // --- Strategy B: toggle-based fallback (the old openFlyout cascade) ---
   await frame.page().keyboard.press("Escape").catch(() => {});
   await frame.waitForTimeout(300);
   await combobox.fill("").catch(() => {});
-  await frame.waitForTimeout(200);
+  await frame.waitForTimeout(150);
 
-  await selectViaKeyboard(frame, combobox, optionName);
-
-  if (await isDropdownStillUnset(frame, combobox)) {
-    throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (click + keyboard both failed)`);
+  try {
+    await openFlyout(frame, combobox, steps);
+    await frame.waitForTimeout(500);
+    await isListboxOpen(frame, combobox, 2000);
+    const option = await findOption(frame, optionName, combobox);
+    await option.click({ timeout: 4000 });
+    await frame.locator("body").click({ position: { x: 1, y: 1 }, force: true }).catch(() => {});
+    await frame.waitForTimeout(400);
+    if (!(await isDropdownStillUnset(frame, combobox))) {
+      steps?.push(`selectStaticDropdown: toggle fallback ok`);
+      return;
+    }
+  } catch (e) {
+    steps?.push(`selectStaticDropdown: toggle fallback err: ${(e as Error).message?.slice(0, 60)}`);
   }
-  steps?.push(`selectStaticDropdown: keyboard fallback ok`);
+
+  throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (keyboard + toggle both failed)`);
 }
 
 async function selectStaticDropdownSafe(
