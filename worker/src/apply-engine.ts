@@ -1099,6 +1099,10 @@ async function handleVerificationCode(
       return { success: false, error: "Submit button still disabled after verification code entry", steps };
     }
 
+    if (process.env.DRY_RUN === "true") {
+      steps.push("DRY_RUN — verification form filled, submit SKIPPED");
+      return { success: true, steps };
+    }
     const urlBefore = page.url();
     await submitButton.click({ timeout: 5000 });
     steps.push("Clicked Submit after verification code");
@@ -1796,6 +1800,10 @@ async function greenhouseDeterministicFill(
         return { success: false, error: "Submit button disabled — unknown reason", steps };
       }
     } else {
+      if (process.env.DRY_RUN === "true") {
+        steps.push("DRY_RUN — form filled, submit SKIPPED");
+        return { success: true, steps };
+      }
       await submitButton.click({ timeout: 5000 });
       steps.push("Clicked Submit");
       await page.waitForTimeout(5000);
@@ -2363,6 +2371,24 @@ async function _applyToJobInner(
       }
 
       try {
+        // DRY_RUN: short-circuit any final Submit click with success=true.
+        // We've filled the form; we just don't want to actually send the
+        // application. Captures the "would this have worked?" signal
+        // without polluting the applicant's real application history.
+        if (
+          process.env.DRY_RUN === "true" &&
+          action.action === "click" &&
+          action.name &&
+          /submit/i.test(action.name)
+        ) {
+          return {
+            success: true,
+            steps: [...steps, "DRY_RUN — form filled, submit SKIPPED"],
+            tailored,
+            tailoredResumeUrl,
+          };
+        }
+
         await executeRoleAction(page, action, tmpPath, steps);
         await page.waitForTimeout(2000);
 
