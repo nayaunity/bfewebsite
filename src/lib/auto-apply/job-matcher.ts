@@ -319,6 +319,31 @@ const BLOCKED_COMPANIES = new Set([
   "grammarly",   // Job board deactivated
 ]);
 
+// URL patterns with structural failure modes (not fixable by a better form-filler).
+// When Browserbase + deterministic handlers lift the baseline, revisit this list.
+// See /admin/apply-exclusions for the live view.
+const EXCLUDED_URL_PATTERNS: { pattern: RegExp; reason: string }[] = [
+  {
+    pattern: /stripe\.com\/jobs\/listing\/.*(intern|new[-_]?grad|university)/i,
+    reason: "Stripe intern/new-grad: 8-min timeout cluster (88 cohort failures)",
+  },
+];
+
+export function isUrlExcluded(url: string): { excluded: boolean; reason?: string } {
+  for (const { pattern, reason } of EXCLUDED_URL_PATTERNS) {
+    if (pattern.test(url)) return { excluded: true, reason };
+  }
+  return { excluded: false };
+}
+
+export function getExcludedUrlPatterns() {
+  return EXCLUDED_URL_PATTERNS.map(({ pattern, reason }) => ({
+    pattern: pattern.source,
+    flags: pattern.flags,
+    reason,
+  }));
+}
+
 // ============================================================================
 // MAIN MATCHING FUNCTION
 // ============================================================================
@@ -411,6 +436,7 @@ export async function matchJobsForUser(
 
   for (const job of catalogJobs) {
     if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
+    if (isUrlExcluded(job.applyUrl).excluded) continue;
     if (appliedUrls.has(job.applyUrl)) continue;
 
     const roleScore = roleMatchScore(job.title, keywordSets);

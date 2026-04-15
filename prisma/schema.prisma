@@ -58,6 +58,8 @@ model User {
   currentPeriodEnd    DateTime?
   monthlyAppCount     Int              @default(0)
   monthlyTailorCount  Int              @default(0)
+  resumeBuilderUsed   Boolean          @default(false)
+  workLocations       String?
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
   accounts            Account[]

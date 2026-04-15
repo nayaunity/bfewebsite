@@ -6,6 +6,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { waitForVerificationCode } from "./verification";
 import { tailorResume, fetchJobDescription, canTailorResume, incrementTailorQuota } from "./tailor-resume";
 import { captureFailureSnapshot } from "./diagnostics";
+import { fillCommonGates, ashbyIdentityFill, leverIdentityFill } from "./common-gates";
 
 const anthropic = new Anthropic();
 
@@ -2188,6 +2189,23 @@ async function _applyToJobInner(
       steps.push("Deterministic handler did not complete — falling back to Claude agent loop");
     }
 
+    // Pre-pass: run common gate handlers for non-Greenhouse paths BEFORE the
+    // Claude loop. Answers work-auth, sponsorship, in-office acknowledgements,
+    // cert checkboxes, race/ethnicity decline-to-answer, and other stable
+    // gates deterministically. Silent no-op on fields that aren't present.
+    // Greenhouse has its own extensive filler (greenhouseDeterministicFill)
+    // that covers the same ground; skip this pre-pass there to avoid double-
+    // filling.
+    if (ats !== "Greenhouse") {
+      if (ats === "Ashby") {
+        await ashbyIdentityFill(page, applicant, steps).catch(() => {});
+      } else if (ats === "Lever") {
+        await leverIdentityFill(page, applicant, steps).catch(() => {});
+      }
+      await fillCommonGates(page, applicant, steps).catch(() => {});
+      await page.waitForTimeout(500);
+    }
+
     // GENERIC PATH: Claude agent loop with accessibility snapshots
     let previousSnapshot = "";
     let stuckCount = 0;
@@ -2246,6 +2264,18 @@ async function _applyToJobInner(
         if (fieldAttempts[fieldKey] >= 3 && !skippedFields.includes(fieldKey)) {
           skippedFields.push(fieldKey);
           steps.push(`SKIPPING field "${fieldKey}" after ${fieldAttempts[fieldKey]} failed attempts`);
+          // Cascade bailout: if we've already skipped 3+ fields the form is
+          // structurally broken for us — don't burn 20 more steps hoping Claude
+          // will route around it.
+          if (skippedFields.length >= 3) {
+            const snap = await captureFailureSnapshot(page, `stuck-cascade-${new URL(applyUrl).hostname}`);
+            const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
+            return {
+              success: false,
+              error: `Stuck: ${skippedFields.length} fields skipped without resolution${suffix}`,
+              steps,
+            };
+          }
           continue;
         }
       }

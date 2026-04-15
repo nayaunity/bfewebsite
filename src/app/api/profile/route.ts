@@ -19,7 +19,7 @@ export async function PATCH(request: NextRequest) {
       pronouns, willingToRelocate, remotePreference, earliestStartDate,
       graduationYear, additionalCerts, salaryExpectation,
       gender, race, hispanicOrLatino, veteranStatus, disabilityStatus,
-      applicationAnswers,
+      applicationAnswers, workLocations,
     } = body;
 
     const data: Record<string, unknown> = {};
@@ -112,6 +112,7 @@ export async function PATCH(request: NextRequest) {
       { key: "veteranStatus", value: veteranStatus, maxLen: 200 },
       { key: "disabilityStatus", value: disabilityStatus, maxLen: 200 },
       { key: "applicationAnswers", value: applicationAnswers, maxLen: 50000 },
+      { key: "workLocations", value: workLocations, maxLen: 2000 },
     ];
 
     for (const field of optionalStringFields) {

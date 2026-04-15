@@ -57,14 +57,18 @@ export function OnboardingSync() {
         profileUpdate.yearsOfExperience = expMap[data.experience[0]] || "5";
       }
 
-      // Location → city + remotePreference
+      // Location → workLocations + remotePreference
+      // NOTE: `data.locations` is the wizard's "Where do you want to work?"
+      // answer — preferred *work* cities, not residence. Never write it to
+      // the `city` profile field (which is residence). User sets `city`
+      // themselves on /profile via LocationSection.
       if (data.locations?.length > 0) {
         const hasRemote = data.locations.includes("Remote US");
-        const physicalLoc = data.locations.find((l: string) => l !== "Remote US");
-        if (physicalLoc) {
-          profileUpdate.city = physicalLoc;
+        const workLocs = data.locations.filter((l: string) => l !== "Remote US");
+        if (workLocs.length > 0) {
+          profileUpdate.workLocations = JSON.stringify(workLocs);
         }
-        if (hasRemote && physicalLoc) {
+        if (hasRemote && workLocs.length > 0) {
           profileUpdate.remotePreference = "Remote or Hybrid";
         } else if (hasRemote) {
           profileUpdate.remotePreference = "Remote";

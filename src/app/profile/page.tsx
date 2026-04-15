@@ -59,6 +59,7 @@ async function getUserData(userId: string) {
       graduationYear: true,
       additionalCerts: true,
       city: true,
+      workLocations: true,
       yearsOfExperience: true,
       targetRole: true,
       salaryExpectation: true,
@@ -123,15 +124,19 @@ async function backfillFromOnboarding(user: NonNullable<Awaited<ReturnType<typeo
     if (!user.yearsOfExperience && data.experience?.length > 0) {
       updates.yearsOfExperience = EXP_MAP[data.experience[0]] || "5";
     }
-    if (!user.city && data.locations?.length > 0) {
-      const physicalLoc = data.locations.find((l: string) => l !== "Remote US");
-      if (physicalLoc) updates.city = physicalLoc;
-    }
-    if (!user.remotePreference && data.locations?.length > 0) {
-      const hasRemote = data.locations.includes("Remote US");
-      const hasPhysical = data.locations.some((l: string) => l !== "Remote US");
-      if (hasRemote && hasPhysical) updates.remotePreference = "Remote or Hybrid";
-      else if (hasRemote) updates.remotePreference = "Remote";
+    // `data.locations` is preferred WORK cities from the wizard — never residence.
+    // Write to workLocations; never touch `city` (user sets that on /profile).
+    if (data.locations?.length > 0) {
+      const workLocs = data.locations.filter((l: string) => l !== "Remote US");
+      if (workLocs.length > 0 && !user.workLocations) {
+        updates.workLocations = JSON.stringify(workLocs);
+      }
+      if (!user.remotePreference) {
+        const hasRemote = data.locations.includes("Remote US");
+        const hasPhysical = workLocs.length > 0;
+        if (hasRemote && hasPhysical) updates.remotePreference = "Remote or Hybrid";
+        else if (hasRemote) updates.remotePreference = "Remote";
+      }
     }
     if (!user.salaryExpectation && data.minSalary && data.minSalary > 0) {
       updates.salaryExpectation = `$${Number(data.minSalary).toLocaleString()}+`;
