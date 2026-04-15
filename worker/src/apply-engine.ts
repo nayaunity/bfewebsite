@@ -1969,20 +1969,23 @@ export async function applyToJob(
   jobTitle?: string,
   userId?: string
 ): Promise<ApplyResult> {
-  // Wrap entire application in a timeout to prevent hanging
+  // Shared steps array so the timeout path can recover the partial trace
+  const sharedSteps: string[] = [];
+
   const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
     setTimeout(() => reject(new Error(`Application timed out after ${APPLICATION_TIMEOUT_LABEL}`)), APPLICATION_TIMEOUT_MS)
   );
 
-  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole, subscriptionTier, jobTitle, userId);
+  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole, subscriptionTier, jobTitle, userId, sharedSteps);
 
   try {
     return await Promise.race([applyPromise, timeoutPromise]);
   } catch (err) {
+    // Timeout: return the partial trace so we can see what the agent was doing
     return {
       success: false,
       error: err instanceof Error ? err.message : "Application timed out",
-      steps: [`Timed out after ${APPLICATION_TIMEOUT_LABEL}`],
+      steps: [...sharedSteps, `Timed out after ${APPLICATION_TIMEOUT_LABEL}`],
     };
   }
 }
@@ -1995,11 +1998,14 @@ async function _applyToJobInner(
   targetRole?: string,
   subscriptionTier?: string,
   jobTitle?: string,
-  userId?: string
+  userId?: string,
+  sharedSteps?: string[]
 ): Promise<ApplyResult> {
   const context = await createStealthContext();
   const page = await context.newPage();
-  const steps: string[] = [];
+  // Use the shared steps array if provided so the outer timeout handler
+  // can recover the partial trace; otherwise fall back to a local array.
+  const steps: string[] = sharedSteps ?? [];
 
   // Download resume to temp file
   let tmpPath: string | null = null;
