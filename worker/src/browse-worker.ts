@@ -14,11 +14,20 @@ async function main() {
     try {
       const processed = await processNextBrowseSession();
       if (processed) {
+        // Release the Browserbase session between BrowseSessions — leaving it
+        // idle costs minutes. Vanilla Playwright is a local process, so we can
+        // leave it warm.
+        if (process.env.USE_BROWSERBASE === "true") {
+          await closeBrowser();
+        }
         console.log("\nSession complete. Checking for more...\n");
         continue; // Check immediately for another session
       }
     } catch (error) {
       console.error("Error processing session:", error);
+      if (process.env.USE_BROWSERBASE === "true") {
+        await closeBrowser().catch(() => {});
+      }
     }
 
     await delay(POLL_INTERVAL_MS);

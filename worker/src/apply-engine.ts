@@ -180,40 +180,102 @@ function detectATS(url: string, page?: Page): string {
   return "Unknown";
 }
 
-export async function getBrowser(): Promise<Browser> {
-  if (!browser || !browser.isConnected()) {
-    const headless = process.env.HEADLESS !== "false";
-    browser = await chromium.launch({
-      // channel: 'chromium' opts out of Playwright's `chromium-headless-shell`
-      // (a stripped-down binary used by default since Playwright 1.49) and uses
-      // the full Chromium binary. This restores headed-mode event semantics
-      // (mousedown handlers fire correctly on react-select) without requiring
-      // a graphical display. Critical for Linux Chromium on Railway.
-      channel: "chromium",
-      headless,
-      args: [
-        "--disable-blink-features=AutomationControlled",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        // No GPU on Railway; software rasterization is the only path
-        "--disable-gpu",
-        "--disable-software-rasterizer",
-        // Renderer backgrounding throttles JS in headless windows (always
-        // "hidden") and contributes to perpetual instability of CSS animations
-        // — the dominant cause of locator.focus / .click timeouts.
-        "--disable-background-timer-throttling",
-        "--disable-backgrounding-occluded-windows",
-        "--disable-renderer-backgrounding",
-        "--force-color-profile=srgb",
-      ],
-    });
+/**
+ * Active Browserbase session id (if connected via CDP). Kept so we can close
+ * it explicitly on closeBrowser() — Browserbase charges per session and the
+ * minute-counter keeps running until the session is ended or times out.
+ */
+let browserbaseSessionId: string | null = null;
+
+async function createBrowserbaseSession(): Promise<{ id: string; connectUrl: string }> {
+  const apiKey = process.env.BROWSERBASE_API_KEY;
+  const projectId = process.env.BROWSERBASE_PROJECT_ID;
+  if (!apiKey || !projectId) {
+    throw new Error("BROWSERBASE_API_KEY and BROWSERBASE_PROJECT_ID are required when USE_BROWSERBASE=true");
   }
+  // Residential proxies lift the spam-flag rate but are a paid-plan feature.
+  // Opt in via BROWSERBASE_USE_PROXIES=true when on a paid plan.
+  const useProxies = process.env.BROWSERBASE_USE_PROXIES === "true";
+  const res = await fetch("https://api.browserbase.com/v1/sessions", {
+    method: "POST",
+    headers: {
+      "x-bb-api-key": apiKey,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      projectId,
+      ...(useProxies ? { proxies: true } : {}),
+      browserSettings: {
+        blockAds: true,
+        viewport: { width: 1440, height: 900 },
+      },
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Browserbase session create failed ${res.status}: ${text.slice(0, 200)}`);
+  }
+  const data = (await res.json()) as { id: string; connectUrl: string };
+  return data;
+}
+
+export async function getBrowser(): Promise<Browser> {
+  if (browser && browser.isConnected()) return browser;
+
+  // Browserbase path — managed Chromium on residential IPs. Swap via env.
+  if (process.env.USE_BROWSERBASE === "true") {
+    const session = await createBrowserbaseSession();
+    browserbaseSessionId = session.id;
+    browser = await chromium.connectOverCDP(session.connectUrl);
+    return browser;
+  }
+
+  const headless = process.env.HEADLESS !== "false";
+  browser = await chromium.launch({
+    // channel: 'chromium' opts out of Playwright's `chromium-headless-shell`
+    // (a stripped-down binary used by default since Playwright 1.49) and uses
+    // the full Chromium binary. This restores headed-mode event semantics
+    // (mousedown handlers fire correctly on react-select) without requiring
+    // a graphical display. Critical for Linux Chromium on Railway.
+    channel: "chromium",
+    headless,
+    args: [
+      "--disable-blink-features=AutomationControlled",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      // No GPU on Railway; software rasterization is the only path
+      "--disable-gpu",
+      "--disable-software-rasterizer",
+      // Renderer backgrounding throttles JS in headless windows (always
+      // "hidden") and contributes to perpetual instability of CSS animations
+      // — the dominant cause of locator.focus / .click timeouts.
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-renderer-backgrounding",
+      "--force-color-profile=srgb",
+    ],
+  });
   return browser;
 }
 
 export async function createStealthContext(): Promise<BrowserContext> {
   const b = await getBrowser();
+
+  // Browserbase provides a pre-configured context over CDP — reuse the
+  // existing one rather than creating a new blank context (which wouldn't
+  // inherit residential-proxy routing or the managed fingerprint).
+  if (process.env.USE_BROWSERBASE === "true") {
+    const contexts = b.contexts();
+    const context = contexts.length > 0 ? contexts[0] : await b.newContext();
+    await context.addInitScript(`
+      if (typeof globalThis.__name === "undefined") {
+        globalThis.__name = function(fn) { return fn; };
+      }
+    `);
+    return context;
+  }
+
   const context = await b.newContext({
     userAgent: randomUserAgent(),
     viewport: { width: 1440, height: 900 },
@@ -319,8 +381,28 @@ export function humanTypingDelay(): number {
 
 export async function closeBrowser(): Promise<void> {
   if (browser) {
-    await browser.close();
+    try {
+      await browser.close();
+    } catch {
+      /* ignore — Browserbase closes its side on session end */
+    }
     browser = null;
+  }
+  // Explicitly end the Browserbase session so we stop being billed.
+  if (browserbaseSessionId && process.env.BROWSERBASE_API_KEY) {
+    try {
+      await fetch(`https://api.browserbase.com/v1/sessions/${browserbaseSessionId}`, {
+        method: "POST",
+        headers: {
+          "x-bb-api-key": process.env.BROWSERBASE_API_KEY,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ status: "REQUEST_RELEASE" }),
+      });
+    } catch {
+      /* best effort */
+    }
+    browserbaseSessionId = null;
   }
 }
 
