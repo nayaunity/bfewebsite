@@ -2134,11 +2134,26 @@ export async function applyToJob(
   // Shared steps array so the timeout path can recover the partial trace
   const sharedSteps: string[] = [];
 
+  // Track the active page so we can force-close it on timeout. Without this,
+  // Promise.race returns but _applyToJobInner keeps running in the background
+  // holding the BB context busy — the next job can't start cleanly.
+  let activePage: import("playwright").Page | null = null;
+
   const timeoutPromise = new Promise<ApplyResult>((_, reject) =>
-    setTimeout(() => reject(new Error(`Application timed out after ${APPLICATION_TIMEOUT_LABEL}`)), APPLICATION_TIMEOUT_MS)
+    setTimeout(async () => {
+      if (activePage) {
+        await activePage.close().catch(() => {});
+        activePage = null;
+      }
+      reject(new Error(`Application timed out after ${APPLICATION_TIMEOUT_LABEL}`));
+    }, APPLICATION_TIMEOUT_MS)
   );
 
-  const applyPromise = _applyToJobInner(applyUrl, applicant, resumeUrl, resumeName, targetRole, subscriptionTier, jobTitle, userId, sharedSteps);
+  const applyPromise = _applyToJobInner(
+    applyUrl, applicant, resumeUrl, resumeName, targetRole,
+    subscriptionTier, jobTitle, userId, sharedSteps,
+    (page) => { activePage = page; }
+  );
 
   try {
     return await Promise.race([applyPromise, timeoutPromise]);
@@ -2161,10 +2176,12 @@ async function _applyToJobInner(
   subscriptionTier?: string,
   jobTitle?: string,
   userId?: string,
-  sharedSteps?: string[]
+  sharedSteps?: string[],
+  onPage?: (page: import("playwright").Page) => void
 ): Promise<ApplyResult> {
   const context = await createStealthContext();
   const page = await context.newPage();
+  if (onPage) onPage(page);
   // Use the shared steps array if provided so the outer timeout handler
   // can recover the partial trace; otherwise fall back to a local array.
   const steps: string[] = sharedSteps ?? [];
