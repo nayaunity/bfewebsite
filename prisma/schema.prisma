@@ -60,6 +60,7 @@ model User {
   monthlyTailorCount  Int              @default(0)
   resumeBuilderUsed   Boolean          @default(false)
   workLocations       String?
+  conversionEmailSentAt DateTime?
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
   accounts            Account[]
@@ -367,6 +368,19 @@ model IntegrationRun {
 
   @@index([kind, startedAt])
   @@index([status])
+}
+
+model CapConversionDigest {
+  id               String   @id @default(cuid())
+  token            String   @unique
+  candidateUserIds String   // JSON array of userIds
+  status           String   @default("pending") // pending | approved | expired
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+  approvedAt       DateTime?
+  sentCount        Int      @default(0)
+
+  @@index([status, expiresAt])
 }
 
 model ScrapeRun {
