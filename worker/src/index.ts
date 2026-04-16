@@ -48,6 +48,15 @@ app.get("/health", (_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Worker running on port ${PORT} (max ${MAX_CONCURRENT} concurrent sessions)`);
+  console.log(JSON.stringify({
+    event: "env_check",
+    USE_BROWSERBASE: process.env.USE_BROWSERBASE || "(unset)",
+    BROWSERBASE_ROLLOUT_PCT: process.env.BROWSERBASE_ROLLOUT_PCT || "(unset)",
+    BROWSERBASE_API_KEY_set: !!process.env.BROWSERBASE_API_KEY,
+    BROWSERBASE_PROJECT_ID_set: !!process.env.BROWSERBASE_PROJECT_ID,
+    BROWSERBASE_USE_PROXIES: process.env.BROWSERBASE_USE_PROXIES || "(unset)",
+    ANTHROPIC_API_KEY_set: !!process.env.ANTHROPIC_API_KEY,
+  }));
   logEgressIpOnce().catch(() => { /* non-fatal */ });
   logBrowserBinaryOnce().catch(() => { /* non-fatal */ });
   startPolling();
