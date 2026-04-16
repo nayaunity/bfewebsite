@@ -30,7 +30,13 @@ const TIER_LIMITS: Record<string, { appsPerMonth: number }> = {
 };
 
 const DAILY_CAP = 10;
-const BLOCKED_COMPANIES = ["duolingo", "samsara", "grammarly"];
+// Keep in sync with src/lib/auto-apply/job-matcher.ts BLOCKED_COMPANIES.
+// Ashby cluster (openai, ramp, notion, perplexity, linear, elevenlabs) is
+// hard-excluded until BB+proxies is re-enabled — see comment there.
+const BLOCKED_COMPANIES = [
+  "duolingo", "samsara", "grammarly",
+  "openai", "ramp", "notion", "perplexity", "linear", "elevenlabs",
+];
 
 const STOP_WORDS = new Set([
   "engineer", "engineering", "senior", "junior", "staff", "principal",

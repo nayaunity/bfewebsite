@@ -317,6 +317,18 @@ const BLOCKED_COMPANIES = new Set([
   "duolingo",    // Requires ATS login
   "samsara",     // Empty iframes — form never loads
   "grammarly",   // Job board deactivated
+  // Ashby anti-bot cluster — 0 successes across 30d without residential proxies.
+  // Re-enable when USE_BROWSERBASE=true with BROWSERBASE_USE_PROXIES=true is
+  // flipped on in prod. Without BB, matching these just creates cooldown cascade
+  // noise: first submit spam-flags → 24h cooldown → rest of user's matched jobs
+  // at that company get skipped → low apply-rate for the user, yellow-skip noise
+  // in the session log.
+  "openai",       // 0/228 attempts (30d)
+  "ramp",         // 0/135
+  "notion",       // 0/83
+  "perplexity",   // 1/X (Ashby anti-bot hits ~100% of the time)
+  "linear",       // 1/X (Ashby anti-bot)
+  "elevenlabs",   // Ashby anti-bot
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).
