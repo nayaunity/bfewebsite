@@ -500,7 +500,11 @@ interface RoleAction {
 }
 
 const MAX_STEPS = 25;
-const APPLICATION_TIMEOUT_MS = 12 * 60 * 1000; // 12 minutes max per application (bumped from 8 to accommodate humanized typing + full chromium)
+// BB adds ~200-500ms per Playwright action; a form with 100-300 actions can
+// eat 30-150s of pure network overhead. Give the agent more headroom.
+const APPLICATION_TIMEOUT_MS = process.env.USE_BROWSERBASE === "true"
+  ? 18 * 60 * 1000
+  : 12 * 60 * 1000;
 const APPLICATION_TIMEOUT_LABEL = `${Math.round(APPLICATION_TIMEOUT_MS / 60000)} minutes`;
 
 // ============================================================================
