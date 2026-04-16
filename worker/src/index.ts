@@ -34,6 +34,15 @@ app.get("/health", (_req, res) => {
     uptime: Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000),
     startedAt,
     timestamp: new Date().toISOString(),
+    env: {
+      USE_BROWSERBASE: process.env.USE_BROWSERBASE || "(unset)",
+      BROWSERBASE_ROLLOUT_PCT: process.env.BROWSERBASE_ROLLOUT_PCT || "(unset)",
+      BROWSERBASE_API_KEY_SET: !!process.env.BROWSERBASE_API_KEY,
+      BROWSERBASE_PROJECT_ID_SET: !!process.env.BROWSERBASE_PROJECT_ID,
+      BROWSERBASE_USE_PROXIES: process.env.BROWSERBASE_USE_PROXIES || "(unset)",
+      ANTHROPIC_API_KEY_SET: !!process.env.ANTHROPIC_API_KEY,
+      DATABASE_URL_SET: !!process.env.DATABASE_URL,
+    },
   });
 });
 
