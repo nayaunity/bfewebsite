@@ -215,6 +215,12 @@ async function createBrowserbaseSession(): Promise<{ id: string; connectUrl: str
     body: JSON.stringify({
       projectId,
       ...(useProxies ? { proxies: true } : {}),
+      // Keep the session alive long enough for our 12-min-per-job timeout.
+      // Default BB timeout is 5 min; we need at least 15 min per session
+      // (12 min form fill + 3 min overhead). Set to 30 min to cover a
+      // multi-job session without reconnecting.
+      keepAlive: true,
+      timeout: 1800,
       browserSettings: {
         blockAds: true,
         viewport: { width: 1440, height: 900 },
