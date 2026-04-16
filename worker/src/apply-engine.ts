@@ -190,6 +190,16 @@ let browserbaseSessionId: string | null = null;
 async function createBrowserbaseSession(): Promise<{ id: string; connectUrl: string }> {
   const apiKey = process.env.BROWSERBASE_API_KEY;
   const projectId = process.env.BROWSERBASE_PROJECT_ID;
+  console.log(JSON.stringify({
+    event: "bb_session_create",
+    apiKey_type: typeof apiKey,
+    apiKey_len: apiKey?.length || 0,
+    apiKey_truthy: !!apiKey,
+    projectId_type: typeof projectId,
+    projectId_len: projectId?.length || 0,
+    projectId_truthy: !!projectId,
+    USE_BROWSERBASE: process.env.USE_BROWSERBASE,
+  }));
   if (!apiKey || !projectId) {
     throw new Error("BROWSERBASE_API_KEY and BROWSERBASE_PROJECT_ID are required when USE_BROWSERBASE=true");
   }
