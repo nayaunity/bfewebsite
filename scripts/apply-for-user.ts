@@ -130,10 +130,18 @@ async function findMatchingJobs(
       ? user.yearsOfExperience
       : parseInt(String(user.yearsOfExperience)) || 2;
 
+  // Filter companies on active cooldown (spam-flag → 24h skip)
+  const cooldowns = await prisma.companyCooldown.findMany({
+    where: { cooldownUntil: { gt: new Date() } },
+    select: { companySlug: true },
+  });
+  const cooldownSlugs = new Set(cooldowns.map((c) => c.companySlug));
+
   const scored: MatchedJob[] = [];
 
   for (const job of allJobs) {
     if (BLOCKED_COMPANIES.includes(job.companySlug?.toLowerCase() || "")) continue;
+    if (cooldownSlugs.has(job.companySlug?.toLowerCase() || "")) continue;
     if (appliedUrls.has(job.applyUrl || "")) continue;
     if (!job.applyUrl) continue;
 

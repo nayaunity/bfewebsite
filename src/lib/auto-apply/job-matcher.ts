@@ -431,11 +431,21 @@ export async function matchJobsForUser(
     ...directApplied.map((a) => a.job.applyUrl),
   ]);
 
+  // Pre-load active company cooldowns so the matcher doesn't serve jobs
+  // that the browse-loop will immediately skip. Avoids filling the user's
+  // match list with yellow "skipped — company on cooldown" entries.
+  const cooldowns = await prisma.companyCooldown.findMany({
+    where: { cooldownUntil: { gt: new Date() } },
+    select: { companySlug: true },
+  });
+  const cooldownSlugs = new Set(cooldowns.map((c) => c.companySlug));
+
   const scored: MatchedJob[] = [];
   const jobDescriptions = new Map<string, string>();
 
   for (const job of catalogJobs) {
     if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
+    if (cooldownSlugs.has(job.companySlug)) continue;
     if (isUrlExcluded(job.applyUrl).excluded) continue;
     if (appliedUrls.has(job.applyUrl)) continue;
 
