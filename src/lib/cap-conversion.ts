@@ -198,16 +198,14 @@ Naya`;
 }
 
 /**
- * Find users who capped out ~3 days ago and haven't received the conversion email.
- * Definition of "capped 3 days ago": their 5th successful BrowseDiscovery.applied
- * was created between 96h and 72h ago.
+ * Find users who capped out within the last 24 hours and haven't received the
+ * conversion email. "Capped" = their 5th successful BrowseDiscovery.applied
+ * was created in the last 24h.
  */
 export async function findCapConversionCandidates(): Promise<
   { userId: string; email: string; cappedAt: Date }[]
 > {
-  const now = Date.now();
-  const windowStart = new Date(now - 96 * 60 * 60 * 1000);
-  const windowEnd = new Date(now - 72 * 60 * 60 * 1000);
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   const users = await prisma.user.findMany({
     where: {
@@ -231,7 +229,7 @@ export async function findCapConversionCandidates(): Promise<
     });
     if (applies.length < 5) continue;
     const fifthCreatedAt = applies[4].createdAt;
-    if (fifthCreatedAt >= windowStart && fifthCreatedAt <= windowEnd) {
+    if (fifthCreatedAt >= since) {
       candidates.push({ userId: u.id, email: u.email, cappedAt: fifthCreatedAt });
     }
   }
