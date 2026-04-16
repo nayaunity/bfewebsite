@@ -283,7 +283,10 @@ export async function createStealthContext(): Promise<BrowserContext> {
   // inherit residential-proxy routing or the managed fingerprint).
   if (process.env.USE_BROWSERBASE === "true") {
     const contexts = b.contexts();
-    const context = contexts.length > 0 ? contexts[0] : await b.newContext();
+    if (contexts.length > 0) {
+      return contexts[0];
+    }
+    const context = await b.newContext();
     await context.addInitScript(`
       if (typeof globalThis.__name === "undefined") {
         globalThis.__name = function(fn) { return fn; };
@@ -2471,6 +2474,15 @@ async function _applyToJobInner(
   } finally {
     if (tmpPath) try { unlinkSync(tmpPath); } catch {}
     if (tailoredPath && tailoredPath !== tmpPath) try { unlinkSync(tailoredPath); } catch {}
-    await context.close();
+    // On Browserbase, the context IS the managed session — closing it kills
+    // the CDP connection and breaks all subsequent jobs. Close only the page.
+    // On vanilla Playwright, close the full context for isolation.
+    if (process.env.USE_BROWSERBASE === "true") {
+      for (const p of context.pages()) {
+        await p.close().catch(() => {});
+      }
+    } else {
+      await context.close();
+    }
   }
 }
