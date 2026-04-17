@@ -8,11 +8,15 @@ export const metadata = {
   description: "Set up your auto-apply profile and start landing interviews at top tech companies.",
 };
 
-export default async function GetStartedPage() {
+interface Props {
+  searchParams: Promise<{ legacy?: string }>;
+}
+
+export default async function GetStartedPage({ searchParams }: Props) {
+  const { legacy } = await searchParams;
   const session = await auth();
 
-  // Already onboarded → go to applications
-  if (session?.user) {
+  if (session?.user?.id) {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { onboardingCompletedAt: true },
@@ -20,6 +24,12 @@ export default async function GetStartedPage() {
     if (user?.onboardingCompletedAt) {
       redirect("/profile/applications");
     }
+  }
+
+  // New resume-first flow lives at /start. Keep the old 25-step wizard
+  // available under ?legacy=1 as a bailout for the next 2 weeks.
+  if (legacy !== "1") {
+    redirect("/start");
   }
 
   return <OnboardingWizard isSignedIn={!!session?.user} />;

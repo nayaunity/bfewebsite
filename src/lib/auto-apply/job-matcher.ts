@@ -360,33 +360,31 @@ export function getExcludedUrlPatterns() {
 // MAIN MATCHING FUNCTION
 // ============================================================================
 
-export async function matchJobsForUser(
-  userId: string,
-  maxJobs: number = 10
+export interface MatchProfile {
+  targetRole: string | null;
+  remotePreference: string | null;
+  usState: string | null;
+  city: string | null;
+  yearsOfExperience: string | null;
+  countryOfResidence: string | null;
+  degree: string | null;
+  school: string | null;
+}
+
+export async function matchJobsForProfile(
+  profile: MatchProfile,
+  maxJobs: number = 10,
+  opts: { excludeUrls?: Set<string> } = {}
 ): Promise<MatchedJob[]> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      targetRole: true,
-      remotePreference: true,
-      usState: true,
-      city: true,
-      yearsOfExperience: true,
-      countryOfResidence: true,
-      degree: true,
-      school: true,
-    },
-  });
+  if (!profile.targetRole) return [];
 
-  if (!user?.targetRole) return [];
-
-  const roleLabels = parseRoles(user.targetRole);
+  const roleLabels = parseRoles(profile.targetRole);
   if (roleLabels.length === 0) return [];
 
   const keywordSets = getSearchKeywords(roleLabels);
 
   // For early-career candidates (0-2 years), also match generic intern/new-grad titles
-  const years = parseInt(user.yearsOfExperience || "", 10);
+  const years = parseInt(profile.yearsOfExperience || "", 10);
   const isEarlyCareer = !isNaN(years) && years <= 2;
   if (isEarlyCareer) {
     keywordSets.push(
@@ -399,7 +397,7 @@ export async function matchJobsForUser(
   }
 
   // DB-level region filter: US users only see "us" or "both" jobs
-  const userUS = isUserUS(user.countryOfResidence);
+  const userUS = isUserUS(profile.countryOfResidence);
 
   const catalogJobs = await prisma.job.findMany({
     where: {
@@ -420,32 +418,10 @@ export async function matchJobsForUser(
     },
   });
 
-  // Dedup — jobs user already applied to OR that failed (don't retry broken forms)
-  const [browseAttempted, directApplied] = await Promise.all([
-    prisma.browseDiscovery.findMany({
-      where: {
-        session: { userId },
-        status: { in: ["applied", "applying", "failed"] },
-      },
-      select: { applyUrl: true },
-    }),
-    prisma.jobApplication.findMany({
-      where: {
-        userId,
-        status: { in: ["submitted", "pending"] },
-      },
-      select: { job: { select: { applyUrl: true } } },
-    }),
-  ]);
-
-  const appliedUrls = new Set([
-    ...browseAttempted.map((d) => d.applyUrl),
-    ...directApplied.map((a) => a.job.applyUrl),
-  ]);
+  const excludeUrls = opts.excludeUrls ?? new Set<string>();
 
   // Pre-load active company cooldowns so the matcher doesn't serve jobs
-  // that the browse-loop will immediately skip. Avoids filling the user's
-  // match list with yellow "skipped — company on cooldown" entries.
+  // that the browse-loop will immediately skip.
   const cooldowns = await prisma.companyCooldown.findMany({
     where: { cooldownUntil: { gt: new Date() } },
     select: { companySlug: true },
@@ -459,7 +435,7 @@ export async function matchJobsForUser(
     if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
     if (cooldownSlugs.has(job.companySlug)) continue;
     if (isUrlExcluded(job.applyUrl).excluded) continue;
-    if (appliedUrls.has(job.applyUrl)) continue;
+    if (excludeUrls.has(job.applyUrl)) continue;
 
     const roleScore = roleMatchScore(job.title, keywordSets);
     if (roleScore === 0) continue;
@@ -468,19 +444,18 @@ export async function matchJobsForUser(
       job.location,
       job.remote,
       job.region,
-      user.remotePreference,
-      user.usState,
-      user.city,
-      user.countryOfResidence
+      profile.remotePreference,
+      profile.usState,
+      profile.city,
+      profile.countryOfResidence
     );
     if (locScore === -1) continue;
 
-    const seniorityScore = seniorityMatchScore(job.title, user.yearsOfExperience, user.degree);
+    const seniorityScore = seniorityMatchScore(job.title, profile.yearsOfExperience, profile.degree);
     if (seniorityScore === -1) continue;
 
     const score = roleScore * 0.5 + locScore * 0.3 + seniorityScore * 0.2;
 
-    // Build human-readable match reason
     const reasons: string[] = [];
     if (roleScore >= 0.8) reasons.push("Strong role match");
     else if (roleScore >= 0.4) reasons.push("Partial role match");
@@ -508,14 +483,11 @@ export async function matchJobsForUser(
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Take top candidates — ensure diversity across target roles so one broad role
-  // (like "Product Marketing") doesn't drown out more specific roles (like "AI / ML Engineer")
   const candidatePool = scored.slice(0, maxJobs * 5);
   const perRoleLimit = Math.ceil((maxJobs * 2) / roleLabels.length);
   const roleCounts: Record<string, number> = {};
   const candidates: MatchedJob[] = [];
   for (const job of candidatePool) {
-    // Find which role this job best matches
     let bestRole = roleLabels[0];
     let bestRoleScore = 0;
     for (const label of roleLabels) {
@@ -530,19 +502,64 @@ export async function matchJobsForUser(
     if (candidates.length >= maxJobs * 3) break;
   }
 
-  // LLM quality gate — verify matches are genuine
   const verified = await llmQualityFilter(
     candidates,
     {
       roles: roleLabels,
-      experience: user.yearsOfExperience,
-      city: user.city,
-      remotePreference: user.remotePreference,
-      degree: user.degree,
-      school: user.school,
+      experience: profile.yearsOfExperience,
+      city: profile.city,
+      remotePreference: profile.remotePreference,
+      degree: profile.degree,
+      school: profile.school,
     },
     jobDescriptions
   );
 
   return verified.slice(0, maxJobs);
+}
+
+export async function matchJobsForUser(
+  userId: string,
+  maxJobs: number = 10
+): Promise<MatchedJob[]> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      targetRole: true,
+      remotePreference: true,
+      usState: true,
+      city: true,
+      yearsOfExperience: true,
+      countryOfResidence: true,
+      degree: true,
+      school: true,
+    },
+  });
+
+  if (!user) return [];
+
+  // Dedup — jobs user already applied to OR that failed
+  const [browseAttempted, directApplied] = await Promise.all([
+    prisma.browseDiscovery.findMany({
+      where: {
+        session: { userId },
+        status: { in: ["applied", "applying", "failed"] },
+      },
+      select: { applyUrl: true },
+    }),
+    prisma.jobApplication.findMany({
+      where: {
+        userId,
+        status: { in: ["submitted", "pending"] },
+      },
+      select: { job: { select: { applyUrl: true } } },
+    }),
+  ]);
+
+  const excludeUrls = new Set([
+    ...browseAttempted.map((d) => d.applyUrl),
+    ...directApplied.map((a) => a.job.applyUrl),
+  ]);
+
+  return matchJobsForProfile(user, maxJobs, { excludeUrls });
 }

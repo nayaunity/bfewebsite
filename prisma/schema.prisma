@@ -295,11 +295,25 @@ model BrowseDiscovery {
 }
 
 model TempOnboarding {
-  id        String   @id @default(cuid())
-  data      String   // JSON wizard data
-  createdAt DateTime @default(now())
+  id                String    @id @default(cuid())
+  data              String    // JSON wizard data (legacy; kept for back-compat)
+  resumeBlobUrl     String?
+  resumeName        String?
+  extractedData     String?   // JSON: ResumeExtraction result
+  extractedEmail    String?
+  confirmedRoles    String?   // JSON array of ROLE_OPTIONS labels
+  confirmedRemote   String?   // "Remote" | "Hybrid" | "On-site"
+  confirmedWorkAuth Boolean?
+  confirmedCity     String?
+  confirmedState    String?
+  confirmedCountry  String?
+  linkedToUserId    String?
+  linkedAt          DateTime?
+  createdAt         DateTime  @default(now())
 
   @@index([createdAt])
+  @@index([linkedToUserId])
+  @@index([extractedEmail])
 }
 
 model ScrapeLog {

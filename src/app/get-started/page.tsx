@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import OnboardingWizard from "./OnboardingWizard";
 
 export const metadata = {
@@ -5,6 +6,14 @@ export const metadata = {
   description: "Set up your auto-apply profile and start landing interviews at top tech companies.",
 };
 
-export default function GetStartedPage() {
+interface Props {
+  searchParams: Promise<{ legacy?: string }>;
+}
+
+export default async function GetStartedPage({ searchParams }: Props) {
+  const { legacy } = await searchParams;
+  if (legacy !== "1") {
+    redirect("/start");
+  }
   return <OnboardingWizard />;
 }
