@@ -3,6 +3,12 @@ import { TIER_LIMITS } from "@/lib/stripe";
 
 const SINCE_HOURS = 24;
 
+interface AppliedJob {
+  company: string;
+  title: string;
+  status: string;
+}
+
 interface UserReport {
   name: string;
   email: string;
@@ -17,6 +23,7 @@ interface UserReport {
     skipped: number;
     errorMessage: string | null;
   }[];
+  appliedJobs: AppliedJob[];
   failures: string[];
   stuckFields: string[];
 }
@@ -70,19 +77,26 @@ export async function buildDailyReport(): Promise<DailyReport> {
 
   const sessionUserIds = new Set(recentSessions.map((s) => s.userId));
 
-  const recentDiscoveries = await prisma.browseDiscovery.findMany({
+  const sessionIds = recentSessions.map((s) => s.id);
+  const sessionUserMap = new Map(recentSessions.map((s) => [s.id, s.userId]));
+
+  const allDiscoveries = await prisma.browseDiscovery.findMany({
     where: {
-      session: { userId: { in: payingIds } },
+      sessionId: { in: sessionIds },
       createdAt: { gte: since },
-      status: { in: ["failed", "stuck"] },
     },
     select: {
       status: true,
       errorMessage: true,
       company: true,
-      session: { select: { userId: true } },
+      jobTitle: true,
+      sessionId: true,
     },
   });
+
+  const recentDiscoveries = allDiscoveries.filter(
+    (d) => d.status === "failed" || d.status === "stuck"
+  );
 
   const recentStuck = await prisma.stuckField.findMany({
     where: { createdAt: { gte: since } },
@@ -95,7 +109,14 @@ export async function buildDailyReport(): Promise<DailyReport> {
     const uSessions = recentSessions.filter((s) => s.userId === u.id);
     if (uSessions.length === 0) continue;
 
-    const uDiscoveries = recentDiscoveries.filter((d) => d.session.userId === u.id);
+    const uAllDiscoveries = allDiscoveries.filter((d) => sessionUserMap.get(d.sessionId) === u.id);
+    const appliedJobs: AppliedJob[] = uAllDiscoveries.map((d) => ({
+      company: d.company,
+      title: d.jobTitle || "Unknown role",
+      status: d.status,
+    }));
+
+    const uDiscoveries = recentDiscoveries.filter((d) => sessionUserMap.get(d.sessionId) === u.id);
     const failureMessages = uDiscoveries
       .map((d) => d.errorMessage)
       .filter(Boolean) as string[];
@@ -125,6 +146,7 @@ export async function buildDailyReport(): Promise<DailyReport> {
         skipped: s.jobsSkipped,
         errorMessage: s.errorMessage,
       })),
+      appliedJobs,
       failures,
       stuckFields: [],
     });
@@ -211,8 +233,20 @@ export function formatReportText(r: DailyReport): string {
         lines.push(`    Session ...${s.id}: ${s.applied} applied, ${s.failed} failed, ${s.skipped} skipped [${s.status}]`);
         if (s.errorMessage) lines.push(`      Error: ${s.errorMessage.slice(0, 100)}`);
       }
+      if (u.appliedJobs.length > 0) {
+        const applied = u.appliedJobs.filter((j) => j.status === "applied");
+        const failed = u.appliedJobs.filter((j) => j.status === "failed" || j.status === "stuck");
+        if (applied.length > 0) {
+          lines.push(`    Applied to:`);
+          for (const j of applied) lines.push(`      + ${j.title} at ${j.company}`);
+        }
+        if (failed.length > 0) {
+          lines.push(`    Failed:`);
+          for (const j of failed) lines.push(`      x ${j.title} at ${j.company}`);
+        }
+      }
       if (u.failures.length > 0) {
-        lines.push(`    Failures: ${u.failures.join(", ")}`);
+        lines.push(`    Failure reasons: ${u.failures.join(", ")}`);
       }
       lines.push("");
     }
@@ -272,8 +306,22 @@ export function formatReportHtml(r: DailyReport): string {
           userBody += `<div style="margin-left:24px;color:#c00;font-size:13px;">Error: ${s.errorMessage.slice(0, 100)}</div>`;
         }
       }
+      const applied = u.appliedJobs.filter((j) => j.status === "applied");
+      const failedJobs = u.appliedJobs.filter((j) => j.status === "failed" || j.status === "stuck");
+      if (applied.length > 0) {
+        userBody += `<div style="margin:6px 0 2px 12px;font-size:13px;font-weight:600;color:#16a34a;">Applied to:</div>`;
+        for (const j of applied) {
+          userBody += `<div style="margin-left:24px;font-size:13px;">+ ${j.title} at <strong>${j.company}</strong></div>`;
+        }
+      }
+      if (failedJobs.length > 0) {
+        userBody += `<div style="margin:6px 0 2px 12px;font-size:13px;font-weight:600;color:#c00;">Failed:</div>`;
+        for (const j of failedJobs) {
+          userBody += `<div style="margin-left:24px;font-size:13px;color:#888;">x ${j.title} at ${j.company}</div>`;
+        }
+      }
       if (u.failures.length > 0) {
-        userBody += `<div style="margin-left:12px;font-size:13px;color:#888;">Failures: ${u.failures.join(", ")}</div>`;
+        userBody += `<div style="margin:4px 0 0 12px;font-size:12px;color:#888;">Failure reasons: ${u.failures.join(", ")}</div>`;
       }
       userBody += `</div>`;
     }
