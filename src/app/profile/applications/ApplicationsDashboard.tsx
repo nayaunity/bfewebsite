@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { friendlyError } from "@/lib/error-display";
+import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
 
 interface Application {
   id: string;
@@ -64,6 +65,8 @@ export default function ApplicationsDashboard({
   missingRoles = false,
   missingResume = false,
   showResumeQuiz = false,
+  subscriptionTier = "free",
+  freeTierEndsAt = null,
 }: {
   initialApplications: Application[];
   stats: Stats;
@@ -75,7 +78,10 @@ export default function ApplicationsDashboard({
   missingRoles?: boolean;
   missingResume?: boolean;
   showResumeQuiz?: boolean;
+  subscriptionTier?: string;
+  freeTierEndsAt?: string | null;
 }) {
+  const showTrialBanner = subscriptionTier === "free" && !!freeTierEndsAt;
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [starting, setStarting] = useState(false);
@@ -102,6 +108,21 @@ export default function ApplicationsDashboard({
     } catch {}
     setCheckingOut(false);
   }, []);
+
+  // Email deep-link: /profile/applications?startTrial=1 fires the Starter
+  // trial checkout immediately. Strip the param so a refresh does not
+  // re-trigger the redirect.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("startTrial") !== "1") return;
+    if (subscriptionTier !== "free") return;
+    params.delete("startTrial");
+    const newQs = params.toString();
+    const newUrl = window.location.pathname + (newQs ? `?${newQs}` : "");
+    window.history.replaceState({}, "", newUrl);
+    handleCheckout("starter");
+  }, [handleCheckout, subscriptionTier]);
 
   const tips = [
     "Each application uses the resume that best matches the role — that\u2019s why uploading role-specific resumes matters.",
@@ -175,6 +196,9 @@ export default function ApplicationsDashboard({
 
   return (
     <div>
+      {showTrialBanner && freeTierEndsAt && (
+        <TrialRequiredBanner freeTierEndsAt={freeTierEndsAt} />
+      )}
       {/* Resume Quiz CTA — only shown to specific users */}
       {showResumeQuiz && (
         <Link

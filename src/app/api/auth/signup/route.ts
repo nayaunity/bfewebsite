@@ -55,21 +55,25 @@ export async function POST(request: NextRequest) {
       });
       userId = existingUser.id as string;
     } else {
-      // Create new user with all required defaults
+      // Create new user with all required defaults. freeTierEndsAt = now puts
+      // the trial-or-pay wall on immediately: new signups must start the
+      // 7-day Stripe trial (or subscribe directly) before they can apply.
       const passwordHash = await bcrypt.hash(password, 12);
       userId = crypto.randomUUID();
+      const nowIso = new Date().toISOString();
       await db.execute({
-        sql: `INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified, role, subscriptionTier, subscriptionStatus, monthlyAppCount, monthlyAppResetAt, autoApplyEnabled, createdAt)
-              VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', 'inactive', 0, ?, 0, ?)`,
+        sql: `INSERT INTO User (id, email, passwordHash, firstName, lastName, emailVerified, role, subscriptionTier, subscriptionStatus, monthlyAppCount, monthlyAppResetAt, autoApplyEnabled, createdAt, freeTierEndsAt)
+              VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', 'inactive', 0, ?, 0, ?, ?)`,
         args: [
           userId,
           normalizedEmail,
           passwordHash,
           firstName?.trim() || null,
           lastName?.trim() || null,
-          new Date().toISOString(),
-          new Date().toISOString(),
-          new Date().toISOString(),
+          nowIso,
+          nowIso,
+          nowIso,
+          nowIso,
         ],
       });
     }

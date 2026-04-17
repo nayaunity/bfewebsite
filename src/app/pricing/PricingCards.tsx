@@ -5,25 +5,10 @@ import { useRouter } from "next/navigation";
 
 const tiers = [
   {
-    name: "Free",
-    price: "$0",
-    period: "forever",
-    key: "free" as const,
-    features: [
-      "5 applications per month",
-      "1 tailored resume per month",
-      "Upload up to 3 resumes to your profile",
-      "30+ companies",
-      "Smart resume matching",
-      "Application tracking",
-    ],
-    cta: "Get Started",
-    highlighted: false,
-  },
-  {
     name: "Starter",
     price: "$29",
     period: "/month",
+    trialBlurb: "7-day free trial, $0 today",
     key: "starter" as const,
     features: [
       "100 applications per month",
@@ -34,13 +19,14 @@ const tiers = [
       "Application tracking",
       "Priority queue",
     ],
-    cta: "Subscribe",
+    cta: "Start 7-day trial",
     highlighted: true,
   },
   {
     name: "Pro",
     price: "$59",
     period: "/month",
+    trialBlurb: null,
     key: "pro" as const,
     features: [
       "300 applications per month",
@@ -69,7 +55,13 @@ export function PricingCards({
 
   const handleSubscribe = async (tier: "starter" | "pro") => {
     if (!isSignedIn) {
-      router.push("/auth/signin?callbackUrl=/pricing");
+      // Logged-out users: bounce through signup, then auto-fire the trial
+      // checkout via the ?startTrial=1 deep-link on the dashboard.
+      const next =
+        tier === "starter"
+          ? "/profile/applications?startTrial=1"
+          : "/pricing";
+      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(next)}`);
       return;
     }
 
@@ -98,7 +90,7 @@ export function PricingCards({
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
       {tiers.map((tier) => {
         const isCurrent = currentTier === tier.key;
 
@@ -120,7 +112,7 @@ export function PricingCards({
             <h3 className="font-serif text-2xl text-[var(--foreground)]">
               {tier.name}
             </h3>
-            <div className="mt-3 mb-6">
+            <div className="mt-3 mb-2">
               <span className="text-4xl font-bold text-[var(--foreground)]">
                 {tier.price}
               </span>
@@ -128,6 +120,12 @@ export function PricingCards({
                 {tier.period}
               </span>
             </div>
+            {tier.trialBlurb && (
+              <p className="text-xs font-medium text-[#ef562a] mb-6">
+                {tier.trialBlurb}
+              </p>
+            )}
+            {!tier.trialBlurb && <div className="mb-6" />}
 
             <ul className="space-y-3 mb-8 flex-1">
               {tier.features.map((feature) => (
@@ -157,17 +155,6 @@ export function PricingCards({
                 className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--gray-100)] text-[var(--gray-600)] cursor-default"
               >
                 Current Plan
-              </button>
-            ) : tier.key === "free" ? (
-              <button
-                onClick={() =>
-                  isSignedIn
-                    ? router.push("/profile")
-                    : router.push("/auth/signin?callbackUrl=/profile")
-                }
-                className="w-full py-3 text-sm font-medium rounded-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity"
-              >
-                {tier.cta}
               </button>
             ) : (
               <button

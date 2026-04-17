@@ -84,6 +84,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           data: { role: "contributor" },
         });
       }
+      // New users (magic-link / OAuth path) get the trial wall on immediately.
+      // The credential signup route sets this in its INSERT; this covers
+      // every other entry into account creation.
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { freeTierEndsAt: new Date() },
+      });
     },
   },
   session: {

@@ -41,14 +41,24 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create checkout session
+    // Starter tier ships with a 7-day free trial. Card is captured up front
+    // ($0 due today), Stripe auto-charges $29 on day 8 unless the user cancels
+    // via the customer portal. Pro tier subscribes immediately, no trial.
+    const isTrial = tier === "starter";
+
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: STRIPE_PRICES[tier], quantity: 1 }],
+      ...(isTrial
+        ? {
+            subscription_data: { trial_period_days: 7 },
+            payment_method_collection: "always",
+          }
+        : {}),
       success_url: `${request.nextUrl.origin}/profile?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${request.nextUrl.origin}/profile/applications`,
-      metadata: { userId: session.user.id, tier },
+      metadata: { userId: session.user.id, tier, trial: isTrial ? "true" : "false" },
     });
 
     return NextResponse.json({ url: checkoutSession.url });

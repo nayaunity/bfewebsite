@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
+import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
 import { TicketWidget } from "@/components/TicketWidget";
 import { OnboardingSync } from "@/components/OnboardingSync";
 import { StripeSync } from "@/components/StripeSync";
@@ -74,6 +75,7 @@ async function getUserData(userId: string) {
       subscriptionTier: true,
       subscriptionStatus: true,
       stripeCustomerId: true,
+      freeTierEndsAt: true,
       resumeUrl: true,
       resumeName: true,
       resumeUpdatedAt: true,
@@ -232,6 +234,9 @@ export default async function ProfilePage({
       <Navigation />
       <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 py-12">
+          {user.subscriptionTier === "free" && user.freeTierEndsAt && (
+            <TrialRequiredBanner freeTierEndsAt={user.freeTierEndsAt.toISOString()} />
+          )}
           {/* Back link */}
           <Link
             href="/"

@@ -232,12 +232,21 @@ export async function processNextBrowseSession(): Promise<boolean> {
         break;
       }
 
-      // Monthly quota
+      // Monthly quota + free-tier sunset wall
       const quotaCheck = await db.execute({
-        sql: `SELECT monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
+        sql: `SELECT monthlyAppCount, subscriptionTier, freeTierEndsAt FROM User WHERE id = ?`,
         args: [session.userId],
       });
-      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string } | undefined;
+      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; freeTierEndsAt: string | null } | undefined;
+      if (
+        currentUser &&
+        currentUser.subscriptionTier === "free" &&
+        currentUser.freeTierEndsAt &&
+        new Date(currentUser.freeTierEndsAt) <= new Date()
+      ) {
+        log(session.id, "info", `Free tier ended (freeTierEndsAt=${currentUser.freeTierEndsAt}), stopping. User must start trial.`);
+        break;
+      }
       const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
       const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
       if (currentUser && currentUser.monthlyAppCount >= limit) {
