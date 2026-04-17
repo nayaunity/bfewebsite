@@ -1,5 +1,11 @@
 "use client";
 
+// DEPRECATED — used only by the legacy 25-step wizard at /auto-apply/get-started?legacy=1.
+// The resume-first /start flow does its TempOnboarding -> User promotion server-side via
+// /api/onboarding/promote (called after signup). Keep this mounted for legacy users
+// already mid-flow during the 2-week cutover; delete after we're confident nobody's
+// still in the legacy flow.
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 

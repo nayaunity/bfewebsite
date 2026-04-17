@@ -15,6 +15,7 @@ interface EmailCheckResult {
 function AuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile/applications";
+  const tempId = searchParams.get("tempId");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [step, setStep] = useState<Step>("email");
@@ -151,7 +152,14 @@ function AuthForm() {
       const data = await res.json();
 
       if (data.success) {
-        // Signup endpoint sets the session cookie directly — just redirect
+        // Signup endpoint sets the session cookie directly.
+        // If the user came from the resume-first /start flow, promote their
+        // TempOnboarding row into the freshly created User before redirecting.
+        if (tempId) {
+          try {
+            await fetch("/api/onboarding/promote", { method: "POST" });
+          } catch { /* non-blocking */ }
+        }
         window.location.href = redirectTo;
       } else {
         setError(data.error || `${errorPrefix} failed.`);
@@ -165,8 +173,11 @@ function AuthForm() {
 
   // Existing user setting password → go to their intended destination
   const handleSetPassword = (e: React.FormEvent) => handleSignupAndRedirect(e, "Setting password", callbackUrl);
-  // New user creating account → go to onboarding wizard
-  const handleCreateAccount = (e: React.FormEvent) => handleSignupAndRedirect(e, "Creating account", "/auto-apply/get-started");
+  // New user creating account → if they came from resume-first /start, go to their
+  // callbackUrl (typically /profile/applications?startTrial=1). Otherwise fall back
+  // to the onboarding flow at /start.
+  const handleCreateAccount = (e: React.FormEvent) =>
+    handleSignupAndRedirect(e, "Creating account", tempId ? callbackUrl : "/start");
 
   const handleMagicLink = async () => {
     setLoading(true);
