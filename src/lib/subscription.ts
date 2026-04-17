@@ -64,6 +64,7 @@ export async function getUserTier(userId: string) {
       monthlyTailorCount: true,
       monthlyAppResetAt: true,
       currentPeriodEnd: true,
+      freeTierEndsAt: true,
     },
   });
 
@@ -95,6 +96,7 @@ export async function canApply(userId: string): Promise<{
   tier: string;
   used: number;
   limit: number;
+  reason?: "trial-required" | "monthly-cap";
 }> {
   const user = await getUserTier(userId);
   if (!user)
@@ -105,12 +107,31 @@ export async function canApply(userId: string): Promise<{
   const used = user.monthlyAppCount;
   const remaining = Math.max(0, limits.appsPerMonth - used);
 
+  // Free-tier sunset wall: once freeTierEndsAt has passed, the user must
+  // start the 7-day Stripe trial (or subscribe directly) to keep applying.
+  // Takes precedence over the monthly cap.
+  if (
+    tier === "free" &&
+    user.freeTierEndsAt &&
+    user.freeTierEndsAt <= new Date()
+  ) {
+    return {
+      allowed: false,
+      remaining: 0,
+      tier,
+      used,
+      limit: limits.appsPerMonth,
+      reason: "trial-required",
+    };
+  }
+
   return {
     allowed: remaining > 0,
     remaining,
     tier,
     used,
     limit: limits.appsPerMonth,
+    ...(remaining === 0 ? { reason: "monthly-cap" as const } : {}),
   };
 }
 

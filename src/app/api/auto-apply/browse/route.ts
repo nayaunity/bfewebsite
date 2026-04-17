@@ -49,10 +49,11 @@ export async function POST(request: Request) {
   // Check subscription limits
   const usage = await canApply(session.user.id);
   if (!usage.allowed) {
-    return NextResponse.json(
-      { error: `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`, usage },
-      { status: 403 }
-    );
+    const error =
+      usage.reason === "trial-required"
+        ? "Your free tier has ended. Start your 7-day trial to keep applying."
+        : `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`;
+    return NextResponse.json({ error, usage }, { status: 403 });
   }
 
   // Validate profile

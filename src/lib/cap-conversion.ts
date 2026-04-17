@@ -206,6 +206,7 @@ export async function findCapConversionCandidates(): Promise<
   { userId: string; email: string; cappedAt: Date }[]
 > {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const sevenDaysOut = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   const users = await prisma.user.findMany({
     where: {
@@ -214,6 +215,14 @@ export async function findCapConversionCandidates(): Promise<
       role: { notIn: ["test", "admin"] },
       emailVerified: { not: null },
       conversionEmailSentAt: null,
+      // Sunset email takes precedence near the wall: skip users who already
+      // got the sunset warning OR are within 7 days of their wall. Otherwise
+      // they would receive cap-conversion + sunset back-to-back.
+      freeTierSunsetEmailAt: null,
+      OR: [
+        { freeTierEndsAt: null },
+        { freeTierEndsAt: { gt: sevenDaysOut } },
+      ],
     },
     select: { id: true, email: true },
   });

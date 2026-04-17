@@ -39,7 +39,7 @@ export function UsageMeter({
           />
         </div>
       )}
-      {atLimit && (
+      {atLimit && !isFree && (
         <p className="text-xs text-red-500">
           Limit reached.{" "}
           <a href="/pricing" className="underline">
@@ -48,31 +48,26 @@ export function UsageMeter({
           for more.
         </p>
       )}
-      {!atLimit && isFree && percentage >= 80 && (
+      {!atLimit && !isFree && percentage >= 80 && (
         <div className="flex items-center justify-between mt-1">
           <p className="text-xs text-[var(--gray-600)]">
             {remaining} application{remaining !== 1 ? "s" : ""} remaining
           </p>
           {onUpgrade ? (
             <button
-              onClick={() => onUpgrade("starter")}
+              onClick={() => onUpgrade("pro")}
               className="text-xs font-medium text-[#ef562a] hover:underline"
             >
-              Upgrade to 100/mo
+              Upgrade to 300/mo
             </button>
           ) : (
             <a href="/pricing" className="text-xs font-medium text-[#ef562a] hover:underline">
-              Upgrade to 100/mo
+              Upgrade to 300/mo
             </a>
           )}
         </div>
       )}
-      {!atLimit && isFree && percentage >= 60 && percentage < 80 && (
-        <p className="text-xs text-[var(--gray-600)] mt-1">
-          {remaining} application{remaining !== 1 ? "s" : ""} remaining this month.{" "}
-          <a href="/pricing" className="text-[#ef562a] hover:underline">Plans start at $29/mo</a>
-        </p>
-      )}
+      {/* Free-tier copy removed: free users see TrialRequiredBanner instead. */}
     </div>
   );
 }

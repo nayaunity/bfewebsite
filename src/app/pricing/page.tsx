@@ -30,9 +30,8 @@ export default async function PricingPage() {
             While You Sleep
           </h1>
           <p className="text-lg text-[var(--gray-600)] max-w-2xl mx-auto">
-            Upload your resumes, fill in your profile once, and let our system
-            apply to tech jobs at top companies for you. The right resume for
-            every role, automatically.
+            Start with a 7-day free trial. No charge today. We auto-apply to
+            matched roles at 30+ top companies. Cancel anytime.
           </p>
         </div>
 
@@ -47,6 +46,18 @@ export default async function PricingPage() {
             Frequently Asked Questions
           </h2>
           <div className="space-y-6">
+            <div>
+              <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
+                How does the 7-day free trial work?
+              </h3>
+              <p className="text-sm text-[var(--gray-600)]">
+                Start the Starter plan with a 7-day free trial. We collect your
+                card to keep the experience seamless, but you are not charged
+                today. On day 8, your card is charged $29 for the first month.
+                Cancel anytime before then in your profile and you will not be
+                charged.
+              </p>
+            </div>
             <div>
               <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
                 How does auto-apply work?
