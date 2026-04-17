@@ -49,6 +49,14 @@ export default function StartClient() {
     setPhase("extracting");
     trackStep(1, newTempId);
 
+    const MIN_LOADER_MS = 12000;
+    const startedAt = performance.now();
+    const holdMinimum = async () => {
+      const elapsed = performance.now() - startedAt;
+      const wait = Math.max(0, MIN_LOADER_MS - elapsed);
+      if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    };
+
     try {
       const res = await fetch("/api/onboarding/parse-resume", {
         method: "POST",
@@ -57,6 +65,7 @@ export default function StartClient() {
       });
       if (!res.ok) throw new Error("parse failed");
       const { extraction: result } = (await res.json()) as { extraction: ResumeExtraction };
+      await holdMinimum();
       setExtraction(result);
       trackStep(3, newTempId, { confidence: result.confidence });
 
@@ -72,6 +81,7 @@ export default function StartClient() {
         trackStep(4, newTempId);
       }
     } catch {
+      await holdMinimum();
       setExtraction(null);
       setPhase("fallback");
     }
