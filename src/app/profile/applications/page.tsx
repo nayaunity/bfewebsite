@@ -170,6 +170,10 @@ export default async function ApplicationsPage() {
             missingRoles={!user?.targetRole}
             missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}
             showResumeQuiz={session.user.email === "anika.ahmed04@gmail.com"}
+            // Do NOT include todaySession.errorMessage or any per-discovery
+            // errorMessage here. Raw worker error text is operator-only and
+            // belongs in /admin/errors and /admin/auto-apply, never in the
+            // user dashboard. Keep todayActivity neutral.
             todayActivity={todaySession ? {
               status: todaySession.status,
               jobsFound: todaySession.jobsFound,

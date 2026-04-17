@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { friendlyError } from "@/lib/error-display";
 
 export async function GET(
   request: NextRequest,
@@ -41,7 +42,10 @@ export async function GET(
       jobsSkipped: browseSession.jobsSkipped,
       jobsFailed: browseSession.jobsFailed,
       progressLog: JSON.parse(browseSession.progressLog),
-      errorMessage: browseSession.errorMessage,
+      // errorMessage is intentionally translated via friendlyError before
+      // returning. Raw worker errors must NEVER reach the client. Operators
+      // see the raw text in /admin/auto-apply and /admin/errors.
+      errorMessage: browseSession.status === "failed" ? friendlyError(browseSession.errorMessage) : null,
       createdAt: browseSession.createdAt.toISOString(),
       completedAt: browseSession.completedAt?.toISOString() || null,
     },
@@ -51,7 +55,7 @@ export async function GET(
       jobTitle: d.jobTitle,
       applyUrl: d.applyUrl,
       status: d.status,
-      errorMessage: d.errorMessage,
+      errorMessage: (d.status === "failed" || d.status === "skipped") ? friendlyError(d.errorMessage) : null,
     })),
   });
 }

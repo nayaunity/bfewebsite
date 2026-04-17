@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { submitApplication } from "./greenhouse-submit";
 import type { ApplicantProfile, BatchApplyResult } from "./types";
 import deiCompanies from "@/data/dei-companies.json";
+import { logServerError } from "@/lib/log-error";
 
 const MAX_APPLICATIONS_PER_RUN = 50;
 const DELAY_BETWEEN_SUBMISSIONS_MS = 2000;
@@ -124,6 +125,18 @@ export async function batchApply(
         },
       });
 
+      // Mirror failures into /admin/errors so operators see them centrally.
+      if (submitResult.status === "failed" && submitResult.error) {
+        await logServerError({
+          kind: "batch-apply:job-failed",
+          userId,
+          jobId: job.id,
+          company: job.company,
+          jobTitle: job.title,
+          message: submitResult.error,
+        });
+      }
+
       result.results.push({
         jobId: job.id,
         jobTitle: job.title,
@@ -155,6 +168,7 @@ export async function batchApply(
       },
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     await prisma.autoApplyRun.update({
       where: { id: run.id },
       data: {
@@ -162,10 +176,14 @@ export async function batchApply(
         submitted: result.submitted,
         skipped: result.skipped,
         failed: result.failed,
-        errorMessage:
-          error instanceof Error ? error.message : "Unknown error",
+        errorMessage: message,
         completedAt: new Date(),
       },
+    });
+    await logServerError({
+      kind: "batch-apply:run-failed",
+      userId,
+      message,
     });
     throw error;
   }
