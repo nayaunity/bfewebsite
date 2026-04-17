@@ -8,7 +8,6 @@ import ConfirmExtractionStep from "@/components/onboarding/ConfirmExtractionStep
 import MatchedJobsPreview from "@/components/onboarding/MatchedJobsPreview";
 import ShortFallbackForm from "@/components/onboarding/ShortFallbackForm";
 import type { ResumeExtraction } from "@/lib/resume-extraction";
-import type { MatchedJob } from "@/lib/auto-apply/job-matcher";
 
 type Phase = "upload" | "extracting" | "confirm" | "fallback" | "matches" | "error";
 
@@ -39,7 +38,6 @@ export default function StartClient() {
   const [phase, setPhase] = useState<Phase>("upload");
   const [tempId, setTempId] = useState<string | null>(null);
   const [extraction, setExtraction] = useState<ResumeExtraction | null>(null);
-  const [jobs, setJobs] = useState<MatchedJob[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -82,22 +80,8 @@ export default function StartClient() {
   const handleConfirmed = useCallback(async () => {
     if (!tempId) return;
     trackStep(5, tempId);
-    setPhase("extracting");
-    try {
-      const res = await fetch("/api/onboarding/match-jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tempId }),
-      });
-      if (!res.ok) throw new Error("match failed");
-      const { jobs: matched } = (await res.json()) as { jobs: MatchedJob[] };
-      setJobs(matched);
-      setPhase("matches");
-      trackStep(6, tempId, { jobCount: matched.length });
-    } catch {
-      setErrorMessage("We couldn't load matches. Try refreshing.");
-      setPhase("error");
-    }
+    setPhase("matches");
+    trackStep(6, tempId);
   }, [tempId]);
 
   const handleApplyClick = useCallback(() => {
@@ -131,7 +115,7 @@ export default function StartClient() {
           />
         )}
         {phase === "matches" && (
-          <MatchedJobsPreview jobs={jobs} onApply={handleApplyClick} />
+          <MatchedJobsPreview onApply={handleApplyClick} />
         )}
         {phase === "error" && (
           <div className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-8 text-center">
