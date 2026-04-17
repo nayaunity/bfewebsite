@@ -15,9 +15,9 @@ const FAQS = [
       "After you fill out your profile and upload your resume, our system scans job listings across 30+ top companies. When we find a match, we fill out and submit the application directly on the company website, tailoring each one to the role.",
   },
   {
-    question: "Is this free?",
+    question: "Is there a free trial?",
     answer:
-      "Yes! Our free plan includes 5 applications per month with smart resume matching. For more volume, our Starter and Pro plans offer 100 and 300 applications per month respectively.",
+      "Yes. Every new account starts with a 7-day free trial of Starter (100 applications per month, unlimited tailored resumes). We collect your card up front but you are not charged until day 8, and you can cancel anytime. After the trial it is $29/mo, or $59/mo for Pro (300 apps per month).",
     link: { href: "/pricing", label: "See pricing" },
   },
   {

@@ -232,12 +232,12 @@ export async function processNextBrowseSession(): Promise<boolean> {
         break;
       }
 
-      // Monthly quota + free-tier sunset wall
+      // Monthly quota + free-tier sunset wall + trial guardrail
       const quotaCheck = await db.execute({
-        sql: `SELECT monthlyAppCount, subscriptionTier, freeTierEndsAt FROM User WHERE id = ?`,
+        sql: `SELECT monthlyAppCount, subscriptionTier, subscriptionStatus, freeTierEndsAt FROM User WHERE id = ?`,
         args: [session.userId],
       });
-      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; freeTierEndsAt: string | null } | undefined;
+      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string; freeTierEndsAt: string | null } | undefined;
       if (
         currentUser &&
         currentUser.subscriptionTier === "free" &&
@@ -245,6 +245,12 @@ export async function processNextBrowseSession(): Promise<boolean> {
         new Date(currentUser.freeTierEndsAt) <= new Date()
       ) {
         log(session.id, "info", `Free tier ended (freeTierEndsAt=${currentUser.freeTierEndsAt}), stopping. User must start trial.`);
+        break;
+      }
+      // Trial cap: max 10 apps during the 7-day Stripe trial. After
+      // status flips from "trialing" to "active" the full Starter cap unlocks.
+      if (currentUser && currentUser.subscriptionStatus === "trialing" && currentUser.monthlyAppCount >= 10) {
+        log(session.id, "info", `Trial cap reached (${currentUser.monthlyAppCount}/10), stopping. User is still trialing.`);
         break;
       }
       const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
