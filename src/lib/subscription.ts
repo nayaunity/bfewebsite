@@ -105,7 +105,13 @@ export async function canApply(userId: string): Promise<{
   const tier = user.subscriptionTier || "free";
   const limits = TIER_LIMITS[tier] || TIER_LIMITS.free;
   const used = user.monthlyAppCount;
-  const remaining = Math.max(0, limits.appsPerMonth - used);
+
+  // Trial guardrail: during the 7-day Stripe trial we cap at 10 total apps
+  // so users do not burn through Starter inventory before paying. After the
+  // trial converts (status = "active"), the full TIER_LIMITS.starter unlocks.
+  const isTrialing = user.subscriptionStatus === "trialing";
+  const effectiveLimit = isTrialing ? 10 : limits.appsPerMonth;
+  const remaining = Math.max(0, effectiveLimit - used);
 
   // Free-tier sunset wall: once freeTierEndsAt has passed, the user must
   // start the 7-day Stripe trial (or subscribe directly) to keep applying.
@@ -120,7 +126,7 @@ export async function canApply(userId: string): Promise<{
       remaining: 0,
       tier,
       used,
-      limit: limits.appsPerMonth,
+      limit: effectiveLimit,
       reason: "trial-required",
     };
   }
@@ -130,7 +136,7 @@ export async function canApply(userId: string): Promise<{
     remaining,
     tier,
     used,
-    limit: limits.appsPerMonth,
+    limit: effectiveLimit,
     ...(remaining === 0 ? { reason: "monthly-cap" as const } : {}),
   };
 }
