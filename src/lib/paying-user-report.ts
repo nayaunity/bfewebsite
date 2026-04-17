@@ -83,7 +83,6 @@ export async function buildDailyReport(): Promise<DailyReport> {
   const allDiscoveries = await prisma.browseDiscovery.findMany({
     where: {
       sessionId: { in: sessionIds },
-      createdAt: { gte: since },
     },
     select: {
       status: true,
