@@ -2,6 +2,19 @@ import { getDb, getCompanyCooldown, setCompanyCooldown, logStuckField } from "./
 import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-browser";
 import { checkAnthropicCredits, isCreditExhaustionError } from "./apply-engine";
 import { postCreditAlert } from "./alerts";
+import { logWorkerError } from "./error-log";
+
+async function getSessionUserId(sessionId: string): Promise<string | null> {
+  try {
+    const r = await getDb().execute({
+      sql: `SELECT userId FROM BrowseSession WHERE id = ?`,
+      args: [sessionId],
+    });
+    return (r.rows?.[0] as unknown as { userId?: string })?.userId ?? null;
+  } catch {
+    return null;
+  }
+}
 
 function companyKey(company: string): string {
   return company.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -94,12 +107,20 @@ export async function processNextBrowseSession(): Promise<boolean> {
             completedAt = datetime('now')
             WHERE status = 'processing'
             AND startedAt < datetime('now', '-30 minutes')
-            RETURNING id`,
+            RETURNING id, userId`,
       args: [],
     });
     if (stale.rows && stale.rows.length > 0) {
       for (const row of stale.rows) {
-        console.log(JSON.stringify({ ts: new Date().toISOString(), level: "warn", msg: "Reset stuck session", sessionId: row.id }));
+        const sessionId = row.id as string;
+        const userId = (row as unknown as { userId?: string }).userId ?? null;
+        console.log(JSON.stringify({ ts: new Date().toISOString(), level: "warn", msg: "Reset stuck session", sessionId }));
+        await logWorkerError({
+          kind: "browse-session:timeout",
+          userId,
+          sessionId,
+          message: "Session stuck in 'processing' >30min, watchdog reset",
+        });
       }
     }
   } catch {}
@@ -634,6 +655,13 @@ async function markSessionFailed(sessionId: string, error: string) {
     sql: `UPDATE BrowseSession SET status = 'failed', errorMessage = ?, completedAt = datetime('now') WHERE id = ?`,
     args: [error, sessionId],
   });
+  const userId = await getSessionUserId(sessionId);
+  await logWorkerError({
+    kind: "browse-session:failed",
+    userId,
+    sessionId,
+    message: error,
+  });
 }
 
 async function markSessionPaused(sessionId: string, error: string) {
@@ -641,6 +669,13 @@ async function markSessionPaused(sessionId: string, error: string) {
   await db.execute({
     sql: `UPDATE BrowseSession SET status = 'paused', errorMessage = ?, completedAt = datetime('now') WHERE id = ?`,
     args: [error, sessionId],
+  });
+  const userId = await getSessionUserId(sessionId);
+  await logWorkerError({
+    kind: "browse-session:paused",
+    userId,
+    sessionId,
+    message: error,
   });
 }
 
@@ -687,6 +722,18 @@ async function createDiscovery(
     sql: `INSERT OR IGNORE INTO BrowseDiscovery (id, sessionId, company, jobTitle, applyUrl, status, errorMessage, matchScore, matchReason, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
     args: [id, sessionId, company, jobTitle, applyUrl, status, errorMessage, matchScore ?? null, matchReason ?? null],
   });
+  if (status === "failed" && errorMessage) {
+    const userId = await getSessionUserId(sessionId);
+    await logWorkerError({
+      kind: "browse-discovery:failed",
+      userId,
+      sessionId,
+      applyUrl,
+      company,
+      jobTitle,
+      message: errorMessage,
+    });
+  }
 }
 
 async function updateDiscoveryStatus(
@@ -700,6 +747,31 @@ async function updateDiscoveryStatus(
     sql: `UPDATE BrowseDiscovery SET status = ?, errorMessage = ? WHERE sessionId = ? AND applyUrl = ?`,
     args: [status, errorMessage, sessionId, applyUrl],
   });
+  // Log only real failures and anti-bot skips. Routine skips (cap, location,
+  // cooldown) are operator noise, not errors.
+  if (errorMessage && (status === "failed" || /\[skipped — anti-bot|\[skipped — Anthropic/i.test(errorMessage))) {
+    const userId = await getSessionUserId(sessionId);
+    let company: string | null = null;
+    let jobTitle: string | null = null;
+    try {
+      const r = await db.execute({
+        sql: `SELECT company, jobTitle FROM BrowseDiscovery WHERE sessionId = ? AND applyUrl = ? LIMIT 1`,
+        args: [sessionId, applyUrl],
+      });
+      const row = r.rows?.[0] as unknown as { company?: string; jobTitle?: string } | undefined;
+      company = row?.company ?? null;
+      jobTitle = row?.jobTitle ?? null;
+    } catch {}
+    await logWorkerError({
+      kind: status === "failed" ? "browse-discovery:failed" : "browse-discovery:skipped",
+      userId,
+      sessionId,
+      applyUrl,
+      company,
+      jobTitle,
+      message: errorMessage,
+    });
+  }
 }
 
 function delay(ms: number): Promise<void> {

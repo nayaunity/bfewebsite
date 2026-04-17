@@ -88,6 +88,21 @@ export async function markFailed(queueId: string, error: string): Promise<void> 
     sql: `UPDATE ApplyQueue SET status = 'failed', completedAt = datetime('now'), errorMessage = ? WHERE id = ?`,
     args: [error, queueId],
   });
+  // Surface in /admin/errors. Look up the userId+jobId for cross-reference.
+  try {
+    const { logWorkerError } = await import("./error-log");
+    const r = await db.execute({
+      sql: `SELECT userId, jobId FROM ApplyQueue WHERE id = ?`,
+      args: [queueId],
+    });
+    const row = r.rows?.[0] as unknown as { userId?: string; jobId?: string } | undefined;
+    await logWorkerError({
+      kind: "apply-queue:failed",
+      userId: row?.userId ?? null,
+      jobId: row?.jobId ?? null,
+      message: error,
+    });
+  } catch {}
 }
 
 export async function recordApplication(
