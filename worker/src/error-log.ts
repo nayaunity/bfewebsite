@@ -17,6 +17,7 @@ interface LogWorkerErrorArgs {
   company?: string | null;
   jobTitle?: string | null;
   applyUrl?: string | null;
+  metadata?: Record<string, unknown>;
 }
 
 // Mirrors a worker-side error into the ErrorLog table so it surfaces in
@@ -42,6 +43,7 @@ export async function logWorkerError(args: LogWorkerErrorArgs): Promise<void> {
       jobTitle: args.jobTitle ?? null,
       applyUrl: args.applyUrl ?? null,
       raw: args.message,
+      ...(args.metadata ? { metadata: args.metadata } : {}),
     });
 
     await db.execute({
