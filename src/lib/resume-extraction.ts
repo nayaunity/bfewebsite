@@ -6,6 +6,19 @@ import { ROLE_OPTIONS } from "@/lib/role-options";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const pdfParse = require("pdf-parse") as (buf: Buffer) => Promise<{ text: string }>;
 
+function detectResumeFormat(buffer: Buffer): "pdf" | "docx" | "unknown" {
+  if (buffer.length < 4) return "unknown";
+  // PDF magic: "%PDF"
+  if (buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46) {
+    return "pdf";
+  }
+  // DOCX is a ZIP archive: "PK\x03\x04"
+  if (buffer[0] === 0x50 && buffer[1] === 0x4b) {
+    return "docx";
+  }
+  return "unknown";
+}
+
 export interface ResumeExtraction {
   firstName: string | null;
   lastName: string | null;
@@ -134,6 +147,14 @@ function mapRolesToOptions(inferred: string[]): string[] {
 }
 
 export async function extractResumeText(buffer: Buffer): Promise<string> {
+  const format = detectResumeFormat(buffer);
+  if (format === "docx") {
+    const mammoth = await import("mammoth");
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value || "";
+  }
+  // Default to PDF (pdf-parse). `unknown` also falls through here — pdf-parse
+  // will throw and the caller catches it, yielding an empty extraction.
   const parsed = await pdfParse(buffer);
   return parsed.text || "";
 }
