@@ -8,6 +8,7 @@ interface UserRow {
   firstName: string | null;
   lastName: string | null;
   subscriptionTier: string;
+  subscriptionStatus: string;
   monthlyAppCount: number;
   autoApplyEnabled: boolean;
   resumeUrl: string | null;
@@ -19,16 +20,26 @@ interface UserRow {
 const TIERS = [
   { key: "all", label: "All" },
   { key: "free", label: "Free" },
+  { key: "trial", label: "Trial" },
   { key: "starter", label: "Starter" },
   { key: "pro", label: "Pro" },
 ];
+
+// "trial" is a status, not a tier. Trialing users have tier=starter — the
+// filter splits them out so operators can monitor active trials separately
+// from paid Starter subscribers.
+const isTrial = (u: { subscriptionStatus: string }) => u.subscriptionStatus === "trialing";
+const isPaidStarter = (u: { subscriptionTier: string; subscriptionStatus: string }) =>
+  u.subscriptionTier === "starter" && u.subscriptionStatus !== "trialing";
 
 export default function UserTable({ users }: { users: UserRow[] }) {
   const [tierFilter, setTierFilter] = useState("all");
   const [search, setSearch] = useState("");
 
   const filtered = users.filter((u) => {
-    if (tierFilter !== "all" && u.subscriptionTier !== tierFilter) return false;
+    if (tierFilter === "trial" && !isTrial(u)) return false;
+    if (tierFilter === "starter" && !isPaidStarter(u)) return false;
+    if (tierFilter !== "all" && tierFilter !== "trial" && tierFilter !== "starter" && u.subscriptionTier !== tierFilter) return false;
     if (search) {
       const q = search.toLowerCase();
       const name = [u.firstName, u.lastName].filter(Boolean).join(" ").toLowerCase();
@@ -40,7 +51,8 @@ export default function UserTable({ users }: { users: UserRow[] }) {
   const tierCounts = {
     all: users.length,
     free: users.filter((u) => u.subscriptionTier === "free").length,
-    starter: users.filter((u) => u.subscriptionTier === "starter").length,
+    trial: users.filter(isTrial).length,
+    starter: users.filter(isPaidStarter).length,
     pro: users.filter((u) => u.subscriptionTier === "pro").length,
   };
 
@@ -115,11 +127,12 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                   </td>
                   <td className="px-4 py-2.5">
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      isTrial(u) ? "bg-amber-100 text-amber-800" :
                       u.subscriptionTier === "pro" ? "bg-[#ef562a]/10 text-[#ef562a]" :
                       u.subscriptionTier === "starter" ? "bg-blue-100 text-blue-700" :
                       "bg-[var(--gray-100)] text-[var(--gray-600)]"
                     }`}>
-                      {u.subscriptionTier}
+                      {isTrial(u) ? "trial" : u.subscriptionTier}
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-xs text-[var(--gray-600)]">
