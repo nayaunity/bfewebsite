@@ -6,6 +6,7 @@ import {
   extractName,
   isGreenhouseVerification,
 } from "@/lib/application-email";
+import { logServerError } from "@/lib/log-error";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -104,6 +105,53 @@ export async function POST(request: NextRequest) {
 
   // Forward non-verification emails to user's real email
   const isVerification = isGreenhouseVerification(subject, text);
+
+  // Near-miss detection: if this is a verification email and the same user has
+  // a BrowseDiscovery that failed with verification-timeout in the last 30 min,
+  // it means the email arrived AFTER we gave up. (BrowseDiscovery has no
+  // updatedAt — discoveries are short-lived (<12 min apply window) so a 30-min
+  // createdAt filter reliably catches recent failures.) Surfaces in /admin/errors
+  // so we can tune the wait window empirically.
+  if (isVerification) {
+    try {
+      const recentTimeout = await prisma.browseDiscovery.findFirst({
+        where: {
+          status: "failed",
+          errorMessage: { startsWith: "Verification code not received within timeout" },
+          createdAt: { gte: new Date(Date.now() - 30 * 60 * 1000) },
+          session: { userId: user.id },
+        },
+        select: {
+          id: true,
+          company: true,
+          jobTitle: true,
+          createdAt: true,
+          sessionId: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      if (recentTimeout) {
+        const deltaMs = Date.now() - recentTimeout.createdAt.getTime();
+        await logServerError({
+          kind: "near-miss-verification",
+          userId: user.id,
+          message: `Verification email arrived ${Math.round(deltaMs / 1000)}s after discovery created for ${recentTimeout.company}`,
+          jobTitle: recentTimeout.jobTitle,
+          company: recentTimeout.company,
+          metadata: {
+            applicationEmail: toEmail,
+            discoveryId: recentTimeout.id,
+            sessionId: recentTimeout.sessionId,
+            deltaSinceCreatedMs: deltaMs,
+            subject,
+          },
+        });
+      }
+    } catch (err) {
+      console.warn("[InboundEmail] Near-miss check failed:", err);
+    }
+  }
+
   if (!isVerification && user.email) {
     try {
       await resend.emails.send({

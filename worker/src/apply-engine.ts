@@ -485,6 +485,15 @@ export interface ApplyResult {
   steps?: string[];
   tailored?: boolean;
   tailoredResumeUrl?: string;
+  // Populated on verification-code paths (success or failure) so browse-loop
+  // can attach structured metadata to ErrorLog for /admin/errors visibility.
+  verificationTelemetry?: {
+    applicationEmail: string;
+    waitedMs: number;
+    pollCount: number;
+    inboundEmailCountInWindow: number;
+    rescueUsed: boolean;
+  };
 }
 
 // --- New role-based action interface (replaces CSS-selector-based AgentAction) ---
@@ -1069,11 +1078,55 @@ async function handleVerificationCode(
 ): Promise<ApplyResult | null> {
   steps.push("Verification code required — waiting for email...");
 
-  const code = await waitForVerificationCode(applicant.email);
-  if (!code) {
-    return { success: false, error: "Verification code not received within timeout", steps };
+  // Primary 240s wait (configured in waitForVerificationCode default).
+  let result = await waitForVerificationCode(applicant.email);
+  steps.push(
+    `[Verification] primary wait: ${result.elapsedMs}ms, polls=${result.pollCount}, inboundCount=${result.inboundEmailCountInWindow}`
+  );
+
+  let rescueUsed = false;
+
+  // In-line late-arrival rescue: hold the page open and poll one more 60s.
+  // Verification-timeout means the second submit hasn't fired yet, so the page
+  // state is unchanged — safe to wait. Total worst case ≈ 5 min, comfortably
+  // under the 12-min app watchdog.
+  if (!result.code) {
+    steps.push("[Verification] primary wait timed out — attempting 60s rescue");
+    rescueUsed = true;
+    const rescue = await waitForVerificationCode(applicant.email, 60_000, 1_500);
+    steps.push(
+      `[Verification] rescue wait: ${rescue.elapsedMs}ms, polls=${rescue.pollCount}, inboundCount=${rescue.inboundEmailCountInWindow}`
+    );
+    // Combine telemetry for downstream logging.
+    result = {
+      code: rescue.code,
+      elapsedMs: result.elapsedMs + rescue.elapsedMs,
+      pollCount: result.pollCount + rescue.pollCount,
+      inboundEmailCountInWindow: Math.max(
+        result.inboundEmailCountInWindow,
+        rescue.inboundEmailCountInWindow
+      ),
+    };
   }
 
+  const telemetry = {
+    applicationEmail: applicant.email,
+    waitedMs: result.elapsedMs,
+    pollCount: result.pollCount,
+    inboundEmailCountInWindow: result.inboundEmailCountInWindow,
+    rescueUsed,
+  };
+
+  if (!result.code) {
+    return {
+      success: false,
+      error: "Verification code not received within timeout",
+      steps,
+      verificationTelemetry: telemetry,
+    };
+  }
+
+  const code = result.code;
   steps.push(`Got verification code: ${code.slice(0, 2)}******`);
 
   // Fill the 8 individual code textboxes
@@ -1119,12 +1172,12 @@ async function handleVerificationCode(
     const isEnabled = await submitButton.isEnabled({ timeout: 5000 }).catch(() => false);
     if (!isEnabled) {
       steps.push("Submit still disabled after entering code");
-      return { success: false, error: "Submit button still disabled after verification code entry", steps };
+      return { success: false, error: "Submit button still disabled after verification code entry", steps, verificationTelemetry: telemetry };
     }
 
     if (process.env.DRY_RUN === "true") {
       steps.push("DRY_RUN — verification form filled, submit SKIPPED");
-      return { success: true, steps };
+      return { success: true, steps, verificationTelemetry: telemetry };
     }
     const urlBefore = page.url();
     await submitButton.click({ timeout: 5000 });
@@ -1133,7 +1186,7 @@ async function handleVerificationCode(
 
     if (await checkThankYou(frame, page)) {
       steps.push("Application submitted successfully after verification");
-      return { success: true, steps };
+      return { success: true, steps, verificationTelemetry: telemetry };
     }
 
     // Also check: if the URL changed or the submit button disappeared, submission likely succeeded
@@ -1142,21 +1195,21 @@ async function handleVerificationCode(
       .isVisible({ timeout: 500 }).catch(() => false);
     if (urlAfter !== urlBefore || !submitStillVisible) {
       steps.push("Application likely submitted (URL changed or submit button gone)");
-      return { success: true, steps };
+      return { success: true, steps, verificationTelemetry: telemetry };
     }
 
     // One more check: look for confirmation text on the MAIN page (not frame)
     const mainText = await page.locator("body").innerText().catch(() => "");
     if (/thank|submitted|received|applied|application complete/i.test(mainText.slice(0, 2000))) {
       steps.push("Application submitted (confirmation text on main page)");
-      return { success: true, steps };
+      return { success: true, steps, verificationTelemetry: telemetry };
     }
 
     steps.push("Thank you page not found after verification submit");
-    return { success: false, error: "Submission failed after entering verification code", steps };
+    return { success: false, error: "Submission failed after entering verification code", steps, verificationTelemetry: telemetry };
   } catch (e) {
     steps.push(`Verification code entry failed: ${e instanceof Error ? e.message : String(e)}`);
-    return { success: false, error: "Failed to enter verification code", steps };
+    return { success: false, error: "Failed to enter verification code", steps, verificationTelemetry: telemetry };
   }
 }
 

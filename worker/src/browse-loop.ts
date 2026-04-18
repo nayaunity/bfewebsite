@@ -195,6 +195,11 @@ export async function processNextBrowseSession(): Promise<boolean> {
     const jobs: Array<{ title: string; applyUrl: string; company: string; matchScore?: number; matchReason?: string }> = JSON.parse(session.matchedJobs);
     log(session.id, "info", `Fast path: ${jobs.length} pre-matched jobs`);
     let successCount = 0;
+    // Discoveries that failed with verification-timeout get one retry at the
+    // end of the session. Verification-timeout means the second submit was
+    // never clicked, so no application was actually submitted at the ATS —
+    // safe to retry without risking a duplicate.
+    const verificationRetryQueue: typeof jobs = [];
 
     await db.execute({
       sql: `UPDATE BrowseSession SET jobsFound = ? WHERE id = ?`,
@@ -356,9 +361,94 @@ export async function processNextBrowseSession(): Promise<boolean> {
           pageUrl: job.applyUrl,
         }).catch(() => {});
         log(session.id, "warn", `Failed: ${job.title} — ${applyResult.error}`);
+
+        // Queue verification-timeout failures for one retry at end of session.
+        // Other failure modes (12-min app timeout, stuck-cascade, role mismatch)
+        // are NOT retried — page state is unknown and a retry could cause a
+        // duplicate apply.
+        if (
+          applyResult.error &&
+          /Verification code not received within timeout/i.test(applyResult.error)
+        ) {
+          verificationRetryQueue.push(job);
+        }
       }
 
       await delay(DELAY_BETWEEN_JOBS_MS);
+    }
+
+    // One-shot retry for verification-timeout failures. By the time we reach
+    // this loop, the original verification email may have arrived — a fresh
+    // submit triggers a NEW email and a NEW chance to read it.
+    if (verificationRetryQueue.length > 0) {
+      log(session.id, "info", `Verification retry queue: ${verificationRetryQueue.length} jobs`);
+      for (const job of verificationRetryQueue) {
+        // Re-check quota before retry — user may have hit cap during the main loop
+        const quotaCheck = await db.execute({
+          sql: `SELECT monthlyAppCount, subscriptionTier, subscriptionStatus FROM User WHERE id = ?`,
+          args: [session.userId],
+        });
+        const u = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string } | undefined;
+        if (u && u.subscriptionStatus === "trialing" && u.monthlyAppCount >= 10) {
+          log(session.id, "info", `Skipping retry — trial cap reached (${u.monthlyAppCount}/10)`);
+          break;
+        }
+        const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
+        const limit = tierLimits[u?.subscriptionTier || "free"] || 5;
+        if (u && u.monthlyAppCount >= limit) {
+          log(session.id, "info", `Skipping retry — monthly limit reached (${u.monthlyAppCount}/${limit})`);
+          break;
+        }
+
+        log(session.id, "info", `Retry (verification): ${job.title} @ ${job.company}`);
+        const retryResult = await applyToJob(
+          job.applyUrl,
+          {
+            firstName: user.firstName, lastName: user.lastName,
+            email: user.applicationEmail || user.email, phone: user.phone,
+            preferredName: user.preferredName || undefined, pronouns: user.pronouns || undefined,
+            usState: user.usState || undefined, workAuthorized: user.workAuthorized === 1,
+            needsSponsorship: user.needsSponsorship === 1, countryOfResidence: user.countryOfResidence || undefined,
+            willingToRelocate: user.willingToRelocate === 1, remotePreference: user.remotePreference || undefined,
+            linkedinUrl: user.linkedinUrl || undefined, githubUrl: user.githubUrl || undefined,
+            websiteUrl: user.websiteUrl || undefined, currentEmployer: user.currentEmployer || undefined,
+            currentTitle: user.currentTitle || undefined, school: user.school || undefined,
+            degree: user.degree || undefined, graduationYear: user.graduationYear || undefined,
+            additionalCerts: user.additionalCerts || undefined, city: user.city || undefined,
+            yearsOfExperience: user.yearsOfExperience || undefined, salaryExpectation: user.salaryExpectation || undefined,
+            earliestStartDate: user.earliestStartDate || undefined, gender: user.gender || undefined,
+            race: user.race || undefined, hispanicOrLatino: user.hispanicOrLatino || undefined,
+            veteranStatus: user.veteranStatus || undefined, disabilityStatus: user.disabilityStatus || undefined,
+            applicationAnswers: user.applicationAnswers || undefined, targetCompany: job.company,
+          },
+          session.resumeUrl, session.resumeName, session.targetRole,
+          user.subscriptionTier as string | undefined, job.title, session.userId
+        );
+
+        if (retryResult.success) {
+          successCount++;
+          await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+          if (retryResult.tailored) {
+            await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [retryResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
+            const { incrementTailorQuota } = await import("./tailor-resume");
+            await incrementTailorQuota(session.userId);
+          }
+          // The original failure was already counted in jobsFailed — decrement
+          // it and increment jobsApplied so the session counters reflect the
+          // final state.
+          await db.execute({ sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1, jobsFailed = jobsFailed - 1 WHERE id = ?`, args: [session.id] });
+          await db.execute({ sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`, args: [session.userId] });
+          log(session.id, "info", `Retry succeeded: ${job.title} @ ${job.company}`);
+        } else {
+          const retryErrorWithSteps = retryResult.steps
+            ? `[retry] ${retryResult.error} | Steps: ${retryResult.steps.slice(-8).join(" → ")}`
+            : `[retry] ${retryResult.error || "Unknown error"}`;
+          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", retryErrorWithSteps);
+          log(session.id, "warn", `Retry failed: ${job.title} — ${retryResult.error}`);
+        }
+
+        await delay(DELAY_BETWEEN_JOBS_MS);
+      }
     }
 
     // Clean up & complete

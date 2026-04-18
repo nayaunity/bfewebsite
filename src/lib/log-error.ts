@@ -2,7 +2,11 @@ import { prisma } from "@/lib/prisma";
 
 export type ServerErrorKind =
   | "batch-apply:job-failed"
-  | "batch-apply:run-failed";
+  | "batch-apply:run-failed"
+  // A verification code arrived AFTER the worker gave up on a discovery — the
+  // longer-wait window we just shipped would have caught it. Used to gauge
+  // whether further timeout extension is worthwhile.
+  | "near-miss-verification";
 
 interface LogServerErrorArgs {
   kind: ServerErrorKind;
@@ -11,6 +15,7 @@ interface LogServerErrorArgs {
   jobId?: string | null;
   company?: string | null;
   jobTitle?: string | null;
+  metadata?: Record<string, unknown>;
 }
 
 // Mirror of worker/src/error-log.ts for Next.js server-side error sites.
@@ -24,6 +29,7 @@ export async function logServerError(args: LogServerErrorArgs): Promise<void> {
       company: args.company ?? null,
       jobTitle: args.jobTitle ?? null,
       raw: args.message,
+      ...(args.metadata ? { metadata: args.metadata } : {}),
     });
     await prisma.errorLog.create({
       data: {
