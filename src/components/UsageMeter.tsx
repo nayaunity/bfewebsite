@@ -4,11 +4,13 @@ export function UsageMeter({
   used,
   limit,
   tier,
+  status,
   onUpgrade,
 }: {
   used: number;
   limit: number;
   tier?: string;
+  status?: string;
   onUpgrade?: (tier: "starter" | "pro") => void;
 }) {
   const isUnlimited = limit === Infinity || limit > 9999;
@@ -16,6 +18,10 @@ export function UsageMeter({
   const atLimit = !isUnlimited && used >= limit;
   const remaining = limit - used;
   const isFree = tier === "free";
+  // Trialing users at cap see TrialCapReachedBanner above the dashboard;
+  // suppress the generic "Limit reached. Upgrade for more." line here so the
+  // single high-intent CTA owns the moment (Fogg: one clear prompt, not two).
+  const isTrialAtCap = status === "trialing" && atLimit;
 
   return (
     <div className="space-y-1">
@@ -39,7 +45,7 @@ export function UsageMeter({
           />
         </div>
       )}
-      {atLimit && !isFree && (
+      {atLimit && !isFree && !isTrialAtCap && (
         <p className="text-xs text-red-500">
           Limit reached.{" "}
           <a href="/pricing" className="underline">

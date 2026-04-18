@@ -24,7 +24,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -171,6 +171,7 @@ export default async function ApplicationsPage() {
             missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}
             showResumeQuiz={session.user.email === "anika.ahmed04@gmail.com"}
             subscriptionTier={user?.subscriptionTier ?? "free"}
+            subscriptionStatus={user?.subscriptionStatus ?? "inactive"}
             freeTierEndsAt={user?.freeTierEndsAt ? user.freeTierEndsAt.toISOString() : null}
             // Do NOT include todaySession.errorMessage or any per-discovery
             // errorMessage here. Raw worker error text is operator-only and

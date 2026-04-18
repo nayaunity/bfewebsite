@@ -8,6 +8,10 @@
 
 **Always test changes before asking to commit/deploy.** If you modified worker logic (apply-engine, career-browser, browse-loop), form handling, or UI components — test it with Playwright or a local dev server before saying "ready to commit." Do not wait to be told to test. If you can't test it end-to-end (e.g., requires a real user session), explain what you tested and what you couldn't.
 
+## Copywriting
+
+**Never use em-dashes (` — `) in any user-facing copy.** This covers emails (subject lines + bodies), UI banners, button text, modals, alerts, error messages, blog posts, marketing copy, and anything rendered to a real user. Replace with a period or restructure the sentence. Applies to every component in `src/`, every email template in `src/lib/`, every blog post written to the database. Code comments, plan files, HANDOFF.md, and other operator-only docs are exempt.
+
 ## Session Start Checklist
 
 **At the start of every new session, read `HANDOFF.md` in the project root.** It contains the current state of the project, what was done in the last session, known issues, and next steps. This is critical context you need before making any changes.

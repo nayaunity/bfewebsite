@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { friendlyError } from "@/lib/error-display";
 import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
+import { TrialCapReachedBanner } from "@/components/TrialCapReachedBanner";
 
 interface Application {
   id: string;
@@ -66,6 +67,7 @@ export default function ApplicationsDashboard({
   missingResume = false,
   showResumeQuiz = false,
   subscriptionTier = "free",
+  subscriptionStatus = "inactive",
   freeTierEndsAt = null,
 }: {
   initialApplications: Application[];
@@ -79,9 +81,15 @@ export default function ApplicationsDashboard({
   missingResume?: boolean;
   showResumeQuiz?: boolean;
   subscriptionTier?: string;
+  subscriptionStatus?: string;
   freeTierEndsAt?: string | null;
 }) {
   const showTrialBanner = subscriptionTier === "free" && !!freeTierEndsAt;
+  // Trial-cap conversion moment: trialing user has burned through their 5
+  // trial applies. Highest-intent upgrade surface — owns the moment with
+  // loss-aversion + endowment copy and one-click upgrade-now CTA.
+  const showTrialCapBanner =
+    subscriptionStatus === "trialing" && (usage?.used ?? 0) >= 5;
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [starting, setStarting] = useState(false);
@@ -196,6 +204,7 @@ export default function ApplicationsDashboard({
 
   return (
     <div>
+      {showTrialCapBanner && <TrialCapReachedBanner />}
       {showTrialBanner && freeTierEndsAt && (
         <TrialRequiredBanner freeTierEndsAt={freeTierEndsAt} />
       )}
