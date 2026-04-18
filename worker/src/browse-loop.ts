@@ -35,6 +35,39 @@ async function heartbeat(sessionId: string): Promise<void> {
   } catch {}
 }
 
+const APPLICATION_EMAIL_DOMAIN = "apply.theblackfemaleengineer.com";
+
+/**
+ * Provision a User.applicationEmail row from the worker. Mirrors the
+ * Next.js-side ensureApplicationEmail() (src/lib/application-email.ts)
+ * but uses the libsql client directly. Returns the provisioned address.
+ *
+ * Without this, sessions queued via direct DB writes (scripts, legacy flows)
+ * leave applicationEmail NULL, which silently breaks the verification-code
+ * flow because the ATS sends to the user's real inbox.
+ */
+async function ensureApplicationEmailOnUser(userId: string): Promise<string> {
+  const db = getDb();
+  const shortId = userId.slice(0, 8);
+  const candidate = `u-${shortId}@${APPLICATION_EMAIL_DOMAIN}`;
+  try {
+    await db.execute({
+      sql: `UPDATE User SET applicationEmail = ? WHERE id = ?`,
+      args: [candidate, userId],
+    });
+    return candidate;
+  } catch {
+    // Unique-constraint collision — fall back to longer prefix.
+    const longId = userId.slice(0, 12);
+    const fallback = `u-${longId}@${APPLICATION_EMAIL_DOMAIN}`;
+    await db.execute({
+      sql: `UPDATE User SET applicationEmail = ? WHERE id = ?`,
+      args: [fallback, userId],
+    });
+    return fallback;
+  }
+}
+
 function companyKey(company: string): string {
   return company.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -228,6 +261,17 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
   const user = userResult.rows[0] as unknown as UserProfile;
   const companies: string[] = JSON.parse(session.companies);
+
+  // Defense-in-depth: provision applicationEmail if missing. The API routes
+  // call ensureApplicationEmail() but sessions queued by other paths (direct
+  // DB inserts, scripts, legacy flows) skip provisioning. Without an
+  // application email, ATS verification emails go to the user's real inbox
+  // (which our SendGrid Inbound Parse webhook can't read) and verification-
+  // gated applies silently fail.
+  if (!user.applicationEmail) {
+    user.applicationEmail = await ensureApplicationEmailOnUser(session.userId);
+    log(session.id, "info", `Provisioned applicationEmail: ${user.applicationEmail}`);
+  }
 
   // Preflight: bail out before Playwright / resume download if Anthropic
   // credits are exhausted. This is the single most harmful silent-failure mode
