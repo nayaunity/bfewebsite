@@ -28,9 +28,12 @@ async function getSessionUserId(sessionId: string): Promise<string | null> {
  */
 async function heartbeat(sessionId: string): Promise<void> {
   try {
+    // ISO 8601 — Prisma 6's libsql adapter rejects SQLite's default
+    // "YYYY-MM-DD HH:MM:SS" format on DateTime fields with P2023, breaking
+    // /admin/auto-apply when it reads BrowseSession via findMany().
     await getDb().execute({
-      sql: `UPDATE BrowseSession SET lastHeartbeatAt = datetime('now') WHERE id = ?`,
-      args: [sessionId],
+      sql: `UPDATE BrowseSession SET lastHeartbeatAt = ? WHERE id = ?`,
+      args: [new Date().toISOString(), sessionId],
     });
   } catch {}
 }
@@ -164,19 +167,24 @@ export async function processNextBrowseSession(): Promise<boolean> {
   //   2. NULL heartbeat AND startedAt > 30 min — backwards compat for sessions
   //      queued before this code shipped (no heartbeat ever written).
   //   3. startedAt > 6 hours — absolute defense-in-depth cap.
+  //
+  // All threshold timestamps are ISO 8601 — see heartbeat() helper for why.
   try {
+    const now = new Date();
+    const twentyMinAgo = new Date(now.getTime() - 20 * 60 * 1000).toISOString();
+    const nowIso = now.toISOString();
     const stale = await db.execute({
       sql: `UPDATE BrowseSession SET status = 'failed',
             errorMessage = 'Session timed out — please try again',
-            completedAt = datetime('now')
+            completedAt = ?
             WHERE status = 'processing'
             AND (
-              (lastHeartbeatAt IS NOT NULL AND lastHeartbeatAt < datetime('now', '-20 minutes'))
+              (lastHeartbeatAt IS NOT NULL AND lastHeartbeatAt < ?)
               OR (lastHeartbeatAt IS NULL AND startedAt < datetime('now', '-30 minutes'))
               OR (startedAt < datetime('now', '-6 hours'))
             )
             RETURNING id, userId`,
-      args: [],
+      args: [nowIso, twentyMinAgo],
     });
     if (stale.rows && stale.rows.length > 0) {
       for (const row of stale.rows) {
@@ -219,13 +227,16 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
   // Atomically claim next queued session — set lastHeartbeatAt now so the
   // watchdog has an immediate liveness signal before the first apply lands.
+  // lastHeartbeatAt uses ISO format (Prisma 6 requirement); startedAt stays
+  // on SQLite's datetime('now') for backwards-compat with existing rows and
+  // the watchdog's legacy startedAt comparison branch.
   const result = await db.execute({
     sql: `UPDATE BrowseSession SET status = 'processing',
           startedAt = datetime('now'),
-          lastHeartbeatAt = datetime('now')
+          lastHeartbeatAt = ?
           WHERE id = (SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1)
           RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName`,
-    args: [],
+    args: [new Date().toISOString()],
   });
 
   if (!result.rows || result.rows.length === 0) {
