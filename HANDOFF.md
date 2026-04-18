@@ -1,18 +1,19 @@
-# Session Handoff — April 14–17, 2026
+# Session Handoff — April 14–18, 2026
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `857905c` (trial polish: 10-app trial cap + free-plan copy cleanup).
-- **seven-day-trial** — current working branch (Apr 17). Freemium-to-trial migration + post-deploy polish (see section 16). Fully merged and deployed.
+- **main** — production code, deployed to Vercel. Head: `2047abd` (Apr 18, merge of verification-code success-rate fix).
+- **resume-first-onboarding** — current working branch (Apr 18). Verification fix landed at `b122b8d` and merged into main.
+- **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `f7edd9a` (fast-forwarded to main on Apr 16).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `2047abd` (fast-forwarded to main on Apr 18 to ship worker-side verification fix).
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: `bfewebsite-qk8wi2z5a` (Apr 17, trial polish).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: `bfewebsite-eql1v8b5r` (Apr 18, verification-code success-rate fix).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB.
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17). Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -46,7 +47,34 @@
 
 ---
 
-## What Was Done This Session (April 15-17)
+## What Was Done This Session (April 15-18)
+
+### 17. Verification-code success-rate fix (Apr 18, branch `resume-first-onboarding` → main, DEPLOYED `bfewebsite-eql1v8b5r` + Railway redeploy from `auto-apply-saas`)
+**Motivated by:** `c.wright-galloway@benedict.edu` ran two back-to-back sessions with **0/14 applies** (PM 0/6, Project Manager 0/8). The dominant pattern (8/14 = 57%) was "Verification code not received within timeout" on Greenhouse customers (Affirm, ClickHouse, GitLab, Airtable, Chime). Pattern has been recurring for months. Root cause: 60s wait window + 3s poll interval was shorter than the SendGrid Inbound Parse → Turso → poll roundtrip; emails were arriving but the worker had already given up.
+
+**Shipped:**
+- **`worker/src/verification.ts` rewrite.** Wait window 60s → 240s, poll interval 3s → 1.5s. Returns structured `VerificationResult` (code, elapsedMs, pollCount, inboundEmailCountInWindow). Broader code-extraction regex covering 6-digit codes (Lever, Workday) and codes wrapped in `<td>` / `<span>` tags.
+- **`worker/src/apply-engine.ts handleVerificationCode` rewrite.** After the primary 240s wait, hold the page open and poll one more 60s as in-line rescue. Threads `verificationTelemetry` through all 8 return paths so browse-loop can surface it.
+- **`worker/src/browse-loop.ts` retry queue (fast path).** Verification-timeout failures are collected during the main loop and retried once at the end of the session, with quota re-check. Counters adjust on retry success. **Verification-timeout only** — 12-min app timeouts are NOT retried because page state is unknown (could cause duplicate apply).
+- **`src/app/api/webhooks/inbound-email/route.ts` near-miss telemetry.** When a verification email arrives, checks for matching verification-timeout BrowseDiscovery rows in last 30 min and writes `worker:near-miss-verification` to ErrorLog. Lets us tune the wait window empirically — if entries appear, the email arrived after the new 240s + 60s rescue ran out.
+- **`src/lib/log-error.ts` + `worker/src/error-log.ts`.** Added `"near-miss-verification"` to `ServerErrorKind` union; both args interfaces gained an optional `metadata: Record<string, unknown>` field.
+- **`worker/test/verification.test.ts` (new).** 12 unit tests for `extractVerificationCode` covering Greenhouse 8-char, Lever/Workday 6-digit, table-wrapped codes, keyword anchors, and skip-list safety.
+
+**Live test (integration test user, same 4 verification-prone Greenhouse roles):**
+- Affirm: Senior Product Manager, Financial Reporting → **applied**
+- ClickHouse: Senior Technical Product Manager - Core Database → **applied**
+- GitLab: Senior Product Manager, Hosted Runners → **applied**
+- Airtable: Associate Program Manager, Digital Programs (Contractor) → **applied**
+- **4/4 success in 16 minutes** (~4 min avg). Zero verification timeouts, zero near-miss entries. The in-line rescue and retry queue weren't even needed — the new 240s primary wait was sufficient. Same role set previously failed 0/14 for c.wright-galloway.
+
+**New scripts:**
+- `scripts/queue-test-verification-session.ts` — queue a session for the integration test user against a hard-coded list of verification-prone Greenhouse jobs. Promotes test user to starter/active for the run.
+- `scripts/check-verification-test-status.ts <sessionId>` — surfaces per-discovery status, verification telemetry from steps trace, near-miss-verification entries, and verification-timeout failures.
+- `scripts/reset-test-user-after-verification-test.ts` — restores the integration test user to free/inactive after a test run.
+
+**Deferred (not in this fix):**
+- Pre-form title sanity check for Twilio "Cannot proceed" cluster (1 of 14, role mismatch on Principal vs PM)
+- Veteran-status dropdown widening on Webflow (1 of 14, `selectDropdown` regex doesn't catch all option text variants)
 
 ### 16. Freemium -> 7-Day Free Trial (Apr 17, branch `seven-day-trial`, DEPLOYED `bfewebsite-e3d8j0oiz` + polish `bfewebsite-qk8wi2z5a`)
 **Motivated by:** ~450 signups, ~119 onboarded, only 4 paying. The permanent 5-app free tier was training users to expect free indefinitely and wasting the highest-intent moment (right after onboarding). Switched to a card-required Stripe trial to lift trial-to-paid conversion toward the 30-50% range typical of card-required SaaS trials.
@@ -181,6 +209,9 @@
 ### Greenhouse react-select -- RESOLVED (pending prod measurement)
 Phase 2 `common-gates.ts` + `greenhouseDeterministicFill` now clear 90% of Greenhouse URLs.
 
+### Greenhouse verification-code timeout -- RESOLVED Apr 18
+60s wait window was below the SendGrid Inbound Parse → Turso → poll roundtrip. Raised to 240s + 60s in-line rescue + one-shot session-end retry. See section 17. Live test: 4/4 on the same Greenhouse roles that failed 0/14 for c.wright-galloway.
+
 ### Ashby spam-flag -- NOT FIXED IN CODE
 Cooldown mitigates cascading failures. Submit-time flag requires residential IPs. **Only paid Browserbase with `BROWSERBASE_USE_PROXIES=true` will move this.** Ashby cluster hard-blocked from matcher until proxies enabled.
 
@@ -199,6 +230,17 @@ Fixed + migrated 85 affected users Apr 15.
 ---
 
 ## Next Steps (Prioritized)
+
+### 0. Re-run c.wright-galloway against her original 14-job queue (Apr 18-19)
+Verification fix is live and validated against 4 Greenhouse roles. To confirm the lift in her actual cohort context, queue a fresh session for c.wright-galloway against the same role queue (PM + Project Manager). Watch for:
+- Verification-timeout failures (expect ~0)
+- `worker:near-miss-verification` entries in /admin/errors (would indicate the 240s+60s window still isn't enough)
+- Twilio "Cannot proceed" still surfacing (deferred fix — expected)
+- Webflow veteran-status dropdown still surfacing (deferred fix — expected)
+
+### 0a. Follow-up fixes from the Apr 18 plan (deferred but cheap)
+- **Pre-form title sanity check.** Compare `document.title` / H1 against queued `job.title` after navigation; bail early with `role-mismatch` for "Principal Project Manager" vs "Project Manager" mismatches. Fixes the Twilio cluster (~7% of c.wright-galloway failures).
+- **Veteran-status dropdown widening.** `worker/src/common-gates.ts:98` regex misses "I prefer not to answer" / "Decline to self-identify" variants on Webflow. Update option-text regex.
 
 ### 1. Monitor the trial conversion funnel (Apr 17 onward)
 - **Apr 28**: sunset cron starts firing 3-day warning emails (wall is May 1 for all 473 existing free users). Monitor Resend send rate + any delivery failures.
@@ -279,7 +321,7 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 ## Diagnostic Resources
 - Worker startup log: search Railway deploy logs for `"event":"browser_binary"` to verify Chromium binary path
 - Failure screenshots: every stuck/timeout failure uploads a full-page PNG to Vercel Blob
-- One-off scripts: `scripts/apply-for-user.ts <userId>`, `scripts/send-late-upgrade-email.ts [--test|--send]`, `scripts/send-onboarding-dropoff-email.ts`, `scripts/repair-city-location.ts`, `scripts/repair-datetime-format.ts`, `scripts/canary.ts`
+- One-off scripts: `scripts/apply-for-user.ts <userId>`, `scripts/send-late-upgrade-email.ts [--test|--send]`, `scripts/send-onboarding-dropoff-email.ts`, `scripts/repair-city-location.ts`, `scripts/repair-datetime-format.ts`, `scripts/canary.ts`, `scripts/queue-test-verification-session.ts`, `scripts/check-verification-test-status.ts <sessionId>`, `scripts/reset-test-user-after-verification-test.ts`
 - Integration test user: `1d16e543-db6e-497b-b78b-28fbf0a30626` (role=`test`)
 - Integration suite: `cd worker && npm test` (fixture) + `npm run test:integration` (real URLs)
 
