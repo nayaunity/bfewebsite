@@ -45,6 +45,12 @@ async function getOnboardingData() {
         onboardingCompletedAt: true,
         createdAt: true,
         subscriptionTier: true,
+        targetRole: true,
+        yearsOfExperience: true,
+        workLocations: true,
+        city: true,
+        usState: true,
+        remotePreference: true,
         _count: { select: { resumes: true } },
       },
       orderBy: { onboardingCompletedAt: "desc" },
@@ -69,6 +75,57 @@ async function getOnboardingData() {
   }
 
   return { users, totalUsers, stepCounts };
+}
+
+function parseStringArray(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === "string" && v.trim() !== "") : [];
+  } catch {
+    return [];
+  }
+}
+
+type ProfileFallback = {
+  targetRole: string | null;
+  yearsOfExperience: string | null;
+  workLocations: string | null;
+  city: string | null;
+  usState: string | null;
+  remotePreference: string | null;
+};
+
+// For users who came through the resume-first /start flow, onboardingData is
+// empty but the equivalent answers live in top-level User columns. This derives
+// the same role/experience/location shape the old wizard wrote into
+// onboardingData so the admin pills render consistently.
+function deriveTags(data: Record<string, unknown>, user: ProfileFallback) {
+  const roles = Array.isArray(data.roles) && data.roles.length > 0
+    ? (data.roles as unknown[]).filter((r): r is string => typeof r === "string")
+    : parseStringArray(user.targetRole);
+
+  const experience = Array.isArray(data.experience) && data.experience.length > 0
+    ? (data.experience as unknown[]).filter((e): e is string => typeof e === "string")
+    : user.yearsOfExperience ? [`${user.yearsOfExperience} yrs`] : [];
+
+  let locations: string[];
+  if (Array.isArray(data.locations) && data.locations.length > 0) {
+    locations = (data.locations as unknown[]).filter((l): l is string => typeof l === "string");
+  } else {
+    const fromWorkLocations = parseStringArray(user.workLocations);
+    if (fromWorkLocations.length > 0) {
+      locations = fromWorkLocations;
+    } else {
+      locations = [
+        user.remotePreference,
+        user.city && user.usState ? `${user.city}, ${user.usState}` : user.usState,
+      ].filter((v): v is string => typeof v === "string" && v.trim() !== "");
+    }
+  }
+  locations = Array.from(new Set(locations));
+
+  return { roles, experience, locations };
 }
 
 function formatDate(date: Date) {
@@ -189,6 +246,7 @@ export default async function OnboardingPage() {
           {users.map((user) => {
             let data: Record<string, unknown> = {};
             try { data = JSON.parse(user.onboardingData || "{}"); } catch {}
+            const tags = deriveTags(data, user);
 
             return (
               <div key={user.id} className="px-4 py-5 sm:px-6">
@@ -221,17 +279,17 @@ export default async function OnboardingPage() {
 
                 {/* Onboarding data tags */}
                 <div className="flex flex-wrap gap-2">
-                  {(data.roles as string[] | undefined)?.map((role: string) => (
+                  {tags.roles.map((role: string) => (
                     <span key={role} className="text-xs px-2.5 py-1 rounded-full bg-[#ef562a]/10 text-[#ef562a] font-medium">
                       {role}
                     </span>
                   ))}
-                  {(data.experience as string[] | undefined)?.map((exp: string) => (
+                  {tags.experience.map((exp: string) => (
                     <span key={exp} className="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                       {exp}
                     </span>
                   ))}
-                  {(data.locations as string[] | undefined)?.map((loc: string) => (
+                  {tags.locations.map((loc: string) => (
                     <span key={loc} className="text-xs px-2.5 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                       {loc}
                     </span>
