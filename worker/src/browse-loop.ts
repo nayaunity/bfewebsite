@@ -369,10 +369,11 @@ export async function processNextBrowseSession(): Promise<boolean> {
         log(session.id, "info", `Free tier ended (freeTierEndsAt=${currentUser.freeTierEndsAt}), stopping. User must start trial.`);
         break;
       }
-      // Trial cap: max 10 apps during the 7-day Stripe trial. After
-      // status flips from "trialing" to "active" the full Starter cap unlocks.
-      if (currentUser && currentUser.subscriptionStatus === "trialing" && currentUser.monthlyAppCount >= 10) {
-        log(session.id, "info", `Trial cap reached (${currentUser.monthlyAppCount}/10), stopping. User is still trialing.`);
+      // Trial cap: max 5 apps during the 7-day Stripe trial (matches legacy
+      // free tier). After status flips from "trialing" to "active" the full
+      // Starter cap unlocks.
+      if (currentUser && currentUser.subscriptionStatus === "trialing" && currentUser.monthlyAppCount >= 5) {
+        log(session.id, "info", `Trial cap reached (${currentUser.monthlyAppCount}/5), stopping. User is still trialing.`);
         break;
       }
       const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
@@ -508,8 +509,8 @@ export async function processNextBrowseSession(): Promise<boolean> {
           args: [session.userId],
         });
         const u = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string } | undefined;
-        if (u && u.subscriptionStatus === "trialing" && u.monthlyAppCount >= 10) {
-          log(session.id, "info", `Skipping retry — trial cap reached (${u.monthlyAppCount}/10)`);
+        if (u && u.subscriptionStatus === "trialing" && u.monthlyAppCount >= 5) {
+          log(session.id, "info", `Skipping retry — trial cap reached (${u.monthlyAppCount}/5)`);
           break;
         }
         const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
