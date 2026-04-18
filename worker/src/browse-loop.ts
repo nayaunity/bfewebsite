@@ -16,6 +16,25 @@ async function getSessionUserId(sessionId: string): Promise<string | null> {
   }
 }
 
+/**
+ * Refresh BrowseSession.lastHeartbeatAt — the liveness signal the watchdog
+ * filters on. Called on session claim and around every apply attempt so a
+ * legitimate long session (30 jobs × 5 min = 150 min) keeps refreshing past
+ * what used to be a fatal 30-min hard cap.
+ *
+ * Swallows DB errors so a transient Turso blip can't kill the loop. Worst
+ * case is a single missed heartbeat; the 20-min staleness threshold gives
+ * multiple chances before the watchdog acts.
+ */
+async function heartbeat(sessionId: string): Promise<void> {
+  try {
+    await getDb().execute({
+      sql: `UPDATE BrowseSession SET lastHeartbeatAt = datetime('now') WHERE id = ?`,
+      args: [sessionId],
+    });
+  } catch {}
+}
+
 function companyKey(company: string): string {
   return company.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -99,14 +118,30 @@ const companySlugMap = new Map(
 export async function processNextBrowseSession(): Promise<boolean> {
   const db = getDb();
 
-  // Watchdog: reset sessions stuck in "processing" for >30 minutes
+  // Watchdog: reset sessions whose worker has stopped making progress.
+  //
+  // Liveness signal is `lastHeartbeatAt`, written by the worker on session
+  // claim and after every apply attempt. Healthy long sessions (e.g. 30 jobs
+  // × 5 min each) keep refreshing it, so they stay alive past the old hard
+  // 30-min cap that was killing legitimate progress (jain1009 Apr 18).
+  //
+  // Three OR'd conditions:
+  //   1. Heartbeat stale > 20 min — worker died mid-apply (12-min app timeout
+  //      + 8-min buffer for the per-job loop to write the post-result heartbeat).
+  //   2. NULL heartbeat AND startedAt > 30 min — backwards compat for sessions
+  //      queued before this code shipped (no heartbeat ever written).
+  //   3. startedAt > 6 hours — absolute defense-in-depth cap.
   try {
     const stale = await db.execute({
       sql: `UPDATE BrowseSession SET status = 'failed',
             errorMessage = 'Session timed out — please try again',
             completedAt = datetime('now')
             WHERE status = 'processing'
-            AND startedAt < datetime('now', '-30 minutes')
+            AND (
+              (lastHeartbeatAt IS NOT NULL AND lastHeartbeatAt < datetime('now', '-20 minutes'))
+              OR (lastHeartbeatAt IS NULL AND startedAt < datetime('now', '-30 minutes'))
+              OR (startedAt < datetime('now', '-6 hours'))
+            )
             RETURNING id, userId`,
       args: [],
     });
@@ -114,20 +149,47 @@ export async function processNextBrowseSession(): Promise<boolean> {
       for (const row of stale.rows) {
         const sessionId = row.id as string;
         const userId = (row as unknown as { userId?: string }).userId ?? null;
+
+        // Counter flush: any BrowseDiscovery rows still in 'applying' status
+        // belonged to the in-flight apply when the worker died. Mark them
+        // failed and bump jobsFailed so the session counters reflect reality
+        // (previously these were left in 'applying' forever and undercount).
+        try {
+          await db.execute({
+            sql: `UPDATE BrowseSession
+                  SET jobsFailed = jobsFailed + (
+                    SELECT COUNT(*) FROM BrowseDiscovery
+                    WHERE sessionId = ? AND status = 'applying'
+                  )
+                  WHERE id = ?`,
+            args: [sessionId, sessionId],
+          });
+          await db.execute({
+            sql: `UPDATE BrowseDiscovery
+                  SET status = 'failed',
+                      errorMessage = '[session-watchdog] Session reset before this job finished'
+                  WHERE sessionId = ? AND status = 'applying'`,
+            args: [sessionId],
+          });
+        } catch {}
+
         console.log(JSON.stringify({ ts: new Date().toISOString(), level: "warn", msg: "Reset stuck session", sessionId }));
         await logWorkerError({
           kind: "browse-session:timeout",
           userId,
           sessionId,
-          message: "Session stuck in 'processing' >30min, watchdog reset",
+          message: "Session watchdog reset (stale heartbeat or absolute cap)",
         });
       }
     }
   } catch {}
 
-  // Atomically claim next queued session
+  // Atomically claim next queued session — set lastHeartbeatAt now so the
+  // watchdog has an immediate liveness signal before the first apply lands.
   const result = await db.execute({
-    sql: `UPDATE BrowseSession SET status = 'processing', startedAt = datetime('now')
+    sql: `UPDATE BrowseSession SET status = 'processing',
+          startedAt = datetime('now'),
+          lastHeartbeatAt = datetime('now')
           WHERE id = (SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1)
           RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName`,
     args: [],
@@ -268,6 +330,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
       // Record & apply
       await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null, job.matchScore, job.matchReason);
       log(session.id, "info", `Applying: ${job.title} @ ${job.company}`);
+      await heartbeat(session.id);
 
       const applyResult = await applyToJob(
         job.applyUrl,
@@ -374,6 +437,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         }
       }
 
+      await heartbeat(session.id);
       await delay(DELAY_BETWEEN_JOBS_MS);
     }
 
@@ -401,6 +465,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         }
 
         log(session.id, "info", `Retry (verification): ${job.title} @ ${job.company}`);
+        await heartbeat(session.id);
         const retryResult = await applyToJob(
           job.applyUrl,
           {
@@ -447,6 +512,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           log(session.id, "warn", `Retry failed: ${job.title} — ${retryResult.error}`);
         }
 
+        await heartbeat(session.id);
         await delay(DELAY_BETWEEN_JOBS_MS);
       }
     }
@@ -625,6 +691,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
         // Record discovery
         await createDiscovery(session.id, companyName, job.title, job.applyUrl, "applying", null);
+        await heartbeat(session.id);
 
         // Apply
         const applyResult = await applyToJob(
@@ -707,6 +774,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         }
 
         // Delay between applications
+        await heartbeat(session.id);
         await delay(DELAY_BETWEEN_JOBS_MS);
       }
 
