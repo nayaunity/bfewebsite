@@ -264,11 +264,13 @@ model BrowseSession {
   createdAt      DateTime  @default(now())
   startedAt      DateTime?
   completedAt    DateTime?
+  lastHeartbeatAt DateTime?
 
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   discoveries BrowseDiscovery[]
 
   @@index([status])
+  @@index([status, lastHeartbeatAt])
   @@index([userId])
   @@index([createdAt])
 }
