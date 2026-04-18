@@ -3,8 +3,8 @@
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `6014245` (daily report date filter fix).
-- **seven-day-trial** — current working branch (Apr 17). Implements the freemium-to-trial switch (see section 16). Not yet merged or deployed.
+- **main** — production code, deployed to Vercel. Head: `857905c` (trial polish: 10-app trial cap + free-plan copy cleanup).
+- **seven-day-trial** — current working branch (Apr 17). Freemium-to-trial migration + post-deploy polish (see section 16). Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
 - **auto-apply-saas** — Railway worker deploys from this branch. Head: `f7edd9a` (fast-forwarded to main on Apr 16).
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
@@ -12,9 +12,9 @@
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: `bfewebsite-2qae4egz1` (Apr 16, daily report fix).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: `bfewebsite-qk8wi2z5a` (Apr 17, trial polish).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB.
-- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
+- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17). Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
 - **Stripe** — LIVE mode. Starter $29/mo, Pro $59/mo. **Starter now ships with a 7-day free trial** via `subscription_data.trial_period_days: 7` on Checkout, set in `/api/stripe/checkout` (only when `tier === "starter"`; Pro has no trial). Card collected up front, $0 today, auto-charges day 8 unless cancel. Coupon `STARTER50` and per-user `CAP_<userid>_*` coupons still exist for the legacy cap-conversion drip path through `/api/stripe/convert`.
 - **Resend** — same as before, no inbox for naya@.
@@ -48,7 +48,7 @@
 
 ## What Was Done This Session (April 15-17)
 
-### 16. Freemium -> 7-Day Free Trial (Apr 17, branch `seven-day-trial`, NOT YET DEPLOYED)
+### 16. Freemium -> 7-Day Free Trial (Apr 17, branch `seven-day-trial`, DEPLOYED `bfewebsite-e3d8j0oiz` + polish `bfewebsite-qk8wi2z5a`)
 **Motivated by:** ~450 signups, ~119 onboarded, only 4 paying. The permanent 5-app free tier was training users to expect free indefinitely and wasting the highest-intent moment (right after onboarding). Switched to a card-required Stripe trial to lift trial-to-paid conversion toward the 30-50% range typical of card-required SaaS trials.
 
 **Decisions locked with Naya:**
@@ -84,21 +84,31 @@
 - `src/app/pricing/page.tsx` + `PricingCards.tsx` - dropped Free tier card entirely. Starter is the headline trial card. Logged-out CTA bounces through `/auth/signin?callbackUrl=/profile/applications?startTrial=1`. New "How does the 7-day free trial work?" FAQ.
 - `src/components/UsageMeter.tsx` - removed free-tier-specific copy paths (free users now see TrialRequiredBanner instead). Starter -> Pro upsell at 80%+ retained.
 
-**Backfill (NOT YET RUN ON TURSO):**
-- `scripts/backfill-free-tier-ends-at.ts` - one-time, dry-run-by-default. Sets `freeTierEndsAt = first day of calendar month following monthlyAppResetAt` for every free-tier user. Skips admins/contributors/test, and any user with `currentPeriodEnd` in the future.
+**Backfill (RAN ON TURSO Apr 17):**
+- `scripts/backfill-free-tier-ends-at.ts` - one-time, dry-run-by-default. Ran `--apply` against Turso Apr 17. **473 free-tier users patched, all walled at `2026-05-01`** (uniform, no one gets locked out early). 4 paying users auto-skipped. 3 users skipped by role filter (2 admins + 1 test).
+- **Wall date fix before apply:** initial logic used `firstOfNextMonth(monthlyAppResetAt)` which computed April 1 walls for users whose resetAt was in March — would have walled them immediately. Fixed to `max(firstOfNextMonth(resetAt), firstOfNextMonth(now))` so everyone gets at least until the first of next calendar month from today.
+
+**Stripe dashboard config (Naya, Apr 17):**
+- Customer Portal: Cancellations enabled, both Starter + Pro added to subscription products for plan switching, proration = "Charge or credit the full difference", charge timing = immediately, **"When downgrading" = Update at end of billing period** (so mid-cycle downgrade from Pro to Starter stays on Pro until renewal, no partial refunds).
+- Stripe auto-reminder email (trial ends in 7 days) NOT enabled — would fire on day 0 of our 7-day trial, useless. Day-6 "trial ends tomorrow" reminder is a future follow-up.
+
+**Production preview email:** Sent live to `nayaunitybere@gmail.com` Apr 17 via Resend (message id `eab14769-...`) using the same template the cron fires. Copy approved.
+
+**Post-deploy polish (Apr 17, commit `857905c`, deploy `bfewebsite-qk8wi2z5a`):**
+- **Trial 10-app cap.** `canApply()` in `src/lib/subscription.ts` and the worker quota check in `worker/src/browse-loop.ts` both override the 100-app Starter limit to 10 when `subscriptionStatus === "trialing"`. After Stripe flips to `active`, the full 100 unlocks. Prevents users from burning through Starter inventory during the free 7 days. Edge case noted but not solved: a trial that spans a calendar month boundary could get ~20 total apps because `monthlyAppCount` resets at the boundary; rare enough to accept.
+- **Dashboard cleanup.** Removed the duplicate "You've used all 5 free applications — limit resets next month" upsell block (old ApplicationsDashboard.tsx:481-540). TrialRequiredBanner is now the single CTA for free users at the wall. "Resets next month" was a lie under the new model anyway.
+- **FAQ copy.** `src/components/landing/FAQSection.tsx` "Is this free?" rewritten to "Is there a free trial?" with the 7-day + $29 breakdown. Old copy described the now-defunct 5-app free plan.
 
 **Verification done locally:**
 - `npm run build` passes (route map shows `/api/cron/free-tier-sunset-warning`).
 - Worker `tsc --noEmit` passes.
 - Pricing page rendered visually, free tier card gone, Starter shows "7-day free trial, $0 today", FAQ updated.
-- Apply-gate logic spot-checked against two seeded test users (warning + blocked states), correct behavior.
+- Apply-gate logic spot-checked against seeded test users (warning, blocked, trialing-8/10, trialing-10/10, active-starter) — correct behavior in every case.
+- Sunset email rendered against real prod data (Jovonne, 5,231 active jobs) and sent to Naya's inbox for approval.
 
-**Remaining manual steps before deploy (Naya's call):**
-1. Run Turso ALTER for `freeTierEndsAt` and `freeTierSunsetEmailAt` columns.
-2. Dry-run `scripts/backfill-free-tier-ends-at.ts` against Turso, review counts, then `--apply`.
-3. Visually review the sunset email draft (Naya wants to see it before the cron fires).
-4. End-to-end Stripe trial flow with a test-mode card before flipping to LIVE.
-5. Deploy. Cron auto-registers from `vercel.json`.
+**Post-deploy verification:**
+- Cron endpoint hit: `curl /api/cron/free-tier-sunset-warning` returns `{"candidateCount":0,"sent":0}` (correct — wall date is May 1, no users within 3-day window yet). Cron will start finding candidates ~Apr 28.
+- FAQ at `/auto-apply/landing` visually confirmed new copy live.
 
 ### 13. Cap-Conversion Email Drip (Apr 16)
 **Motivated by:** 5 users hit the 5-app free cap after the original conversion email went out. Manual identification + send was tedious. Naya wanted it automated with approval.
@@ -190,7 +200,16 @@ Fixed + migrated 85 affected users Apr 15.
 
 ## Next Steps (Prioritized)
 
-### 1. Decide on paid Browserbase ($99/mo Scale tier for residential proxies)
+### 1. Monitor the trial conversion funnel (Apr 17 onward)
+- **Apr 28**: sunset cron starts firing 3-day warning emails (wall is May 1 for all 473 existing free users). Monitor Resend send rate + any delivery failures.
+- **May 1**: existing free users hit the in-app wall. Watch `/admin/errors` for trial-required paths.
+- **New signups**: watch Stripe dashboard → Trials for trial starts. Day 8 conversion rate is the key metric.
+- If Stripe starts reporting many canceled trials before day 8, investigate the checkout experience and day-6 reminder email (not yet built — see follow-up below).
+
+### 2. Day-6 "trial ends tomorrow" reminder email (follow-up)
+Stripe's built-in trial reminder is hardcoded at 7 days, useless for our 7-day trial. Build our own cron that fires when `subscriptionStatus=trialing` AND `currentPeriodEnd` is within 24h. Likely lifts conversion by reducing involuntary churn (forgot to cancel or forgot to swap card).
+
+### 3. Decide on paid Browserbase ($99/mo Scale tier for residential proxies)
 Greenhouse is now 90% (up from 41%). Ashby remains 0%. Only paid BB proxies move this.
 
 ### 2. Onboarding drop-off investigation
@@ -208,15 +227,31 @@ Latest Railway build failed with transient Ubuntu mirror error (`Cannot initiate
 ### 6. BrowseDiscovery datetime format repair
 Run a bulk fix similar to `scripts/repair-datetime-format.ts` on BrowseDiscovery table. Convert all `"YYYY-MM-DD HH:MM:SS"` to ISO 8601. Prevents future Prisma date-comparison bugs.
 
+### 7. Analyze new-onboarding conversion (scheduled 2026-05-01)
+Compare conversion since Apr 17 (new `/start` resume-first flow + card-required 7-day trial) against the ~30 days prior (old wizard flow + permanent 5-app free tier). Two-week window should be enough to see signal.
+
+Core metrics to pull:
+- **Visit → Signup**: `PageVisitor` hits on `/auto-apply/get-started` or `/get-started` (pre-Apr 17) vs `/start` (post) → `User` rows created in the same window.
+- **Signup → Onboarding completed**: `User.createdAt` → `User.onboardingCompletedAt` set.
+- **Onboarding completed → Trial started**: `User.stripeCustomerId` present AND `User.subscriptionStatus IN ('trialing', 'active')`.
+- **Trial started → Paid**: `User.subscriptionStatus = 'active'` on day 8+.
+
+**Known confound:** old-flow cohort had a permanent free tier (no card required), new-flow cohort has a 7-day card-required trial. Cannot isolate "new onboarding UI" effect from "card-required trial" effect — report the bundle as one intervention.
+
+For the new-flow cohort only, also use `Activity` rows where `type = 'onboarding_step'` (linked by `tempId` in metadata JSON) to see where users drop off within the funnel — steps 0-7 defined in `src/app/start/StartClient.tsx`. Old-flow step events lack session association so mid-funnel drop-off is not recoverable pre-Apr 17.
+
+Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 17, 2026.
+
 ---
 
-## User Stats (as of Apr 16 evening)
-- **~450 total signups** (estimated)
+## User Stats (as of Apr 17 evening)
+- **473 free-tier users walled at May 1** (post-backfill; see section 16)
+- **4 paying subscribers** -- Brian McLaren ($14.50), Anika Ahmed ($29), Daniel Cooke ($29), Knight Kimosop ($29) -- all Starter tier, tier=starter status=active, NOT affected by trial cap
 - **~119 onboarded users** (the autoApplyEnabled backfill list)
 - **~8,800 active jobs** in catalog
-- **4 paying subscribers** -- Brian McLaren ($14.50), Anika Ahmed ($29), Daniel Cooke ($29), Knight Kimosop ($29) -- all Starter tier
 - **5 late-upgrade emails sent** (sharayu699, samayo.dev, rranjan07th, msadiknur, adepitandavid) -- $14.50 promo with STARTER50 coupon
 - **328 onboarding-dropoff emails sent**
+- **1 sunset-email production preview sent** (Naya's personal `nayaunitybere@gmail.com`, Apr 17 — this was a one-off; she is still in the 473-user cohort that will be re-emailed by the cron around Apr 28)
 - **17 cap-conversion candidates identified** for automated drip (digest sent to Naya for approval)
 - **Cohort success rate (post-Phase 2): ~64%** (paying users, last 24h per daily report)
 
