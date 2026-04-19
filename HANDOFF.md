@@ -1,9 +1,9 @@
-# Session Handoff — April 14–19, 2026
+# Session Handoff — April 14–19, 2026 (security audit Apr 19)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `d32da13` (Apr 19, apply-for-user.ts filter parity).
+- **main** — production code, deployed to Vercel. Head: `bb7ffaf` (Apr 19, security fixes merged: C1 + C2 + H1).
 - **resume-first-onboarding** — current working branch (Apr 19). All Apr 18-19 work landed here, merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
@@ -48,6 +48,38 @@
 ---
 
 ## What Was Done This Session (April 15-19)
+
+### 24. Security audit pass 1 — C1 + C2 + H1 (Apr 19, DEPLOYED main `bb7ffaf`)
+**Motivated by:** Naya spotted `onboarded-users.csv` (35 real user emails, orphan file, not in `.gitignore`) sitting in repo root and asked for a full security audit using the Trail of Bits skills playbook.
+
+**Audit approach (read-only):** replicated ToB's `audit-context-building → insecure-defaults → static-analysis → variant-analysis → supply-chain-risk-auditor` flow manually via Explore agents + direct file reads. Covered auth/authz, API-route surface, webhooks, PII exposure, secrets-in-code, input validation, dependency CVEs, file upload, and user-facing error hygiene.
+
+**Overall posture (good news first):** Stripe webhook signature verified, inbound-email webhook has shared-secret gate, all 7 cron routes check `Bearer ${CRON_SECRET}`, admin layout gates every `/admin/*` page via `requireAdmin()`, every `/api/admin/*` route checks `isAdmin` from `checkAdmin()`, all 15+ user-scoped API routes correctly filter by `session.user.id` (no IDOR), bcrypt cost 12 for passwords, no `eval`/`child_process`/`exec*` anywhere, no hardcoded secrets in tracked source, Prisma queries all parameterized.
+
+**Findings that shipped (3 of ~20):**
+
+- **C1 — `POST /api/jobs` was fully unauthenticated.** Anyone on the internet could insert a job into the public board, and the matcher+auto-apply cron would then ship users' resumes to the attacker's `applyUrl`. Now gated with `checkAdmin()` at `src/app/api/jobs/route.ts:143`. Verified: 401 without session, 200 for public GET, tested in Playwright.
+
+- **C2 — loose PII + test artifacts on disk.** `onboarded-users.csv` deleted (35 user emails). `dev.db` (0 bytes, tracked via accidental earlier commit) and 9 `.playwright-mcp/*.log` files (tracked via `34d0964`) untracked via `git rm --cached` — files preserved locally, removed from git. `.gitignore` extended with `/*.csv`, `.playwright-mcp/`, `/dev.db`, `/dev.db-journal`. Spot-checked one playwright log: only third-party console errors from greenhouse/pinterest, no cookies or user PII.
+
+- **H1 — hardcoded auto-promote email defaults in `src/lib/auth.ts`.** Before: `AUTO_ADMIN_EMAILS` defaulted to `"obiajuluonyinye1@gmail.com"`, `AUTO_CONTRIBUTOR_EMAILS` defaulted to `"ashlyncmitm@gmail.com"`. If env unset on any deploy (preview, local, misconfig), whoever registers those emails auto-gets admin/contributor. Verified against prod DB: `obiajuluonyinye1` is already `role: admin` (default was dead code), `ashlyncmitm` is not registered at all (Naya confirmed she should have no privileged access). Defaults both changed to `""` — env vars in Vercel still work identically if set.
+
+**Prod DB role check (Apr 19):** 3 privileged users total — `theblackfemaleengineer@gmail.com` (admin), `obiajuluonyinye1@gmail.com` (admin), `Sarah.comlan@gmail.com` (operations, **never logged in** — no passwordHash, no emailVerified, no Account rows, no Session rows, row created 2026-04-07 via direct DB write). Sarah's row is a latent escalation path: first person to sign in via magic-link with `Sarah.comlan@gmail.com` inherits `operations`. Naya flagged, decision deferred to future session.
+
+**Local-dev caveat (pre-existing, NOT introduced today):** `/api/auth/check-email` and `/api/auth/signup` use `@libsql/client/web` with `runtime = "edge"`. That client rejects `file:` URLs, so the signup/signin flow throws `LibsqlError: URL_SCHEME_NOT_SUPPORTED` locally when `DATABASE_URL=file:./dev.db`. Blocks interactive auth testing in dev. Prod uses `libsql://…turso.io`, so unaffected. Separate bug to track.
+
+**Remaining findings (2 Critical-reduced, 4 High, 5 Medium, 5 Low) not shipped today:**
+- H2 `/api/auth/check-email` — email enumeration + `firstName` leak
+- H3 `/api/stripe/convert` — unauthenticated GET enables email enumeration
+- H4 `/api/auth/signup` — no rate limit + bcrypt-cost 12 = server DoS lever
+- H5 `.env.production.local.bak` — 1220 bytes of stale prod secrets on disk (gitignored, never committed, but on disk)
+- M1 `/api/admin/blog/[slug]` GET — no `checkAdmin` gate + verbose error leak
+- M2 `/api/onboarding/temp-save` — POST unauth/unbounded = DoS / disk fill
+- M3 inbound-email forwarding embeds attacker-controlled `from`/`html` into forwarded email (branded phishing vector)
+- M4 `/api/stripe/checkout:84` and `/api/admin/blog/[slug]:25` return raw `error.message` to client (violates `feedback_no_user_facing_errors`)
+- L1 `npm audit`: 12 vulns (9 high, 3 moderate) all transitive with fixes available — `effect`, `flatted`, `defu`, `ajv`, `brace-expansion`, `@vercel/blob → undici`
+- L2 `/api/cron/daily-apply` response includes user emails (defense-in-depth leak if `CRON_SECRET` compromised)
+- Sarah Comlan's `operations` role (see above)
 
 ### 23. CLAUDE.md no-em-dashes rule codified (Apr 18)
 Memory-level guidance promoted to project-level contract. New `## Copywriting` section in `CLAUDE.md` between Testing and Session Start Checklist: never em-dashes (` — `) in user-facing copy (emails, banners, button text, modals, blog posts, errors). Replace with period or restructure. Code comments, plan files, HANDOFF.md exempt.
