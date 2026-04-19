@@ -147,12 +147,12 @@ async function getAnalytics() {
       take: 15,
     }),
     // Blog metrics (exclude claudecode and auto-apply page views)
-    prisma.blogView.count({ where: { slug: { notIn: ["claudecode", "auto-apply"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: ["claudecode", "auto-apply"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: ["claudecode", "auto-apply"] } } }),
+    prisma.blogView.count({ where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
     prisma.blogView.groupBy({
       by: ["slug", "title"],
-      where: { slug: { notIn: ["claudecode", "auto-apply"] } },
+      where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
       take: 10,

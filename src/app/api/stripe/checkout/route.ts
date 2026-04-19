@@ -56,7 +56,14 @@ export async function POST(request: NextRequest) {
             payment_method_collection: "always",
           }
         : {}),
-      success_url: `${request.nextUrl.origin}/profile?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
+      // Trial-start checkout returns to /onboarding/review so the user can
+      // verify the resume-extracted fields (YOE, title, school, etc.) before
+      // the worker starts auto-applying with potentially wrong data. Pro
+      // subscribers (no trial) skip the review page since they're typically
+      // existing users upgrading, not new signups.
+      success_url: isTrial
+        ? `${request.nextUrl.origin}/onboarding/review?session_id={CHECKOUT_SESSION_ID}`
+        : `${request.nextUrl.origin}/profile?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${request.nextUrl.origin}/profile/applications`,
       metadata: { userId: session.user.id, tier, trial: isTrial ? "true" : "false" },
     });
