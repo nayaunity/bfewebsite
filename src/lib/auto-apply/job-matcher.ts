@@ -329,6 +329,7 @@ const BLOCKED_COMPANIES = new Set([
   "perplexity",   // 1/X (Ashby anti-bot hits ~100% of the time)
   "linear",       // 1/X (Ashby anti-bot)
   "elevenlabs",   // Ashby anti-bot
+  "anthropic",    // Apr 18: stuck-page on udvlenkhtaivan run; uses Greenhouse but with anti-bot or DOM that breaks our handlers
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).
