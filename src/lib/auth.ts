@@ -5,12 +5,15 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
-// Emails that should automatically be granted admin access on first sign-in
-const AUTO_ADMIN_EMAILS = (process.env.AUTO_ADMIN_EMAILS || "obiajuluonyinye1@gmail.com")
+// Emails that should automatically be granted admin access on first sign-in.
+// Set AUTO_ADMIN_EMAILS in env (comma-separated). Default empty so an unset env
+// never auto-promotes anyone.
+const AUTO_ADMIN_EMAILS = (process.env.AUTO_ADMIN_EMAILS || "")
   .split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
-// Emails that should automatically be granted contributor access on first sign-in
-const AUTO_CONTRIBUTOR_EMAILS = (process.env.AUTO_CONTRIBUTOR_EMAILS || "ashlyncmitm@gmail.com")
+// Emails that should automatically be granted contributor access on first sign-in.
+// Set AUTO_CONTRIBUTOR_EMAILS in env (comma-separated). Default empty.
+const AUTO_CONTRIBUTOR_EMAILS = (process.env.AUTO_CONTRIBUTOR_EMAILS || "")
   .split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({

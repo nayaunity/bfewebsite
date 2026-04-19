@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkAdmin } from "@/lib/admin";
 import { computeRegion, hasUSLocation, hasInternationalLocation } from "@/lib/job-region";
 
 export const runtime = "nodejs";
@@ -139,6 +140,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const { isAdmin } = await checkAdmin();
+  if (!isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const data = await request.json();
 
