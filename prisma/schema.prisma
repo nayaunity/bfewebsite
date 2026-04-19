@@ -63,6 +63,7 @@ model User {
   conversionEmailSentAt DateTime?
   freeTierEndsAt        DateTime?
   freeTierSunsetEmailAt DateTime?
+  detailsReviewedAt     DateTime?
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
   accounts            Account[]
