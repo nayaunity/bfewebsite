@@ -1,21 +1,21 @@
-# Session Handoff — April 14–18, 2026
+# Session Handoff — April 14–19, 2026
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `2047abd` (Apr 18, merge of verification-code success-rate fix).
-- **resume-first-onboarding** — current working branch (Apr 18). Verification fix landed at `b122b8d` and merged into main.
+- **main** — production code, deployed to Vercel. Head: `d32da13` (Apr 19, apply-for-user.ts filter parity).
+- **resume-first-onboarding** — current working branch (Apr 19). All Apr 18-19 work landed here, merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `2047abd` (fast-forwarded to main on Apr 18 to ship worker-side verification fix).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `d32da13` (fast-forwarded to main).
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: `bfewebsite-eql1v8b5r` (Apr 18, verification-code success-rate fix).
-- **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB.
-- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17). Pushed via raw SQL (Prisma CLI can't push to Turso directly).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
+- **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
+- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), **`detailsReviewedAt` (Apr 18)** for the post-trial-checkout review page. New column on `BrowseSession`: **`lastHeartbeatAt` (Apr 18)** for the heartbeat-based watchdog. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
 - **Stripe** — LIVE mode. Starter $29/mo, Pro $59/mo. **Starter now ships with a 7-day free trial** via `subscription_data.trial_period_days: 7` on Checkout, set in `/api/stripe/checkout` (only when `tier === "starter"`; Pro has no trial). Card collected up front, $0 today, auto-charges day 8 unless cancel. Coupon `STARTER50` and per-user `CAP_<userid>_*` coupons still exist for the legacy cap-conversion drip path through `/api/stripe/convert`.
 - **Resend** — same as before, no inbox for naya@.
@@ -47,9 +47,64 @@
 
 ---
 
-## What Was Done This Session (April 15-18)
+## What Was Done This Session (April 15-19)
 
-### 17. Verification-code success-rate fix (Apr 18, branch `resume-first-onboarding` → main, DEPLOYED `bfewebsite-eql1v8b5r` + Railway redeploy from `auto-apply-saas`)
+### 23. CLAUDE.md no-em-dashes rule codified (Apr 18)
+Memory-level guidance promoted to project-level contract. New `## Copywriting` section in `CLAUDE.md` between Testing and Session Start Checklist: never em-dashes (` — `) in user-facing copy (emails, banners, button text, modals, blog posts, errors). Replace with period or restructure. Code comments, plan files, HANDOFF.md exempt.
+
+### 22. JD-stated YOE enforcement everywhere (Apr 19)
+**Motivated by:** Naya spotted `udvlenkhtaivan@gmail.com` (yoe=0.7) being applied to LaunchDarkly Full Stack Engineer roles whose JDs say "3+ years of professional software engineering experience." Title alone wasn't catching it.
+
+**Two real bugs found:**
+1. **Regex span too narrow.** Original pattern `years\s+(?:of\s+)?(?:experience|exp)` required "experience" right after "years of" with at most "of" between. LaunchDarkly's "3+ years of professional software engineering experience" had 4 adjective words in between → no match. Fixed: allow up to 80 chars between "years" and "experience" (stops at periods/newlines).
+2. **`parseInt("0.7")` returned 0, then `0 || 2` fell back to 2.** Udval's effective YOE for filtering was 2, not 0.7. So `2 < 3 - 1.5 = 1.5` was false → not skipped. Fixed: `parseFloat` + `Number.isFinite && >= 0` check (accepts 0 as new-grad).
+
+**Shipped:**
+- `src/lib/auto-apply/job-matcher.ts:267` — added explicit YOE GUARDRAIL rule to LLM gate prompt with concrete examples + 1.5-yr buffer + false-positive guidance ("5 years from now we expect").
+- `scripts/requeue-udvlenkhtaivan.ts`, `scripts/apply-for-cwright-galloway-capped.ts`, `scripts/apply-for-user.ts` — all three got `parseJdYearsRequired` + JD-YOE filter + `parseFloat` yoe + Sr. abbreviation in senior regex + `engineering manager` in staff+ regex + `isUrlExcluded` (Stripe intern URLs) + two-way region gate + `titleOrLocHintsNonUS` sniff. Full parity with production matcher.
+
+**Verified live:** parseJdYearsRequired returns 3 for LaunchDarkly Observability JD. Edge cases pass: "5 years of growth" → null (false-positive avoided). `udvlenkhtaivan` re-queue with `yoe=0.7` correctly excludes both LaunchDarkly Full Stack roles.
+
+### 21. React-select v5 dropdown handler + fast-fail (Apr 18, DEPLOYED main `1698dbf`)
+**Motivated by:** `udvlenkhtaivan` session had 8 of 10 jobs fail, 5-6 of those on the same Greenhouse EEO dropdown. Investigation via Playwright on Webflow's live form: existing `selectStaticDropdown` strategies all use Playwright's `.click()`, which react-select v5 ignores (it binds `onMouseDown` not `onClick`). Typed-filter path also breaks when search prefix doesn't match the option ("Prefer not" doesn't filter "I do not want to answer").
+
+**Shipped:**
+- **`worker/src/apply-engine.ts` Strategy D (~line 1031):** queries options by react-select v5 ID pattern `[id^="react-select-{cb-id}-option-"]`, dispatches `mousedown → mouseup → click` event chain. Verified live on Webflow disability dropdown — selected option-1 ("No, I do not have a disability") correctly.
+- **Disability default flipped to "No I don't" (apply-engine.ts:1881-1889).** Pattern `/^No,?\s*I do not have|^No,?\s*I don.t have|.../i` selects the actual option text on Webflow ("No, I do not have a disability and have not had one in the past") instead of the previous "Prefer not" path that resolved to non-existent text. Honors explicit non-decline applicant settings (e.g. "Yes, I have a disability").
+- **Fast-fail per normalized field (apply-engine.ts:2499+).** `fieldKey` normalized aggressively (lowercase, strip `Required` / punctuation) so "Disability Status", "disability status", "Disability Status *" share one counter. Dropdowns capped at 2 attempts (text fields stay 3) — broken dropdowns cost ~1 min per cycle and never resolve.
+- **Anthropic added to BLOCKED_COMPANIES** (`src/lib/auto-apply/job-matcher.ts:332`, `scripts/apply-for-user.ts`, both ad-hoc requeue scripts). Their Greenhouse hit us as stuck-page.
+
+### 20. Trial-cap conversion banner + early-end endpoint + cap=5 + admin trial pill + post-trial review page (Apr 18-19, DEPLOYED main `e51ccd8`/`b9bf14c`)
+Bundled trial-flow improvements:
+
+- **Trial cap dropped 10 → 5** (mirrors legacy free tier). `src/lib/subscription.ts:113`, `worker/src/browse-loop.ts:374,511`. Five literal-edit fix + 4 log-message updates.
+- **TrialCapReachedBanner** (`src/components/TrialCapReachedBanner.tsx`, mounted on `src/app/profile/applications/ApplicationsDashboard.tsx`). Fires when `subscriptionStatus === 'trialing' && monthlyAppCount >= 5`. Copy applies marketing-skill frameworks (endowment, loss aversion, anchored CTA, single-button Fogg). One-click upgrade-now button POSTs to a new `/api/stripe/end-trial` endpoint that calls `stripe.subscriptions.update({ trial_end: 'now' })` + optimistically writes `subscriptionStatus = 'active'` locally to close the webhook race.
+- **Admin trial pill** (`src/app/admin/auto-apply/UserTable.tsx`). Trialing users now render with an amber "trial" pill instead of the same blue "starter" pill paid users get. New "Trial" filter button between Free and Starter; counts split. Includes `subscriptionStatus` in the user select on `page.tsx`.
+- **Post-trial-checkout review page** (`/onboarding/review`). New page that fires after Stripe trial-start success_url. Shows the 9 resume-extracted fields prefilled (firstName/lastName, phone, linkedinUrl, currentTitle, currentEmployer, yearsOfExperience, school, degree). Required-first-time gate via `User.detailsReviewedAt = null`. Save → POST `/api/profile/review` → set timestamp → redirect to `/profile/applications`. Subsequent visits show "Skip for now". Stripe `success_url` switches to `/onboarding/review?session_id=...` for trial-start; Pro upgrades unchanged.
+
+### 19. applicationEmail backfill + worker defense-in-depth (Apr 18, DEPLOYED main `11ff361`)
+**Motivated by:** First `c.wright-galloway` canary post-verification-fix returned 0/14 with the same "Verification code not received" pattern. Investigation: her `applicationEmail` was NULL, so the worker fell back to her real `c.wright-galloway@benedict.edu` address. SendGrid Inbound Parse only routes `@apply.theblackfemaleengineer.com` mail; her real inbox never gets read by the worker → verification gate always fails.
+
+**Root cause:** `ensureApplicationEmail()` (added Mar 28, commit `7c80721`) is only called by 4 API routes. Sessions queued via direct DB writes / scripts skip provisioning. Cohort scan found **380 onboarded users with NULL applicationEmail**.
+
+**Shipped:**
+- `scripts/backfill-application-emails.ts` (new). Dry-run-by-default. Provisions `u-{userId.slice(0,8)}@apply.theblackfemaleengineer.com` per the existing helper format. Handles intra-batch + DB collisions (12-char fallback). **Ran on Apr 18: 380 written, 0 failed, 0 collisions.**
+- `worker/src/browse-loop.ts:processNextBrowseSession` (~line 232): after fetching user profile, if `applicationEmail` is null, calls new local `ensureApplicationEmailOnUser(userId)` helper that mirrors the Next.js `ensureApplicationEmail` but uses the libsql client. Defense-in-depth: any future session queued via direct DB write still gets a provisioned email before the first apply.
+
+**Canary result:** Re-ran `c.wright-galloway` with applicationEmail provisioned + verification fix live. **3/3 successful applies before hitting the 3-cap** (Affirm, Stripe, Coinbase patterns). 0/14 → 3/3 confirmed end-to-end.
+
+### 18. Heartbeat-based session watchdog (Apr 18, DEPLOYED main `7e00753`)
+**Motivated by:** `jain1009@purdue.edu` AI/ML Engineer session: 30 jobs found, watchdog reset after only ~5 applied. Old watchdog at `worker/src/browse-loop.ts:103-126` filtered by `startedAt < now - 30 min` with no liveness signal. Healthy long sessions (30 jobs × 5 min = 150 min) got killed mid-progress.
+
+**Shipped:**
+- **Schema:** `BrowseSession.lastHeartbeatAt DateTime?` + composite index `(status, lastHeartbeatAt)`. Migration via `scripts/add-browse-session-heartbeat-column.ts` (idempotent ALTER + CREATE INDEX IF NOT EXISTS).
+- **Worker `heartbeat()` helper** writes `lastHeartbeatAt = new Date().toISOString()` (ISO format — Prisma 6's libsql adapter rejects SQLite default `"YYYY-MM-DD HH:MM:SS"` with P2023, broke /admin/auto-apply briefly when first deployed; hot-fixed with ISO writes + clear-bad-heartbeat-format script).
+- **Atomic claim** writes `lastHeartbeatAt = ?` (ISO param) at the same time as `startedAt`.
+- **6 heartbeat call sites:** session claim, before each `applyToJob` (fast path + retry queue + legacy path), after each result handler before `delay`.
+- **Watchdog rewrite:** three OR'd conditions — heartbeat stale > 20 min, OR (NULL heartbeat AND startedAt > 30 min, backwards compat), OR (startedAt > 6 hours, absolute cap). Uses ISO threshold computed in JS for the lastHeartbeatAt comparison.
+- **Counter flush:** when watchdog fires, also marks `applying`-status discoveries as `failed` with `[session-watchdog] Session reset before this job finished` and increments `jobsFailed`. Fixes pre-existing undercount where orphaned `applying` rows stayed forever.
+
+### 17. Verification-code success-rate fix (Apr 18, DEPLOYED main `2047abd`)
 **Motivated by:** `c.wright-galloway@benedict.edu` ran two back-to-back sessions with **0/14 applies** (PM 0/6, Project Manager 0/8). The dominant pattern (8/14 = 57%) was "Verification code not received within timeout" on Greenhouse customers (Affirm, ClickHouse, GitLab, Airtable, Chime). Pattern has been recurring for months. Root cause: 60s wait window + 3s poll interval was shorter than the SendGrid Inbound Parse → Turso → poll roundtrip; emails were arriving but the worker had already given up.
 
 **Shipped:**
@@ -207,10 +262,22 @@
 `BrowseDiscovery.createdAt` is stored as `"YYYY-MM-DD HH:MM:SS"` (SQLite default) instead of ISO 8601. Prisma `{ gte: date }` comparisons fail silently. Workaround: filter by `sessionId` (which has ISO dates on BrowseSession) instead of `createdAt` on discoveries. A bulk format repair (similar to `scripts/repair-datetime-format.ts` for User) would fix this permanently.
 
 ### Greenhouse react-select -- RESOLVED (pending prod measurement)
-Phase 2 `common-gates.ts` + `greenhouseDeterministicFill` now clear 90% of Greenhouse URLs.
+Phase 2 `common-gates.ts` + `greenhouseDeterministicFill` now clear 90% of Greenhouse URLs. **Apr 18 update:** `selectStaticDropdown` Strategy D added for the EEO cluster — uses react-select v5 ID pattern + mousedown event chain (the prior `.click()` based strategies couldn't trigger react-select's onMouseDown handler). Verified live on Webflow disability dropdown.
 
-### Greenhouse verification-code timeout -- RESOLVED Apr 18
-60s wait window was below the SendGrid Inbound Parse → Turso → poll roundtrip. Raised to 240s + 60s in-line rescue + one-shot session-end retry. See section 17. Live test: 4/4 on the same Greenhouse roles that failed 0/14 for c.wright-galloway.
+### Greenhouse verification-code timeout -- RESOLVED Apr 18 (incl. canary)
+60s wait window was below the SendGrid Inbound Parse → Turso → poll roundtrip. Raised to 240s + 60s in-line rescue + one-shot session-end retry. See section 17. **c.wright-galloway canary 3/3 successful applies after the fix + applicationEmail backfill (section 19) — was 0/14 before.**
+
+### Session watchdog killed legitimate long sessions -- RESOLVED Apr 18
+Old 30-min `startedAt`-based watchdog killed healthy 30-job sessions mid-progress. Replaced with heartbeat-based gate (20-min staleness + 6-hour absolute cap). See section 18.
+
+### applicationEmail NULL for legacy users -- RESOLVED Apr 18
+380 onboarded users were silently failing all verification-gated applies because their applicationEmail was never provisioned (feature added Mar 28 but only 4 API routes called the helper). Backfilled all 380 + added defense-in-depth in worker. See section 19.
+
+### Trial conversion at 5/5 has no in-product CTA -- RESOLVED Apr 18
+Trialing users hitting cap saw only UsageMeter's generic "Limit reached. Upgrade." link. New TrialCapReachedBanner + `/api/stripe/end-trial` endpoint (one-click upgrade, ends trial via Stripe + optimistic local write). See section 20.
+
+### Title-only seniority filtering misses JD-stated YOE -- RESOLVED Apr 19
+Generic-titled jobs with high YOE requirements in the description (e.g., LaunchDarkly "Full Stack Engineer" + JD says "3+ years") slipped through. Both production matcher (LLM gate prompt rule) and all 3 ad-hoc scripts (regex helper) now enforce JD-YOE with a 1.5-year buffer. See section 22.
 
 ### Ashby spam-flag -- NOT FIXED IN CODE
 Cooldown mitigates cascading failures. Submit-time flag requires residential IPs. **Only paid Browserbase with `BROWSERBASE_USE_PROXIES=true` will move this.** Ashby cluster hard-blocked from matcher until proxies enabled.
@@ -231,16 +298,20 @@ Fixed + migrated 85 affected users Apr 15.
 
 ## Next Steps (Prioritized)
 
-### 0. Re-run c.wright-galloway against her original 14-job queue (Apr 18-19)
-Verification fix is live and validated against 4 Greenhouse roles. To confirm the lift in her actual cohort context, queue a fresh session for c.wright-galloway against the same role queue (PM + Project Manager). Watch for:
-- Verification-timeout failures (expect ~0)
-- `worker:near-miss-verification` entries in /admin/errors (would indicate the 240s+60s window still isn't enough)
-- Twilio "Cannot proceed" still surfacing (deferred fix — expected)
-- Webflow veteran-status dropdown still surfacing (deferred fix — expected)
+### 0. Pre-form title sanity check (deferred from Apr 18)
+Compare `document.title` / H1 against queued `job.title` after navigation; bail early with `role-mismatch` for "Principal Project Manager" vs "Project Manager" mismatches. Fixes the Twilio cluster (~7% of c.wright-galloway's original 0/14 failures). Cheap fix, ~1 hour.
 
-### 0a. Follow-up fixes from the Apr 18 plan (deferred but cheap)
-- **Pre-form title sanity check.** Compare `document.title` / H1 against queued `job.title` after navigation; bail early with `role-mismatch` for "Principal Project Manager" vs "Project Manager" mismatches. Fixes the Twilio cluster (~7% of c.wright-galloway failures).
-- **Veteran-status dropdown widening.** `worker/src/common-gates.ts:98` regex misses "I prefer not to answer" / "Decline to self-identify" variants on Webflow. Update option-text regex.
+### 0a. Veteran-status dropdown widening (deferred from Apr 18)
+`worker/src/common-gates.ts:98` regex misses "I prefer not to answer" / "Decline to self-identify" variants on Webflow. The new Strategy D dropdown handler (section 21) catches this for general react-select cases, but `common-gates.ts` is the deterministic pre-pass — should mirror the new defaults pattern.
+
+### 0b. Contentful (and similar) job-row scrape-duplication (Apr 19)
+Catalog has 6 distinct rows for what looks like the same Contentful "Security Engineer (Application Security)" posting (different applyUrls). Worker's URL dedup catches them as separate jobs and applies to all. Recruiters get duplicate apps. Worth investigating the scraper's dedup logic.
+
+### 0c. Ad-hoc scripts duplicate matcher logic (Apr 19 tech debt)
+`scripts/apply-for-user.ts`, `scripts/requeue-udvlenkhtaivan.ts`, `scripts/apply-for-cwright-galloway-capped.ts` each carry their own copy of seniority/YOE/region/URL filters. Bug pattern surfaced 3x today (forgot Sr. abbreviation, missed JD-YOE, parseInt-not-parseFloat). Long-term fix: extract the per-job filter chain into a non-`server-only` shared helper that all paths import. ~1-2 hours.
+
+### 0d. Worker doesn't respect mid-flight session cancellation (Apr 19 tech debt)
+`browse-loop.ts` reads `matchedJobs` JSON into memory at session-claim time, then iterates. Cancelling the session via DB write doesn't stop the worker — it keeps applying. Pinterest "Sr. Software Engineer, Backend" was applied for udvlenkhtaivan AFTER I cancelled the session containing it (the session that had pre-Sr.-fix matches). Suggested fix: worker checks `session.status` between jobs in the loop; if `cancelled`, break.
 
 ### 1. Monitor the trial conversion funnel (Apr 17 onward)
 - **Apr 28**: sunset cron starts firing 3-day warning emails (wall is May 1 for all 473 existing free users). Monitor Resend send rate + any delivery failures.
@@ -286,16 +357,19 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 
 ---
 
-## User Stats (as of Apr 17 evening)
+## User Stats (as of Apr 19)
 - **473 free-tier users walled at May 1** (post-backfill; see section 16)
 - **4 paying subscribers** -- Brian McLaren ($14.50), Anika Ahmed ($29), Daniel Cooke ($29), Knight Kimosop ($29) -- all Starter tier, tier=starter status=active, NOT affected by trial cap
 - **~119 onboarded users** (the autoApplyEnabled backfill list)
+- **142 fully-onboarded free-tier users** (per `scripts/count-free-under-cap.ts`); 68 still under the 5-cap, 74 capped (52% capped rate)
+- **380 users had applicationEmail backfilled Apr 18** — were silently failing all verification-gated applies before the fix
 - **~8,800 active jobs** in catalog
 - **5 late-upgrade emails sent** (sharayu699, samayo.dev, rranjan07th, msadiknur, adepitandavid) -- $14.50 promo with STARTER50 coupon
 - **328 onboarding-dropoff emails sent**
 - **1 sunset-email production preview sent** (Naya's personal `nayaunitybere@gmail.com`, Apr 17 — this was a one-off; she is still in the 473-user cohort that will be re-emailed by the cron around Apr 28)
 - **17 cap-conversion candidates identified** for automated drip (digest sent to Naya for approval)
-- **Cohort success rate (post-Phase 2): ~64%** (paying users, last 24h per daily report)
+- **0 new cap-hit candidates between Apr 17 7am MT digest and Apr 18 evening** (per `scripts/check-cap-hits-since-last-digest.ts`)
+- **Cohort success rate (post-Phase 2 + Apr 18 verification fix): expect lift from ~64% baseline. c.wright-galloway canary 3/3 post-fix vs 0/14 pre-fix.**
 
 ## Admin Users
 - **Nyaradzo (Naya)** -- `admin` (full access)
@@ -303,13 +377,13 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 
 ## Admin Pages
 - `/admin` -- main dashboard, shows AdminAlert red banner at top
-- `/admin/errors` -- central error log, includes worker errors under `worker:*` endpoints
+- `/admin/errors` -- central error log, includes worker errors under `worker:*` endpoints (also `worker:near-miss-verification` from Apr 18)
 - `/admin/scrape-runs` -- last 7 days of scrape executions
 - `/admin/stuck-fields` -- top failure clusters
 - `/admin/apply-exclusions` -- URL patterns excluded by the matcher
 - `/admin/integration-runs` -- integration suite run history
 - `/admin/cap-conversion/[token]` -- cap-hit conversion email approval page (linked from daily digest email)
-- `/admin/auto-apply` -- auto-apply session overview
+- `/admin/auto-apply` -- auto-apply session overview. **Apr 18:** trialing users now show distinct amber "trial" pill (vs blue "starter" for paid). New "Trial" filter button between Free and Starter.
 
 ## Automated Emails
 | Email | Trigger | Recipients |
@@ -322,6 +396,7 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 - Worker startup log: search Railway deploy logs for `"event":"browser_binary"` to verify Chromium binary path
 - Failure screenshots: every stuck/timeout failure uploads a full-page PNG to Vercel Blob
 - One-off scripts: `scripts/apply-for-user.ts <userId>`, `scripts/send-late-upgrade-email.ts [--test|--send]`, `scripts/send-onboarding-dropoff-email.ts`, `scripts/repair-city-location.ts`, `scripts/repair-datetime-format.ts`, `scripts/canary.ts`, `scripts/queue-test-verification-session.ts`, `scripts/check-verification-test-status.ts <sessionId>`, `scripts/reset-test-user-after-verification-test.ts`
+- **Apr 18-19 additions:** `scripts/add-browse-session-heartbeat-column.ts` (one-shot ALTER), `scripts/add-details-reviewed-at-column.ts` (one-shot ALTER), `scripts/clear-bad-heartbeat-format.ts` (hot-fix for non-ISO heartbeat values), `scripts/backfill-application-emails.ts [--apply]` (provisions u-{shortId}@... for users with NULL applicationEmail), `scripts/count-free-under-cap.ts` (free-tier cap distribution), `scripts/check-cap-hits-since-last-digest.ts` (gap-fill between cap-conversion digests), `scripts/requeue-udvlenkhtaivan.ts` (her ad-hoc requeue with full filter parity), `scripts/apply-for-cwright-galloway-capped.ts` (canary with 3-success cap), `scripts/refund-udval-wrong-matches.ts [--apply]` (refunds quota for senior/blocked-company applies that slipped through buggy ad-hoc script — idempotent, skips already-tagged), `scripts/check-udvlenkhtaivan-session.ts` (heartbeat + telemetry inspector for her latest session)
 - Integration test user: `1d16e543-db6e-497b-b78b-28fbf0a30626` (role=`test`)
 - Integration suite: `cd worker && npm test` (fixture) + `npm run test:integration` (real URLs)
 
@@ -331,4 +406,8 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 - Per-app timeout 12 min x max 25 agent steps x 2 concurrent sessions can saturate Railway memory
 - The xvfb wrapper means worker must be killed via tini for clean shutdown
 - `BrowseDiscovery.createdAt` non-ISO format -- workaround in place, bulk repair pending
+- **`BrowseSession.lastHeartbeatAt` MUST be written as ISO 8601** (Prisma 6's libsql adapter rejects SQLite default `"YYYY-MM-DD HH:MM:SS"` with P2023). Worker uses `new Date().toISOString()`. If you ever write to this field via raw SQL `datetime('now')`, the dashboard breaks. Hot-fix script `scripts/clear-bad-heartbeat-format.ts` NULLs bad rows.
+- **Ad-hoc scripts duplicate matcher logic** (3 different `findMatches` implementations — apply-for-user, requeue-udvlenkhtaivan, apply-for-cwright-galloway-capped). Currently kept in sync by hand. See Next Steps 0c for refactor proposal.
+- **Worker doesn't respect mid-flight session cancellation.** matchedJobs read into memory at claim; cancellation via DB doesn't stop iteration. See Next Steps 0d.
 - `rebrowser-playwright` skipped (tops out at v1.52, we're on v1.58)
+- **HANDOFF.md and CLAUDE.md still contain em-dashes** in their own body text (e.g., "all emails — user communications"). Per the no-em-dashes rule shipped Apr 18 (section 23), code/internal docs are exempt — but consistency cleanup wouldn't hurt.
