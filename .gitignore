@@ -51,3 +51,13 @@ job-assets/resumes/*.pdf
 job-assets/application-answers.json
 *.resume.pdf
 NBere_Resume.pdf
+
+# user-data exports (never commit PII dumps; see security audit)
+/*.csv
+
+# playwright-mcp automation artifacts (may contain session state)
+.playwright-mcp/
+
+# root-level sqlite (prisma/dev.db is the real one; this catches stray copies)
+/dev.db
+/dev.db-journal
