@@ -48,6 +48,8 @@ async function main() {
   });
 
   const wrong = allApplied.filter((d) => {
+    // Idempotent: skip discoveries already refunded in a prior run.
+    if (d.errorMessage?.includes("[wrongly-matched")) return false;
     if (BLOCKED_COMPANY_REGEX.test(d.company)) return true;
     if (SENIOR_REGEX.test(d.jobTitle)) return true;
     return false;
