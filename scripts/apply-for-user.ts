@@ -64,6 +64,38 @@ function titleOrLocHintsNonUS(s: string): boolean {
   return NON_US_INDICATORS.some((ind) => l.includes(ind));
 }
 
+// Keep in sync with src/lib/auto-apply/job-matcher.ts EXCLUDED_URL_PATTERNS.
+const EXCLUDED_URL_PATTERNS: RegExp[] = [
+  /stripe\.com\/jobs\/listing\/.*(intern|new[-_]?grad|university)/i,
+];
+const isUrlExcluded = (url: string) => EXCLUDED_URL_PATTERNS.some((p) => p.test(url));
+
+// JD-stated YOE requirement parser. Allows up to 80 chars between "years"
+// and "experience" so adjective strings like "3+ years of professional
+// software engineering experience" match. Stops at periods/newlines.
+const JD_YOE_PATTERNS: RegExp[] = [
+  /(\d+)\+?\s*(?:to\s*\d+\s*)?years?\s+(?:[^.\n]{0,80}?\b)?(?:experience|exp)\b/gi,
+  /\bminimum\s+(?:of\s+)?(\d+)\s+years?\b/gi,
+  /\bat\s+least\s+(\d+)\s+years?\b/gi,
+  /\brequires?\s+(\d+)\+?\s*years?\b/gi,
+];
+const parseJdYearsRequired = (description: string | null | undefined): number | null => {
+  if (!description) return null;
+  let max: number | null = null;
+  for (const re of JD_YOE_PATTERNS) {
+    re.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(description)) !== null) {
+      const n = parseInt(m[1], 10);
+      if (Number.isFinite(n) && n > 0 && n < 30) {
+        if (max === null || n > max) max = n;
+      }
+    }
+  }
+  return max;
+};
+const YOE_BUFFER = 1.5;
+
 function buildKeywords(roleName: string): string[] {
   const opt = ROLE_OPTIONS.find((r) => r.label === roleName);
   if (!opt)
@@ -102,6 +134,7 @@ async function findMatchingJobs(
     select: {
       id: true, title: true, applyUrl: true, company: true,
       companySlug: true, location: true, remote: true, region: true,
+      description: true,
     },
   });
 
@@ -132,10 +165,13 @@ async function findMatchingJobs(
 
   const roleKeywords = roles.map((r) => ({ role: r, keywords: buildKeywords(r) }));
   const isUS = (user.countryOfResidence || "").toLowerCase().includes("united states");
-  const yoe =
-    typeof user.yearsOfExperience === "number"
-      ? user.yearsOfExperience
-      : parseInt(String(user.yearsOfExperience)) || 2;
+  // parseFloat (not parseInt) preserves fractional YOE like "0.7". Accept 0
+  // as a valid value (new grad). Only fall back to 2 when truly unparseable.
+  // The prior parseInt → 0 || 2 chain silently inflated <1yr users to 2yr.
+  const yoeRaw = typeof user.yearsOfExperience === "number"
+    ? user.yearsOfExperience
+    : parseFloat(String(user.yearsOfExperience));
+  const yoe = Number.isFinite(yoeRaw) && yoeRaw >= 0 ? yoeRaw : 2;
 
   // Filter companies on active cooldown (spam-flag → 24h skip)
   const cooldowns = await prisma.companyCooldown.findMany({
@@ -151,9 +187,18 @@ async function findMatchingJobs(
     if (cooldownSlugs.has(job.companySlug?.toLowerCase() || "")) continue;
     if (appliedUrls.has(job.applyUrl || "")) continue;
     if (!job.applyUrl) continue;
+    if (isUrlExcluded(job.applyUrl)) continue;
 
-    if (yoe <= 5 && /\b(staff|principal|director|head of|vp|chief)\b/i.test(job.title)) continue;
-    if (yoe <= 2 && /\bsenior\b/i.test(job.title) && !/\bjunior\b/i.test(job.title)) continue;
+    // Seniority gate. "engineering manager" / "software manager" added Apr 18:
+    // catches eng leadership roles. Does NOT catch Product / Project / Program
+    // Manager (those are valid entry-level).
+    if (yoe <= 5 && /\b(staff|principal|director|head of|vp|chief|(engineering|software)\s+manager)\b/i.test(job.title)) continue;
+    if (yoe <= 2 && /\b(senior|sr\.?)\b/i.test(job.title) && !/\bjunior\b/i.test(job.title)) continue;
+
+    // JD-stated YOE requirement gate. Catches roles where the title is generic
+    // but the description requires more years than the candidate has.
+    const jdYears = parseJdYearsRequired(job.description);
+    if (jdYears !== null && yoe < jdYears - YOE_BUFFER) continue;
 
     // Region gate (match production matcher): hard-reject international for US users
     // regardless of remote flag. Also string-check title + location as a safety net
