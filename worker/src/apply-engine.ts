@@ -1029,7 +1029,73 @@ async function selectStaticDropdown(
     steps?.push(`selectStaticDropdown: force:true err: ${(e as Error).message?.slice(0, 60)}`);
   }
 
-  throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (keyboard + toggle + force all failed)`);
+  // --- Strategy D (LAST RESORT): react-select option IDs + mousedown chain ---
+  //
+  // Verified against Greenhouse's actual disability dropdown via Playwright
+  // on Apr 18: the other strategies type a search string to filter the menu,
+  // which fails when our search prefix doesn't match the option (typing
+  // "Prefer not" doesn't filter the option "I do not want to answer"). They
+  // also use Playwright's .click() which on react-select v5 doesn't trigger
+  // the component's onMouseDown handler at all — so even when an option IS
+  // visible, clicking it doesn't select.
+  //
+  // This strategy:
+  //   1. Focuses combobox + ArrowDown to open the menu (no typing).
+  //   2. Queries options by their predictable react-select v5 ID pattern:
+  //      `react-select-{combobox-id}-option-{N}`.
+  //   3. Matches innerText against optionName (substring, not anchored).
+  //   4. Dispatches mousedown → mouseup → click on the matching option to
+  //      trigger react-select's selection logic.
+  try {
+    await frame.page().keyboard.press("Escape").catch(() => {});
+    await frame.waitForTimeout(200);
+    await combobox.evaluate((el: HTMLElement) => el.focus()).catch(() => {});
+    await frame.waitForTimeout(150);
+    await frame.page().keyboard.press("ArrowDown");
+    await frame.waitForTimeout(350);
+
+    const cbId = await combobox.evaluate((el: HTMLElement) => el.id).catch(() => "");
+    if (!cbId) throw new Error("combobox has no id");
+
+    const regex = optionName instanceof RegExp
+      ? optionName
+      : new RegExp(escapeRegex(String(optionName)), "i");
+
+    const matched = await frame.evaluate(
+      ({ cbId, regexStr, regexFlags }) => {
+        const re = new RegExp(regexStr, regexFlags);
+        // react-select v5 option IDs: react-select-{cbId}-option-{N}
+        const opts = Array.from(document.querySelectorAll(`[id^="react-select-${CSS.escape(cbId)}-option-"]`));
+        for (const opt of opts) {
+          const text = (opt as HTMLElement).innerText || "";
+          if (re.test(text)) {
+            // React-select v5 binds selection to onMouseDown, not onClick.
+            opt.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, button: 0, view: window }));
+            opt.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, button: 0, view: window }));
+            opt.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0, view: window }));
+            return { id: opt.id, text };
+          }
+        }
+        return null;
+      },
+      { cbId, regexStr: regex.source, regexFlags: regex.flags }
+    );
+
+    if (matched) {
+      await frame.waitForTimeout(400);
+      if (!(await isDropdownStillUnset(frame, combobox))) {
+        steps?.push(`selectStaticDropdown: react-select-id ok ("${matched.text.slice(0, 40)}")`);
+        return;
+      }
+      steps?.push(`selectStaticDropdown: react-select-id matched "${matched.text.slice(0, 40)}" but state unset`);
+    } else {
+      steps?.push(`selectStaticDropdown: react-select-id no option matched regex`);
+    }
+  } catch (e) {
+    steps?.push(`selectStaticDropdown: react-select-id err: ${(e as Error).message?.slice(0, 60)}`);
+  }
+
+  throw new Error(`Option "${String(optionName)}" not found in dropdown "${String(comboboxNamePattern)}" (keyboard + toggle + force + react-select-id all failed)`);
 }
 
 async function selectStaticDropdownSafe(
@@ -1808,9 +1874,20 @@ async function greenhouseDeterministicFill(
   const veteranPattern = applicant.veteranStatus
     ? new RegExp(applicant.veteranStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
     : /not a protected veteran|Not a Veteran|not to disclose|don.*wish|prefer not|Not Specified/i;
-  const disabilityPattern = applicant.disabilityStatus
+  // Default: select "No, I do not have a disability and have not had one in the past"
+  // (or short "No" variants). This matches the actual Greenhouse react-select
+  // option text — the prior pattern preferred "Prefer not / decline" variants
+  // which on some forms (e.g. Webflow) resolve to "I do not want to answer",
+  // text that doesn't start with our typing prefix and breaks selection.
+  //
+  // If the applicant explicitly set a non-decline disability status during
+  // onboarding (e.g. "Yes, I have a disability"), honor that. If they left it
+  // blank or set it to "Prefer not to say" / similar, override to "No I don't".
+  const wantsToDecline = applicant.disabilityStatus
+    && /prefer not|don.t.*want|don.t.*wish|decline|not specified/i.test(applicant.disabilityStatus);
+  const disabilityPattern = applicant.disabilityStatus && !wantsToDecline
     ? new RegExp(applicant.disabilityStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
-    : /^No|No.*do not have|don.*wish.*answer|don.*t wish|prefer not|Not Specified/i;
+    : /^No,?\s*I do not have|^No,?\s*I don.t have|^No,?\s+I have not|^No$/i;
 
   await selectStaticDropdownSafe(frame, /gender/i, genderPattern, steps);
   await selectStaticDropdownSafe(frame, /hispanic/i, hispanicPattern, steps);
@@ -2438,15 +2515,34 @@ async function _applyToJobInner(
         return { success: false, error: errMsg, steps };
       }
 
-      // Track field attempts (including select_dropdown to prevent infinite loops on stuck dropdowns)
+      // Track field attempts (including select_dropdown to prevent infinite loops on stuck dropdowns).
+      //
+      // Normalize the key aggressively so case / whitespace / punctuation /
+      // "Required" wrappers in Claude's varying prompts collapse to the same
+      // counter. Without this, "Disability Status", "disability status", and
+      // "Disability Status *" each get their own 3-attempt budget — letting
+      // Claude burn the full 12-min watchdog on one structurally-broken field
+      // (udvlenkhtaivan Apr 18: 5 of 8 failures were the same EEO dropdown).
+      const normalizeKey = (s: string | undefined) =>
+        (s || "")
+          .toLowerCase()
+          .replace(/\brequired\b|\boptional\b|\*/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
       const fieldKey = action.action === "select_dropdown"
-        ? `combobox:${action.name}`
-        : `${action.role}:${action.name}`;
+        ? `combobox:${normalizeKey(action.name)}`
+        : `${action.role}:${normalizeKey(action.name)}`;
+
       if (action.action === "fill" || action.action === "type_slowly" || action.action === "select_dropdown") {
         fieldAttempts[fieldKey] = (fieldAttempts[fieldKey] || 0) + 1;
-        if (fieldAttempts[fieldKey] >= 3 && !skippedFields.includes(fieldKey)) {
+        // Dropdowns get a tighter cap (2) than text fields (3). When a dropdown
+        // is structurally broken (filter mismatch, portal-rendered menu, etc.)
+        // additional attempts cost ~1 min of Claude+Playwright each and never
+        // resolve. Text fields are usually salvageable with a different value.
+        const cap = action.action === "select_dropdown" ? 2 : 3;
+        if (fieldAttempts[fieldKey] >= cap && !skippedFields.includes(fieldKey)) {
           skippedFields.push(fieldKey);
-          steps.push(`SKIPPING field "${fieldKey}" after ${fieldAttempts[fieldKey]} failed attempts`);
+          steps.push(`SKIPPING field "${fieldKey}" after ${fieldAttempts[fieldKey]} failed attempts (cap=${cap})`);
           // Cascade bailout: if we've already skipped 3+ fields the form is
           // structurally broken for us — don't burn 20 more steps hoping Claude
           // will route around it.

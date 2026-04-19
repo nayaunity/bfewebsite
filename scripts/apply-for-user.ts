@@ -36,6 +36,7 @@ const DAILY_CAP = 10;
 const BLOCKED_COMPANIES = [
   "duolingo", "samsara", "grammarly",
   "openai", "ramp", "notion", "perplexity", "linear", "elevenlabs",
+  "anthropic",
 ];
 
 const STOP_WORDS = new Set([
