@@ -5,6 +5,7 @@ import Link from "next/link";
 import { friendlyError } from "@/lib/error-display";
 import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
 import { TrialCapReachedBanner } from "@/components/TrialCapReachedBanner";
+import { ApplicationsEmptyState } from "@/components/profile/ApplicationsEmptyState";
 
 interface Application {
   id: string;
@@ -177,6 +178,7 @@ export default function ApplicationsDashboard({
 
   // Hide failed applications from users
   const visibleApplications = initialApplications.filter((a) => a.status !== "failed");
+  const hasVisibleApplications = visibleApplications.length > 0;
 
   const filtered = visibleApplications.filter((a) => {
     if (filter !== "all") {
@@ -302,7 +304,10 @@ export default function ApplicationsDashboard({
 
       {/* Today's Auto-Apply Activity */}
       {todayActivity && (
-        <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
+        <div
+          id="today-auto-apply"
+          className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden scroll-mt-4"
+        >
           <div className="px-5 py-4 border-b border-[var(--card-border)] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${
@@ -498,49 +503,74 @@ export default function ApplicationsDashboard({
         {/* Table Header */}
         <div className="px-5 py-4 border-b border-[var(--card-border)] flex flex-col md:flex-row md:items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-[var(--foreground)]">Application Status</h2>
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="relative">
-              <svg className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--gray-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 w-44"
-              />
+          {hasVisibleApplications ? (
+            <div className="flex items-center gap-3">
+              {/* Search */}
+              <div className="relative">
+                <svg className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--gray-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 w-44"
+                />
+              </div>
+              {/* Filter */}
+              <div className="flex gap-1">
+                {(["all", "submitted", "skipped"] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setFilter(s)}
+                    className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors ${
+                      filter === s
+                        ? "bg-[var(--foreground)] text-[var(--background)]"
+                        : "text-[var(--gray-600)] hover:bg-[var(--gray-100)]"
+                    }`}
+                  >
+                    {s === "submitted" ? "Applied" : s.charAt(0).toUpperCase() + s.slice(1)}
+                    <span className="ml-1 opacity-60">{filterCounts[s]}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            {/* Filter */}
-            <div className="flex gap-1">
-              {(["all", "submitted", "skipped"] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setFilter(s)}
-                  className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors ${
-                    filter === s
-                      ? "bg-[var(--foreground)] text-[var(--background)]"
-                      : "text-[var(--gray-600)] hover:bg-[var(--gray-100)]"
-                  }`}
-                >
-                  {s === "submitted" ? "Applied" : s.charAt(0).toUpperCase() + s.slice(1)}
-                  <span className="ml-1 opacity-60">{filterCounts[s]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          ) : (
+            <p className="max-w-md text-xs leading-5 text-[var(--gray-600)]">
+              This feed will show matched roles, live application statuses, and direct job links once your first auto-apply session runs.
+            </p>
+          )}
         </div>
 
         {/* Table */}
         {filtered.length === 0 ? (
-          <div className="px-5 py-12 text-center">
-            <p className="text-sm text-[var(--gray-600)]">
-              {initialApplications.length === 0
-                ? "No applications yet. We\u2019ll start applying to matching jobs for you every morning at 3am MT."
-                : "No applications match your filter."}
-            </p>
-          </div>
+          hasVisibleApplications ? (
+            <div className="px-5 py-12 text-center">
+              <p className="text-sm text-[var(--gray-600)]">No applications match your filter.</p>
+              <button
+                onClick={() => {
+                  setFilter("all");
+                  setSearch("");
+                }}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-[var(--card-border)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--gray-50)]"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <ApplicationsEmptyState
+              totalActiveJobs={totalActiveJobs}
+              profileReady={profileReady}
+              missingRoles={missingRoles}
+              missingResume={missingResume}
+              hasActiveSession={hasActiveSession}
+              atLimit={atLimit}
+              starting={starting}
+              startResult={startResult}
+              onStartApplying={handleStartApplying}
+            />
+          )
         ) : (
           <>
             {/* Column headers (desktop) */}

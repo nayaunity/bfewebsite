@@ -21,7 +21,7 @@ export default async function ApplicationsPage() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
+  const [user, applications, browseDiscoveries, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true },
@@ -39,23 +39,6 @@ export default async function ApplicationsPage() {
       take: 200,
       include: {
         session: { select: { targetRole: true, resumeUrl: true, createdAt: true } },
-      },
-    }),
-    prisma.browseSession.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: {
-        id: true,
-        status: true,
-        targetRole: true,
-        totalCompanies: true,
-        companiesDone: true,
-        jobsFound: true,
-        jobsApplied: true,
-        jobsFailed: true,
-        createdAt: true,
-        completedAt: true,
       },
     }),
     canApply(session.user.id),
@@ -113,26 +96,9 @@ export default async function ApplicationsPage() {
     ...discoveryAsApplications,
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const applied = allApplications.filter((a) => a.status === "submitted" || a.status === "applied").length;
+  const visibleApplications = allApplications.filter((a) => a.status !== "failed");
+  const applied = visibleApplications.filter((a) => a.status === "submitted" || a.status === "applied").length;
   const failed = allApplications.filter((a) => a.status === "failed").length;
-
-  // Extract user's preferred roles: profile targetRole (JSON array or string) > onboarding data
-  let userRoles: string[] = [];
-  if (user?.targetRole) {
-    try {
-      const parsed = JSON.parse(user.targetRole);
-      if (Array.isArray(parsed)) userRoles = parsed;
-    } catch { /* not JSON, treat as single role */ }
-    if (userRoles.length === 0) userRoles = [user.targetRole];
-  }
-  if (userRoles.length === 0 && user?.onboardingData) {
-    try {
-      const onboarding = JSON.parse(user.onboardingData);
-      if (Array.isArray(onboarding.roles) && onboarding.roles.length > 0) {
-        userRoles = onboarding.roles;
-      }
-    } catch { /* ignore */ }
-  }
 
   return (
     <>
@@ -162,7 +128,7 @@ export default async function ApplicationsPage() {
           {/* Main Dashboard */}
           <ApplicationsDashboard
             initialApplications={allApplications}
-            stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
+            stats={{ total: visibleApplications.length, applied, failed, uniqueCompanies: new Set(visibleApplications.map((a) => a.company)).size }}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
             totalActiveJobs={totalActiveJobs}
             appliedCompanies={[...new Set(allApplications.filter(a => a.status === "submitted" || a.status === "applied").map(a => a.company))].slice(0, 5)}
