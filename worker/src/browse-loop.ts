@@ -360,6 +360,17 @@ export async function processNextBrowseSession(): Promise<boolean> {
         args: [session.userId],
       });
       const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string; freeTierEndsAt: string | null } | undefined;
+      // Payment-failed wall: mirror src/lib/subscription.ts canApply().
+      // Stripe flipped the sub to past_due/unpaid after a failed charge;
+      // do not consume paid resources until the invoice clears.
+      if (
+        currentUser &&
+        (currentUser.subscriptionStatus === "past_due" ||
+          currentUser.subscriptionStatus === "unpaid")
+      ) {
+        log(session.id, "info", `[payment-failed] subscription is ${currentUser.subscriptionStatus}, stopping. User must update payment method.`);
+        break;
+      }
       if (
         currentUser &&
         currentUser.subscriptionTier === "free" &&
@@ -509,6 +520,13 @@ export async function processNextBrowseSession(): Promise<boolean> {
           args: [session.userId],
         });
         const u = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string } | undefined;
+        if (
+          u &&
+          (u.subscriptionStatus === "past_due" || u.subscriptionStatus === "unpaid")
+        ) {
+          log(session.id, "info", `Skipping retry — [payment-failed] subscription is ${u.subscriptionStatus}`);
+          break;
+        }
         if (u && u.subscriptionStatus === "trialing" && u.monthlyAppCount >= 5) {
           log(session.id, "info", `Skipping retry — trial cap reached (${u.monthlyAppCount}/5)`);
           break;

@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
+import { PaymentFailedBanner } from "@/components/PaymentFailedBanner";
 import { TicketWidget } from "@/components/TicketWidget";
 import { OnboardingSync } from "@/components/OnboardingSync";
 import { StripeSync } from "@/components/StripeSync";
@@ -234,6 +235,8 @@ export default async function ProfilePage({
       <Navigation />
       <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 py-12">
+          {(user.subscriptionStatus === "past_due" ||
+            user.subscriptionStatus === "unpaid") && <PaymentFailedBanner />}
           {user.subscriptionTier === "free" && user.freeTierEndsAt && (
             <TrialRequiredBanner freeTierEndsAt={user.freeTierEndsAt.toISOString()} />
           )}

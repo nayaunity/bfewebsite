@@ -22,15 +22,17 @@ const TIERS = [
   { key: "free", label: "Free" },
   { key: "trial", label: "Trial" },
   { key: "starter", label: "Starter" },
+  { key: "past_due", label: "Past due" },
   { key: "pro", label: "Pro" },
 ];
 
-// "trial" is a status, not a tier. Trialing users have tier=starter — the
-// filter splits them out so operators can monitor active trials separately
-// from paid Starter subscribers.
+// "trial" and "past_due" are statuses, not tiers. We split them out from
+// tier=starter so operators can monitor billing-state cohorts separately.
 const isTrial = (u: { subscriptionStatus: string }) => u.subscriptionStatus === "trialing";
+const isPastDue = (u: { subscriptionStatus: string }) =>
+  u.subscriptionStatus === "past_due" || u.subscriptionStatus === "unpaid";
 const isPaidStarter = (u: { subscriptionTier: string; subscriptionStatus: string }) =>
-  u.subscriptionTier === "starter" && u.subscriptionStatus !== "trialing";
+  u.subscriptionTier === "starter" && u.subscriptionStatus !== "trialing" && !isPastDue(u);
 
 export default function UserTable({ users }: { users: UserRow[] }) {
   const [tierFilter, setTierFilter] = useState("all");
@@ -38,8 +40,15 @@ export default function UserTable({ users }: { users: UserRow[] }) {
 
   const filtered = users.filter((u) => {
     if (tierFilter === "trial" && !isTrial(u)) return false;
+    if (tierFilter === "past_due" && !isPastDue(u)) return false;
     if (tierFilter === "starter" && !isPaidStarter(u)) return false;
-    if (tierFilter !== "all" && tierFilter !== "trial" && tierFilter !== "starter" && u.subscriptionTier !== tierFilter) return false;
+    if (
+      tierFilter !== "all" &&
+      tierFilter !== "trial" &&
+      tierFilter !== "past_due" &&
+      tierFilter !== "starter" &&
+      u.subscriptionTier !== tierFilter
+    ) return false;
     if (search) {
       const q = search.toLowerCase();
       const name = [u.firstName, u.lastName].filter(Boolean).join(" ").toLowerCase();
@@ -53,6 +62,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
     free: users.filter((u) => u.subscriptionTier === "free").length,
     trial: users.filter(isTrial).length,
     starter: users.filter(isPaidStarter).length,
+    past_due: users.filter(isPastDue).length,
     pro: users.filter((u) => u.subscriptionTier === "pro").length,
   };
 
@@ -127,12 +137,13 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                   </td>
                   <td className="px-4 py-2.5">
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      isPastDue(u) ? "bg-red-100 text-red-800" :
                       isTrial(u) ? "bg-amber-100 text-amber-800" :
                       u.subscriptionTier === "pro" ? "bg-[#ef562a]/10 text-[#ef562a]" :
                       u.subscriptionTier === "starter" ? "bg-blue-100 text-blue-700" :
                       "bg-[var(--gray-100)] text-[var(--gray-600)]"
                     }`}>
-                      {isTrial(u) ? "trial" : u.subscriptionTier}
+                      {isPastDue(u) ? "past due" : isTrial(u) ? "trial" : u.subscriptionTier}
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-xs text-[var(--gray-600)]">

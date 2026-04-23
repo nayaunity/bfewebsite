@@ -5,6 +5,7 @@ import Link from "next/link";
 import { friendlyError } from "@/lib/error-display";
 import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
 import { TrialCapReachedBanner } from "@/components/TrialCapReachedBanner";
+import { PaymentFailedBanner } from "@/components/PaymentFailedBanner";
 
 interface Application {
   id: string;
@@ -85,6 +86,8 @@ export default function ApplicationsDashboard({
   freeTierEndsAt?: string | null;
 }) {
   const showTrialBanner = subscriptionTier === "free" && !!freeTierEndsAt;
+  const showPaymentFailedBanner =
+    subscriptionStatus === "past_due" || subscriptionStatus === "unpaid";
   // Trial-cap conversion moment: trialing user has burned through their 5
   // trial applies. Highest-intent upgrade surface — owns the moment with
   // loss-aversion + endowment copy and one-click upgrade-now CTA.
@@ -204,6 +207,7 @@ export default function ApplicationsDashboard({
 
   return (
     <div>
+      {showPaymentFailedBanner && <PaymentFailedBanner />}
       {showTrialCapBanner && <TrialCapReachedBanner />}
       {showTrialBanner && freeTierEndsAt && (
         <TrialRequiredBanner freeTierEndsAt={freeTierEndsAt} />

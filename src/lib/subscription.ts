@@ -96,7 +96,7 @@ export async function canApply(userId: string): Promise<{
   tier: string;
   used: number;
   limit: number;
-  reason?: "trial-required" | "monthly-cap";
+  reason?: "trial-required" | "monthly-cap" | "payment-failed";
 }> {
   const user = await getUserTier(userId);
   if (!user)
@@ -113,6 +113,23 @@ export async function canApply(userId: string): Promise<{
   const isTrialing = user.subscriptionStatus === "trialing";
   const effectiveLimit = isTrialing ? 5 : limits.appsPerMonth;
   const remaining = Math.max(0, effectiveLimit - used);
+
+  // Payment-failed wall: once Stripe marks the subscription past_due or
+  // unpaid (card decline at trial-end billing, or later failed renewal),
+  // stop consuming paid resources until the invoice clears.
+  if (
+    user.subscriptionStatus === "past_due" ||
+    user.subscriptionStatus === "unpaid"
+  ) {
+    return {
+      allowed: false,
+      remaining: 0,
+      tier,
+      used,
+      limit: effectiveLimit,
+      reason: "payment-failed",
+    };
+  }
 
   // Free-tier sunset wall: once freeTierEndsAt has passed, the user must
   // start the 7-day Stripe trial (or subscribe directly) to keep applying.

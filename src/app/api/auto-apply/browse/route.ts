@@ -50,7 +50,9 @@ export async function POST(request: Request) {
   const usage = await canApply(session.user.id);
   if (!usage.allowed) {
     const error =
-      usage.reason === "trial-required"
+      usage.reason === "payment-failed"
+        ? "Your last payment didn't go through. Please update your card to resume applying."
+        : usage.reason === "trial-required"
         ? "Your free tier has ended. Start your 7-day trial to keep applying."
         : `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`;
     return NextResponse.json({ error, usage }, { status: 403 });
