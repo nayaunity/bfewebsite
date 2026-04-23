@@ -137,7 +137,6 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
     needsSponsorship: "",
   });
   const [showMoreLocations, setShowMoreLocations] = useState(false);
-  const [loadingPlan, setLoadingPlan] = useState(false);
 
   // Track wizard opened (step 0)
   useEffect(() => {
@@ -178,9 +177,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
   // Auto-advance from the "Creating plan" step after animation
   useEffect(() => {
     if (step === 18) {
-      setLoadingPlan(true);
       const timer = setTimeout(() => {
-        setLoadingPlan(false);
         next();
       }, 3500);
       return () => clearTimeout(timer);
