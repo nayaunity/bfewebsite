@@ -84,7 +84,6 @@ export default function OnboardingWizard() {
     lastName: "",
   });
   const [showMoreLocations, setShowMoreLocations] = useState(false);
-  const [loadingPlan, setLoadingPlan] = useState(false);
 
   const progress = ((step + 1) / TOTAL_STEPS) * 100;
 
@@ -99,9 +98,7 @@ export default function OnboardingWizard() {
   // Auto-advance from the "Creating plan" step after animation
   useEffect(() => {
     if (step === 15) {
-      setLoadingPlan(true);
       const timer = setTimeout(() => {
-        setLoadingPlan(false);
         next();
       }, 3500);
       return () => clearTimeout(timer);
