@@ -136,7 +136,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     <p className="text-[10px] text-[var(--gray-600)]">{u.email}</p>
                   </td>
                   <td className="px-4 py-2.5">
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
                       isPastDue(u) ? "bg-red-100 text-red-800" :
                       isTrial(u) ? "bg-amber-100 text-amber-800" :
                       u.subscriptionTier === "pro" ? "bg-[#ef562a]/10 text-[#ef562a]" :
