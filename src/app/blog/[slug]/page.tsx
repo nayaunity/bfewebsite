@@ -154,6 +154,29 @@ function renderContent(content: string) {
       continue;
     }
 
+    // Handle CTA button: [[Label|URL]] on its own line
+    const buttonMatch = trimmed.match(/^\[\[([^|\]]+)\|([^\]]+)\]\]$/);
+    if (buttonMatch) {
+      const label = buttonMatch[1].trim();
+      const url = buttonMatch[2].trim();
+      elements.push(
+        <a
+          key={keyIndex++}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="my-8 flex items-center justify-between gap-4 bg-[#ef562a] text-white px-8 py-5 rounded-2xl font-medium text-lg hover:bg-[#d94a24] transition-colors"
+        >
+          <span>{label}</span>
+          <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      );
+      i++;
+      continue;
+    }
+
     // Handle h3 headings FIRST (more specific match)
     if (trimmed.startsWith("### ")) {
       elements.push(
