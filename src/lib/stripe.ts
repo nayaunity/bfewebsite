@@ -3,9 +3,21 @@ import Stripe from "stripe";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_placeholder_for_build");
 
+// Building a Tech Audience course lives in a separate Stripe account
+// from the main BFE subscriptions. Uses its own secret key.
+export const stripeCourse = new Stripe(
+  process.env.STRIPE_COURSE_SECRET_KEY || "sk_placeholder_for_build"
+);
+
 export const STRIPE_PRICES = {
   starter: process.env.STRIPE_STARTER_PRICE_ID!,
   pro: process.env.STRIPE_PRO_PRICE_ID!,
+};
+
+export const STRIPE_COURSE_PRICES = {
+  selfGuided: process.env.STRIPE_BTA_SELF_GUIDED_PRICE_ID!,
+  groupCoaching: process.env.STRIPE_BTA_GROUP_PRICE_ID!,
+  privateCoaching: process.env.STRIPE_BTA_COACHING_PRICE_ID!,
 };
 
 export const TIER_LIMITS: Record<

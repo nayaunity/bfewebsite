@@ -41,6 +41,9 @@ async function getStats() {
     presaleCtaToday,
     // Auto Apply waitlist
     autoApplyVisitorsToday,
+    // Building a Tech Audience presale
+    btaPresaleVisitorsToday,
+    btaPresaleCtaToday,
   ] = await Promise.all([
     prisma.job.count(),
     prisma.job.count({ where: { isActive: true } }),
@@ -87,6 +90,15 @@ async function getStats() {
       where: { page: "auto-apply", lastSeenAt: { gte: todayStart } },
       _count: true,
     }).then(r => r.length),
+    // Building a Tech Audience presale
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "building-a-tech-audience", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.linkClick.count({
+      where: { linkId: { startsWith: "bta-presale-" }, clickedAt: { gte: todayStart } },
+    }),
   ]);
 
   return {
@@ -108,6 +120,8 @@ async function getStats() {
       presaleVisitorsToday,
       presaleCtaToday,
       autoApplyVisitorsToday,
+      btaPresaleVisitorsToday,
+      btaPresaleCtaToday,
     },
   };
 }
@@ -270,6 +284,13 @@ export default async function AdminDashboard() {
               {stats.analytics.autoApplyVisitorsToday}
             </p>
             <p className="text-xs text-[var(--gray-600)]">visitors today</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border-2 border-[#ffe500] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Tech Audience Presale</p>
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+              {stats.analytics.btaPresaleVisitorsToday}
+            </p>
+            <p className="text-xs text-[var(--gray-600)]">{stats.analytics.btaPresaleCtaToday} CTA clicks</p>
           </div>
         </div>
       </div>
