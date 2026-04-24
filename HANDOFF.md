@@ -1,10 +1,11 @@
-# Session Handoff — April 14–19, 2026 (security audit Apr 19)
+# Session Handoff — April 14–24, 2026 (Apr 24: assistant access fix + signin restore)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `bb7ffaf` (Apr 19, security fixes merged: C1 + C2 + H1).
-- **resume-first-onboarding** — current working branch (Apr 19). All Apr 18-19 work landed here, merged into main.
+- **main** — production code, deployed to Vercel. Head: `2023a3c` (Apr 24, login route restored + contributor role write access).
+- **blog** — current working branch (Apr 24). Latest: `ec9675e` (content admin fix). Merged fast-forward to main and deployed.
+- **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
 - **auto-apply-saas** — Railway worker deploys from this branch. Head: `d32da13` (fast-forwarded to main).
@@ -13,7 +14,7 @@
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Most recent prod deploy: main `2023a3c` (Apr 24, deploy id `dpl_BmMUdGLbF9MY5oEmMLbE5UFEzpq8`). Earlier Apr 18-19 sequence: verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity.
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), **`detailsReviewedAt` (Apr 18)** for the post-trial-checkout review page. New column on `BrowseSession`: **`lastHeartbeatAt` (Apr 18)** for the heartbeat-based watchdog. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -47,7 +48,35 @@
 
 ---
 
-## What Was Done This Session (April 15-19)
+## What Was Done This Session (April 15-24)
+
+### 25. Assistant access restored + password signin unblocked for everyone (Apr 24, DEPLOYED main `2023a3c`)
+**Motivated by:** Naya reported her assistant `obiajuluonyinye1@gmail.com` could no longer access the admin portal (stuck on signin). Naya's intent: restore "limited" access scoped to Jobs + Blog + Links.
+
+**What I found during investigation:**
+- Her prod DB role was still `admin` (holdover from the hardcoded `AUTO_ADMIN_EMAILS` default removed on Apr 19). So her access hadn't actually been revoked by the security audit, but Naya's desired level was narrower than admin.
+- `src/app/auth/signin/page.tsx:120` POSTs password login attempts to `POST /api/auth/login`. That route file was **deleted in commit `ae54073` on Apr 8** as part of "Delete 6 orphaned files / clean up tech debt". The frontend still calls it. **Password signin has been returning 404 for every caller since Apr 8.** Magic-link users (like Naya herself) were unaffected, which is why this stayed latent for 16 days.
+- The `contributor` role was largely theatrical: the admin layout admits it, but every content API route (`/api/admin/jobs/*`, `/api/admin/blog/*`, `/api/admin/links/*`) uses `checkAdmin()` which returns `isAdmin: role === "admin"` — so a contributor could *see* pages but every save/edit returned 401. The `/admin/links` page itself was also stricter: `requireFullAdmin()` + `adminOnly: true` sidebar flag, so contributors never saw it at all.
+
+**Shipped:**
+- **`src/app/api/auth/login/route.ts` restored** — verbatim from `git show ae54073^`. Edge runtime, libsql web client, bcrypt compare, `setSessionCookie`. Fixes password signin for everyone, not just the assistant.
+- **`src/lib/admin.ts`** — new `checkContentAdmin()` helper returning `{ allowed, session }` where `allowed = role === "admin" || role === "contributor"`. Kept `checkAdmin()` unchanged so every other admin API surface (analytics, users, errors, auto-apply, tickets, etc.) stays admin-only.
+- **Content API routes swapped `checkAdmin` → `checkContentAdmin`** (and `isAdmin` → `allowed`) across 7 files: `src/app/api/admin/links/route.ts`, `src/app/api/admin/links/[id]/route.ts`, `src/app/api/admin/links/reorder/route.ts`, `src/app/api/admin/jobs/route.ts`, `src/app/api/admin/jobs/[id]/route.ts`, `src/app/api/admin/blog/route.ts`, `src/app/api/admin/blog/[slug]/featured/route.ts`, `src/app/api/admin/blog/upload/route.ts`.
+- **Links page gates widened** — `requireFullAdmin()` → `requireAdmin()` in `src/app/admin/links/page.tsx`, `src/app/admin/links/new/page.tsx`, `src/app/admin/links/[id]/edit/page.tsx`. Sidebar flag flipped: `adminOnly: false` for Links in `AdminSidebar.tsx` (nav filter on line 129 now includes it for contributor).
+- **Prod DB role change** — `UPDATE User SET role = 'contributor' WHERE email = 'obiajuluonyinye1@gmail.com'`. Dry-run first (selected the row, printed before/after), then applied via the standard Turso-direct-write pattern from CLAUDE.md. She now sees: sidebar Jobs / Blog / Links only, "Contributor" blue pill next to the logo, and can actually save edits (no more 401s on PUT/POST).
+
+**NOT done (intentionally):**
+- `checkAdmin()` itself was NOT broadened — blast radius kept to the three content surfaces Naya named.
+- `GET /api/admin/blog/[slug]/route.ts` has no auth gate at all (audit finding M1, Apr 19). Left as-is since the plan didn't claim to fix it.
+- Public `POST /api/jobs` still uses `checkAdmin()` (the H1 gate). Contributors should post via `/api/admin/jobs`, not the public endpoint.
+
+**Verification:**
+- Local: `npm run build` passes. Dev server + Playwright confirmed signin page renders, `POST /api/auth/login` responds with `LibsqlError: URL_SCHEME_NOT_SUPPORTED` (not 404 — the known file:-URL local-dev limitation from HANDOFF line 69 means this is the expected "the route runs" signal). All content API routes still 401 anon.
+- Prod smoke after deploy: `curl POST /api/auth/login` with bogus creds returns `401 {"error":"Incorrect email or password"}` (was 404 before), `GET /api/admin/links` returns 401 anon as expected.
+
+**Prod DB post-change:**
+- `obiajuluonyinye1@gmail.com`: role=`contributor` (was admin)
+- Privileged users (3 total): `theblackfemaleengineer@gmail.com` (admin), `obiajuluonyinye1@gmail.com` (contributor), `Sarah.comlan@gmail.com` (operations, still never logged in — latent escalation path unchanged).
 
 ### 24. Security audit pass 1 — C1 + C2 + H1 (Apr 19, DEPLOYED main `bb7ffaf`)
 **Motivated by:** Naya spotted `onboarded-users.csv` (35 real user emails, orphan file, not in `.gitignore`) sitting in repo root and asked for a full security audit using the Trail of Bits skills playbook.
@@ -290,6 +319,12 @@ Bundled trial-flow improvements:
 
 ## Known Issues
 
+### Password signin returned 404 site-wide for 16 days -- RESOLVED Apr 24
+`src/app/api/auth/login/route.ts` was deleted in commit `ae54073` (Apr 8) as "orphaned tech debt" but the signin page still POSTed to it. Every password signin attempt returned HTML 404 that the frontend surfaced as a generic "Something went wrong" error. Magic-link path was unaffected, which is why Naya (magic-link user) never saw it. Root cause: frontend/backend split wasn't audited when the file was deleted. Restored verbatim from `git show ae54073^` in Apr 24 fix. See section 25.
+
+### `contributor` role couldn't actually write content -- RESOLVED Apr 24
+Contributor role has existed since Jan but every content API (`/api/admin/jobs/*`, `/api/admin/blog/*`, `/api/admin/links/*`) used `checkAdmin()` which only admits role=`admin`. Contributors could read pages but saves 401'd. Fixed via new `checkContentAdmin()` helper in `src/lib/admin.ts` (admits admin + contributor) — only those 7 content routes swapped; every other `/api/admin/*` surface still uses strict `checkAdmin()`. See section 25.
+
 ### BrowseDiscovery datetime format -- WORKAROUND IN PLACE
 `BrowseDiscovery.createdAt` is stored as `"YYYY-MM-DD HH:MM:SS"` (SQLite default) instead of ISO 8601. Prisma `{ gte: date }` comparisons fail silently. Workaround: filter by `sessionId` (which has ISO dates on BrowseSession) instead of `createdAt` on discoveries. A bulk format repair (similar to `scripts/repair-datetime-format.ts` for User) would fix this permanently.
 
@@ -404,8 +439,14 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 - **Cohort success rate (post-Phase 2 + Apr 18 verification fix): expect lift from ~64% baseline. c.wright-galloway canary 3/3 post-fix vs 0/14 pre-fix.**
 
 ## Admin Users
-- **Nyaradzo (Naya)** -- `admin` (full access)
-- **Sarah Comlan** (`Sarah.comlan@gmail.com`) -- `operations`
+- **Nyaradzo (Naya)** (`theblackfemaleengineer@gmail.com`) -- `admin` (full access)
+- **Naya's assistant** (`obiajuluonyinye1@gmail.com`) -- `contributor` (Jobs, Blog, Links pages only). Demoted from admin on Apr 24.
+- **Sarah Comlan** (`Sarah.comlan@gmail.com`) -- `operations` (never logged in, latent escalation path)
+
+### Role capability summary
+- `admin` — everything
+- `contributor` — Jobs + Blog + Links (read + write via the three content APIs which now use `checkContentAdmin()`)
+- `operations` — Auto-Apply, Errors, Tickets, Onboarding pages only (no write APIs widened for this role)
 
 ## Admin Pages
 - `/admin` -- main dashboard, shows AdminAlert red banner at top
