@@ -96,6 +96,17 @@ async function getAnalytics() {
     aaViewsWeek,
     aaViewsAllTime,
     aaByCountry,
+    // Building a Tech Audience presale metrics
+    btaUniqueToday,
+    btaUniqueWeek,
+    btaUniqueAllTime,
+    btaViewsToday,
+    btaViewsWeek,
+    btaViewsAllTime,
+    btaCtaToday,
+    btaCtaWeek,
+    btaCtaAllTime,
+    btaByCountry,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -147,12 +158,12 @@ async function getAnalytics() {
       take: 15,
     }),
     // Blog metrics (exclude claudecode and auto-apply page views)
-    prisma.blogView.count({ where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } } }),
+    prisma.blogView.count({ where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
     prisma.blogView.groupBy({
       by: ["slug", "title"],
-      where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review"] } },
+      where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
       take: 10,
@@ -231,6 +242,35 @@ async function getAnalytics() {
     prisma.pagePresence.groupBy({
       by: ["country"],
       where: { page: "auto-apply", country: { not: null } },
+      _count: { visitorId: true },
+      orderBy: { _count: { visitorId: "desc" } },
+      take: 10,
+    }),
+    // Building a Tech Audience presale metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "building-a-tech-audience", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "building-a-tech-audience", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "building-a-tech-audience" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "building-a-tech-audience", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "building-a-tech-audience", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "building-a-tech-audience" } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "bta-presale-" }, clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "bta-presale-" }, clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "bta-presale-" } } }),
+    prisma.pagePresence.groupBy({
+      by: ["country"],
+      where: { page: "building-a-tech-audience", country: { not: null } },
       _count: { visitorId: true },
       orderBy: { _count: { visitorId: "desc" } },
       take: 10,
@@ -344,6 +384,25 @@ async function getAnalytics() {
       viewsWeek: aaViewsWeek,
       viewsAllTime: aaViewsAllTime,
       byCountry: aaByCountry
+        .filter((c) => c.country)
+        .map((c) => ({
+          country: c.country as string,
+          countryName: getCountryName(c.country as string),
+          visitors: c._count.visitorId,
+        })),
+    },
+    btaPresale: {
+      uniqueToday: btaUniqueToday,
+      uniqueWeek: btaUniqueWeek,
+      uniqueAllTime: btaUniqueAllTime,
+      viewsToday: btaViewsToday,
+      viewsWeek: btaViewsWeek,
+      viewsAllTime: btaViewsAllTime,
+      ctaToday: btaCtaToday,
+      ctaWeek: btaCtaWeek,
+      ctaAllTime: btaCtaAllTime,
+      conversionRate: btaUniqueAllTime > 0 ? Math.round((btaCtaAllTime / btaUniqueAllTime) * 100) : 0,
+      byCountry: btaByCountry
         .filter((c) => c.country)
         .map((c) => ({
           country: c.country as string,
@@ -504,6 +563,102 @@ export default async function AnalyticsPage() {
               </div>
               <div className="divide-y divide-[var(--card-border)] max-h-48 overflow-y-auto">
                 {analytics.claudeCode.byCountry.map((country, index) => (
+                  <div key={country.country} className="px-4 py-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs text-[var(--gray-600)]">
+                        {index + 1}
+                      </span>
+                      <span className="truncate text-sm text-[var(--foreground)]">{country.countryName}</span>
+                    </div>
+                    <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">{country.visitors}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Building a Tech Audience Presale */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Building a Tech Audience Presale
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#ffe500] text-black">
+            PRESALE
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Tier CTA Clicks</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.ctaToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.ctaWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.btaPresale.ctaAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[#ffe500]/10 border border-[#ffe500]/40 rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">Tier CTA clicks / unique visitors</p>
+            </div>
+            <p className="text-3xl font-bold text-[var(--foreground)]">
+              {analytics.btaPresale.conversionRate}%
+            </p>
+          </div>
+          {analytics.btaPresale.byCountry.length > 0 && (
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--card-border)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)]">Presale Visitors by Country</h3>
+              </div>
+              <div className="divide-y divide-[var(--card-border)] max-h-48 overflow-y-auto">
+                {analytics.btaPresale.byCountry.map((country, index) => (
                   <div key={country.country} className="px-4 py-2 flex items-center justify-between">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs text-[var(--gray-600)]">
