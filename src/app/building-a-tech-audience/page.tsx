@@ -440,8 +440,8 @@ export default function BuildingATechAudiencePage() {
                   engineer, then as an AI engineer and educator.
                 </p>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  That audience has paid me over $500,000 through brand deals,
-                  consulting, and speaking. It has put me on stages at
+                  I have earned over $500,000 through brand deals, consulting,
+                  and speaking. That audience has put me on stages at
                   conferences, in partnerships with Microsoft, Adobe, HP, and
                   Anthropic, and into rooms I would never have been invited to
                   through a resume alone.
