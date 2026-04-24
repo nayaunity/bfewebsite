@@ -49,6 +49,7 @@ const internalJobPages: Record<string, string> = {
   "jobId=43140": "/jobs/ibm-software-engineer-apprentice",
   "connect-engineering-apprenticeship": "/jobs/airbnb-connect-apprenticeship",
   "anthropic/jobs/5023394008": "/jobs/anthropic-fellows-program",
+  "anthropic/jobs/5189848008": "/jobs/anthropic-ai-stem-fellows",
 };
 
 const TARGET_COMPANIES = new Set([
@@ -454,6 +455,38 @@ export default function JobBoard() {
                 </div>
                 <p className="mt-3 text-sm text-[var(--gray-600)]">
                   4-month funded AI safety research fellowship with mentorship from Anthropic researchers. Python + US/UK/CA work auth required.
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-[#ef562a]">Learn More &rarr;</span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            onClick={() => router.push("/jobs/anthropic-ai-stem-fellows")}
+            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-[#ef562a] font-medium">Anthropic</span>
+                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
+                    APPLY BY MAY 15
+                  </span>
+                </div>
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                  Anthropic AI STEM Fellowship
+                </h3>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
+                  <span>San Francisco (in-person)</span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
+                  <span>3 months</span>
+                  <span className="w-1 h-1 bg-[var(--gray-200)] rounded-full"></span>
+                  <span>$3,800/week</span>
+                </div>
+                <p className="mt-3 text-sm text-[var(--gray-600)]">
+                  3-month in-person SF fellowship applying Claude to open problems in your scientific field. PhD or equivalent STEM research experience required.
                 </p>
               </div>
               <div className="flex items-center gap-4">
