@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/admin";
+import { checkContentAdmin } from "@/lib/admin";
 import { computeRegion } from "@/lib/job-region";
 
 // GET /api/admin/jobs - List all jobs
 export async function GET(request: NextRequest) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,8 +49,8 @@ export async function GET(request: NextRequest) {
 
 // POST /api/admin/jobs - Create new job
 export async function POST(request: NextRequest) {
-  const { isAdmin, session } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed, session } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

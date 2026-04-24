@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/admin";
+import { checkContentAdmin } from "@/lib/admin";
 
 // POST /api/admin/links/reorder - Reorder links
 export async function POST(request: NextRequest) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

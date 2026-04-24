@@ -1,7 +1,7 @@
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import NewLinkForm from "./NewLinkForm";
 
 export default async function NewLinkPage() {
-  await requireFullAdmin();
+  await requireAdmin();
   return <NewLinkForm />;
 }

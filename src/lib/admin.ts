@@ -56,8 +56,29 @@ export async function checkAdmin() {
 }
 
 /**
+ * Check if the current user can edit the three content surfaces
+ * (jobs, blog, links). Accepts admin and contributor. Returns
+ * { allowed, session } without redirecting. For API routes.
+ */
+export async function checkContentAdmin() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { allowed: false, session: null };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  const allowed = user?.role === "admin" || user?.role === "contributor";
+  return { allowed, session };
+}
+
+/**
  * Require full admin access (not contributor).
- * Use this for admin-only pages like Dashboard, Analytics, Users, Links.
+ * Use this for admin-only pages like Dashboard, Analytics, Users.
  */
 export async function requireFullAdmin() {
   const session = await auth();
