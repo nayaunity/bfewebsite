@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import EditLinkForm from "./EditLinkForm";
 
 interface PageProps {
@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 export default async function EditLinkPage({ params }: PageProps) {
-  await requireFullAdmin();
+  await requireAdmin();
   const { id } = await params;
 
   const link = await prisma.link.findUnique({

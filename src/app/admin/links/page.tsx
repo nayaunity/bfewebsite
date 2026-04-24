@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { requireFullAdmin } from "@/lib/admin";
+import { requireAdmin } from "@/lib/admin";
 import LinksTable from "./LinksTable";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminLinksPage() {
-  await requireFullAdmin();
+  await requireAdmin();
   const links = await prisma.link.findMany({
     orderBy: { order: "asc" },
   });

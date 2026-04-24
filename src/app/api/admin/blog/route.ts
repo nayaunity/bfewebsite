@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPost } from "@/lib/blog";
-import { checkAdmin } from "@/lib/admin";
+import { checkContentAdmin } from "@/lib/admin";
 
 export async function POST(request: Request) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -55,8 +55,8 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -121,8 +121,8 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

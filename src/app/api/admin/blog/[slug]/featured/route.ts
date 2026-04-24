@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdmin } from "@/lib/admin";
+import { checkContentAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

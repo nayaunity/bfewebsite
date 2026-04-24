@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdmin } from "@/lib/admin";
+import { checkContentAdmin } from "@/lib/admin";
 import { put, del } from "@vercel/blob";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 export async function POST(request: NextRequest) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,8 +49,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const { isAdmin } = await checkAdmin();
-  if (!isAdmin) {
+  const { allowed } = await checkContentAdmin();
+  if (!allowed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
