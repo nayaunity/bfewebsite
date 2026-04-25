@@ -118,6 +118,12 @@ Output the complete HTML resume now:`;
     return { tailoredPath: "", success: false, error: "Claude returned too little HTML" };
   }
 
+  // Defense-in-depth: even with rule #2 forbidding it, Claude still duplicates
+  // bullets across adjacent jobs when the source PDF places them visually near
+  // a job boundary. Drop earlier occurrences so the bullet stays attached to
+  // its older (later-in-document) job, where smaller jobs need the content.
+  tailoredHTML = dedupeListItems(tailoredHTML);
+
   // Step 3: Render HTML to PDF via Playwright
   const tailoredPath = join(tmpdir(), `tailored-${Date.now()}.pdf`);
   try {
@@ -219,6 +225,49 @@ export async function incrementTailorQuota(userId: string): Promise<void> {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Drop any <li> whose normalized text content already appears in a LATER <li>.
+ * Verbatim duplicates only — relies on Claude reproducing identical text when
+ * it hedges across job boundaries, which empirically it does.
+ *
+ * Keeping the LAST occurrence means the bullet ends up under the older job
+ * (in newest-first resumes, later in document = older in time), which is
+ * where smaller jobs are most likely to need their own content restored.
+ */
+function dedupeListItems(html: string): string {
+  const liRegex = /<li[^>]*>[\s\S]*?<\/li>/g;
+  type Match = { start: number; end: number; fingerprint: string };
+  const matches: Match[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = liRegex.exec(html)) !== null) {
+    const inner = m[0]
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    matches.push({ start: m.index, end: m.index + m[0].length, fingerprint: inner });
+  }
+  if (matches.length === 0) return html;
+
+  const lastIndexByFingerprint = new Map<string, number>();
+  matches.forEach((mm, i) => lastIndexByFingerprint.set(mm.fingerprint, i));
+
+  const toRemove: Match[] = [];
+  matches.forEach((mm, i) => {
+    if (lastIndexByFingerprint.get(mm.fingerprint) !== i) toRemove.push(mm);
+  });
+  if (toRemove.length === 0) return html;
+
+  // Splice from the back so earlier indices stay valid.
+  toRemove.sort((a, b) => b.start - a.start);
+  let result = html;
+  for (const mm of toRemove) {
+    result = result.slice(0, mm.start) + result.slice(mm.end);
+  }
+  return result;
+}
 
 async function uploadToBlob(filePath: string, fileName: string): Promise<string> {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
