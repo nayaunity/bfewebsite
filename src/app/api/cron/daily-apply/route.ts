@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
         email: true,
         firstName: true,
         targetRole: true,
+        seekingInternship: true,
       },
     });
 
@@ -165,6 +166,7 @@ export async function GET(request: NextRequest) {
             resumeUrl: resume.blobUrl,
             resumeName: resume.fileName,
             totalCompanies: companiesWithJobs.length,
+            seekingInternship: user.seekingInternship === true,
           },
         });
 

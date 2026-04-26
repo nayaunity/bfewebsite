@@ -93,6 +93,7 @@ export async function POST(request: Request) {
       veteranStatus: true,
       disabilityStatus: true,
       applicationAnswers: true,
+      seekingInternship: true,
     },
   });
 
@@ -159,6 +160,7 @@ export async function POST(request: Request) {
       resumeUrl: resume.blobUrl,
       resumeName: resume.fileName,
       totalCompanies: companies.length,
+      seekingInternship: user.seekingInternship === true,
     },
   });
 

@@ -28,6 +28,7 @@ export interface ResumeExtraction {
   currentTitle: string | null;
   inferredTargetRoles: string[];
   yearsOfExperience: number | null;
+  graduationYear: number | null;
   city: string | null;
   state: string | null;
   country: string | null;
@@ -61,6 +62,21 @@ const EXTRACTION_TOOL = {
         type: ["number", "null"],
         description: "Total years of professional work experience (exclude internships of <3 months).",
       },
+      graduationYear: {
+        type: ["integer", "null"],
+        description:
+          "Year of expected or actual highest-degree graduation as a 4-digit integer (e.g., 2027). Use the END year on the most recent education entry. Recognize ALL of these formats and many more:\n" +
+          "  - Month + year: 'May 2027', 'December 2026', 'Aug 2025', 'June 2024'\n" +
+          "  - Season + year: 'Spring 2026', 'Fall 2025', 'Winter 2024', 'Summer 2027'\n" +
+          "  - Year alone: '2027', 'Class of 2026', 'Cohort 2025'\n" +
+          "  - Numeric: '5/2027', '05/2027', '5-2027', '12/26' (interpret '26' as 2026)\n" +
+          "  - Date ranges, take the END year: '2023-2027', 'Sep 2023 - May 2027', 'Aug 2024 to Jun 2028'\n" +
+          "  - Expected/anticipated: 'Expected: May 2027', 'Anticipated Graduation 2026', 'Graduating: Spring 2025', 'Projected 12/2027', 'In progress, expected 2027'\n" +
+          "  - Two-digit years like '23 - 27' should be interpreted as 2023 - 2027\n" +
+          "If the entry shows 'Present' or 'Current' as the end (e.g., '2023 - Present') and you can find an explicit expected graduation elsewhere, use that. Otherwise, if degree is Bachelor, the typical graduation is start+4; if Master, start+2; if PhD, start+5. ONLY use that fallback when the resume clearly indicates active enrollment.\n" +
+          "If multiple degrees are listed, return the year of the MOST RECENT one (highest end year).\n" +
+          "Return null only if you genuinely cannot determine a year from any signal in the education section.",
+      },
       city: { type: ["string", "null"] },
       state: {
         type: ["string", "null"],
@@ -90,7 +106,8 @@ const EXTRACTION_TOOL = {
     },
     required: [
       "firstName", "lastName", "email", "phone", "linkedinUrl", "currentTitle",
-      "inferredTargetRoles", "yearsOfExperience", "city", "state", "country",
+      "inferredTargetRoles", "yearsOfExperience", "graduationYear",
+      "city", "state", "country",
       "hasUSWorkHistory", "education", "confidence",
     ],
   },
@@ -109,6 +126,49 @@ function nonEmpty(value: string | null): string | null {
   if (!value) return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * Normalize whatever Claude returned for graduationYear to a 4-digit number.
+ * Handles: 4-digit integers, 2-digit integers (interpreted as 20xx if <= currentYear+10),
+ * and string forms like "2027", "26", "May 2027", "5/2027".
+ *
+ * Returns null if the value can't be parsed into a sane 4-digit year between
+ * 1950 and currentYear+10.
+ */
+function normalizeGradYear(raw: unknown): number | null {
+  const currentYear = new Date().getFullYear();
+  let n: number | null = null;
+
+  if (typeof raw === "number" && Number.isFinite(raw)) {
+    n = Math.trunc(raw);
+  } else if (typeof raw === "string") {
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    // Pull the LAST 4-digit or 2-digit year-like token from the string. The
+    // last token usually wins for ranges like "2023 - 2027" → 2027.
+    const fourDigit = trimmed.match(/(?:19|20)\d{2}/g);
+    if (fourDigit && fourDigit.length > 0) {
+      n = parseInt(fourDigit[fourDigit.length - 1], 10);
+    } else {
+      const twoDigit = trimmed.match(/\b\d{2}\b/g);
+      if (twoDigit && twoDigit.length > 0) {
+        n = parseInt(twoDigit[twoDigit.length - 1], 10);
+      }
+    }
+  }
+
+  if (n === null || !Number.isFinite(n)) return null;
+
+  // Promote 2-digit to 4-digit. Default century is 2000s; if that gives a
+  // year > currentYear + 10, the value is probably nonsense — null it.
+  if (n < 100) {
+    const promoted = 2000 + n;
+    n = promoted;
+  }
+
+  if (n < 1950 || n > currentYear + 10) return null;
+  return n;
 }
 
 function normalizeRole(inferred: string): string | null {
@@ -222,6 +282,7 @@ export async function extractResume(buffer: Buffer): Promise<ResumeExtraction> {
     currentTitle: nonEmpty(typeof raw.currentTitle === "string" ? raw.currentTitle : null),
     inferredTargetRoles: mapRolesToOptions(inferred),
     yearsOfExperience: typeof raw.yearsOfExperience === "number" ? raw.yearsOfExperience : null,
+    graduationYear: normalizeGradYear(raw.graduationYear),
     city: nonEmpty(typeof raw.city === "string" ? raw.city : null),
     state: nonEmpty(typeof raw.state === "string" ? raw.state : null),
     country: nonEmpty(typeof raw.country === "string" ? raw.country : null),
@@ -245,6 +306,7 @@ function emptyExtraction(rawTextLength: number, confidence: "high" | "medium" | 
     currentTitle: null,
     inferredTargetRoles: [],
     yearsOfExperience: null,
+    graduationYear: null,
     city: null,
     state: null,
     country: null,

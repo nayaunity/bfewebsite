@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
     const state = typeof body.state === "string" ? body.state.trim() || null : null;
     const country = typeof body.country === "string" ? body.country.trim() || null : null;
 
+    const seekingInternship = typeof body.seekingInternship === "boolean" ? body.seekingInternship : false;
+
     await prisma.tempOnboarding.update({
       where: { id: tempId },
       data: {
@@ -49,6 +51,7 @@ export async function POST(request: NextRequest) {
         confirmedCity: city,
         confirmedState: state,
         confirmedCountry: country,
+        confirmedSeekingInternship: seekingInternship,
       },
     });
 

@@ -1,13 +1,13 @@
-# Session Handoff — April 14–19, 2026 (security audit Apr 19)
+# Session Handoff — April 14–25, 2026 (Apr 25: Internship-only matching + catalog growth + Workday auto-apply support — POC submission landed end-to-end)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `bb7ffaf` (Apr 19, security fixes merged: C1 + C2 + H1).
-- **resume-first-onboarding** — current working branch (Apr 19). All Apr 18-19 work landed here, merged into main.
+- **main** — production code, deployed to Vercel. Head: `e04b7db` (Apr 24, Daniel Cooke bug-fixes merged + deployed).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `e04b7db` (synced with main; current working branch).
+- **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `d32da13` (fast-forwarded to main).
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
@@ -15,7 +15,7 @@
 ### Infrastructure
 - **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
-- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), **`detailsReviewedAt` (Apr 18)** for the post-trial-checkout review page. New column on `BrowseSession`: **`lastHeartbeatAt` (Apr 18)** for the heartbeat-based watchdog. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
+- **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`, **`WorkdayCredential` (Apr 25)** for per-(user, tenant) Workday auto-apply credentials. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), `detailsReviewedAt` (Apr 18), **`seekingInternship` + `preferenceBannerDismissedAt` (Apr 25)** for internship-only matching. New columns on `BrowseSession`: `lastHeartbeatAt` (Apr 18), **`seekingInternship` (Apr 25)**. New column on `TempOnboarding`: **`confirmedSeekingInternship` (Apr 25)**. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
 - **Stripe** — LIVE mode. Starter $29/mo, Pro $59/mo. **Starter now ships with a 7-day free trial** via `subscription_data.trial_period_days: 7` on Checkout, set in `/api/stripe/checkout` (only when `tier === "starter"`; Pro has no trial). Card collected up front, $0 today, auto-charges day 8 unless cancel. Coupon `STARTER50` and per-user `CAP_<userid>_*` coupons still exist for the legacy cap-conversion drip path through `/api/stripe/convert`.
 - **Resend** — same as before, no inbox for naya@.
@@ -44,10 +44,221 @@
 - `BROWSERBASE_USE_PROXIES` — Railway only. `true` enables residential proxies (paid tier). Unset/false for free tier.
 - `BROWSERBASE_ROLLOUT_PCT` — Railway only. `0-100` hashes `userId` mod 100; enables BB for that % of sessions. For cohort A/B.
 - `DRY_RUN` — When `true`, applyToJob fills the form but stops before submit. Used by the integration suite only.
+- `WORKDAY_CREDENTIAL_KEY` — **NEW Apr 25, NOT YET SET IN PROD.** 64-hex-char (32-byte) AES-256-GCM master key for encrypting Workday account passwords. Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and add to Vercel + Railway env. **A throwaway local-dev key was generated in the Apr 25 Claude transcript — TREAT THE TRANSCRIPT VALUE AS COMPROMISED, generate a fresh one for prod.**
 
 ---
 
-## What Was Done This Session (April 15-19)
+## What Was Done This Session (April 15-25)
+
+### 28. Internship-only matching + catalog growth + Workday auto-apply POC (Apr 25, NOT YET DEPLOYED)
+
+**Motivated by:** Ticket from IniAbasi Bassey (Dartmouth, graduation 2027) Apr 17: "currently the system is applying to full-time roles for me even though my graduation year is listed as 2027. I was wondering if there was a way for me to specify that I would like to apply for Internships exclusively not full time roles?"
+
+This expanded into a four-phase day:
+- **Phase A**: internship-only preference + matcher filtering
+- **Phase B**: catalog growth via smoke-tested company additions
+- **Phase C**: more company additions (extended smoke harness)
+- **Phase D**: Workday auto-apply support (POC submitted a real Walmart application end-to-end)
+
+#### Phase A — Internship-only preference (shipped to local, NOT YET DEPLOYED)
+
+**Schema (applied to prod Turso via `scripts/add-seeking-internship-column.ts`):**
+- `User.seekingInternship Boolean? @default(false)` — explicit toggle, not derived from YoE
+- `User.preferenceBannerDismissedAt DateTime?` — for the auto-flagged-cohort banner
+- `BrowseSession.seekingInternship Boolean? @default(false)` — snapshot at queue time so worker doesn't join User per session
+- `TempOnboarding.confirmedSeekingInternship Boolean?` — captured at the live `/start` confirm step
+
+**Matcher (`src/lib/auto-apply/job-matcher.ts`):**
+- Catalog query now selects `type` and filters when `seekingInternship=true`: `OR: [{ type: 'Internship' }, { title contains 'intern' }]`. Allows `manual` source for intern-seekers (so hand-seeded internships surface).
+- Keyword sets are REPLACED (not appended) when seekingInternship — original early-career boost was additive, so a 2027 grad still matched every senior FT "Software Engineer" role.
+- Post-filter inside the scoring loop with strict `looksLikeInternshipTitle()` regex (rejects "Internal Tools" / "International Recruiter" / "Intern Program Manager").
+- LLM gate prompt gets a hard internship-only rule when seekingInternship.
+
+**Worker (`worker/src/career-browser.ts`, `worker/src/browse-loop.ts`):**
+- `discoverJobsFromCatalog` accepts `seekingInternship` arg
+- `browse-loop` reads it off the BrowseSession row at session-claim time, threads through
+- Snapshotted at queue time in `/api/cron/daily-apply` and `/api/auto-apply/browse`
+
+**Resume extraction (`src/lib/resume-extraction.ts`):**
+- Added `graduationYear: number | null` field — tool description recognizes Month+Year, Season+Year, year-alone, numeric (5/2027 / 12/26), date ranges (always end year), expected/anticipated phrasings, two-digit year normalization
+- `normalizeGradYear()` post-processor: handles 2-digit years (promotes to 20xx), rejects out-of-range, tested 18/18 cases pass
+
+**Onboarding wiring (live `/start` flow):**
+- `ConfirmExtractionStep.tsx` (live signup): added "I'm only looking for internships" checkbox, default-checked when extracted gradYear is in future OR yoe < 2
+- `/api/onboarding/confirm-extraction` persists to TempOnboarding.confirmedSeekingInternship
+- `/api/onboarding/promote` reads it back, also has fallback that auto-flags if extracted gradYear shows current student
+- `/onboarding/review/ReviewForm.tsx` (post-checkout): same toggle + graduationYear text input
+- `/api/profile/route.ts` accepts seekingInternship + preferenceBannerDismissedAt
+
+**Profile UI:**
+- `JobPreferencesSection.tsx` — "Show me internships only" toggle
+- New `InternshipPreferenceBanner.tsx` for backfilled users on `ApplicationsDashboard`. "Sounds good" / "Switch to full-time" buttons; dismiss writes `preferenceBannerDismissedAt`.
+
+**Reclassification (`scripts/reclassify-internship-titles.ts --apply` ran Apr 25):**
+- Strict regex `\b(intern|internship|co-?op|summer\s+(analyst|associate|engineer|intern))\b` minus `\bintern\s+program\s+manager\b|\bmanages?\s+interns?\b`. Soft-negative `\binternal|international\b` only blocks if no separate `\bintern\b` token elsewhere (so "Internal Audit Intern" passes).
+- **Flipped 144 jobs from Full-time to Internship.** All-active type=Internship rows: 23 → 167.
+
+**`normalizeJobType()` patched:** now takes optional `title` and infers Internship when ATS metadata is empty. All 4 scrapers (greenhouse/lever/ashby/workday) call sites updated.
+
+**Backfill (`scripts/backfill-seeking-internship.ts --apply` NOT yet run):**
+- Rule: graduationYear in `[currentYear, currentYear+2]` AND (gradYear > currentYear OR yoe < 2) AND title not senior. Future-graduation users always pass YoE check (still in school regardless of side gigs).
+- Dry-run flagged 10 likely-students including IniAbasi (`f0da7f25-8fb9-48ea-bd3c-3f7c7ebb2bb6`). All 4 paying users skipped.
+
+**Phase A status:** Code complete and type-checks clean (`npm run build` passes). Schema + reclassification applied to prod. Backfill script + matcher code + onboarding/profile UI **NOT YET DEPLOYED**.
+
+#### Phase B — Initial catalog uplift (shipped Apr 25)
+
+Test-first gate per Naya: every new company smoke-tested via `worker/test/integration/smoke-companies.ts` (DRY_RUN mode) before adding to scrape list.
+
+**Smoke-tested 28 candidates (5 controls + 23 new). 3 candidates passed:**
+- ✅ Brex, Faire, Anduril (Greenhouse) — added to `src/data/auto-apply-companies.json`
+
+**Failures (NOT added):**
+- Roblox (12-min Claude agent timeout)
+- Datadog (job listing URL doesn't host the apply form, needs click-through we don't handle)
+- Palantir (Lever stuck-cascade)
+
+**Local scrape ran (`scripts/run-scrape-locally.ts`):**
+- 5,054 jobs saved across 58 companies, 3,496 stale rows deactivated
+- Anduril alone contributed 1,247 jobs; Brex 80, Faire 36
+- Internships dropped 164 → 88 because the scrape correctly deactivated prior-season expired listings. 88 is real current inventory.
+
+**Reusable infra built:**
+- `scripts/run-scrape-locally.ts` — runs `scrapeAutoApplyCompanies` against prod Turso without needing a Vercel deploy. Sidesteps the `server-only` import issue in `src/lib/prisma.ts` by inlining its own PrismaLibSQL adapter and walking the company list directly.
+- `scripts/seed-internships.ts` — pulls live internship listings from Greenhouse/Lever/Ashby APIs using the same regex as the reclassifier. Skip-on-conflict to avoid stomping the auto-apply scrape's `(externalId, companySlug)` ownership.
+
+#### Phase C — Broader expansion (shipped Apr 25)
+
+Extended smoke harness with FT-URL fallback (when no current intern URL exists, test apply against any current FT URL on the same board — proves the apply path works regardless of season).
+
+**Smoke-tested 35 more candidates including 8 Workday tenants. 10 candidates passed:**
+- ✅ Pinterest, Instacart, Lattice, Mercury, Robinhood, Discord, MongoDB, Coursera, Box (Greenhouse), Pinecone (Ashby) — added to `auto-apply-companies.json`
+
+**Workday tenants ALL FAILED apply path (see Phase D for fix):**
+- 8 of 8 — Salesforce, Snowflake, Adobe, ServiceNow, Cisco, Capital One, Intuit, Walmart all 400/422 with `limit: 50` in our request body. Root cause discovered: **Workday rejects API `limit > 20`.** Fixed in smoke harness. With `limit: 20`: Salesforce, Adobe, Walmart validate; Snowflake/ServiceNow/Cisco/CapitalOne/Intuit still 422 (wrong siteName, needs research). Of the 3 validating tenants, all 3 failed the apply itself (Salesforce + Walmart redirect-to-login, Adobe 12-min wizard timeout). **This is what motivated Phase D.**
+
+**Failures from Phase C (NOT added):**
+- Dropbox (multi-step "Save & Continue" timeout), Block (stuck), Coinbase (Cloudflare CAPTCHA), Modal (Ashby stuck), Supabase (Ashby stuck)
+
+**Local re-scrape with the +10 Phase C companies:**
+- 5,650 jobs saved, only 1 stale deactivation (since first scrape just ran). Total active: 6,386 → 6,741. Internships still 88 (most new companies don't currently post interns — late-April off-season).
+
+**Smoke failures documented in `worker/test/integration/smoke-failures.md`** for future investigation. Naya picked the email-reply-to-IniAbasi gets HELD until inventory verified post-deploy.
+
+#### Phase D — Workday auto-apply support (Sprint 1 POC LANDED, NOT YET DEPLOYED)
+
+**Why:** 8 of 8 Workday tenants failed Phase C smoke. Workday gates the apply form behind sign-in/create-account (Salesforce, Walmart redirect to login) and runs a 5-7 page wizard per submission (Adobe hits the 12-min apply timeout mid-wizard). Generic Claude agent can't navigate either. But Workday is the single biggest unlock for internship inventory — Salesforce alone has 1,428 jobs, Adobe 1,161, Walmart 2,000.
+
+**Sprint 1 POC: end-to-end real submission to Walmart.** Created a real account at `recon-mof0hb2e@apply.theblackfemaleengineer.com`, submitted application for "Summer 2026 Corporate Intern - Fellowship, Global Public Policy", confirmed via final URL `walmart.wd5.myworkdayjobs.com/.../jobTasks/completed/application` and "Application Submitted ✓" screenshot in `worker/test/integration/recon-wizard-after-submit-1777162767765.png`.
+
+**Code shipped (LOCAL ONLY, not yet deployed):**
+
+- `prisma/schema.prisma` — new `WorkdayCredential` model + back-relation on `User.workdayCredentials`
+- `scripts/add-workday-credential-table.ts` — idempotent migration, applied to prod Turso
+- `worker/src/workday/credentials.ts` — AES-256-GCM encrypt/decrypt for stored Workday passwords. Uses `WORKDAY_CREDENTIAL_KEY` env. Wire format: `base64(iv || authTag || ciphertext)`. `generateWorkdayPassword()` generates 20-char string with required upper/lower/digit/special. `getOrCreateCredential(userId, tenantHost, applicationEmail)` looks up or generates+persists. `markCredentialUsed` touches `lastUsedAt`. **Tested 4/4 invariants: roundtrip works, tampered authTag rejected, wrong key rejected, generated password classes correct.**
+- `worker/src/workday/tenants.ts` — per-tenant config (host, apiTenant, siteName, optional fieldOverrides). Currently has Walmart only. `findTenant(applyUrl)` looks up by URL host.
+- `worker/src/workday/email-verify.ts` — sibling to `worker/src/verification.ts`. Polls InboundEmail table for `*@*.{myworkdayjobs.com,myworkdaysite.com,workday.com}` URLs containing `verify|confirm|activate`. Returns clickable URL. Doesn't touch the existing `waitForVerificationCode` (that has 12 unit tests for ATS verification codes; we built a parallel function).
+- `worker/src/workday/auth.ts` — `signupOrSignin` detects auth gate, uses cred row to decide path. Both paths use `pressSequentially` (not `.fill()` — React's controlled inputs drop chars at fast delays) + Tab to blur + force-click fallback (Workday's submit button is sometimes covered by a tooltip). Honeypot `beecatcher` field deliberately left empty (Workday's bot detector flags any account with that field set).
+- `worker/src/workday/wizard.ts` — full 5-step wizard driver. `detectStep` parses progress bar; per-step fillers; submit handler with confirmation detection.
+- `worker/src/workday/index.ts` — `runWorkdayApply` entry point with 10-min soft budget (so we always return before the outer 12-min Promise.race fires).
+- `worker/src/apply-engine.ts` — host-router branch around line 2440: `if (ats === "Workday" && tmpPath && userId)` → call `runWorkdayApply`. Returns sentinel `workday-tenant-not-supported` when tenant isn't in our list, which makes apply-engine fall through to its existing Claude agent loop.
+
+**Workday quirks discovered + handled (every one was a real iteration cycle):**
+- **`limit > 20` rejected by Workday API with HTTP 400.** Use `limit: 20` for jobs API. Production scraper at `src/lib/scrapers/workday.ts` already uses 20; smoke harness was using 50.
+- **React inputs drop chars at fast pressSequentially delays.** Use `delay: 60` minimum. Defense: after typing, verify with `inputValue()` and retry via `.fill()` if mismatched.
+- **Submit buttons sometimes report un-actionable** (covered by a transient tooltip overlay). Use `clickWithForceFallback`: try normal `.click()` with 5s timeout, fall back to `.click({ force: true })` if it times out.
+- **Multiselect dropdown trigger is the SVG `promptIcon`, not the input.** Click `[data-automation-id="promptIcon"]` inside the formField container. Clicking the input alone doesn't always open the popover.
+- **Workday's "How Did You Hear About Us?" is a HIERARCHICAL multiselect.** Top-level options ("Advertising", "Job Board") have `>` chevrons that drill into sub-menus. Detect by checking if the option list changes after click; pick first non-"Other" sub-option.
+- **`role="option"` includes selected pills** (the `× United States of America (+1)` style). Filter out `[data-automation-id="selectedItem"]` and anything inside `[data-automation-id="selectedItemList"]` when listing dropdown options.
+- **Honeypot field** `[data-automation-id="beecatcher"]` (with `name="website"`) MUST remain empty. Filling it triggers Workday's bot detector.
+- **Phone numbers `5XX-555-XXXX` are rejected** as "not valid for this region" (test/reserved numbers). Use a real-looking format like `7205550123` (Denver area code).
+- **"Application Questions" step has tenant-specific Y/N selects with conditional follow-ups.** Picking "Current associate" reveals a required "What is your WIN?" field; picking "Opt-In to receive text messages" reveals a phone-confirmation field. Wrong picks at this step cascade into more required fields. `answerForApplicationQuestion()` heuristic in `wizard.ts` handles Walmart's 10 questions correctly.
+- **Voluntary Disclosures step has only 3 fields** (ethnicity, gender, T&C). Only T&C is required.
+- **Wizard's "Next" button is `[data-automation-id="pageFooterNextButton"]`**, label varies between "Save and Continue" and "Submit" based on step.
+- **Submit confirmation:** URL changes to `/jobTasks/completed/application` and body contains "Application Submitted ✓" / "Welcome, {firstName}".
+
+**Workday tenants that need the same treatment, ordered by yield:**
+
+| Tenant | API status | siteName | Notes |
+|---|---|---|---|
+| Walmart | ✅ validated, POC submitted | `WalmartExternal` | In wizard.ts |
+| Salesforce | ✅ validated (1,428 jobs) | `External_Career_Site` | Sprint 2 |
+| Adobe | ✅ validated (1,161 jobs) | `external_experienced` | Sprint 2 |
+| Snowflake | ❌ 422 | unknown | Sprint 3 — scrape public careers page for siteName |
+| ServiceNow | ❌ 422 | unknown | Sprint 3 |
+| Cisco | ❌ 422 | unknown | Sprint 3 |
+| Capital One | ❌ 422 | unknown | Sprint 3 |
+| Intuit | ❌ 422 | unknown | Sprint 3 |
+
+Apple, Google, Microsoft, Amazon, Meta use **custom careers sites, NOT Workday.** Out of scope — would need per-company harvester scripts.
+
+**Recon files left in repo (kept for future tenant onboarding):**
+- `worker/test/integration/recon-walmart.ts` — initial click-walk through Apply → Sign In page
+- `worker/test/integration/recon-walmart-full.ts` — full signup + signin path with snapshots
+- `worker/test/integration/recon-walmart-wizard.ts` — full wizard walker, ended up actually submitting an application (this is the one that proved the patterns work)
+- `worker/test/integration/probe-source.ts` — diagnoses the source-multiselect popover container
+- `worker/test/integration/smoke-companies.ts` — extended this session to support Workday + FT-URL fallback + `SMOKE_WALMART_ONLY=1` and `SMOKE_WORKDAY_ONLY=1` env scoping
+- `worker/test/integration/smoke-failures.md` — running record of why companies didn't pass
+
+**KNOWN GOTCHA:** test user `1d16e543-db6e-497b-b78b-28fbf0a30626` has a Walmart account at `u-1d16e543@apply.theblackfemaleengineer.com` from an early recon iteration, but the password row in WorkdayCredential was deleted mid-debugging. The account still exists Walmart-side. To smoke-test the production path with that user, either rotate their applicationEmail OR accept that the smoke goes down the signup path and Walmart returns "email already exists". Easiest workaround: temporarily make smoke-companies.ts use a freshly-generated email instead of `u.applicationEmail`.
+
+---
+
+### 27. Daniel Cooke bug-fixes: tailored resume bullets + dark-mode button (Apr 24, DEPLOYED main `e04b7db`)
+**Motivated by:** Two `/applications` bug reports from Daniel Cooke (3rd paid sub) submitted Apr 20:
+1. "Tailored Resume leaving out job bulletpoints on 2nd and 3rd work history"
+2. "Original Resume Unable to read" (dark mode, black-on-black button text)
+
+**Investigation findings (Bug #1 — non-trivial):**
+First attempted fix was a 6000→15000 char truncation cap raise in `worker/src/tailor-resume.ts`. **Wrong**: pulled Daniel's original resume from Vercel Blob, parsed via pdf-parse, measured **3778 chars** — well below the 6000 cutoff that was supposedly the bug. Truncation never fired.
+
+**Real cause:** Daniel's resume PDF uses a two-column layout (left col = job headers, right col = bullets). pdf-parse extracts column-major: all 4 job headers first, then all bullets in one flat tail block. Job→bullet association destroyed by extraction. Combined with prompt rule #2 ("Reorder experience bullets so the most relevant appear first"), Claude pulled all matching bullets up to the most recent role and left the rest bare. Confirmed in Daniel's Apr 20 outputs: ZipRecruiter tailored had Job 1 with 13 bullets and Jobs 2/3/4 with zero. Cloudflare had 10/4/0/0.
+
+**Fix shipped (3 commits on top of UI fix):**
+- `44877c2` — Drop pdf-parse. Pass PDF buffer to Claude Haiku 4.5 as `document` content block (base64). Claude reads the rendered PDF the way a human does, preserving column→job mapping.
+- `02de7c7` — Tighten rule #2: bullets may be reordered within a job, never moved or duplicated between jobs. Every original job must appear with its own bullets.
+- `e04b7db` — `dedupeListItems()` regex pass on Claude's output. Verbatim-text fingerprint, keep LAST occurrence (in newest-first resumes, later in document = older job, where smaller jobs need their own bullets restored). Pure regex over `<li>...</li>`, no HTML-parser dep.
+
+**Empirical results against Daniel's actual PDF + a Cloudflare JD:**
+- Pre-fix prod: UHG=13, Tuff Shed=0, Woodward=0, Emerson=0
+- After PDF input: 9 / 9 / 3 / 2 (every job populated, but ~9 cross-job duplicates)
+- After rule tightening: 5 / 9 / 3 / 4 (still ~5 duplicates at boundaries)
+- After dedup pass: 6 / 3 / 3 / 2 = **14 total**, exactly matching the 14 unique experience bullets in the source. Every job retains its own bullets.
+
+**Bug #2 fix (`98f2d5c`):** `src/app/profile/applications/ApplicationsDashboard.tsx:648` — button used `text-[var(--gray-800)]` on `bg-[var(--card-bg)]` inside an always-light-purple parent row. Dark mode resolved to #262626 on #1a1a1a (1.16 contrast). Switched to static `bg-white text-purple-800 border-purple-300 hover:bg-purple-100` to match the always-light parent and pair visually with the adjacent Tailored Resume button. Verified via Playwright with computed-style dump + screenshot diff (`.playwright-mcp/original-resume-button-fix.png`).
+
+**Cost note (Bug #1):** PDF input is billed per page (~3000 tokens/page). Daniel's resume is 1 page → ~3168 input tokens vs the prior ~1k from text extraction. Roughly 3x input cost per tailor. Output unchanged (~2900 tokens). Worth it for correctness; monitor Anthropic console for a week.
+
+**Follow-up email** to Daniel sent via Resend (`a9584aeb-539d-46a0-a3a8-508c1b47c567`) acknowledging both fixes are live. Send script was throwaway, deleted post-send.
+
+---
+
+### 26. Trial-fill investigation: cannot force trialing users to 5/5 without breaking relevance (Apr 24, NOT SHIPPED)
+**Motivated by:** "trials are ending soon and they need to see all 5 used up." Built `scripts/fill-trial-users-to-cap.ts` (untracked) that imports the production `matchJobsForUser` directly to avoid the script-matcher drift documented in section 22 / tech debt 0c.
+
+**Findings (cohort = 13 trialing users):**
+- 8/13 (62%) **already at 5/5** — healthy outcome
+- 3/13 stuck under cap with new matches available per local matcher (LLM-fallback, keyword-only): nwanzejl@ (4/5 → 1 slot), c.wright-galloway@benedict.edu (3/5 → 2), jain1009@purdue.edu (3/5 → 2)
+- 2/13 incomplete profile (`ayomideaderinto6@gmail.com`, `ceejaymar@gmail.com` at 0/5; missing phone/workAuth/country/targetRole/resume) — higher-leverage conversion target than the under-cap 3
+
+**Triggered prod `/api/cron/daily-apply` directly via curl with CRON_SECRET** (so the LLM gate runs server-side with fresh env): all 3 under-cap trial users returned `no_matches`. The LLM gate correctly rejected the keyword candidates (JD-YOE / role-fit / PhD violations). Conclusion: **the matcher is doing its job**; these 3 users have exhausted their relevant inventory given their profile + dedup. Pushing past `no_matches` would violate the relevance constraint.
+
+**Outcome:** No sessions queued, no quota burned. Script kept on disk (untracked) for future cohorts. Real conversion opportunity is the 2 incomplete-profile users; nudge email recommended but not sent.
+
+---
+
+### 25. `.env.vercel-current` parsing gotcha (Apr 24)
+**Found while debugging stale-key 401s:** the local file written by `vercel env pull` stores quoted values with a literal `\n` suffix (two characters: backslash + lowercase n) before the closing `"`. Naive parsers (`grep | cut -d'"' -f2` or `tr -d '"'`) leave the `\n` in the resulting string, so callers ship an API key with `\n` appended → 401 from Anthropic, Resend, etc. Verified via `od -c` on the file.
+
+**Fix in script parsing** (use everywhere keys come from this file):
+```bash
+KEY=$(grep '^KEY=' .env.vercel-current | sed 's/^KEY=//' | sed 's/^"//' | sed 's/"$//' | sed 's/\\n$//' | tr -d '\r' | tr -d '\n')
+```
+The `sed 's/\\n$//'` is the load-bearing line — strips the literal escape suffix.
+
+**Worth scanning** other scripts that read `.env.vercel-current` / `.env.vercel-prod` for the same blind spot. `scripts/send-past-due-email.ts` and others source env via the CLAUDE.md pattern from `.env.production` which doesn't have this issue, so they're fine. The `\n` corruption is specific to files produced by `vercel env pull`.
+
+---
 
 ### 24. Security audit pass 1 — C1 + C2 + H1 (Apr 19, DEPLOYED main `bb7ffaf`)
 **Motivated by:** Naya spotted `onboarded-users.csv` (35 real user emails, orphan file, not in `.gitignore`) sitting in repo root and asked for a full security audit using the Trail of Bits skills playbook.
@@ -329,6 +540,108 @@ Fixed + migrated 85 affected users Apr 15.
 ---
 
 ## Next Steps (Prioritized)
+
+### Apr 25 work — explicit pickup steps
+
+The Apr 25 session ended with a working Workday POC (real Walmart submission) but **none of the new code is deployed**. Prod still runs the pre-Apr-25 matcher and worker. Pick up here in order:
+
+#### Step 1 — Validate the production code path (~30-60 min, blocks everything else)
+
+The recon (`worker/test/integration/recon-walmart-wizard.ts`) proved the patterns end-to-end. Tonight's `worker/src/workday/wizard.ts` is a consolidation of those patterns into the production flow (`applyToJob` → `runWorkdayApply` → `wizard.ts`). That consolidated path was NOT smoke-tested with the same user state.
+
+```bash
+# 1. Generate prod Workday master key (do NOT reuse the local-dev key from the Apr 25 transcript)
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# Save it. Add to Vercel env (production) and Railway env. Local dev .env can use any 64-hex value.
+
+# 2. Run smoke through the production path. Easiest: pick a Walmart intern URL the test user
+#    HAS NOT applied to before (Walmart blocks duplicate applications per user). Use a
+#    company-internal email override OR delete & recreate the test user's applicationEmail
+#    (KNOWN GOTCHA noted in section 28).
+cd worker
+SMOKE_WALMART_ONLY=1 \
+  WORKDAY_CREDENTIAL_KEY=<your local hex key> \
+  WORKDAY_DEBUG=1 \
+  DATABASE_URL=$(grep DATABASE_URL ../.env.production | cut -d'"' -f2) \
+  DATABASE_AUTH_TOKEN=$(grep DATABASE_AUTH_TOKEN ../.env.production | cut -d'"' -f2) \
+  ANTHROPIC_API_KEY=$(grep '^ANTHROPIC_API_KEY=' ../.env.vercel-prod | sed 's/^ANTHROPIC_API_KEY=//;s/^"//;s/"$//;s/\\n$//' | tr -d '\r' | tr -d '\n') \
+  INTEGRATION_TEST_USER_ID=1d16e543-db6e-497b-b78b-28fbf0a30626 \
+  HEADLESS=true \
+  DRY_RUN=true \
+  npx tsx test/integration/smoke-companies.ts
+
+# Expected: smoke logs the wizard reaching Review under DRY_RUN. The "submit" button is NOT clicked.
+# If it fails: compare with the proven recon at recon-walmart-wizard.ts. The deltas should be zero.
+
+# 3. Once DRY_RUN passes, run without DRY_RUN against a DIFFERENT Walmart intern URL than the
+#    POC submission used (the POC went to "Summer 2026 Corporate Intern - Fellowship, Global
+#    Public Policy"). One-off: edit smoke-companies.ts to hit a specific URL, OR re-target.
+```
+
+#### Step 2 — Add `WORKDAY_CREDENTIAL_KEY` to prod env
+
+- Vercel: env vars → Production scope → add new var
+- Railway: variables tab → add new var
+- Same value in both. Treat like `ALERT_SECRET` — never rotated lightly because rotation invalidates every encrypted password row.
+
+#### Step 3 — Backfill `seekingInternship` (small cohort, low-risk)
+
+```bash
+# Dry-run, eyeball the 10 flagged users (incl. IniAbasi)
+DATABASE_URL=$(grep DATABASE_URL .env.production | cut -d'"' -f2) \
+  DATABASE_AUTH_TOKEN=$(grep DATABASE_AUTH_TOKEN .env.production | cut -d'"' -f2) \
+  npx tsx scripts/backfill-seeking-internship.ts
+
+# Then apply
+DATABASE_URL=... DATABASE_AUTH_TOKEN=... npx tsx scripts/backfill-seeking-internship.ts --apply
+```
+
+#### Step 4 — Add Walmart to `auto-apply-companies.json`
+
+Once Step 1 smoke passes, edit `src/data/auto-apply-companies.json` and append:
+```json
+{
+  "name": "Walmart",
+  "slug": "walmart",
+  "careersUrl": "https://walmart.wd5.myworkdayjobs.com/WalmartExternal",
+  "industry": "Retail",
+  "atsType": "workday",
+  "atsConfig": {
+    "baseUrl": "https://walmart.wd5.myworkdayjobs.com",
+    "company": "walmart",
+    "siteName": "WalmartExternal"
+  }
+}
+```
+Then run `scripts/run-scrape-locally.ts` to ingest Walmart's ~2,000 jobs.
+
+#### Step 5 — Deploy
+
+Vercel `vercel --prod` from main. Railway auto-deploys from `auto-apply-saas` branch (currently synced with main per branch table). Per CLAUDE.md: `vercel --prod` MUST run from main; switch back to working branch immediately after.
+
+#### Step 6 — 24-hour watch
+
+Filter `/admin/errors` to `worker:workday:*`. If error rate > 30% in first 100 attempts, hot-fix is to remove Walmart from `auto-apply-companies.json` and re-deploy.
+
+#### Step 7 (Sprint 2) — Salesforce + Adobe (~2-3 days)
+
+Both have validated APIs (Phase C smoke confirmed). Add to `worker/src/workday/tenants.ts`. Smoke each. Each tenant likely has a few different field IDs and step-3 questions — extend `answerForApplicationQuestion()` heuristics in `wizard.ts` as new questions surface.
+
+After both pass smoke: add to `auto-apply-companies.json`, scrape, deploy.
+
+#### Step 8 (Sprint 3) — Crack the 5 Workday tenants that 422'd
+
+Snowflake, ServiceNow, Cisco, Capital One, Intuit. Build `worker/test/integration/discover-workday-sitename.ts`: scrape the public careers page HTML, find the bootstrap config (Workday emits the actual tenant/siteName as JSON in a `<script>` tag with `id="wd-page-content"` or similar). Feed correct siteName back into smoke. Each will likely take 1-2 hours of debugging.
+
+#### Step 9 — LLM fallback for unknown step-3 question patterns
+
+Walmart's hand-coded heuristics in `answerForApplicationQuestion()` worked. Salesforce/Adobe/etc. will have new questions our regex doesn't match. When the wizard sees a Q with no heuristic match, send `(question, options)` to Claude Haiku and pick. Cheap (~50 input tokens). This unblocks the long tail of tenant-specific oddball questions without hand-rolling per-tenant heuristics.
+
+#### Step 10 — IniAbasi reply email
+
+Hold the draft until Step 5 deploy is verified. Update copy to mention Walmart specifically (the original draft was generic). Don't send emails without explicit Naya approval (`feedback_never_send_emails`).
+
+---
 
 ### 0. Pre-form title sanity check (deferred from Apr 18)
 Compare `document.title` / H1 against queued `job.title` after navigation; bail early with `role-mismatch` for "Principal Project Manager" vs "Project Manager" mismatches. Fixes the Twilio cluster (~7% of c.wright-galloway's original 0/14 failures). Cheap fix, ~1 hour.

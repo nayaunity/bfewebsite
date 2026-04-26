@@ -62,7 +62,9 @@ export default async function OnboardingReviewPage({ searchParams }: Props) {
       yearsOfExperience: true,
       school: true,
       degree: true,
+      graduationYear: true,
       detailsReviewedAt: true,
+      seekingInternship: true,
     },
   });
 
@@ -101,6 +103,8 @@ export default async function OnboardingReviewPage({ searchParams }: Props) {
             yearsOfExperience: user.yearsOfExperience ?? "",
             school: user.school ?? "",
             degree: user.degree ?? "",
+            graduationYear: user.graduationYear ?? "",
+            seekingInternship: user.seekingInternship === true,
           }}
           firstTime={firstTime}
         />

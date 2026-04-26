@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   // Only the resume-extracted fields. Pass through unchanged null/empty values
   // so a user can clear a wrong extraction (e.g. wrong currentEmployer).
-  const update = {
+  const update: Record<string, unknown> = {
     firstName: trimOrNull(body.firstName),
     lastName: trimOrNull(body.lastName),
     phone: trimOrNull(body.phone),
@@ -36,8 +36,12 @@ export async function POST(request: NextRequest) {
     yearsOfExperience: trimOrNull(body.yearsOfExperience),
     school: trimOrNull(body.school),
     degree: trimOrNull(body.degree),
+    graduationYear: trimOrNull(body.graduationYear),
     detailsReviewedAt: new Date(),
   };
+  if (typeof body.seekingInternship === "boolean") {
+    update.seekingInternship = body.seekingInternship;
+  }
 
   await prisma.user.update({ where: { id: session.user.id }, data: update });
 

@@ -66,6 +66,7 @@ async function getUserData(userId: string) {
       targetRole: true,
       salaryExpectation: true,
       earliestStartDate: true,
+      seekingInternship: true,
       gender: true,
       race: true,
       hispanicOrLatino: true,
@@ -378,6 +379,7 @@ export default async function ProfilePage({
               initialData={{
                 salaryExpectation: user.salaryExpectation,
                 earliestStartDate: user.earliestStartDate,
+                seekingInternship: user.seekingInternship,
               }}
             />
 

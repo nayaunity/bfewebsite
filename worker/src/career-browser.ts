@@ -14,14 +14,38 @@ export interface DiscoveryLog {
   steps: string[];
 }
 
+// Strict intern-title regex. Keep in sync with looksLikeInternshipTitle in
+// src/lib/scrapers/job-filter.ts (Next.js side) and the regex in
+// scripts/reclassify-internship-titles.ts.
+const INTERN_TITLE_RX =
+  /\b(intern|internship|co-?op|summer\s+(analyst|associate|engineer|intern))\b/i;
+const INTERN_HARD_NEGATIVE_RX =
+  /\bintern\s+program\s+manager\b|\bintern\s+coordinator\b|\bmanages?\s+interns?\b/i;
+const INTERN_SOFT_NEGATIVE_RX = /\binternal\b|\binternational\b/i;
+const INTERN_STANDALONE_RX = /\b(intern|internship|co-?op)\b/i;
+
+function looksLikeIntern(title: string): boolean {
+  if (!INTERN_TITLE_RX.test(title)) return false;
+  if (INTERN_HARD_NEGATIVE_RX.test(title)) return false;
+  if (INTERN_SOFT_NEGATIVE_RX.test(title)) {
+    const stripped = title.replace(/\binternal\b|\binternational\b/gi, " ");
+    return INTERN_STANDALONE_RX.test(stripped);
+  }
+  return true;
+}
+
 /**
  * Discover jobs from the pre-scraped catalog in the Job table.
  * Returns matching jobs for a given company slug and target roles.
  * Falls back gracefully — returns empty array if catalog is empty.
+ *
+ * When `seekingInternship` is true, allows manual-source jobs and only
+ * surfaces titles that look like internships (or have type=Internship).
  */
 export async function discoverJobsFromCatalog(
   companySlug: string,
-  targetRole: string
+  targetRole: string,
+  seekingInternship: boolean = false
 ): Promise<DiscoveredJob[]> {
   const db = getDb();
   const roles = parseRoles(targetRole);
@@ -29,8 +53,12 @@ export async function discoverJobsFromCatalog(
     r.toLowerCase().split(/\s+/).filter((w) => w.length > 2)
   );
 
+  const sourceClause = seekingInternship
+    ? `source IN ('auto-apply', 'manual')`
+    : `source = 'auto-apply'`;
+
   const result = await db.execute({
-    sql: `SELECT title, applyUrl FROM Job WHERE companySlug = ? AND isActive = 1 AND source = 'auto-apply'`,
+    sql: `SELECT title, applyUrl, type FROM Job WHERE companySlug = ? AND isActive = 1 AND ${sourceClause}`,
     args: [companySlug],
   });
 
@@ -41,7 +69,20 @@ export async function discoverJobsFromCatalog(
   for (const row of result.rows) {
     const title = row.title as string;
     const applyUrl = row.applyUrl as string;
-    const titleLower = title.toLowerCase();
+    const type = (row.type as string) || "";
+
+    if (seekingInternship && type !== "Internship" && !looksLikeIntern(title)) {
+      continue;
+    }
+
+    if (seekingInternship) {
+      // Role-keyword match is too narrow once we already know the title is
+      // an internship — accept everything that passes the intern regex so
+      // an internship-seeking SWE still surfaces "Software Engineering Intern"
+      // even if the user's role label is just "Software Engineer".
+      matched.push({ title, applyUrl });
+      continue;
+    }
 
     const isMatch = roleKeywords.some((keywords) => {
       const matches = keywords.filter((kw) => new RegExp(`\\b${kw}\\b`, "i").test(title));

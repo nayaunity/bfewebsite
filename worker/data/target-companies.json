@@ -3,13 +3,13 @@
     "name": "Figma",
     "slug": "figma",
     "careersUrl": "https://boards.greenhouse.io/figma",
-    "notes": "Design tools — direct Greenhouse board"
+    "notes": "Design tools \u2014 direct Greenhouse board"
   },
   {
     "name": "Databricks",
     "slug": "databricks",
     "careersUrl": "https://job-boards.greenhouse.io/databricks",
-    "notes": "Data/AI platform — Greenhouse iframe on databricks.com"
+    "notes": "Data/AI platform \u2014 Greenhouse iframe on databricks.com"
   },
   {
     "name": "Twilio",
@@ -213,78 +213,216 @@
     "name": "Zscaler",
     "slug": "zscaler",
     "careersUrl": "https://job-boards.greenhouse.io/zscaler",
-    "notes": "Cloud security — 290 jobs"
+    "notes": "Cloud security \u2014 290 jobs"
   },
   {
     "name": "Klaviyo",
     "slug": "klaviyo",
     "careersUrl": "https://job-boards.greenhouse.io/klaviyo",
-    "notes": "Marketing platform — 243 jobs"
+    "notes": "Marketing platform \u2014 243 jobs"
   },
   {
     "name": "Asana",
     "slug": "asana",
     "careersUrl": "https://job-boards.greenhouse.io/asana",
-    "notes": "Work management — 151 jobs"
+    "notes": "Work management \u2014 151 jobs"
   },
   {
     "name": "Abnormal Security",
     "slug": "abnormalsecurity",
     "careersUrl": "https://job-boards.greenhouse.io/abnormalsecurity",
-    "notes": "Email security/AI — 97 jobs"
+    "notes": "Email security/AI \u2014 97 jobs"
   },
   {
     "name": "Notion",
     "slug": "notion",
     "careersUrl": "https://jobs.ashbyhq.com/notion",
-    "notes": "Workspace platform — Ashby — 161 jobs"
+    "notes": "Workspace platform \u2014 Ashby \u2014 161 jobs"
   },
   {
     "name": "OpenAI",
     "slug": "openai",
     "careersUrl": "https://jobs.ashbyhq.com/openai",
-    "notes": "AI research — Ashby — 639 jobs"
+    "notes": "AI research \u2014 Ashby \u2014 639 jobs"
   },
   {
     "name": "Ramp",
     "slug": "ramp",
     "careersUrl": "https://jobs.ashbyhq.com/ramp",
-    "notes": "Corporate card/finance — Ashby — 132 jobs"
+    "notes": "Corporate card/finance \u2014 Ashby \u2014 132 jobs"
   },
   {
     "name": "ElevenLabs",
     "slug": "elevenlabs",
     "careersUrl": "https://jobs.ashbyhq.com/elevenlabs",
-    "notes": "AI voice/audio — Ashby — 104 jobs"
+    "notes": "AI voice/audio \u2014 Ashby \u2014 104 jobs"
   },
   {
     "name": "Plaid",
     "slug": "plaid",
     "careersUrl": "https://jobs.ashbyhq.com/plaid",
-    "notes": "Fintech infrastructure — Ashby — 101 jobs"
+    "notes": "Fintech infrastructure \u2014 Ashby \u2014 101 jobs"
   },
   {
     "name": "Cursor",
     "slug": "cursor",
     "careersUrl": "https://jobs.ashbyhq.com/cursor",
-    "notes": "AI code editor — Ashby — 78 jobs"
+    "notes": "AI code editor \u2014 Ashby \u2014 78 jobs"
   },
   {
     "name": "Perplexity",
     "slug": "perplexity",
     "careersUrl": "https://jobs.ashbyhq.com/perplexity",
-    "notes": "AI search — Ashby — 78 jobs"
+    "notes": "AI search \u2014 Ashby \u2014 78 jobs"
   },
   {
     "name": "Linear",
     "slug": "linear",
     "careersUrl": "https://jobs.ashbyhq.com/linear",
-    "notes": "Issue tracking — Ashby — 20 jobs"
+    "notes": "Issue tracking \u2014 Ashby \u2014 20 jobs"
   },
   {
     "name": "Spotify",
     "slug": "spotify",
     "careersUrl": "https://jobs.lever.co/spotify",
-    "notes": "Music streaming — Lever — 100+ jobs"
+    "notes": "Music streaming \u2014 Lever \u2014 100+ jobs"
+  },
+  {
+    "name": "Stripe",
+    "slug": "stripe",
+    "careersUrl": "https://stripe.com/jobs/search",
+    "notes": "Payments \u2014 large internship pipeline. Note: Stripe intern URLs are in EXCLUDED_URL_PATTERNS for auto-apply (8-min timeout cluster); listings still surface in matcher."
+  },
+  {
+    "name": "Brex",
+    "slug": "brex",
+    "careersUrl": "https://job-boards.greenhouse.io/brex",
+    "notes": "Corporate cards \u2014 Greenhouse \u2014 internships and new-grad"
+  },
+  {
+    "name": "Mercury",
+    "slug": "mercury",
+    "careersUrl": "https://job-boards.greenhouse.io/mercury",
+    "notes": "Banking for startups \u2014 Greenhouse"
+  },
+  {
+    "name": "Coinbase",
+    "slug": "coinbase",
+    "careersUrl": "https://www.coinbase.com/careers/positions",
+    "notes": "Crypto exchange \u2014 Greenhouse-backed; intern + new-grad pipeline"
+  },
+  {
+    "name": "Robinhood",
+    "slug": "robinhood",
+    "careersUrl": "https://job-boards.greenhouse.io/robinhood",
+    "notes": "Brokerage \u2014 Greenhouse \u2014 student programs"
+  },
+  {
+    "name": "Discord",
+    "slug": "discord",
+    "careersUrl": "https://job-boards.greenhouse.io/discord",
+    "notes": "Voice/chat platform \u2014 Greenhouse \u2014 internships"
+  },
+  {
+    "name": "Roblox",
+    "slug": "roblox",
+    "careersUrl": "https://job-boards.greenhouse.io/roblox",
+    "notes": "Gaming platform \u2014 Greenhouse \u2014 large internship cohort"
+  },
+  {
+    "name": "Datadog",
+    "slug": "datadog",
+    "careersUrl": "https://careers.datadoghq.com/all-jobs/",
+    "notes": "Observability \u2014 Greenhouse-backed \u2014 engineering interns"
+  },
+  {
+    "name": "MongoDB",
+    "slug": "mongodb",
+    "careersUrl": "https://job-boards.greenhouse.io/mongodb",
+    "notes": "Database \u2014 Greenhouse \u2014 university recruiting program"
+  },
+  {
+    "name": "HashiCorp",
+    "slug": "hashicorp",
+    "careersUrl": "https://job-boards.greenhouse.io/hashicorp",
+    "notes": "Infrastructure \u2014 Greenhouse \u2014 student program"
+  },
+  {
+    "name": "Vercel",
+    "slug": "vercel",
+    "careersUrl": "https://jobs.ashbyhq.com/vercel",
+    "notes": "Frontend platform \u2014 Ashby \u2014 small but high-quality intern slate"
+  },
+  {
+    "name": "Replit",
+    "slug": "replit",
+    "careersUrl": "https://job-boards.greenhouse.io/replit",
+    "notes": "Cloud IDE \u2014 Greenhouse"
+  },
+  {
+    "name": "Modal",
+    "slug": "modal",
+    "careersUrl": "https://jobs.ashbyhq.com/modal",
+    "notes": "Serverless GPU \u2014 Ashby"
+  },
+  {
+    "name": "Supabase",
+    "slug": "supabase",
+    "careersUrl": "https://jobs.ashbyhq.com/supabase",
+    "notes": "OSS Firebase alternative \u2014 Ashby"
+  },
+  {
+    "name": "Pinecone",
+    "slug": "pinecone",
+    "careersUrl": "https://jobs.ashbyhq.com/pinecone",
+    "notes": "Vector database \u2014 Ashby"
+  },
+  {
+    "name": "Snowflake",
+    "slug": "snowflake",
+    "careersUrl": "https://careers.snowflake.com/us/en/search-results",
+    "notes": "Data cloud \u2014 Workday \u2014 large summer intern program"
+  },
+  {
+    "name": "Anduril",
+    "slug": "anduril",
+    "careersUrl": "https://job-boards.greenhouse.io/anduril",
+    "notes": "Defense tech \u2014 Greenhouse \u2014 engineering internships"
+  },
+  {
+    "name": "Palantir",
+    "slug": "palantir",
+    "careersUrl": "https://jobs.lever.co/palantir",
+    "notes": "Data platforms \u2014 Lever \u2014 student + internship programs"
+  },
+  {
+    "name": "Coursera",
+    "slug": "coursera",
+    "careersUrl": "https://job-boards.greenhouse.io/coursera",
+    "notes": "EdTech \u2014 Greenhouse \u2014 software engineering interns"
+  },
+  {
+    "name": "DraftKings",
+    "slug": "draftkings",
+    "careersUrl": "https://job-boards.greenhouse.io/draftkings",
+    "notes": "Sports betting \u2014 Greenhouse \u2014 engineering internships"
+  },
+  {
+    "name": "Niantic",
+    "slug": "niantic",
+    "careersUrl": "https://job-boards.greenhouse.io/niantic",
+    "notes": "AR gaming (Pokemon GO) \u2014 Greenhouse \u2014 student programs"
+  },
+  {
+    "name": "Box",
+    "slug": "box",
+    "careersUrl": "https://job-boards.greenhouse.io/box",
+    "notes": "Content cloud \u2014 Greenhouse \u2014 university hiring"
+  },
+  {
+    "name": "Faire",
+    "slug": "faire",
+    "careersUrl": "https://job-boards.greenhouse.io/faire",
+    "notes": "Wholesale marketplace \u2014 Greenhouse \u2014 engineering interns"
   }
 ]

@@ -61,6 +61,14 @@ export function OnboardingSync() {
           "Expert & Leadership (10+ years)": "10",
         };
         profileUpdate.yearsOfExperience = expMap[data.experience[0]] || "5";
+
+        // If the user picked "Internship" as their sole experience level,
+        // they're a current student looking for an internship — flip the
+        // matcher into internship-only mode so we don't waste applies on
+        // full-time roles.
+        if (data.experience.length === 1 && data.experience[0] === "Internship") {
+          profileUpdate.seekingInternship = true;
+        }
       }
 
       // Location → workLocations + remotePreference

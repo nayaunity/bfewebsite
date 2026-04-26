@@ -112,16 +112,20 @@ export async function scrapeWorkday(
         const location = job.locationsText || "Unknown";
         const remote = isRemote(location, job.title);
 
-        // Extract employment type from bullet fields if available
+        // Extract employment type from bullet fields if available, fall back
+        // to title-based inference for unlabeled intern listings.
         let employmentType = "Full-time";
         if (job.bulletFields) {
           for (const field of job.bulletFields) {
-            const normalized = normalizeJobType(field);
+            const normalized = normalizeJobType(field, job.title);
             if (normalized !== "Full-time") {
               employmentType = normalized;
               break;
             }
           }
+        }
+        if (employmentType === "Full-time") {
+          employmentType = normalizeJobType(undefined, job.title);
         }
 
         // Build apply URL - must include site name for valid Workday URLs

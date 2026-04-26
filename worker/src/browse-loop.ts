@@ -101,6 +101,7 @@ interface BrowseSessionRow {
   matchedJobs: string | null;
   resumeUrl: string;
   resumeName: string;
+  seekingInternship: number | null;
 }
 
 interface UserProfile {
@@ -235,7 +236,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           startedAt = datetime('now'),
           lastHeartbeatAt = ?
           WHERE id = (SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1)
-          RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName`,
+          RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName, seekingInternship`,
     args: [new Date().toISOString()],
   });
 
@@ -640,7 +641,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
       let discoveryLog: import("./career-browser").DiscoveryLog;
 
       if (companySlug) {
-        const catalogJobs = await discoverJobsFromCatalog(companySlug, session.targetRole);
+        const catalogJobs = await discoverJobsFromCatalog(companySlug, session.targetRole, session.seekingInternship === 1);
         if (catalogJobs.length > 0) {
           discovered = catalogJobs;
           discoveryLog = { steps: [`Catalog: ${catalogJobs.length} jobs for ${companySlug}`] };

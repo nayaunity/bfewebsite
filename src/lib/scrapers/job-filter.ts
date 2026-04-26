@@ -250,16 +250,50 @@ export function isRemote(location: string, title?: string): boolean {
   );
 }
 
-export function normalizeJobType(type?: string): string {
-  if (!type) return "Full-time";
+// Strict intern-title regex used both here (when ATS metadata is missing) and
+// by scripts/reclassify-internship-titles.ts. Keep these two in sync.
+const INTERN_TITLE_RX =
+  /\b(intern|internship|co-?op|summer\s+(analyst|associate|engineer|intern))\b/i;
 
-  const lower = type.toLowerCase();
+// Patterns that clearly mean "this is NOT an internship" even though the
+// title contains an intern-like substring. Examples:
+//   "Intern Program Manager" — full-time role that runs the intern program
+//   "Intern Coordinator"     — full-time role
+//   "manages interns"        — full-time role
+const INTERN_HARD_NEGATIVE_RX =
+  /\bintern\s+program\s+manager\b|\bintern\s+coordinator\b|\bmanages?\s+interns?\b/i;
 
-  if (lower.includes("intern")) return "Internship";
-  if (lower.includes("contract") || lower.includes("contractor"))
-    return "Contract";
-  if (lower.includes("part")) return "Part-time";
-  if (lower.includes("temp")) return "Temporary";
+// Soft negatives: "internal" / "international" suggest the title may be a
+// false positive ("Internal Tools Engineer", "International Recruiter") —
+// UNLESS the title also contains a separate intern/internship/co-op word
+// elsewhere ("Internal Audit Intern" is a real internship).
+const INTERN_SOFT_NEGATIVE_RX = /\binternal\b|\binternational\b/i;
+const INTERN_STANDALONE_RX = /\b(intern|internship|co-?op)\b/i;
 
+export function looksLikeInternshipTitle(title?: string): boolean {
+  if (!title) return false;
+  if (!INTERN_TITLE_RX.test(title)) return false;
+  if (INTERN_HARD_NEGATIVE_RX.test(title)) return false;
+  if (INTERN_SOFT_NEGATIVE_RX.test(title)) {
+    // Strip the soft-negative tokens and check whether an intern word
+    // remains. If it does, the title still describes an internship.
+    const stripped = title.replace(/\binternal\b|\binternational\b/gi, " ");
+    return INTERN_STANDALONE_RX.test(stripped);
+  }
+  return true;
+}
+
+export function normalizeJobType(type?: string, title?: string): string {
+  if (type) {
+    const lower = type.toLowerCase();
+    if (lower.includes("intern")) return "Internship";
+    if (lower.includes("contract") || lower.includes("contractor"))
+      return "Contract";
+    if (lower.includes("part")) return "Part-time";
+    if (lower.includes("temp")) return "Temporary";
+    return "Full-time";
+  }
+
+  if (looksLikeInternshipTitle(title)) return "Internship";
   return "Full-time";
 }

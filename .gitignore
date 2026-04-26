@@ -61,3 +61,15 @@ NBere_Resume.pdf
 # root-level sqlite (prisma/dev.db is the real one; this catches stray copies)
 /dev.db
 /dev.db-journal
+
+# worker dependencies (worker has its own package.json; the root /node_modules
+# rule above doesn't catch this nested copy).
+/worker/node_modules
+
+# Workday recon + smoke debug artifacts (large PNGs / per-run JSON dumps that
+# pile up while iterating on a tenant). The recon `.ts` source files ARE
+# tracked. Only the rendered outputs are excluded.
+/worker/test/integration/recon-*.png
+/worker/test/integration/recon-*.json
+/worker/test/integration/smoke-results-*.json
+/worker/test/integration/wd-debug-*.png

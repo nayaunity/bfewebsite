@@ -13,6 +13,8 @@ interface ReviewFields {
   yearsOfExperience: string;
   school: string;
   degree: string;
+  graduationYear: string;
+  seekingInternship: boolean;
 }
 
 export default function ReviewForm({
@@ -26,8 +28,9 @@ export default function ReviewForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const set = (k: keyof ReviewFields) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFields((f) => ({ ...f, [k]: e.target.value }));
+  const set = (k: keyof Omit<ReviewFields, "seekingInternship">) =>
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setFields((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,6 +87,26 @@ export default function ReviewForm({
         <Field label="School" value={fields.school} onChange={set("school")} placeholder="University of..." className={inputClass} />
         <Field label="Degree" value={fields.degree} onChange={set("degree")} placeholder="BS Computer Science" className={inputClass} />
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Graduation year" value={fields.graduationYear} onChange={set("graduationYear")} placeholder="2027" className={inputClass} />
+        <div />
+      </div>
+
+      <label className="flex items-start gap-3 cursor-pointer rounded-xl border border-[var(--card-border)] bg-[var(--gray-50)] px-4 py-3">
+        <input
+          type="checkbox"
+          checked={fields.seekingInternship}
+          onChange={(e) => setFields((f) => ({ ...f, seekingInternship: e.target.checked }))}
+          className="mt-1 h-4 w-4 accent-[#ef562a]"
+        />
+        <span>
+          <span className="block text-sm font-semibold">I&apos;m only looking for internships</span>
+          <span className="block text-xs text-[var(--gray-600)] mt-1">
+            Turn this on if you&apos;re a student looking for summer or co-op roles. We&apos;ll skip full-time openings.
+          </span>
+        </span>
+      </label>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
     if (temp.confirmedCity) profileUpdate.city = temp.confirmedCity;
     if (temp.confirmedState) profileUpdate.usState = temp.confirmedState;
     if (temp.confirmedCountry) profileUpdate.countryOfResidence = temp.confirmedCountry;
+    if (temp.confirmedSeekingInternship === true || temp.confirmedSeekingInternship === false) {
+      profileUpdate.seekingInternship = temp.confirmedSeekingInternship;
+    }
     if (temp.resumeBlobUrl) {
       profileUpdate.resumeUrl = temp.resumeBlobUrl;
       profileUpdate.resumeName = temp.resumeName;
@@ -79,6 +82,25 @@ export async function POST(request: NextRequest) {
       if (years) profileUpdate.yearsOfExperience = years;
       if (education?.degree) profileUpdate.degree = education.degree;
       if (education?.school) profileUpdate.school = education.school;
+
+      // Resume-extracted graduation year. The extractor populates this when
+      // it sees an "Expected: May 2027" / "Class of 2026" / dated education
+      // entry. If the user didn't explicitly check the internship-only box
+      // in ConfirmExtractionStep but their resume reads as a current
+      // student, default them in (they can flip it later on /profile).
+      const gradYear = typeof extracted.graduationYear === "number" ? extracted.graduationYear : null;
+      if (gradYear && gradYear > 1900 && gradYear < 2100) {
+        profileUpdate.graduationYear = String(gradYear);
+        if (profileUpdate.seekingInternship === undefined) {
+          const currentYear = new Date().getFullYear();
+          const yearsNum = years ? parseFloat(years) : NaN;
+          const isStudent =
+            gradYear >= currentYear &&
+            gradYear <= currentYear + 2 &&
+            (Number.isNaN(yearsNum) || yearsNum < 2);
+          if (isStudent) profileUpdate.seekingInternship = true;
+        }
+      }
 
       if (temp.confirmedCity === null && typeof extracted.city === "string") {
         profileUpdate.city = extracted.city;

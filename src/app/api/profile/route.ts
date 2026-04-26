@@ -20,6 +20,7 @@ export async function PATCH(request: NextRequest) {
       graduationYear, additionalCerts, salaryExpectation,
       gender, race, hispanicOrLatino, veteranStatus, disabilityStatus,
       applicationAnswers, workLocations,
+      seekingInternship, preferenceBannerDismissedAt,
     } = body;
 
     const data: Record<string, unknown> = {};
@@ -85,6 +86,23 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Invalid willingToRelocate value" }, { status: 400 });
       }
       data.willingToRelocate = willingToRelocate;
+    }
+
+    if (seekingInternship !== undefined) {
+      if (seekingInternship !== null && typeof seekingInternship !== "boolean") {
+        return NextResponse.json({ error: "Invalid seekingInternship value" }, { status: 400 });
+      }
+      data.seekingInternship = seekingInternship;
+    }
+
+    if (preferenceBannerDismissedAt !== undefined) {
+      if (preferenceBannerDismissedAt === null) {
+        data.preferenceBannerDismissedAt = null;
+      } else if (preferenceBannerDismissedAt === true) {
+        data.preferenceBannerDismissedAt = new Date();
+      } else {
+        return NextResponse.json({ error: "Invalid preferenceBannerDismissedAt value" }, { status: 400 });
+      }
     }
 
     // Optional string profile fields (max 500 chars for URLs, 200 for text)

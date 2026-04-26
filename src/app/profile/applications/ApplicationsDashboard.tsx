@@ -6,6 +6,7 @@ import { friendlyError } from "@/lib/error-display";
 import { TrialRequiredBanner } from "@/components/TrialRequiredBanner";
 import { TrialCapReachedBanner } from "@/components/TrialCapReachedBanner";
 import { PaymentFailedBanner } from "@/components/PaymentFailedBanner";
+import { InternshipPreferenceBanner } from "@/components/InternshipPreferenceBanner";
 
 interface Application {
   id: string;
@@ -70,6 +71,7 @@ export default function ApplicationsDashboard({
   subscriptionTier = "free",
   subscriptionStatus = "inactive",
   freeTierEndsAt = null,
+  showInternshipPreferenceBanner = false,
 }: {
   initialApplications: Application[];
   stats: Stats;
@@ -84,6 +86,7 @@ export default function ApplicationsDashboard({
   subscriptionTier?: string;
   subscriptionStatus?: string;
   freeTierEndsAt?: string | null;
+  showInternshipPreferenceBanner?: boolean;
 }) {
   const showTrialBanner = subscriptionTier === "free" && !!freeTierEndsAt;
   const showPaymentFailedBanner =
@@ -212,6 +215,7 @@ export default function ApplicationsDashboard({
       {showTrialBanner && freeTierEndsAt && (
         <TrialRequiredBanner freeTierEndsAt={freeTierEndsAt} />
       )}
+      {showInternshipPreferenceBanner && <InternshipPreferenceBanner />}
       {/* Resume Quiz CTA — only shown to specific users */}
       {showResumeQuiz && (
         <Link

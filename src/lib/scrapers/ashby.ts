@@ -69,7 +69,7 @@ export async function scrapeAshby(
       const location = job.location || "Unknown";
       const remote =
         job.isRemote === true || isRemote(location, job.title);
-      const employmentType = normalizeJobType(job.employmentType || "Full-time");
+      const employmentType = normalizeJobType(job.employmentType, job.title);
 
       const scrapedJob: ScrapedJob = {
         externalId: `ab-${job.id}`,

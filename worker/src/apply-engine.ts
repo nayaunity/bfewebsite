@@ -7,6 +7,7 @@ import { waitForVerificationCode } from "./verification";
 import { tailorResume, fetchJobDescription, canTailorResume, incrementTailorQuota } from "./tailor-resume";
 import { captureFailureSnapshot } from "./diagnostics";
 import { fillCommonGates, ashbyIdentityFill, leverIdentityFill } from "./common-gates";
+import { runWorkdayApply } from "./workday/index.js";
 
 const anthropic = new Anthropic();
 
@@ -425,7 +426,7 @@ export async function closeBrowser(): Promise<void> {
   }
 }
 
-interface ApplicantData {
+export interface ApplicantData {
   firstName: string;
   lastName: string;
   email: string;
@@ -2435,6 +2436,32 @@ async function _applyToJobInner(
       if (!readyFrame) {
         return { success: false, error: "Greenhouse form iframe is not loading or accessible tree is empty — cannot proceed with form filling", steps };
       }
+    }
+
+    // FAST PATH: Workday deterministic handler. Workday gates the apply form
+    // behind sign-in/create-account, then drives a 5-7 page wizard. Generic
+    // Claude agent fails on both. We auto-create an account using the user's
+    // applicationEmail (applicant.email — see browse-loop.ts:407), drive the
+    // wizard with stable data-automation-id selectors, and return.
+    if (ats === "Workday" && tmpPath && userId) {
+      steps.push("Using Workday deterministic handler");
+      const wdResult = await runWorkdayApply(
+        page,
+        applicant,
+        applyUrl,
+        userId,
+        applicant.email,
+        tmpPath,
+        steps,
+      );
+      // Sentinel error string opt-out: handler explicitly says fall through.
+      if (wdResult.success) {
+        return { success: true, steps, tailored, tailoredResumeUrl };
+      }
+      if (wdResult.error && wdResult.error !== "workday-tenant-not-supported") {
+        return wdResult;
+      }
+      steps.push("Workday handler opted out — falling back to Claude agent loop");
     }
 
     // FAST PATH: Greenhouse deterministic handler

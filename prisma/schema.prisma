@@ -64,6 +64,8 @@ model User {
   freeTierEndsAt        DateTime?
   freeTierSunsetEmailAt DateTime?
   detailsReviewedAt     DateTime?
+  seekingInternship           Boolean? @default(false)
+  preferenceBannerDismissedAt DateTime?
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
   accounts            Account[]
@@ -76,6 +78,7 @@ model User {
   applyQueue          ApplyQueue[]
   browseSessions      BrowseSession[]
   tickets             Ticket[]
+  workdayCredentials  WorkdayCredential[]
 
   @@index([role])
   @@index([stripeCustomerId])
@@ -266,6 +269,7 @@ model BrowseSession {
   startedAt      DateTime?
   completedAt    DateTime?
   lastHeartbeatAt DateTime?
+  seekingInternship Boolean? @default(false)
 
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   discoveries BrowseDiscovery[]
@@ -310,6 +314,7 @@ model TempOnboarding {
   confirmedCity     String?
   confirmedState    String?
   confirmedCountry  String?
+  confirmedSeekingInternship Boolean?
   linkedToUserId    String?
   linkedAt          DateTime?
   createdAt         DateTime  @default(now())
@@ -581,4 +586,24 @@ model Ticket {
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+}
+
+// Per-(user, Workday tenant) credentials for the Workday auto-apply handler.
+// Workday gates the apply form behind a sign-in/create-account screen, so we
+// auto-create an account on the user's behalf at first apply, store the
+// generated password encrypted (AES-256-GCM keyed by WORKDAY_CREDENTIAL_KEY),
+// and reuse it on subsequent applies at the same tenant.
+model WorkdayCredential {
+  id                String    @id @default(cuid())
+  userId            String
+  tenantHost        String    // e.g., "walmart.wd5.myworkdayjobs.com"
+  email             String    // snapshot of applicationEmail at signup time
+  passwordEncrypted String    // base64(iv || authTag || ciphertext), AES-256-GCM
+  createdAt         DateTime  @default(now())
+  lastUsedAt        DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tenantHost])
+  @@index([userId])
 }

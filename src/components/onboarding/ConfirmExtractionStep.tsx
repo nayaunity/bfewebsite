@@ -29,6 +29,14 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
   const [state, setState] = useState(extraction.state ?? "");
   const [country, setCountry] = useState(extraction.country ?? "United States");
 
+  // Default-on if the resume looks like a current student: future graduation
+  // year OR low YoE (under 2). User can still uncheck.
+  const currentYear = new Date().getFullYear();
+  const looksLikeStudent =
+    (extraction.graduationYear !== null && extraction.graduationYear >= currentYear) ||
+    (typeof extraction.yearsOfExperience === "number" && extraction.yearsOfExperience < 2);
+  const [seekingInternship, setSeekingInternship] = useState<boolean>(looksLikeStudent);
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,6 +64,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
           city: city.trim() || null,
           state: state.trim() || null,
           country: country.trim() || null,
+          seekingInternship,
         }),
       });
       const data = await res.json();
@@ -156,6 +165,23 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               />
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="flex items-start gap-3 cursor-pointer rounded-xl border border-[var(--card-border)] bg-[var(--gray-50)] px-4 py-3">
+            <input
+              type="checkbox"
+              checked={seekingInternship}
+              onChange={(e) => setSeekingInternship(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-[#ef562a]"
+            />
+            <span>
+              <span className="block text-sm font-semibold">I&apos;m only looking for internships</span>
+              <span className="block text-xs text-[var(--gray-600)] mt-1">
+                Turn this on if you&apos;re a student looking for summer or co-op roles. We&apos;ll skip full-time openings.
+              </span>
+            </span>
+          </label>
         </div>
 
         <div>

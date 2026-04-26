@@ -16,12 +16,14 @@ interface Props {
   initialData: {
     salaryExpectation: string | null;
     earliestStartDate: string | null;
+    seekingInternship: boolean | null;
   };
 }
 
 export function JobPreferencesSection({ initialData }: Props) {
   const [salaryExpectation, setSalaryExpectation] = useState(initialData.salaryExpectation || "");
   const [earliestStartDate, setEarliestStartDate] = useState(initialData.earliestStartDate || "");
+  const [seekingInternship, setSeekingInternship] = useState(initialData.seekingInternship === true);
 
   const fields = [salaryExpectation, earliestStartDate];
   const filled = fields.filter((f) => f.trim()).length;
@@ -30,12 +32,13 @@ export function JobPreferencesSection({ initialData }: Props) {
     saveProfileFields({
       salaryExpectation: salaryExpectation || null,
       earliestStartDate: earliestStartDate || null,
+      seekingInternship,
     });
 
   return (
     <ProfileSection
       title="Job Preferences"
-      description="Salary expectations and availability"
+      description="Salary expectations, availability, and role type"
       icon={
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -71,6 +74,24 @@ export function JobPreferencesSection({ initialData }: Props) {
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="mt-6 p-4 rounded-xl border border-[var(--card-border)] bg-[var(--gray-50)]">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={seekingInternship}
+            onChange={(e) => setSeekingInternship(e.target.checked)}
+            className="mt-1 h-4 w-4 accent-[#ef562a]"
+          />
+          <span>
+            <span className="block font-semibold">Show me internships only</span>
+            <span className="block text-xs text-[var(--gray-600)] mt-1">
+              When on, the matcher only sends you Internship, Co-op, and summer-program roles.
+              Turn off to receive full-time openings.
+            </span>
+          </span>
+        </label>
       </div>
     </ProfileSection>
   );

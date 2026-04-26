@@ -438,5 +438,109 @@
     "industry": "Technology",
     "atsType": "lever",
     "atsConfig": { "companySlug": "spotify" }
+  },
+  {
+    "name": "Brex",
+    "slug": "brex",
+    "careersUrl": "https://job-boards.greenhouse.io/brex",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "brex" }
+  },
+  {
+    "name": "Faire",
+    "slug": "faire",
+    "careersUrl": "https://job-boards.greenhouse.io/faire",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "faire" }
+  },
+  {
+    "name": "Anduril",
+    "slug": "anduril",
+    "careersUrl": "https://job-boards.greenhouse.io/andurilindustries",
+    "industry": "Defense Tech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "andurilindustries" }
+  },
+  {
+    "name": "Pinterest",
+    "slug": "pinterest",
+    "careersUrl": "https://job-boards.greenhouse.io/pinterest",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "pinterest" }
+  },
+  {
+    "name": "Instacart",
+    "slug": "instacart",
+    "careersUrl": "https://job-boards.greenhouse.io/instacart",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "instacart" }
+  },
+  {
+    "name": "Lattice",
+    "slug": "lattice",
+    "careersUrl": "https://job-boards.greenhouse.io/lattice",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "lattice" }
+  },
+  {
+    "name": "Mercury",
+    "slug": "mercury",
+    "careersUrl": "https://job-boards.greenhouse.io/mercury",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "mercury" }
+  },
+  {
+    "name": "Robinhood",
+    "slug": "robinhood",
+    "careersUrl": "https://job-boards.greenhouse.io/robinhood",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "robinhood" }
+  },
+  {
+    "name": "Discord",
+    "slug": "discord",
+    "careersUrl": "https://job-boards.greenhouse.io/discord",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "discord" }
+  },
+  {
+    "name": "MongoDB",
+    "slug": "mongodb",
+    "careersUrl": "https://job-boards.greenhouse.io/mongodb",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "mongodb" }
+  },
+  {
+    "name": "Coursera",
+    "slug": "coursera",
+    "careersUrl": "https://job-boards.greenhouse.io/coursera",
+    "industry": "EdTech",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "coursera" }
+  },
+  {
+    "name": "Box",
+    "slug": "box",
+    "careersUrl": "https://job-boards.greenhouse.io/boxinc",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": { "boardToken": "boxinc" }
+  },
+  {
+    "name": "Pinecone",
+    "slug": "pinecone",
+    "careersUrl": "https://jobs.ashbyhq.com/pinecone",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": { "boardSlug": "pinecone" }
   }
 ]

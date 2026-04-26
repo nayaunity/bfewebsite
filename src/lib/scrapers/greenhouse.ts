@@ -71,8 +71,10 @@ export async function scrapeGreenhouse(
       const location = job.location?.name || "Unknown";
       const remote = isRemote(location, job.title);
 
-      // Extract employment type from metadata if available
-      let employmentType = "Full-time";
+      // Extract employment type from metadata if available, fall back to
+      // title-based inference (e.g. "Software Engineer Intern" with no
+      // metadata tag).
+      let typeFieldValue: string | undefined;
       if (job.metadata) {
         const typeField = job.metadata.find(
           (m) =>
@@ -80,9 +82,10 @@ export async function scrapeGreenhouse(
             m.name.toLowerCase().includes("type")
         );
         if (typeField && typeof typeField.value === "string") {
-          employmentType = normalizeJobType(typeField.value);
+          typeFieldValue = typeField.value;
         }
       }
+      const employmentType = normalizeJobType(typeFieldValue, job.title);
 
       const scrapedJob: ScrapedJob = {
         externalId: `gh-${job.id}`,

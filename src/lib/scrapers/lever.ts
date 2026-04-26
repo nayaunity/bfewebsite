@@ -65,7 +65,8 @@ export async function scrapeLever(
       const location = posting.categories?.location || "Unknown";
       const remote = isRemote(location, posting.text);
       const employmentType = normalizeJobType(
-        posting.categories?.commitment || "Full-time"
+        posting.categories?.commitment,
+        posting.text
       );
 
       const scrapedJob: ScrapedJob = {

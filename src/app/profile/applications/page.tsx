@@ -24,7 +24,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -173,6 +173,9 @@ export default async function ApplicationsPage() {
             subscriptionTier={user?.subscriptionTier ?? "free"}
             subscriptionStatus={user?.subscriptionStatus ?? "inactive"}
             freeTierEndsAt={user?.freeTierEndsAt ? user.freeTierEndsAt.toISOString() : null}
+            showInternshipPreferenceBanner={
+              user?.seekingInternship === true && !user?.preferenceBannerDismissedAt
+            }
             // Do NOT include todaySession.errorMessage or any per-discovery
             // errorMessage here. Raw worker error text is operator-only and
             // belongs in /admin/errors and /admin/auto-apply, never in the
