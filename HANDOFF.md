@@ -1,16 +1,23 @@
-# Session Handoff — April 14–25, 2026 (Apr 25: Internship-only matching + catalog growth + Workday auto-apply support — POC submission landed end-to-end)
+# Session Handoff — April 14–26, 2026 (Apr 26 cont'd: WORKDAY_CREDENTIAL_KEY installed, seekingInternship backfill applied, multi-tenant Workday smoke = 0/4 — wizard is Walmart-only at index.ts:68; deploy still NOT yet done)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `e04b7db` (Apr 24, Daniel Cooke bug-fixes merged + deployed).
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `e04b7db` (synced with main; current working branch).
+- **main** — production code, deployed to Vercel. Head: `e04b7db` (Apr 24, Daniel Cooke bug-fixes merged + deployed). **NO Apr 25-26 work has been deployed yet.**
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `58c9f99` (Apr 25 Internship + catalog + Workday POC). **Apr 26 working tree has uncommitted changes** — see "Uncommitted as of Apr 26" below.
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
+
+### Uncommitted as of end of Apr 26 session (working tree on `auto-apply-saas`)
+Working-tree changes that need a decision before commit:
+- `worker/src/workday/tenants.ts` — added Adobe (`adobe.wd5...external_experienced`), Salesforce (`salesforce.wd12...External_Career_Site`), Capital One (`capitalone.wd12...Capital_One`). Walmart entry unchanged. **Multi-tenant smoke showed all 3 new tenants fail through the wizard** — see section 29. Decision: keep the entries (cheap, harmless when wizard isn't implemented) OR revert and re-add when each tenant's wizard exists.
+- `worker/test/integration/smoke-companies.ts` — (a) `SMOKE_FRESH_EMAIL=1` opt-in path that mints `recon-{rand}@apply...` per smoke run (lines ~280-290; harness-only, was the test-user gotcha workaround). (b) Capital One config corrected from `wd1` → `wd12+Capital_One` in both `WORKDAY_ONLY_CANDIDATES` and the broader `CANDIDATES` list. (c) Capital One added to `WORKDAY_ONLY_CANDIDATES`. **The SMOKE_FRESH_EMAIL block should be reverted before commit per the original Apr 25 plan; the Capital One config fix is keep-worthy.**
+- `src/lib/scrapers/workday.ts` — two-pass scrape (default ordering + `searchText: "intern"` second pass, dedup by externalId). Built to surface intern listings on retail-heavy tenants. **In practice didn't help Walmart** (Walmart's Workday board has no SE interns) and untested on other tenants. Can revert without regret OR keep as a general improvement that may help Adobe scraping later.
+- `src/data/auto-apply-companies.json` — Walmart entry appended. Scrape on Apr 26 yielded only 7 active jobs (all senior FT, mostly Bangalore/Chennai). **Recommended revert** — Walmart in catalog is dead inventory until/unless we add a FT cohort that matches "Senior Manager" titles.
 
 ### Infrastructure
 - **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
@@ -44,11 +51,56 @@
 - `BROWSERBASE_USE_PROXIES` — Railway only. `true` enables residential proxies (paid tier). Unset/false for free tier.
 - `BROWSERBASE_ROLLOUT_PCT` — Railway only. `0-100` hashes `userId` mod 100; enables BB for that % of sessions. For cohort A/B.
 - `DRY_RUN` — When `true`, applyToJob fills the form but stops before submit. Used by the integration suite only.
-- `WORKDAY_CREDENTIAL_KEY` — **NEW Apr 25, NOT YET SET IN PROD.** 64-hex-char (32-byte) AES-256-GCM master key for encrypting Workday account passwords. Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and add to Vercel + Railway env. **A throwaway local-dev key was generated in the Apr 25 Claude transcript — TREAT THE TRANSCRIPT VALUE AS COMPROMISED, generate a fresh one for prod.**
+- `WORKDAY_CREDENTIAL_KEY` — **NEW Apr 25, INSTALLED IN PROD Apr 26.** 64-hex-char (32-byte) AES-256-GCM master key for encrypting Workday account passwords. Set on Vercel (Production scope, `--sensitive`) + Railway (worker service). Same value in both. **Prod-key SHA-256 fingerprint (first 12 chars): `9c3eec9d53f4`** — use to verify Vercel + Railway have the same value. **Treat like ALERT_SECRET — never rotate lightly** because rotation invalidates every `WorkdayCredential.passwordEncrypted` row. Local-dev key from the Apr 25 + Apr 26 Claude transcripts is COMPROMISED — never reuse for prod.
 
 ---
 
-## What Was Done This Session (April 15-25)
+## What Was Done This Session (April 15-26)
+
+### 29. Apr 26 cont'd — Workday env install, seekingInternship backfill applied, multi-tenant Workday smoke = 0/4 (NOT YET DEPLOYED)
+
+**Goal of session:** Validate + deploy the Apr 25 Workday + internship work (HANDOFF Steps 1-6 from prior plan).
+
+**What shipped to prod state:**
+- ✅ **Step 1 — Walmart consolidated wizard smoke (DRY_RUN) PASSED in 96.5s.** All 5 wizard steps logged: resume upload → My Information → Application Questions (10 fields) → Voluntary Disclosures → Review (submit SKIPPED). Confirms the consolidated `runWorkdayApply` → wizard.ts path matches the Apr 25 recon. Result JSON: `worker/test/integration/smoke-results-2026-04-26T02-23-11-104Z.json`. Used `SMOKE_FRESH_EMAIL=1` workaround (per Apr 25 known gotcha re: test user's pre-existing Walmart account).
+- ✅ **Step 2 — `WORKDAY_CREDENTIAL_KEY` installed in prod.** Vercel (Production, `--sensitive`) + Railway (worker service). Same value in both. **Prod fingerprint sha256[:12] = `9c3eec9d53f4`**. Generated via `node -e crypto.randomBytes(32)` piped directly to `vercel env add` and a 600-perm `/tmp/workday-key.txt` for manual Railway paste; temp file deleted post-install.
+- ✅ **Step 3 — `seekingInternship` backfill applied to prod.** `scripts/backfill-seeking-internship.ts --apply` flipped 10 free-tier users (incl. IniAbasi `f0da7f25-...`). 529 scanned, 487 had no graduationYear, 27 out-of-range, 2 yoe>=2 with current grad year, 3 admin/test. Verified post-write: `SELECT COUNT(*) FROM User WHERE seekingInternship = 1` → 10.
+
+**What did NOT ship — and why:**
+- ❌ **Step 4 (Walmart catalog + scrape) yielded near-zero usable inventory.** Full catalog re-scrape (~9.5 min, 5,658 jobs across 68 companies) added Walmart at **only 7 active tech jobs** — all senior FT software engineering, 3 in Bangalore/Chennai, 4 in US that the matcher's seniority gate rejects for our user base. Root cause: `src/lib/scrapers/workday.ts:72` caps pagination at offset < 500, and `isTechRole` filter pushes most of Walmart's tech postings past the cap (Walmart is a retailer; first 500 postings are mostly retail/pharmacy/ops). Walmart in catalog = dead inventory.
+- ❌ **Multi-tenant Workday smoke = 0/4 candidates passed.** Added Adobe + Salesforce + Capital One to `worker/src/workday/tenants.ts`, ran `SMOKE_WORKDAY_ONLY=1 SMOKE_FRESH_EMAIL=1 DRY_RUN=true`. Cloudflare control passed (Greenhouse, 42s). All 4 Workday tenants failed:
+  - **Salesforce** — `workday-wizard-not-implemented:Salesforce`. Wizard router at `worker/src/workday/index.ts:68` is hard-coded `if (tenant.host === "walmart.wd5...")`; everything else falls through to the "not-implemented" return at line 83.
+  - **Capital One** — same `workday-wizard-not-implemented:Capital One`. Auth path completed including email verification (link arrived in 6.4s).
+  - **Adobe** — got past the tenant gate, into auth, then `locator.pressSequentially: Timeout 30000ms exceeded` on `[data-automation-id="email"]`. Adobe's signup form has different selectors than Walmart's. Auth.ts is Walmart-tuned.
+  - **Walmart** — `workday-wizard-stuck-step-1`. **Self-inflicted regression** (was passing in Step 1): Step 1's smoke created a `WorkdayCredential` row for `(test-user, walmart.wd5..., recon-d9180c13@apply..., gen-pw-1)` encrypted with the LOCAL-DEV key. Multi-tenant smoke called `getOrCreateCredential` with a different fresh email (`recon-6fdb7f22@apply...`); `getOrCreateCredential` keys on `(userId, tenantHost)` so it returned the existing row, sent the smoke down the existing-creds **signin** path with stale credentials, Walmart bounced back to "Create Account" page, auth-flow logged "signin flow complete" anyway, wizard's `detectStep` hit the Create Account page at step 1 and bailed. **Fix: clean up stale `WorkdayCredential` rows for the test user before re-smoking** (or have SMOKE_FRESH_EMAIL also bypass the credential lookup — see Tech Debt).
+
+**Workday tenant inventory probe (read-only, via Workday API):**
+| Tenant | API works? | Total postings | SE intern listings? | FT tech | Notes |
+|---|---|---|---|---|---|
+| Adobe (`wd5+external_experienced`) | ✅ | 1,161 | ✅ "2026 Intern - Software Engineer Intern", ML, Security | ✅ | The internship unlock — but auth.ts needs Adobe-specific selectors |
+| Salesforce (`wd12+External_Career_Site`) | ✅ | 1,428 | ❌ — search returns FT only | ✅ Lots | College recruiting goes through a separate Trailblazer Connect-style portal, not Workday |
+| Capital One (`wd12+Capital_One`) | ✅ NEW DISCOVERY | 1,482 | ❌ | ✅ Lots | Phase C Apr 25 had wrong shard (`wd1` not `wd12`) — corrected; college flow off-Workday |
+| Walmart (`wd5+WalmartExternal`) | ✅ | 2,000 | ❌ — Pharmacy + Public Policy interns only | ⚠️ Senior + India | Drop from catalog |
+| Snowflake / ServiceNow / Cisco / Intuit | ❌ still 422 (wrong siteName) | - | - | - | Sprint 3 — careers-page bootstrap config harvest needed; Capital One's discovery method (`grep -oE 'wd[0-9]+\.myworkdayjobs\.com/...' html`) didn't surface these (they JS-bootstrap their careers UI, no inline Workday URL) |
+
+**Files changed today (uncommitted):**
+- `worker/src/workday/tenants.ts` — +3 tenants
+- `worker/test/integration/smoke-companies.ts` — SMOKE_FRESH_EMAIL hack + Capital One config fix + Capital One added to WORKDAY_ONLY_CANDIDATES
+- `src/lib/scrapers/workday.ts` — two-pass scrape (default + intern bias)
+- `src/data/auto-apply-companies.json` — Walmart entry (recommend revert)
+
+**Smoke artifacts:**
+- `/tmp/multi-workday-smoke.log` — full 5-tenant smoke output
+- `worker/test/integration/smoke-results-2026-04-26T02-23-11-104Z.json` — Step 1 Walmart pass
+- `worker/test/integration/smoke-results-2026-04-26T05-00-29-200Z.json` — multi-tenant 4-fail run
+
+**Big learnings:**
+1. **Each Workday tenant = real engineering time** (HANDOFF Sprint 2 estimate of 2-3 days for Adobe + Salesforce was accurate). Wizard.ts is hard-coded to Walmart; auth.ts has Walmart-tuned selectors. Generalizing is non-trivial.
+2. **Workday is NOT the highest-ROI path for "more companies"** — Greenhouse/Lever/Ashby companies pass through a generic Claude agent loop, no per-tenant code. The smoke harness already covers them. Adding more candidates to the broader `CANDIDATES` list and running smoke is hours-cheaper than per-tenant Workday work.
+3. **Walmart in particular is a dead end.** No SE interns on its Workday board, FT inventory is mostly Bangalore/senior. Dropping it improves catalog signal-to-noise.
+4. **`getOrCreateCredential` semantics need refinement** for fresh-email smoke runs. Either pass-through the email override, or have smoke harness clean its own `WorkdayCredential` rows pre-run.
+
+---
 
 ### 28. Internship-only matching + catalog growth + Workday auto-apply POC (Apr 25, NOT YET DEPLOYED)
 
@@ -537,11 +589,81 @@ Cooldown mitigates cascading failures. Submit-time flag requires residential IPs
 ### City/workLocations bug -- RESOLVED
 Fixed + migrated 85 affected users Apr 15.
 
+### Walmart catalog yields zero useful inventory -- NEW Apr 26
+Walmart Workday board has 2,000 postings but only 7 active tech jobs after `isTechRole` filter + offset<500 cap, all senior FT mostly Bangalore/Chennai. SE interns posted via separate university recruiting flow, not Workday. Recommend reverting Walmart from `auto-apply-companies.json` and not re-adding until the inventory shape changes. See Apr 26 Next Steps Priority A.
+
+### Multi-tenant Workday wizard not implemented -- NEW Apr 26
+`worker/src/workday/index.ts:68` hard-routes to Walmart-only. Adobe / Salesforce / Capital One are recognized as Workday tenants (`findTenant` returns their config) but the wizard call falls through to `workday-wizard-not-implemented:${tenant.name}`. Adobe additionally fails inside `auth.ts` because Walmart-tuned signup selectors miss Adobe's form. Each new tenant needs ~1-2 hours of bespoke wizard + auth-overrides work. See Apr 26 Next Steps Priority E.
+
+### Stale WorkdayCredential rows for test user encrypted with local-dev key -- NEW Apr 26
+Today's smoke runs created rows in prod Turso `WorkdayCredential` for the test user `1d16e543-...` using the **local-dev** `WORKDAY_CREDENTIAL_KEY`, not the prod key (`9c3eec9d53f4`). Prod code path will be unable to decrypt them. Affected hosts: walmart, adobe, capitalone, possibly salesforce. Cleanup query in Apr 26 Next Steps Priority B. Doesn't affect any real user (no real users have used Workday yet).
+
 ---
 
 ## Next Steps (Prioritized)
 
-### Apr 25 work — explicit pickup steps
+### Apr 26 — Revised pickup priorities (supersedes the Apr 25 plan below)
+
+After today's findings, the Apr 25 Step-1-through-6 plan is partially obsolete. Steps 1-3 are done. Step 4 (Walmart catalog) is recommended-revert. Step 5 (deploy) is still gated on a deploy decision, but the *content* of the deploy has changed: Workday code stays dormant in prod (wizard hard-coded to Walmart-only at `worker/src/workday/index.ts:68`, no Walmart in catalog → no Workday URLs in matcher → `runWorkdayApply` never fires). What WOULD ship is meaningful on its own: internship-only matching + the 13 Phase B+C non-Workday catalog additions (Brex/Faire/Anduril/Pinterest/Instacart/Lattice/Mercury/Robinhood/Discord/MongoDB/Coursera/Box/Pinecone).
+
+#### Priority A — Decide working-tree fate (15 min)
+
+Working tree has 4 modified files. Choices per file:
+
+1. `src/data/auto-apply-companies.json` — **revert Walmart entry**. 7 senior FT jobs, mostly non-US, will get zero matches. Re-add when Walmart's college pipeline gets onto Workday OR when a senior-FT cohort exists.
+2. `src/lib/scrapers/workday.ts` — **revert two-pass scrape**. Didn't help Walmart (no SE interns exist on its board), untested elsewhere, churn for unclear value. Re-introduce if Adobe scraping shows a similar pattern.
+3. `worker/src/workday/tenants.ts` — **keep the +3 entries** (Adobe + Salesforce + Capital One with corrected `wd12+Capital_One`). Cheap, harmless when wizard is unimplemented (router falls through cleanly), saves rework when each tenant's wizard exists. The Capital One config correction is itself the durable artifact (Phase C had the wrong shard).
+4. `worker/test/integration/smoke-companies.ts` — **revert SMOKE_FRESH_EMAIL block**, **keep Capital One config fix + WORKDAY_ONLY_CANDIDATES addition**. The fresh-email path was a one-shot harness workaround; the Capital One stuff is durable.
+
+#### Priority B — Clean up poisoned WorkdayCredential rows (10 min)
+
+Today's smoke runs created WorkdayCredential rows in prod Turso for the test user `1d16e543-...`, encrypted with the **local-dev key** (not the prod key `9c3eec9d53f4`). Those rows are now unreadable by prod code. Specifically the test user has rows for: Walmart (recon-d9180c13 from Step 1), Walmart (recon-6fdb7f22 — wait, no, getOrCreateCredential reuses the original; actually only 1 row per (userId, host)), Adobe (recon-6fdb7f22), Capital One (recon-6fdb7f22). Salesforce *might* also have one (auth completed before wizard bailed).
+
+```bash
+# Inspect first
+DATABASE_URL=$(grep DATABASE_URL .env.production | cut -d'"' -f2) \
+DATABASE_AUTH_TOKEN=$(grep DATABASE_AUTH_TOKEN .env.production | cut -d'"' -f2) \
+npx tsx -e "
+import { createClient } from '@libsql/client';
+const c = createClient({ url: process.env.DATABASE_URL, authToken: process.env.DATABASE_AUTH_TOKEN });
+const r = await c.execute(\"SELECT id, userId, tenantHost, email, createdAt FROM WorkdayCredential WHERE userId = '1d16e543-db6e-497b-b78b-28fbf0a30626'\");
+for (const row of r.rows) console.log(row);
+"
+# Then DELETE them (they're encrypted with the local-dev key, can't be decrypted by prod):
+# DELETE FROM WorkdayCredential WHERE userId = '1d16e543-db6e-497b-b78b-28fbf0a30626';
+```
+
+This won't break prod (no real users have Workday rows yet — only the test user did smoke runs).
+
+#### Priority C — Ship what we have (30 min, awaiting "deploy")
+
+Per CLAUDE.md no-auto-deploy: wait for explicit "deploy" from Naya. When greenlit, ship `auto-apply-saas` → `main` → `vercel --prod`. Content of deploy:
+- Internship-only matching (live impact: 10 backfilled `seekingInternship` users start matching internship listings only; new signups via `/start` and `/onboarding/review` capture the toggle; profile UI exposes it; reclassifier already flipped 144 jobs to Internship type so catalog has ~88 active internships)
+- 13 Phase B+C non-Workday catalog additions (Brex/Faire/Anduril/Pinterest/Instacart/Lattice/Mercury/Robinhood/Discord/MongoDB/Coursera/Box/Pinecone) — already in `auto-apply-companies.json` from Apr 25
+- Workday code path live but DORMANT in prod (no Workday URLs in catalog after Walmart is reverted, so `runWorkdayApply` never fires)
+- `WORKDAY_CREDENTIAL_KEY` already installed in both envs, ready when needed
+
+After deploy: **24h watch** on `/admin/errors` for matcher regressions on internship matching (NOT for `worker:workday:*` since Workday won't get traffic). Watch metrics:
+- Daily-apply cron output for the 10 seekingInternship users — should see them get matched to internships only
+- No regression in other users' match counts
+
+#### Priority D — Pivot for "more companies on platform"
+
+Naya's stated goal in Apr 26 session. Two paths, ranked by ROI:
+
+**D1. Greenhouse/Lever/Ashby breadth (high ROI, quick wins).** These ATSes go through the generic Claude agent loop — no per-tenant code. The smoke harness's broader `CANDIDATES` list already covers many. Add more well-known engineering employers using these ATSes (e.g., Reddit, Substack, Replit, Anthropic, Hugging Face, GitHub, GitLab, Cloudflare adjacencies, Datadog adjacencies that share boards). Each candidate = 5-10 min of smoke time. A 2-hour focused smoke session should add 10-20 companies.
+
+**D2. Workday tenant-by-tenant (low ROI, hours each).** Adobe is the highest-value Workday target (real SE interns) but auth.ts needs Adobe-specific field overrides. Salesforce + Capital One need wizard implementations. Each = 1-3 hours. Recommend pausing this until D1 saturates.
+
+#### Priority E — Deferred Sprint 2/3 follow-ups
+
+- Adobe tenant onboarding (auth.ts field overrides, smoke, wizard generalization). Once auth works, Adobe's wizard structure is similar to Walmart's per the API probe — likely cheaper than Salesforce/Capital One.
+- Salesforce + Capital One wizards. Sprint 2.
+- Snowflake / ServiceNow / Cisco / Intuit siteName discovery. Their careers pages don't expose Workday URLs in HTML (JS-bootstrapped). Need to navigate via Playwright and scrape the bootstrap JSON. Sprint 3.
+
+---
+
+### Apr 25 work — original pickup steps (mostly obsolete after Apr 26)
 
 The Apr 25 session ended with a working Workday POC (real Walmart submission) but **none of the new code is deployed**. Prod still runs the pre-Apr-25 matcher and worker. Pick up here in order:
 
@@ -756,3 +878,7 @@ Context: follow-up to the resume-first-onboarding + 7-day-trial deploys on Apr 1
 - **Worker doesn't respect mid-flight session cancellation.** matchedJobs read into memory at claim; cancellation via DB doesn't stop iteration. See Next Steps 0d.
 - `rebrowser-playwright` skipped (tops out at v1.52, we're on v1.58)
 - **HANDOFF.md and CLAUDE.md still contain em-dashes** in their own body text (e.g., "all emails — user communications"). Per the no-em-dashes rule shipped Apr 18 (section 23), code/internal docs are exempt — but consistency cleanup wouldn't hurt.
+- **`getOrCreateCredential` keys on `(userId, tenantHost)`, ignores caller's `applicationEmail`** (Apr 26). When the same userId hits the same Workday tenant twice with different emails (e.g., smoke runs with `SMOKE_FRESH_EMAIL=1`), the second call returns the first call's stored credential — which sends the auth flow down the existing-creds **signin** path with the ORIGINAL email, breaking when that email's account isn't actually accessible. Surfaced as Walmart's `workday-wizard-stuck-step-1` regression in Apr 26 multi-tenant smoke. Fix options: (1) include email in the lookup key; (2) have `SMOKE_FRESH_EMAIL` clean rows for the test user before each run; (3) add an `applicationEmail` arg semantic that "always overrides" the stored row. See `worker/src/workday/credentials.ts`.
+- **Workday wizard is hard-coded to Walmart at `worker/src/workday/index.ts:68`** (`if (tenant.host === "walmart.wd5.myworkdayjobs.com")`). All other tenants in `WORKDAY_TENANTS` fall through to `workday-wizard-not-implemented:${tenant.name}` at line 83. Adding any new tenant requires either: (a) per-tenant wizard like `runAdobeWizard`, or (b) generalizing `runWalmartWizard` with tenant-driven field maps + question heuristics. (b) is the right answer long-term but each tenant likely has unique step-3 questions that need their own answers (see `answerForApplicationQuestion()`). Sprint 2.
+- **Workday auth.ts is Walmart-tuned.** Adobe's signup form has `[data-automation-id="email"]` not appearing within 30s — different selectors. The `WorkdayFieldMap` interface in `tenants.ts` already accepts `fieldOverrides` but auth.ts may not consult it for every selector. Audit + add per-tenant overrides as new tenants come online.
+- **WORKDAY_CREDENTIAL_KEY ratchet.** Rotation invalidates every existing `WorkdayCredential.passwordEncrypted` row. There's no key-rotation pathway built. If/when rotation is needed (compromise), all stored Workday passwords become unrecoverable — users would need to either reset Workday-side passwords or have the worker generate fresh signup attempts. Also: the local-dev WORKDAY_CREDENTIAL_KEYs from Apr 25 + Apr 26 transcripts have created **prod Turso rows the prod key cannot decrypt** for the test user `1d16e543-...` (Walmart, Adobe, Capital One, possibly Salesforce). Cleanup: `DELETE FROM WorkdayCredential WHERE userId = '1d16e543-db6e-497b-b78b-28fbf0a30626'` — see Apr 26 Next Steps Priority B.
