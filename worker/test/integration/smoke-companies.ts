@@ -29,6 +29,7 @@
 import { writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { randomBytes } from "crypto";
 import { createClient } from "@libsql/client";
 import { applyToJob } from "../../src/apply-engine";
 
@@ -58,12 +59,14 @@ interface Candidate {
   control?: boolean;
 }
 
-// Phase C re-test: Workday only. The 3 tenants whose API actually validates.
-// Other 5 (Snowflake/ServiceNow/Cisco/CapitalOne/Intuit) returned 422 — wrong siteName, need research.
+// Workday tenants whose API validates (the 4 with correct host+siteName).
+// Snowflake/ServiceNow/Cisco/Intuit still 422 — siteName discovery needed (Sprint 3).
+// Capital One was originally listed as wd1+Capital_One; correct config is wd12+Capital_One.
 const WORKDAY_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cloudflare",   companySlug: "cloudflare",  ats: "greenhouse", boardSlug: "cloudflare",  control: true },
   { company: "Salesforce",   companySlug: "salesforce",  ats: "workday",    workday: { baseUrl: "https://salesforce.wd12.myworkdayjobs.com", company: "salesforce", siteName: "External_Career_Site" } },
   { company: "Adobe",        companySlug: "adobe",       ats: "workday",    workday: { baseUrl: "https://adobe.wd5.myworkdayjobs.com",       company: "adobe",      siteName: "external_experienced" } },
+  { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd12.myworkdayjobs.com", company: "capitalone", siteName: "Capital_One" } },
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",    siteName: "WalmartExternal" } },
 ];
 
@@ -87,7 +90,7 @@ const CANDIDATES: Candidate[] = process.env.SMOKE_WALMART_ONLY === "1"
   { company: "Adobe",        companySlug: "adobe",       ats: "workday",    workday: { baseUrl: "https://adobe.wd5.myworkdayjobs.com",       company: "adobe",        siteName: "external_experienced" } },
   { company: "ServiceNow",   companySlug: "servicenow",  ats: "workday",    workday: { baseUrl: "https://servicenow.wd1.myworkdayjobs.com",  company: "servicenow",   siteName: "ServiceNow" } },
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd1.myworkdayjobs.com",       company: "cisco",        siteName: "external_career_site" } },
-  { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd1.myworkdayjobs.com",  company: "capitalone",   siteName: "Capital_One" } },
+  { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd12.myworkdayjobs.com", company: "capitalone",   siteName: "Capital_One" } },
   { company: "Intuit",       companySlug: "intuit",      ats: "workday",    workday: { baseUrl: "https://intuit.wd5.myworkdayjobs.com",      company: "intuit",       siteName: "IntuitCareers" } },
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",      siteName: "WalmartExternal" } },
 
@@ -275,13 +278,24 @@ async function main() {
     process.exit(1);
   }
 
+  // SMOKE_FRESH_EMAIL=1 mints a single-use recon-{rand}@apply.* address for
+  // this run so Workday signup goes down the create-account path even when
+  // the test user already has an account on the tenant. Revert this block
+  // (and its env-var consumer below) once the consolidated path is verified.
+  const freshSmokeEmail = process.env.SMOKE_FRESH_EMAIL === "1"
+    ? `recon-${randomBytes(4).toString("hex")}@apply.theblackfemaleengineer.com`
+    : null;
+  if (freshSmokeEmail) {
+    console.log(`[smoke] SMOKE_FRESH_EMAIL=1 -> using ${freshSmokeEmail}`);
+  }
+
   const applicant = {
     firstName: u.firstName || "",
     lastName: u.lastName || "",
     // Match production browse-loop.ts:407 — prefer applicationEmail so ATS
     // verification + Workday signup land at the apply.* address SendGrid
     // routes to our InboundEmail webhook.
-    email: u.applicationEmail || u.email || "",
+    email: freshSmokeEmail || u.applicationEmail || u.email || "",
     phone: u.phone || "",
     city: u.city || undefined,
     usState: u.usState || undefined,

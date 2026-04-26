@@ -101,6 +101,23 @@ export async function signupOrSignin(args: AuthArgs): Promise<AuthResult> {
     return { success: false, error: "workday-apply-manually-not-found" };
   }
   await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
+  await page.waitForTimeout(2000);
+
+  // Some tenants (e.g., Adobe) skip the auth gate entirely and go straight
+  // to the wizard. Detect by checking for the progress bar or My Information
+  // form fields rather than an auth form.
+  const hasProgressBar = await page.locator(aid("progressBar")).first()
+    .isVisible({ timeout: 3000 }).catch(() => false);
+  const hasWizardForm = await page.locator(aid("formField-legalName--firstName"))
+    .first().isVisible({ timeout: 2000 }).catch(() => false);
+  if (hasProgressBar || hasWizardForm) {
+    const hasAuthForm = await page.locator(`${aid("createAccountSubmitButton")}, ${aid("signInSubmitButton")}`)
+      .first().isVisible({ timeout: 1500 }).catch(() => false);
+    if (!hasAuthForm) {
+      steps.push("workday: no auth gate detected — wizard starts immediately");
+      return { success: true, isNewAccount: false };
+    }
+  }
 
   // Step 3: switch to signin mode if we have existing creds.
   if (!cred.isNew) {
@@ -130,30 +147,91 @@ async function fillSignupForm(args: AuthArgs, accountEmail: string, password: st
   // `.fill()` value-sets without dispatching React's onChange in some tenants,
   // which leaves the submit button perpetually disabled. Use pressSequentially
   // (per-keystroke) and Tab to blur after.
-  await typeInto(page, aid(fields.signupEmail), accountEmail);
-  await typeInto(page, aid(fields.signupPassword), password);
-  await typeInto(page, aid(fields.signupPasswordVerify), password);
+  //
+  // Some tenants (e.g., Adobe) use different data-automation-id values for
+  // the signup form. Try the configured IDs first, then fall back to
+  // common alternatives.
+  const emailFilled = await typeIntoWithFallback(page, [
+    aid(fields.signupEmail),
+    aid("email"),
+    aid("signUpEmailAddress"),
+    'input[type="email"]',
+    'input[autocomplete="email"]',
+  ], accountEmail);
+  if (!emailFilled) {
+    return { success: false, error: "workday-signup-email-field-not-found" };
+  }
+
+  await typeIntoWithFallback(page, [
+    aid(fields.signupPassword),
+    aid("password"),
+    aid("signUpPassword"),
+    'input[type="password"]',
+  ], password);
+
+  await typeIntoWithFallback(page, [
+    aid(fields.signupPasswordVerify),
+    aid("verifyPassword"),
+    aid("confirmPassword"),
+    'input[type="password"]:nth-of-type(2)',
+  ], password);
+
   // Tab to blur — encourages validation to settle so the submit becomes clickable.
-  await page.locator(aid(fields.signupPasswordVerify)).first().press("Tab").catch(() => {});
+  await page.keyboard.press("Tab").catch(() => {});
   await page.waitForTimeout(1200);
 
   // CRITICAL: do NOT fill the `beecatcher` honeypot. Workday's bot detector
   // flags any account where this hidden input has a value.
   steps.push(`workday: filled signup form (email + password). Honeypot left empty.`);
 
-  // Some tenants have an "I agree to the terms" checkbox. Walmart does not as
-  // of Apr 25, 2026, but tenants vary. We try a generic terms checkbox click
-  // and silently no-op if not present.
-  const termsCheckbox = page.locator('[data-automation-id*="terms"]').first();
-  await termsCheckbox.check({ timeout: 2000 }).catch(() => {});
+  // Wait for form to settle after password fill.
+  await page.waitForTimeout(1500);
 
-  // Submit. Try normal click; fall back to force-click if the button reports
-  // un-actionable — Walmart's submit is sometimes covered by a tooltip.
-  await clickWithForceFallback(page, aid(fields.signupSubmit), steps, "Create Account submit");
+  // Check ALL visible checkboxes on the signup page (terms, privacy, etc.).
+  const allCheckboxes = await page.locator('input[type="checkbox"]').all();
+  for (const cb of allCheckboxes) {
+    if (await cb.isVisible({ timeout: 800 }).catch(() => false)) {
+      const checked = await cb.isChecked().catch(() => true);
+      if (!checked) await cb.check({ timeout: 2000 }).catch(() => {});
+    }
+  }
+  // Also try custom checkbox components (Workday sometimes uses div-based toggles).
+  const customCheckboxes = await page.locator('[role="checkbox"]').all();
+  for (const cb of customCheckboxes) {
+    if (await cb.isVisible({ timeout: 500 }).catch(() => false)) {
+      const state = await cb.getAttribute("aria-checked").catch(() => "true");
+      if (state !== "true") await cb.click({ timeout: 2000 }).catch(() => {});
+    }
+  }
+
+  // Scroll submit button into view and give the form time to enable it.
+  await page.evaluate("window.scrollTo(0, document.body.scrollHeight)").catch(() => {});
+  await page.waitForTimeout(1000);
+
+  // Submit. Try the configured button first, then common fallbacks.
+  const submitClicked = await clickWithFallbackSelectors(page, [
+    aid(fields.signupSubmit),
+    aid("createAccountSubmitButton"),
+    'button[type="submit"]',
+    'button:has-text("Create Account")',
+    'button:has-text("Sign Up")',
+  ], steps, "Create Account submit");
+  if (!submitClicked) {
+    return { success: false, error: "workday-signup-submit-not-found" };
+  }
 
   // Wait for either email-verify gate or direct redirect into the wizard.
   await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
   await page.waitForTimeout(2000);
+
+  // Check for signup errors (e.g., "email already in use", validation failures).
+  const errorText = await page.evaluate(`(function(){
+    var errs = document.querySelectorAll('[data-automation-id*="error"], [role="alert"], .error-message, [class*="error"]');
+    return Array.from(errs).map(function(e){ return (e.innerText || e.textContent || '').trim(); }).filter(Boolean).join(' | ').slice(0, 300);
+  })()`).catch(() => "") as string;
+  if (errorText) {
+    steps.push(`workday: signup errors detected: ${errorText}`);
+  }
 
   // Check page state. If the URL or page text indicates we need to verify
   // email, poll the inbound table for the verify link.
@@ -181,6 +259,56 @@ async function fillSignupForm(args: AuthArgs, accountEmail: string, password: st
     steps.push(`workday: navigating to verify link after ${result.elapsedMs}ms`);
     await page.goto(result.link, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
     await page.waitForTimeout(3000);
+  }
+
+  // Some tenants (e.g., Capital One) land on /login/ok?redirect=... after
+  // verify/signup. Follow the redirect param to reach the actual wizard.
+  const postAuthUrl = page.url();
+  const redirectMatch = postAuthUrl.match(/[?&]redirect=([^&]+)/);
+  if (redirectMatch) {
+    const redirectPath = decodeURIComponent(redirectMatch[1]);
+    const base = new URL(postAuthUrl).origin;
+    const target = redirectPath.startsWith("http") ? redirectPath : `${base}${redirectPath}`;
+    steps.push(`workday: following redirect param → ${target}`);
+    await page.goto(target, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await page.waitForTimeout(3000);
+  }
+
+  // Some tenants (e.g., Capital One) redirect back to the auth page after
+  // verify. The account exists but the session isn't authenticated. Detect
+  // the auth form and sign in. First check if the page still shows the
+  // Create Account form — if so, switch to Sign In mode first.
+  const hasCreateForm = await page.locator(aid("createAccountSubmitButton")).first()
+    .isVisible({ timeout: 3000 }).catch(() => false);
+  const hasSigninForm = await page.locator(aid("signInSubmitButton")).first()
+    .isVisible({ timeout: 2000 }).catch(() => false);
+  if (hasCreateForm || hasSigninForm) {
+    steps.push(`workday: post-signup auth page detected (create=${hasCreateForm}, signin=${hasSigninForm})`);
+    if (hasCreateForm && !hasSigninForm) {
+      await clickIfVisible(page.locator(aid("signInLink")).first(), "signInLink (switch to signin)", steps);
+      await page.waitForTimeout(1500);
+    }
+    const fields = fieldMapFor(args.tenant);
+    await typeInto(page, aid(fields.signinEmail), accountEmail);
+    await typeInto(page, aid(fields.signinPassword), password);
+    await page.locator(aid(fields.signinPassword)).first().press("Tab").catch(() => {});
+    await page.waitForTimeout(1500);
+    await clickWithForceFallback(page, aid(fields.signinSubmit), steps, "post-signup Sign In");
+    await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await page.waitForTimeout(4000);
+    steps.push(`workday: post-signup signin url=${page.url()}`);
+
+    // Follow redirect param again after signin (same logic as above).
+    const postSigninUrl = page.url();
+    const signinRedirect = postSigninUrl.match(/[?&]redirect=([^&]+)/);
+    if (signinRedirect) {
+      const rPath = decodeURIComponent(signinRedirect[1]);
+      const base = new URL(postSigninUrl).origin;
+      const target = rPath.startsWith("http") ? rPath : `${base}${rPath}`;
+      steps.push(`workday: following post-signin redirect → ${target}`);
+      await page.goto(target, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
+      await page.waitForTimeout(3000);
+    }
   }
 
   steps.push("workday: signup flow complete");
@@ -232,6 +360,27 @@ async function typeInto(page: Page, selector: string, value: string): Promise<vo
   await el.pressSequentially(value, { delay: 25 });
 }
 
+async function typeIntoWithFallback(page: Page, selectors: string[], value: string): Promise<boolean> {
+  for (const sel of selectors) {
+    const el = page.locator(sel).first();
+    if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+      try {
+        await el.click({ timeout: SHORT_TIMEOUT_MS }).catch(() => {});
+        await el.pressSequentially(value, { delay: 50 });
+        // Verify the value was typed correctly
+        const got = await el.inputValue().catch(() => "");
+        if (got !== value) {
+          await el.fill(value).catch(() => {});
+        }
+        return true;
+      } catch {
+        continue;
+      }
+    }
+  }
+  return false;
+}
+
 /**
  * Click that falls back to force=true when actionability checks fail. Workday
  * sometimes covers the submit button with a transient tooltip overlay; the
@@ -251,4 +400,27 @@ async function clickWithForceFallback(
     steps.push(`workday: ${label} normal-click timed out — using force=true`);
     await page.locator(selector).first().click({ force: true, timeout: SHORT_TIMEOUT_MS }).catch(() => {});
   }
+}
+
+async function clickWithFallbackSelectors(
+  page: Page,
+  selectors: string[],
+  steps: string[],
+  label: string,
+): Promise<boolean> {
+  for (const sel of selectors) {
+    const el = page.locator(sel).first();
+    if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+      try {
+        await el.click({ timeout: SHORT_TIMEOUT_MS });
+        steps.push(`workday: clicked ${label} via ${sel}`);
+        return true;
+      } catch {
+        steps.push(`workday: ${label} normal-click timed out on ${sel} — using force=true`);
+        await el.click({ force: true, timeout: SHORT_TIMEOUT_MS }).catch(() => {});
+        return true;
+      }
+    }
+  }
+  return false;
 }

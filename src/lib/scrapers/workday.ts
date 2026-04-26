@@ -63,99 +63,115 @@ export async function scrapeWorkday(
     // Workday uses a POST endpoint to search jobs
     const url = `${config.baseUrl}/wday/cxs/${config.company}/${config.siteName}/jobs`;
 
+    const seen = new Set<string>();
     const allJobs: ScrapedJob[] = [];
-    let offset = 0;
-    const limit = 20;
-    let hasMore = true;
 
-    // Paginate through results (max 500 jobs to avoid rate limits)
-    while (hasMore && offset < 500) {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          appliedFacets: {},
-          limit,
-          offset,
-          searchText: "",
-        }),
-      });
+    // Two-pass scrape: default ordering (covers FT senior tech) + searchText
+    // bias toward "intern" (surfaces internships that get pushed past the 500
+    // offset cap on big tenants like Walmart with mostly non-tech postings).
+    // Both passes share the same offset cap and tech-role filter; dedup by
+    // externalId across passes.
+    const passes: Array<{ searchText: string; label: string }> = [
+      { searchText: "", label: "default" },
+      { searchText: "intern", label: "intern-bias" },
+    ];
 
-      if (!response.ok) {
-        // If first request fails, return error
-        if (offset === 0) {
-          return {
-            success: false,
-            jobs: [],
-            error: `Workday API returned ${response.status}`,
-          };
+    for (const pass of passes) {
+      let offset = 0;
+      const limit = 20;
+      let hasMore = true;
+
+      // Paginate through results (max 500 jobs per pass to avoid rate limits)
+      while (hasMore && offset < 500) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            appliedFacets: {},
+            limit,
+            offset,
+            searchText: pass.searchText,
+          }),
+        });
+
+        if (!response.ok) {
+          // If first request of the first pass fails, return error.
+          // Per-pass failures after offset 0 just stop that pass.
+          if (offset === 0 && pass.label === "default") {
+            return {
+              success: false,
+              jobs: [],
+              error: `Workday API returned ${response.status}`,
+            };
+          }
+          break;
         }
-        // Otherwise, just stop pagination
-        break;
-      }
 
-      const data: WorkdayApiResponse = await response.json();
+        const data: WorkdayApiResponse = await response.json();
 
-      if (!data.jobPostings || data.jobPostings.length === 0) {
-        break;
-      }
-
-      for (const job of data.jobPostings) {
-        // Filter for tech roles only
-        if (!isTechRole(job.title)) {
-          continue;
+        if (!data.jobPostings || data.jobPostings.length === 0) {
+          break;
         }
 
-        const location = job.locationsText || "Unknown";
-        const remote = isRemote(location, job.title);
+        for (const job of data.jobPostings) {
+          // Filter for tech roles only
+          if (!isTechRole(job.title)) {
+            continue;
+          }
 
-        // Extract employment type from bullet fields if available, fall back
-        // to title-based inference for unlabeled intern listings.
-        let employmentType = "Full-time";
-        if (job.bulletFields) {
-          for (const field of job.bulletFields) {
-            const normalized = normalizeJobType(field, job.title);
-            if (normalized !== "Full-time") {
-              employmentType = normalized;
-              break;
+          // Extract job ID from path (e.g., /job/R123456)
+          const idMatch = job.externalPath.match(/\/job\/([^/]+)/);
+          const externalId = idMatch ? `wd-${idMatch[1]}` : `wd-${job.externalPath}`;
+          if (seen.has(externalId)) continue;
+          seen.add(externalId);
+
+          const location = job.locationsText || "Unknown";
+          const remote = isRemote(location, job.title);
+
+          // Extract employment type from bullet fields if available, fall back
+          // to title-based inference for unlabeled intern listings.
+          let employmentType = "Full-time";
+          if (job.bulletFields) {
+            for (const field of job.bulletFields) {
+              const normalized = normalizeJobType(field, job.title);
+              if (normalized !== "Full-time") {
+                employmentType = normalized;
+                break;
+              }
             }
           }
+          if (employmentType === "Full-time") {
+            employmentType = normalizeJobType(undefined, job.title);
+          }
+
+          // Build apply URL - must include site name for valid Workday URLs
+          const applyUrl = `${config.baseUrl}/en-US/${config.siteName}${job.externalPath}`;
+
+          const scrapedJob: ScrapedJob = {
+            externalId,
+            title: job.title,
+            location,
+            type: employmentType,
+            remote,
+            postedAt: parseWorkdayDate(job.postedOn),
+            applyUrl,
+            category: categorizeJob(job.title),
+            tags: extractTags(job.title),
+          };
+
+          allJobs.push(scrapedJob);
         }
-        if (employmentType === "Full-time") {
-          employmentType = normalizeJobType(undefined, job.title);
-        }
 
-        // Build apply URL - must include site name for valid Workday URLs
-        const applyUrl = `${config.baseUrl}/en-US/${config.siteName}${job.externalPath}`;
+        // Check if there are more results
+        hasMore = data.jobPostings.length === limit && offset + limit < data.total;
+        offset += limit;
 
-        // Extract job ID from path (e.g., /job/R123456)
-        const idMatch = job.externalPath.match(/\/job\/([^/]+)/);
-        const externalId = idMatch ? `wd-${idMatch[1]}` : `wd-${job.externalPath}`;
-
-        const scrapedJob: ScrapedJob = {
-          externalId,
-          title: job.title,
-          location,
-          type: employmentType,
-          remote,
-          postedAt: parseWorkdayDate(job.postedOn),
-          applyUrl,
-          category: categorizeJob(job.title),
-          tags: extractTags(job.title),
-        };
-
-        allJobs.push(scrapedJob);
+        // Small delay to be nice to the API
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
-
-      // Check if there are more results
-      hasMore = data.jobPostings.length === limit && offset + limit < data.total;
-      offset += limit;
-
-      // Small delay to be nice to the API
-      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     return {

@@ -542,5 +542,37 @@
     "industry": "Technology",
     "atsType": "ashby",
     "atsConfig": { "boardSlug": "pinecone" }
+  },
+  {
+    "name": "Salesforce",
+    "slug": "salesforce",
+    "careersUrl": "https://salesforce.wd12.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://salesforce.wd12.myworkdayjobs.com", "company": "salesforce", "siteName": "External_Career_Site" }
+  },
+  {
+    "name": "Adobe",
+    "slug": "adobe",
+    "careersUrl": "https://adobe.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://adobe.wd5.myworkdayjobs.com", "company": "adobe", "siteName": "external_experienced" }
+  },
+  {
+    "name": "Walmart",
+    "slug": "walmart",
+    "careersUrl": "https://walmart.wd5.myworkdayjobs.com",
+    "industry": "Retail",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://walmart.wd5.myworkdayjobs.com", "company": "walmart", "siteName": "WalmartExternal" }
+  },
+  {
+    "name": "Capital One",
+    "slug": "capitalone",
+    "careersUrl": "https://capitalone.wd12.myworkdayjobs.com",
+    "industry": "Financial Services",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://capitalone.wd12.myworkdayjobs.com", "company": "capitalone", "siteName": "Capital_One" }
   }
 ]

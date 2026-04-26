@@ -19,7 +19,7 @@ import type { Page } from "playwright";
 import type { ApplicantData, ApplyResult } from "../apply-engine.js";
 import { findTenant, type WorkdayTenant } from "./tenants.js";
 import { signupOrSignin } from "./auth.js";
-import { runWalmartWizard } from "./wizard.js";
+import { runWorkdayWizard } from "./wizard.js";
 import { markCredentialUsed } from "./credentials.js";
 
 /**
@@ -63,24 +63,18 @@ export async function runWorkdayApply(
     return { success: false, error: authResult.error ?? "workday-auth-failed", steps };
   }
 
-  // Wizard: drives the multi-step apply form. Currently Walmart-specific;
-  // Sprint 2 generalizes this for other tenants.
-  if (tenant.host === "walmart.wd5.myworkdayjobs.com") {
-    const wizardResult = await runWalmartWizard({
-      page,
-      tenant,
-      applicant,
-      resumePath,
-      steps,
-      deadlineMs: remainingMs,
-    });
-    if (wizardResult.success) {
-      await markCredentialUsed(userId, tenant.host).catch(() => {});
-    }
-    return wizardResult;
+  const wizardResult = await runWorkdayWizard({
+    page,
+    tenant,
+    applicant,
+    resumePath,
+    steps,
+    deadlineMs: remainingMs,
+  });
+  if (wizardResult.success) {
+    await markCredentialUsed(userId, tenant.host).catch(() => {});
   }
-
-  return { success: false, error: `workday-wizard-not-implemented:${tenant.name}`, steps };
+  return wizardResult;
 }
 
 export type { WorkdayTenant };

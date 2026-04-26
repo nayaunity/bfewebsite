@@ -7,6 +7,11 @@
  * a pass on the apply smoke (see worker/test/integration/smoke-companies.ts).
  */
 
+export interface QuestionRule {
+  pattern: RegExp;
+  answer: string;
+}
+
 export interface WorkdayTenant {
   /** Hostname, e.g., "walmart.wd5.myworkdayjobs.com". Used as the lookup key. */
   host: string;
@@ -20,6 +25,8 @@ export interface WorkdayTenant {
   knownSkipPages?: WorkdayWizardStep[];
   /** Hand-written field overrides (data-automation-id values that differ from the cross-tenant defaults). */
   fieldOverrides?: Partial<WorkdayFieldMap>;
+  /** Tenant-specific question→answer rules. Checked before generic defaults. */
+  questionRules?: QuestionRule[];
 }
 
 export type WorkdayWizardStep =
@@ -90,16 +97,90 @@ export function fieldMapFor(tenant: WorkdayTenant): WorkdayFieldMap {
   return { ...DEFAULT_FIELD_MAP, ...(tenant.fieldOverrides ?? {}) };
 }
 
+const GENERIC_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /sponsorship|visa|h-?1b/i, answer: "No" },
+  { pattern: /authorized.*work|legally.*work|provide work auth|able to provide|eligib.*work/i, answer: "Yes" },
+  { pattern: /age category|age range|18 years/i, answer: "18 years" },
+  { pattern: /mobile text|sms|text message|opt.?in.*text/i, answer: "Opt-Out" },
+  { pattern: /certify|certif|acknowledge|attest/i, answer: "Yes" },
+  { pattern: /previously.*applied|applied.*before/i, answer: "No" },
+  { pattern: /convicted|felony|misdemeanor|criminal/i, answer: "No" },
+  { pattern: /disability|disabled/i, answer: "No" },
+  { pattern: /veteran|military service/i, answer: "No" },
+  { pattern: /citizen.*(cuba|iran|north korea|syria|crimea|sudan)|sanctions|sanctioned|embargo/i, answer: "No" },
+  { pattern: /government.*entity|government.*official|owned.*controlled/i, answer: "No" },
+  { pattern: /relative.*employed|family.*employed|related.*employee/i, answer: "No" },
+];
+
+const WALMART_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /family member|spouse.*partner|partner.*spouse|relative.*walmart|walmart.*relative/i, answer: "No" },
+  { pattern: /uniformed services|military.*spouse/i, answer: "No" },
+  { pattern: /walmart associate|sam.s club|affiliation/i, answer: "Have never been" },
+  { pattern: /eligibility|industry/i, answer: "No" },
+];
+
+const ADOBE_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /previously.*adobe|adobe.*previously|former.*adobe|adobe.*employee/i, answer: "No" },
+  { pattern: /referred|referral|employee.*refer/i, answer: "No" },
+  { pattern: /non-?compete|restrictive.*covenant/i, answer: "No" },
+];
+
+const SALESFORCE_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /previously.*salesforce|salesforce.*previously|former.*salesforce/i, answer: "No" },
+  { pattern: /referred|referral|employee.*refer/i, answer: "No" },
+  { pattern: /non-?compete|restrictive.*covenant/i, answer: "No" },
+  { pattern: /citizen.*(cuba|iran|north korea|syria|crimea|sudan)/i, answer: "No" },
+  { pattern: /resident.*(cuba|iran|north korea|syria|crimea)/i, answer: "No" },
+  { pattern: /government.*entity|government.*official|owned.*controlled/i, answer: "No" },
+];
+
+const CAPITALONE_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /previously.*capital one|capital one.*previously|former.*capital one/i, answer: "No" },
+  { pattern: /referred|referral|employee.*refer/i, answer: "No" },
+  { pattern: /background check|consent.*check/i, answer: "Yes" },
+];
+
 export const WORKDAY_TENANTS: WorkdayTenant[] = [
   {
     host: "walmart.wd5.myworkdayjobs.com",
     name: "Walmart",
     apiTenant: "walmart",
     siteName: "WalmartExternal",
+    questionRules: WALMART_QUESTION_RULES,
   },
-  // Sprint 2 will add Salesforce + Adobe.
-  // Sprint 3 will add Snowflake/ServiceNow/Cisco/Capital One/Intuit (after siteName discovery).
+  {
+    host: "adobe.wd5.myworkdayjobs.com",
+    name: "Adobe",
+    apiTenant: "adobe",
+    siteName: "external_experienced",
+    questionRules: ADOBE_QUESTION_RULES,
+  },
+  {
+    host: "salesforce.wd12.myworkdayjobs.com",
+    name: "Salesforce",
+    apiTenant: "salesforce",
+    siteName: "External_Career_Site",
+    questionRules: SALESFORCE_QUESTION_RULES,
+  },
+  {
+    host: "capitalone.wd12.myworkdayjobs.com",
+    name: "Capital One",
+    apiTenant: "capitalone",
+    siteName: "Capital_One",
+    questionRules: CAPITALONE_QUESTION_RULES,
+  },
 ];
+
+export function answerForQuestion(tenant: WorkdayTenant, questionText: string): string {
+  const q = questionText.toLowerCase();
+  for (const rule of tenant.questionRules ?? []) {
+    if (rule.pattern.test(q)) return rule.answer;
+  }
+  for (const rule of GENERIC_QUESTION_RULES) {
+    if (rule.pattern.test(q)) return rule.answer;
+  }
+  return "";
+}
 
 export function findTenant(applyUrl: string): WorkdayTenant | null {
   let host: string;
