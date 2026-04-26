@@ -230,7 +230,7 @@ export default function ApplicationsDashboard({
             </div>
             <div>
               <span className="text-base font-serif font-bold">Boost Your Resume</span>
-              <p className="text-sm text-black/70 mt-0.5">Answer 10 quick questions and we&apos;ll optimize your resume for PM roles</p>
+              <p className="text-sm text-black/70 mt-0.5">We tailor your resume for every application, but it&apos;s only as strong as the original. Answer a few quick questions and we&apos;ll rewrite yours to lead with measurable impact, so every tailored version starts from a stronger foundation.</p>
             </div>
           </div>
           <svg className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

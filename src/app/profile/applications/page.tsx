@@ -169,7 +169,10 @@ export default async function ApplicationsPage() {
             profileReady={!!(user?.targetRole && (user.resumeUrl || (user.resumes && user.resumes.length > 0)))}
             missingRoles={!user?.targetRole}
             missingResume={!user?.resumeUrl && (!user?.resumes || user.resumes.length === 0)}
-            showResumeQuiz={session.user.email === "anika.ahmed04@gmail.com"}
+            showResumeQuiz={
+              (user?.subscriptionStatus === "active" || user?.subscriptionStatus === "trialing") &&
+              !!(user.resumeUrl || (user.resumes && user.resumes.length > 0))
+            }
             subscriptionTier={user?.subscriptionTier ?? "free"}
             subscriptionStatus={user?.subscriptionStatus ?? "inactive"}
             freeTierEndsAt={user?.freeTierEndsAt ? user.freeTierEndsAt.toISOString() : null}

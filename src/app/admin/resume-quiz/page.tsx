@@ -3,7 +3,7 @@ import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
-const QUESTION_LABELS: Record<string, string> = {
+const LEGACY_LABELS: Record<string, string> = {
   doePlatformUsers: "DoE Platform Scale",
   agentAccuracy: "AI Agent Accuracy",
   llmBakeoff: "LLM Bake-Off",
@@ -46,6 +46,8 @@ async function getQuizData() {
     .map((u) => {
       let quiz: Record<string, string> | null = null;
       let submittedAt: string | null = null;
+      let dynamicLabels: Record<string, string> = {};
+      let rewriteUrl: string | null = null;
       try {
         const parsed = JSON.parse(u.applicationAnswers || "{}");
         if (parsed.resumeQuiz) {
@@ -53,8 +55,16 @@ async function getQuizData() {
           const { submittedAt: _, ...answers } = parsed.resumeQuiz;
           quiz = answers;
         }
+        if (parsed.resumeQuizQuestions) {
+          for (const q of parsed.resumeQuizQuestions) {
+            dynamicLabels[q.id] = q.label;
+          }
+        }
+        if (parsed.resumeRewrite?.htmlUrl) {
+          rewriteUrl = parsed.resumeRewrite.htmlUrl;
+        }
       } catch {}
-      return { ...u, quiz, submittedAt };
+      return { ...u, quiz, submittedAt, dynamicLabels, rewriteUrl };
     })
     .filter((u) => u.quiz !== null);
 
@@ -133,7 +143,8 @@ export default async function ResumeQuizAdminPage() {
               <div className="px-6 py-4 space-y-4">
                 {Object.entries(user.quiz || {}).map(([key, value]) => {
                   if (!value || typeof value !== "string") return null;
-                  const label = QUESTION_LABELS[key] || key;
+                  const label =
+                    user.dynamicLabels[key] || LEGACY_LABELS[key] || key;
                   return (
                     <div key={key}>
                       <span className="text-xs font-semibold text-[var(--gray-600)] uppercase tracking-wider">
@@ -145,6 +156,21 @@ export default async function ResumeQuizAdminPage() {
                     </div>
                   );
                 })}
+                {user.rewriteUrl && (
+                  <div className="pt-3 border-t border-[var(--card-border)]">
+                    <a
+                      href={user.rewriteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#ef562a] hover:underline"
+                    >
+                      View Rewritten Resume
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           ))}

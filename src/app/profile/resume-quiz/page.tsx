@@ -51,9 +51,10 @@ export default async function ResumeQuizPage() {
               <span className="italic text-[#ef562a]">unforgettable</span>
             </h1>
             <p className="text-[var(--gray-600)] max-w-lg mx-auto">
-              10 quick questions, ~5 minutes. Your answers give us the numbers
-              and stories that turn a good resume into one that lands interviews.
-              Ballpark answers are perfect.
+              A few quick questions tailored to YOUR experience, ~5 minutes.
+              Your answers give us the numbers and stories that turn a good
+              resume into one that lands interviews. Ballpark answers are
+              perfect.
             </p>
           </div>
 
