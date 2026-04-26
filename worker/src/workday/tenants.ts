@@ -140,6 +140,12 @@ const CAPITALONE_QUESTION_RULES: QuestionRule[] = [
   { pattern: /background check|consent.*check/i, answer: "Yes" },
 ];
 
+const CISCO_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /previously.*cisco|cisco.*previously|former.*cisco/i, answer: "No" },
+  { pattern: /referred|referral|employee.*refer/i, answer: "No" },
+  { pattern: /non-?compete|restrictive.*covenant/i, answer: "No" },
+];
+
 export const WORKDAY_TENANTS: WorkdayTenant[] = [
   {
     host: "walmart.wd5.myworkdayjobs.com",
@@ -168,6 +174,13 @@ export const WORKDAY_TENANTS: WorkdayTenant[] = [
     apiTenant: "capitalone",
     siteName: "Capital_One",
     questionRules: CAPITALONE_QUESTION_RULES,
+  },
+  {
+    host: "cisco.wd5.myworkdayjobs.com",
+    name: "Cisco",
+    apiTenant: "cisco",
+    siteName: "Cisco_Careers",
+    questionRules: CISCO_QUESTION_RULES,
   },
 ];
 

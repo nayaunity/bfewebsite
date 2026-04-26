@@ -319,9 +319,14 @@ async function fillSigninForm(args: AuthArgs, accountEmail: string, password: st
   const { page, tenant, steps } = args;
   const fields = fieldMapFor(tenant);
 
-  await typeInto(page, aid(fields.signinEmail), accountEmail);
-  await typeInto(page, aid(fields.signinPassword), password);
-  await page.locator(aid(fields.signinPassword)).first().press("Tab").catch(() => {});
+  // Use typeIntoVisible instead of typeInto: after switching from Create Account
+  // to Sign In, both forms coexist in the DOM with identical data-automation-id
+  // values. `.first()` picks the hidden Create Account field. We need the visible one.
+  await typeIntoVisible(page, aid(fields.signinEmail), accountEmail);
+  await typeIntoVisible(page, aid(fields.signinPassword), password);
+  const pwLoc = page.locator(`${aid(fields.signinPassword)}:visible`).first();
+  await pwLoc.press("Tab").catch(() =>
+    page.locator(aid(fields.signinPassword)).first().press("Tab").catch(() => {}));
   await page.waitForTimeout(1500);
   steps.push("workday: filled signin form");
 
@@ -336,9 +341,29 @@ async function fillSigninForm(args: AuthArgs, accountEmail: string, password: st
   await page.waitForTimeout(4000);
 
   // Observability: log the URL + page title so we can see what state we're in.
-  steps.push(`workday: post-signin url=${page.url()} title="${await page.title().catch(() => "")}"`);
+  const postSigninTitle = await page.title().catch(() => "");
+  steps.push(`workday: post-signin url=${page.url()} title="${postSigninTitle}"`);
   if (process.env.WORKDAY_DEBUG === "1") {
     await page.screenshot({ path: `worker/test/integration/wd-debug-post-signin-${Date.now()}.png`, fullPage: true }).catch(() => {});
+  }
+
+  // Detect sign-in failure: if the auth page is still showing after submit,
+  // the credentials were wrong or the account doesn't exist on this tenant.
+  // Fall back to account creation by reloading the apply page (which shows
+  // the Create Account form by default).
+  const stillOnAuth = await page.locator(`${aid("createAccountSubmitButton")}, ${aid("signInSubmitButton")}`)
+    .first().isVisible({ timeout: 2000 }).catch(() => false);
+  if (stillOnAuth || /create account/i.test(postSigninTitle)) {
+    steps.push("workday: signin failed (auth page still visible) — reloading for account creation");
+    await page.reload({ waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await page.waitForTimeout(2000);
+    // Re-click Apply → Apply Manually to get back to the auth gate.
+    await clickIfVisible(page.locator(aid("adventureButton")).first(), "Apply (retry)", steps);
+    await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await clickIfVisible(page.locator(aid("applyManually")).first(), "Apply Manually (retry)", steps);
+    await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await page.waitForTimeout(2000);
+    return await fillSignupForm(args, accountEmail, password);
   }
 
   steps.push("workday: signin flow complete");
@@ -358,6 +383,20 @@ async function typeInto(page: Page, selector: string, value: string): Promise<vo
     // ignore — the locator might still be type-able even without a focused click
   }
   await el.pressSequentially(value, { delay: 25 });
+}
+
+async function typeIntoVisible(page: Page, selector: string, value: string): Promise<void> {
+  const allEls = page.locator(selector);
+  const count = await allEls.count();
+  for (let i = 0; i < count; i++) {
+    const el = allEls.nth(i);
+    if (await el.isVisible({ timeout: 1000 }).catch(() => false)) {
+      try { await el.click({ timeout: SHORT_TIMEOUT_MS }); } catch { /* ignore */ }
+      await el.pressSequentially(value, { delay: 25 });
+      return;
+    }
+  }
+  await typeInto(page, selector, value);
 }
 
 async function typeIntoWithFallback(page: Page, selectors: string[], value: string): Promise<boolean> {

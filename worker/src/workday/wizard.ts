@@ -58,8 +58,8 @@ async function detectStep(page: Page): Promise<{ current: number; total: number;
 type StepType = "my-information" | "my-experience" | "application-questions" | "voluntary-disclosures" | "self-identify" | "unknown";
 
 // Workday wizard steps are consistently ordered across tenants. 5-step
-// wizards: MI, ME, AQ, VD, Review. 6-step wizards add "Self Identify"
-// between VD and Review. The review step is handled by `current === total`.
+// wizards: MI, ME, AQ, VD, Review. 6-step add "Self Identify" before Review.
+// 7-step add a second VD/consent page. Review = `current === total`.
 const STEP_MAP_5: Record<number, StepType> = {
   1: "my-information",
   2: "my-experience",
@@ -73,9 +73,17 @@ const STEP_MAP_6: Record<number, StepType> = {
   4: "voluntary-disclosures",
   5: "self-identify",
 };
+const STEP_MAP_7: Record<number, StepType> = {
+  1: "my-information",
+  2: "my-experience",
+  3: "application-questions",
+  4: "voluntary-disclosures",
+  5: "self-identify",
+  6: "voluntary-disclosures",
+};
 
 async function detectStepType(page: Page, stepNumber: number, totalSteps: number): Promise<StepType> {
-  const map = totalSteps >= 6 ? STEP_MAP_6 : STEP_MAP_5;
+  const map = totalSteps >= 7 ? STEP_MAP_7 : totalSteps >= 6 ? STEP_MAP_6 : STEP_MAP_5;
   const mapped = map[stepNumber];
   if (mapped) return mapped;
 
@@ -663,7 +671,12 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
   const genderFields = (await page.evaluate(`(function(){
     return Array.from(document.querySelectorAll('[data-automation-id^="formField-"]')).filter(function(el){
       var r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0 && el.querySelector('button[aria-haspopup], select, [role="listbox"], [data-automation-id="multiSelectContainer"]');
+      if (r.width <= 0 || r.height <= 0) return false;
+      if (!el.querySelector('button[aria-haspopup], select, [role="listbox"], [data-automation-id="multiSelectContainer"]')) return false;
+      var aid = (el.getAttribute('data-automation-id') || '').toLowerCase();
+      if (/date|esignature/.test(aid)) return false;
+      if (el.querySelector('[data-automation-id*="dateSection"]')) return false;
+      return true;
     }).map(function(el){
       return { aid: el.getAttribute('data-automation-id') || '', text: (el.innerText || el.textContent || '').trim().slice(0, 200) };
     });
@@ -749,30 +762,261 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     }
   }
   // Text inputs (e-signature pages: Name + Date fields).
+  // First pass: formField-* containers (skip dateSection inputs — handled by date widget).
   const emptyInputs = (await page.evaluate(`(function(){
-    return Array.from(document.querySelectorAll('[data-automation-id^="formField-"] input[type="text"], [data-automation-id^="formField-"] input:not([type])')).filter(function(el){
+    return Array.from(document.querySelectorAll('[data-automation-id^="formField-"] input')).filter(function(el){
       var r = el.getBoundingClientRect();
       if (r.width <= 0 || r.height <= 0) return false;
-      if (el.type === 'file' || el.type === 'hidden') return false;
+      if (el.type === 'file' || el.type === 'hidden' || el.type === 'checkbox' || el.type === 'radio') return false;
+      var ownAid = el.getAttribute('data-automation-id') || '';
+      if (/dateSection/i.test(ownAid)) return false;
       return !el.value || !el.value.trim();
     }).map(function(el){
       var ff = el.closest('[data-automation-id^="formField-"]');
       var label = (ff.innerText || ff.textContent || '').trim().split('\\n')[0].slice(0, 100);
-      return { aid: ff.getAttribute('data-automation-id') || '', label: label };
+      return { aid: ff.getAttribute('data-automation-id') || '', label: label, type: el.type || 'text', sel: 'formField' };
     });
-  })()`)) as { aid: string; label: string }[];
+  })()`)) as { aid: string; label: string; type: string; sel: string }[];
+
+  // Second pass: ANY visible empty input on the page (catches fields outside formField containers).
+  // Also skip dateSection inputs.
+  const allEmptyInputs = (await page.evaluate(`(function(){
+    return Array.from(document.querySelectorAll('input')).filter(function(el){
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) return false;
+      if (el.type === 'file' || el.type === 'hidden' || el.type === 'checkbox' || el.type === 'radio') return false;
+      if (el.closest('[data-automation-id^="formField-"]')) return false;
+      var ownAid = el.getAttribute('data-automation-id') || '';
+      if (/dateSection/i.test(ownAid)) return false;
+      return !el.value || !el.value.trim();
+    }).map(function(el){
+      var parent = el.parentElement;
+      var nearby = '';
+      for (var p = el; p && p !== document.body; p = p.parentElement) {
+        var t = (p.innerText || p.textContent || '').trim();
+        if (t.length > 2 && t.length < 200) { nearby = t.split('\\n')[0].slice(0, 100); break; }
+      }
+      var aid = el.getAttribute('data-automation-id') || el.id || '';
+      return { aid: aid, label: nearby, type: el.type || 'text', sel: 'loose' };
+    });
+  })()`)) as { aid: string; label: string; type: string; sel: string }[];
+
+  const combined = [...emptyInputs, ...allEmptyInputs];
   let textFilled = 0;
-  for (const ti of emptyInputs) {
+  for (let i = 0; i < combined.length; i++) {
+    const ti = combined[i];
     const label = ti.label.toLowerCase();
     let value = "";
-    if (/\bname\b|signature/i.test(label)) value = `${applicant.firstName} ${applicant.lastName}`;
-    else if (/\bdate\b/i.test(label)) value = new Date().toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+    if (/\bname\b|signature/i.test(label) && !/date/i.test(label)) value = `${applicant.firstName} ${applicant.lastName}`;
+    else if (/\bdate\b|today/i.test(label) || ti.aid.toLowerCase().includes("date")) value = new Date().toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
     else continue;
-    const input = page.locator(`[data-automation-id="${ti.aid}"] input`).first();
+    const input = ti.sel === "formField"
+      ? page.locator(`[data-automation-id="${ti.aid}"] input`).first()
+      : ti.aid
+        ? page.locator(`[data-automation-id="${ti.aid}"], #${ti.aid}`).first()
+        : page.locator("input").filter({ hasText: "" }).nth(i);
     if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
       await input.click().catch(() => {});
       await input.pressSequentially(value, { delay: 60 });
       textFilled++;
+      steps.push(`workday-wizard: filled ${ti.sel} input "${ti.label}" = "${value}"`);
+    }
+  }
+
+  // E-signature date: Workday uses a multi-part date widget (month dropdown +
+  // day input + year input) with dateSectionMonth-input / dateSectionDay-input /
+  // dateSectionYear-input automation IDs, NOT a simple text input. Try the
+  // widget first, then fall back to text input approaches.
+  if (textFilled === 0 || !combined.some((ti) => /date/i.test(ti.label))) {
+    const now = new Date();
+    const monthIdx = now.getMonth();
+    const dayStr = String(now.getDate()).padStart(2, "0");
+    const yearStr = String(now.getFullYear());
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+    const todayStr = `${String(monthIdx + 1).padStart(2, "0")}/${dayStr}/${yearStr}`;
+    let dateFilled = false;
+
+    // Strategy 1: Workday multi-part date widget (month/day/year components).
+    // Find any formField container that has date widget sub-components.
+    const dateContainerAids = [
+      "formField-esignatureDate", "formField-date", "formField-dateSigned",
+      "formField-signatureDate", "formField-Date",
+    ];
+    for (const aid of dateContainerAids) {
+      const container = page.locator(`[data-automation-id="${aid}"]`).first();
+      if (!(await container.isVisible({ timeout: 500 }).catch(() => false))) continue;
+
+      // Month: text input, <select>, or custom dropdown button
+      const monthEl = container.locator('[data-automation-id="dateSectionMonth-input"], [data-automation-id*="month" i]').first();
+      const monthSel = container.locator("select").first();
+      if (await monthEl.isVisible({ timeout: 500 }).catch(() => false)) {
+        const tag = await monthEl.evaluate((el: Element) => el.tagName).catch(() => "");
+        if (tag === "INPUT") {
+          await monthEl.click().catch(() => {});
+          await monthEl.fill("").catch(() => {});
+          await monthEl.pressSequentially(String(monthIdx + 1), { delay: 60 });
+          await monthEl.press("Tab").catch(() => {});
+        } else {
+          await monthEl.click().catch(() => {});
+          await page.waitForTimeout(400);
+          const opt = page.locator('[role="option"]').filter({ hasText: monthNames[monthIdx] }).first();
+          if (await opt.isVisible({ timeout: 1500 }).catch(() => false)) await opt.click().catch(() => {});
+          await page.waitForTimeout(300);
+        }
+      } else if (await monthSel.isVisible({ timeout: 500 }).catch(() => false)) {
+        await monthSel.selectOption(String(monthIdx + 1).padStart(2, "0")).catch(() =>
+          monthSel.selectOption({ index: monthIdx + 1 }).catch(() => {}));
+      }
+
+      // Day input
+      const dayInput = container.locator('[data-automation-id="dateSectionDay-input"]').first();
+      if (await dayInput.isVisible({ timeout: 500 }).catch(() => false)) {
+        await dayInput.click().catch(() => {});
+        await dayInput.fill("").catch(() => {});
+        await dayInput.pressSequentially(dayStr, { delay: 60 });
+        await dayInput.press("Tab").catch(() => {});
+      }
+
+      // Year input
+      const yearInput = container.locator('[data-automation-id="dateSectionYear-input"]').first();
+      if (await yearInput.isVisible({ timeout: 500 }).catch(() => false)) {
+        await yearInput.click().catch(() => {});
+        await yearInput.fill("").catch(() => {});
+        await yearInput.pressSequentially(yearStr, { delay: 60 });
+        await yearInput.press("Tab").catch(() => {});
+      }
+
+      // Single-input variant: one text input inside the container
+      const singleInputs = await container.locator("input:not([type='hidden']):not([type='checkbox'])").all();
+      if (singleInputs.length === 1) {
+        const val = await singleInputs[0].inputValue().catch(() => "");
+        if (!val.trim()) {
+          await singleInputs[0].click().catch(() => {});
+          await singleInputs[0].pressSequentially(todayStr, { delay: 60 });
+          dateFilled = true;
+        }
+      }
+
+      // Count as filled if we found the container (even if we couldn't
+      // confirm every sub-component — the container existing is a strong signal).
+      if (!dateFilled) {
+        const anyInput = await container.locator("input, select, button[aria-haspopup]").count();
+        dateFilled = anyInput > 0;
+      }
+      if (dateFilled) {
+        textFilled++;
+        steps.push(`workday-wizard: filled date widget in "${aid}"`);
+        break;
+      }
+    }
+
+    // Strategy 2: find dateSectionMonth/Day/Year anywhere on the page
+    // (for containers with unknown automation-ids).
+    if (!dateFilled) {
+      const monthWidget = page.locator('[data-automation-id="dateSectionMonth-input"]').first();
+      if (await monthWidget.isVisible({ timeout: 500 }).catch(() => false)) {
+        const tag = await monthWidget.evaluate((el: Element) => el.tagName).catch(() => "");
+        if (tag === "INPUT") {
+          await monthWidget.click().catch(() => {});
+          await monthWidget.fill("").catch(() => {});
+          await monthWidget.pressSequentially(String(monthIdx + 1), { delay: 60 });
+          await monthWidget.press("Tab").catch(() => {});
+        } else {
+          await monthWidget.click().catch(() => {});
+          await page.waitForTimeout(400);
+          const opt = page.locator('[role="option"]').filter({ hasText: monthNames[monthIdx] }).first();
+          if (await opt.isVisible({ timeout: 1500 }).catch(() => false)) await opt.click().catch(() => {});
+          await page.waitForTimeout(300);
+        }
+        const dayW = page.locator('[data-automation-id="dateSectionDay-input"]').first();
+        if (await dayW.isVisible({ timeout: 500 }).catch(() => false)) {
+          await dayW.click().catch(() => {});
+          await dayW.fill("").catch(() => {});
+          await dayW.pressSequentially(dayStr, { delay: 60 });
+          await dayW.press("Tab").catch(() => {});
+        }
+        const yearW = page.locator('[data-automation-id="dateSectionYear-input"]').first();
+        if (await yearW.isVisible({ timeout: 500 }).catch(() => false)) {
+          await yearW.click().catch(() => {});
+          await yearW.fill("").catch(() => {});
+          await yearW.pressSequentially(yearStr, { delay: 60 });
+          await yearW.press("Tab").catch(() => {});
+        }
+        dateFilled = true;
+        textFilled++;
+        steps.push("workday-wizard: filled date widget (global dateSection* search)");
+      }
+    }
+
+    // Strategy 3: simple text input in a known container
+    if (!dateFilled) {
+      for (const da of dateContainerAids) {
+        const loc = page.locator(`[data-automation-id="${da}"] input`).first();
+        if (await loc.isVisible({ timeout: 500 }).catch(() => false)) {
+          await loc.click().catch(() => {});
+          await loc.pressSequentially(todayStr, { delay: 60 });
+          textFilled++;
+          dateFilled = true;
+          steps.push(`workday-wizard: filled date text input in "${da}"`);
+          break;
+        }
+      }
+    }
+
+    // Strategy 4: label-based text input lookup
+    if (!dateFilled) {
+      const dateLabelInput = page.locator('label:has-text("Date")').locator("..").locator("input").first();
+      if (await dateLabelInput.isVisible({ timeout: 1000 }).catch(() => false)) {
+        const val = await dateLabelInput.inputValue().catch(() => "");
+        if (!val.trim()) {
+          await dateLabelInput.click().catch(() => {});
+          await dateLabelInput.pressSequentially(todayStr, { delay: 60 });
+          textFilled++;
+          dateFilled = true;
+          steps.push("workday-wizard: filled date via label lookup");
+        }
+      }
+    }
+
+    // Strategy 5: placeholder/aria-label
+    if (!dateFilled) {
+      const placeholderInput = page.locator('input[placeholder*="date" i], input[placeholder*="today" i], input[aria-label*="date" i]').first();
+      if (await placeholderInput.isVisible({ timeout: 500 }).catch(() => false)) {
+        await placeholderInput.click().catch(() => {});
+        await placeholderInput.pressSequentially(todayStr, { delay: 60 });
+        textFilled++;
+        dateFilled = true;
+        steps.push("workday-wizard: filled date via placeholder/aria-label");
+      }
+    }
+
+    if (!dateFilled) {
+      // Diagnostic dump (kept for future debugging).
+      const diag = (await page.evaluate(`(function(){
+        var inputs = Array.from(document.querySelectorAll('input, textarea, select, button[aria-haspopup]')).map(function(el){
+          var r = el.getBoundingClientRect();
+          var ff = el.closest('[data-automation-id]');
+          return {
+            tag: el.tagName, type: el.type || '', vis: r.width > 0 && r.height > 0,
+            val: (el.value || el.innerText || '').slice(0,30), aid: ff ? ff.getAttribute('data-automation-id') : '',
+            ownAid: el.getAttribute('data-automation-id') || '',
+            ph: el.placeholder || '', aria: el.getAttribute('aria-label') || ''
+          };
+        });
+        var dateEls = Array.from(document.querySelectorAll('*')).filter(function(el){
+          var aid = el.getAttribute('data-automation-id') || '';
+          var t = (el.innerText || el.textContent || '').trim();
+          return (t.length < 100 && /\\bdate\\b/i.test(t) && el.children.length < 5)
+            || /date/i.test(aid);
+        }).slice(0,8).map(function(el){
+          return { tag: el.tagName, aid: el.getAttribute('data-automation-id') || '',
+            text: (el.innerText || '').trim().slice(0,80), cls: (el.className || '').slice(0,60) };
+        });
+        return { inputs: inputs, dateEls: dateEls };
+      })()`)) as Record<string, unknown>;
+      steps.push(`workday-wizard: DATE DIAG inputs=${JSON.stringify((diag.inputs as unknown[]).slice(0,12))}`);
+      steps.push(`workday-wizard: DATE DIAG dateEls=${JSON.stringify(diag.dateEls)}`);
     }
   }
 

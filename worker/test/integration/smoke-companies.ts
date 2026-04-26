@@ -60,12 +60,12 @@ interface Candidate {
 }
 
 // Workday tenants whose API validates (the 4 with correct host+siteName).
-// Snowflake/ServiceNow/Cisco/Intuit still 422 — siteName discovery needed (Sprint 3).
-// Capital One was originally listed as wd1+Capital_One; correct config is wd12+Capital_One.
+// Snowflake (Phenom), ServiceNow (SmartRecruiters), Intuit (Lever) — not on Workday.
 const WORKDAY_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cloudflare",   companySlug: "cloudflare",  ats: "greenhouse", boardSlug: "cloudflare",  control: true },
   { company: "Salesforce",   companySlug: "salesforce",  ats: "workday",    workday: { baseUrl: "https://salesforce.wd12.myworkdayjobs.com", company: "salesforce", siteName: "External_Career_Site" } },
   { company: "Adobe",        companySlug: "adobe",       ats: "workday",    workday: { baseUrl: "https://adobe.wd5.myworkdayjobs.com",       company: "adobe",      siteName: "external_experienced" } },
+  { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
   { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd12.myworkdayjobs.com", company: "capitalone", siteName: "Capital_One" } },
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",    siteName: "WalmartExternal" } },
 ];
@@ -76,7 +76,23 @@ const WALMART_ONLY_CANDIDATES: Candidate[] = [
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",    siteName: "WalmartExternal" } },
 ];
 
-const CANDIDATES: Candidate[] = process.env.SMOKE_WALMART_ONLY === "1"
+const CISCO_ONLY_CANDIDATES: Candidate[] = [
+  { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
+];
+
+const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
+  ? [{ company: process.env.SMOKE_SINGLE, companySlug: process.env.SMOKE_SINGLE.toLowerCase().replace(/\s+/g, ""), ats: "workday" as Ats,
+       workday: (() => {
+         const match = WORKDAY_ONLY_CANDIDATES.find((c) => c.company.toLowerCase() === process.env.SMOKE_SINGLE!.toLowerCase());
+         return match?.workday;
+       })() }].filter((c) => c.workday) as Candidate[]
+  : [];
+
+const CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
+  ? SINGLE_COMPANY_CANDIDATES
+  : process.env.SMOKE_CISCO_ONLY === "1"
+  ? CISCO_ONLY_CANDIDATES
+  : process.env.SMOKE_WALMART_ONLY === "1"
   ? WALMART_ONLY_CANDIDATES
   : process.env.SMOKE_WORKDAY_ONLY === "1" ? WORKDAY_ONLY_CANDIDATES : [
   // 3 control companies — already in auto-apply-companies.json and known to apply.
@@ -84,14 +100,11 @@ const CANDIDATES: Candidate[] = process.env.SMOKE_WALMART_ONLY === "1"
   { company: "Twilio",       companySlug: "twilio",      ats: "greenhouse", boardSlug: "twilio",      control: true },
   { company: "Brex",         companySlug: "brex",        ats: "greenhouse", boardSlug: "brex",        control: true },
 
-  // === Workday boards (never tested) ===
+  // === Workday boards (validated) ===
   { company: "Salesforce",   companySlug: "salesforce",  ats: "workday",    workday: { baseUrl: "https://salesforce.wd12.myworkdayjobs.com", company: "salesforce",   siteName: "External_Career_Site" } },
-  { company: "Snowflake",    companySlug: "snowflake",   ats: "workday",    workday: { baseUrl: "https://snowflake.wd1.myworkdayjobs.com",   company: "snowflake",    siteName: "Snowflake_Careers" } },
   { company: "Adobe",        companySlug: "adobe",       ats: "workday",    workday: { baseUrl: "https://adobe.wd5.myworkdayjobs.com",       company: "adobe",        siteName: "external_experienced" } },
-  { company: "ServiceNow",   companySlug: "servicenow",  ats: "workday",    workday: { baseUrl: "https://servicenow.wd1.myworkdayjobs.com",  company: "servicenow",   siteName: "ServiceNow" } },
-  { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd1.myworkdayjobs.com",       company: "cisco",        siteName: "external_career_site" } },
+  { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",        siteName: "Cisco_Careers" } },
   { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd12.myworkdayjobs.com", company: "capitalone",   siteName: "Capital_One" } },
-  { company: "Intuit",       companySlug: "intuit",      ats: "workday",    workday: { baseUrl: "https://intuit.wd5.myworkdayjobs.com",      company: "intuit",       siteName: "IntuitCareers" } },
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",      siteName: "WalmartExternal" } },
 
   // === Greenhouse — intern + FT pipelines, mostly NEW ===
@@ -367,7 +380,7 @@ async function main() {
         outcome,
         errorMessage: res.error,
         durationMs: dur,
-        steps: res.steps?.slice(-8),
+        steps: res.steps?.slice(-30),
       });
     } catch (err) {
       const dur = Date.now() - start;
