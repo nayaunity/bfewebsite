@@ -23,7 +23,7 @@ function isValidPage(page: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { visitorId, page } = body;
+    const { visitorId, page, utmSource, utmMedium, utmCampaign } = body;
 
     if (!visitorId || !page) {
       return NextResponse.json(
@@ -47,7 +47,12 @@ export async function POST(request: NextRequest) {
     // Get country from Vercel geo headers
     const country = request.headers.get("x-vercel-ip-country") || null;
 
-    // Upsert the presence record
+    // First-touch UTM: only set on create, never overwrite
+    const utmData: Record<string, string> = {};
+    if (utmSource) utmData.utmSource = String(utmSource).slice(0, 100);
+    if (utmMedium) utmData.utmMedium = String(utmMedium).slice(0, 100);
+    if (utmCampaign) utmData.utmCampaign = String(utmCampaign).slice(0, 200);
+
     await prisma.pagePresence.upsert({
       where: {
         visitorId_page: { visitorId: sanitizedVisitorId, page: sanitizedPage },
@@ -61,6 +66,7 @@ export async function POST(request: NextRequest) {
         page: sanitizedPage,
         country,
         lastSeenAt: new Date(),
+        ...utmData,
       },
     });
 

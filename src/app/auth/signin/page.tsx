@@ -144,10 +144,11 @@ function AuthForm() {
     setError("");
 
     try {
+      const visitorId = typeof window !== "undefined" ? localStorage.getItem("bfe_visitor_id") : null;
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password, visitorId }),
       });
       const data = await res.json();
 

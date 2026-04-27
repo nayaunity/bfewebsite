@@ -100,14 +100,20 @@ export async function GET() {
     );
   }
 
-  // Check cache first
+  // Check cache and existing state
   if (user.applicationAnswers) {
     try {
       const parsed = JSON.parse(user.applicationAnswers);
       if (parsed.resumeQuizQuestions?.length > 0) {
+        const hasAnswers = parsed.resumeQuiz && Object.keys(parsed.resumeQuiz).some(
+          (k) => k !== "submittedAt" && typeof parsed.resumeQuiz[k] === "string" && parsed.resumeQuiz[k].trim()
+        );
+        const rewriteUrl = parsed.resumeRewrite?.pdfUrl || parsed.resumeRewrite?.htmlUrl || null;
         return NextResponse.json({
           questions: parsed.resumeQuizQuestions,
           cached: true,
+          answersSubmitted: !!hasAnswers,
+          rewriteUrl,
         });
       }
     } catch {}

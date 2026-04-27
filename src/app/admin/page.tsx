@@ -126,6 +126,50 @@ async function getStats() {
   };
 }
 
+interface UtmRow {
+  utmSource: string;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  visitors: number;
+  signups: number;
+}
+
+async function getUtmStats(): Promise<UtmRow[]> {
+  const visitorGroups = await prisma.pagePresence.groupBy({
+    by: ["utmSource", "utmMedium", "utmCampaign"],
+    where: { utmSource: { not: null } },
+    _count: { visitorId: true },
+  });
+
+  const signupGroups = await prisma.user.groupBy({
+    by: ["utmSource", "utmMedium", "utmCampaign"],
+    where: { utmSource: { not: null } },
+    _count: { id: true },
+  });
+
+  const signupMap = new Map<string, number>();
+  for (const g of signupGroups) {
+    const key = `${g.utmSource}|${g.utmMedium || ""}|${g.utmCampaign || ""}`;
+    signupMap.set(key, g._count.id);
+  }
+
+  const rows: UtmRow[] = visitorGroups
+    .filter((g) => g.utmSource)
+    .map((g) => {
+      const key = `${g.utmSource}|${g.utmMedium || ""}|${g.utmCampaign || ""}`;
+      return {
+        utmSource: g.utmSource!,
+        utmMedium: g.utmMedium,
+        utmCampaign: g.utmCampaign,
+        visitors: g._count.visitorId,
+        signups: signupMap.get(key) || 0,
+      };
+    })
+    .sort((a, b) => b.visitors - a.visitors);
+
+  return rows;
+}
+
 async function getOpenAlerts() {
   const rows = await prisma.adminAlert.findMany({
     where: { resolvedAt: null },
@@ -144,7 +188,7 @@ async function getOpenAlerts() {
 
 export default async function AdminDashboard() {
   await requireFullAdmin();
-  const [stats, openAlerts] = await Promise.all([getStats(), getOpenAlerts()]);
+  const [stats, openAlerts, utmStats] = await Promise.all([getStats(), getOpenAlerts(), getUtmStats()]);
 
   const contentCards = [
     {
@@ -331,6 +375,56 @@ export default async function AdminDashboard() {
           ))}
         </div>
       </div>
+
+      {/* UTM Attribution */}
+      {utmStats.length > 0 && (
+        <div className="mb-8">
+          <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
+            UTM Attribution
+          </h2>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[var(--card-border)] text-left text-xs text-[var(--gray-600)] uppercase tracking-wider">
+                  <th className="px-6 py-3 font-medium">Source</th>
+                  <th className="px-6 py-3 font-medium">Medium</th>
+                  <th className="px-6 py-3 font-medium">Campaign</th>
+                  <th className="px-6 py-3 font-medium text-right">Visitors</th>
+                  <th className="px-6 py-3 font-medium text-right">Signups</th>
+                </tr>
+              </thead>
+              <tbody>
+                {utmStats.map((row, i) => (
+                  <tr
+                    key={`${row.utmSource}-${row.utmMedium}-${row.utmCampaign}`}
+                    className={i < utmStats.length - 1 ? "border-b border-[var(--card-border)]" : ""}
+                  >
+                    <td className="px-6 py-3 font-medium text-[var(--foreground)]">
+                      {row.utmSource}
+                    </td>
+                    <td className="px-6 py-3 text-[var(--gray-600)]">
+                      {row.utmMedium || "-"}
+                    </td>
+                    <td className="px-6 py-3 text-[var(--gray-600)]">
+                      {row.utmCampaign || "-"}
+                    </td>
+                    <td className="px-6 py-3 text-right font-medium text-[var(--foreground)]">
+                      {row.visitors}
+                    </td>
+                    <td className="px-6 py-3 text-right">
+                      {row.signups > 0 ? (
+                        <span className="font-medium text-green-700">{row.signups}</span>
+                      ) : (
+                        <span className="text-[var(--gray-600)]">0</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="mt-8">

@@ -13,7 +13,7 @@ const db = createClient({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, password } = body;
+    const { firstName, lastName, email, password, visitorId } = body;
 
     if (!email?.trim() || !password) {
       return NextResponse.json(
@@ -76,6 +76,29 @@ export async function POST(request: NextRequest) {
           nowIso,
         ],
       });
+    }
+
+    // Link UTM attribution from PagePresence if we have a visitorId
+    if (visitorId) {
+      try {
+        const sanitized = String(visitorId).slice(0, 100);
+        const utmRow = await db.execute({
+          sql: `SELECT utmSource, utmMedium, utmCampaign FROM PagePresence
+                WHERE visitorId = ? AND utmSource IS NOT NULL LIMIT 1`,
+          args: [sanitized],
+        });
+        const utm = utmRow.rows[0];
+        await db.execute({
+          sql: `UPDATE User SET visitorId = ?, utmSource = ?, utmMedium = ?, utmCampaign = ? WHERE id = ?`,
+          args: [
+            sanitized,
+            (utm?.utmSource as string) || null,
+            (utm?.utmMedium as string) || null,
+            (utm?.utmCampaign as string) || null,
+            userId,
+          ],
+        });
+      } catch { /* non-blocking */ }
     }
 
     // Set session cookie using NextAuth's own JWT encoding

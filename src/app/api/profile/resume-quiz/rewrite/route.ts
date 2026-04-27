@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import Anthropic from "@anthropic-ai/sdk";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const anthropic = new Anthropic();
 

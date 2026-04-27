@@ -65,6 +65,10 @@ model User {
   freeTierSunsetEmailAt DateTime?
   detailsReviewedAt     DateTime?
   seekingInternship           Boolean? @default(false)
+  visitorId                   String?
+  utmSource                   String?
+  utmMedium                   String?
+  utmCampaign                 String?
   preferenceBannerDismissedAt DateTime?
   monthlyAppResetAt   DateTime         @default(now())
   createdAt           DateTime         @default(now())
@@ -485,16 +489,20 @@ model Activity {
 }
 
 model PagePresence {
-  id         String   @id @default(cuid())
-  visitorId  String
-  page       String
-  country    String?
-  lastSeenAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  visitorId   String
+  page        String
+  country     String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  lastSeenAt  DateTime @default(now())
 
   @@unique([visitorId, page])
   @@index([page])
   @@index([lastSeenAt])
   @@index([country])
+  @@index([utmSource])
 }
 
 model Link {

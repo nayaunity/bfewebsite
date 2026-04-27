@@ -37,6 +37,21 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
       }
       const data = await res.json();
       setQuestions(data.questions);
+
+      // If answers were already submitted and rewrite exists, show it
+      if (data.answersSubmitted && data.rewriteUrl) {
+        setRewriteUrl(data.rewriteUrl);
+        setPhase("done");
+        return;
+      }
+
+      // If answers were submitted but no rewrite yet (upgrade flow or prior timeout), auto-trigger
+      if (data.answersSubmitted && !data.rewriteUrl) {
+        setPhase("rewriting");
+        triggerRewrite();
+        return;
+      }
+
       setPhase("quiz");
     } catch {
       setErrorMsg("Failed to load quiz. Please try again.");
@@ -44,23 +59,8 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
     }
   }
 
-  async function handleSubmit() {
-    setPhase("submitting");
+  async function triggerRewrite() {
     try {
-      // Save answers
-      const saveRes = await fetch("/api/profile/resume-quiz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
-      });
-
-      if (!saveRes.ok) {
-        setPhase("quiz");
-        return;
-      }
-
-      // Trigger rewrite
-      setPhase("rewriting");
       const rewriteRes = await fetch("/api/profile/resume-quiz/rewrite", {
         method: "POST",
       });
@@ -77,10 +77,34 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           setPhase("done");
         }
       } else {
-        setPhase("done");
+        setErrorMsg("Resume rewrite failed. Please try again later.");
+        setPhase("error");
       }
     } catch {
-      setPhase("done");
+      setErrorMsg("Resume rewrite failed. Please try again later.");
+      setPhase("error");
+    }
+  }
+
+  async function handleSubmit() {
+    setPhase("submitting");
+    try {
+      const saveRes = await fetch("/api/profile/resume-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers }),
+      });
+
+      if (!saveRes.ok) {
+        setPhase("quiz");
+        return;
+      }
+
+      setPhase("rewriting");
+      await triggerRewrite();
+    } catch {
+      setErrorMsg("Resume rewrite failed. Please try again later.");
+      setPhase("error");
     }
   }
 
