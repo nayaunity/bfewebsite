@@ -105,7 +105,8 @@ const CISCO_ONLY_CANDIDATES: Candidate[] = [
 const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? [{ company: process.env.SMOKE_SINGLE, companySlug: process.env.SMOKE_SINGLE.toLowerCase().replace(/\s+/g, ""), ats: "workday" as Ats,
        workday: (() => {
-         const match = WORKDAY_ONLY_CANDIDATES.find((c) => c.company.toLowerCase() === process.env.SMOKE_SINGLE!.toLowerCase());
+         const match = WORKDAY_ONLY_CANDIDATES.find((c) => c.company.toLowerCase() === process.env.SMOKE_SINGLE!.toLowerCase()
+           || c.company.toLowerCase().includes(process.env.SMOKE_SINGLE!.toLowerCase()));
          return match?.workday;
        })() }].filter((c) => c.workday) as Candidate[]
   : [];

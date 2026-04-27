@@ -5,7 +5,9 @@
     "careersUrl": "https://boards.greenhouse.io/figma",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "figma" }
+    "atsConfig": {
+      "boardToken": "figma"
+    }
   },
   {
     "name": "Databricks",
@@ -13,7 +15,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/databricks",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "databricks" }
+    "atsConfig": {
+      "boardToken": "databricks"
+    }
   },
   {
     "name": "Twilio",
@@ -21,7 +25,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/twilio",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "twilio" }
+    "atsConfig": {
+      "boardToken": "twilio"
+    }
   },
   {
     "name": "DoorDash",
@@ -29,7 +35,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/doordashusa",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "doordashusa" }
+    "atsConfig": {
+      "boardToken": "doordashusa"
+    }
   },
   {
     "name": "Anthropic",
@@ -37,7 +45,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/anthropic",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "anthropic" }
+    "atsConfig": {
+      "boardToken": "anthropic"
+    }
   },
   {
     "name": "Glean",
@@ -45,7 +55,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/gleanwork",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "gleanwork" }
+    "atsConfig": {
+      "boardToken": "gleanwork"
+    }
   },
   {
     "name": "Cloudflare",
@@ -53,7 +65,9 @@
     "careersUrl": "https://boards.greenhouse.io/cloudflare",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "cloudflare" }
+    "atsConfig": {
+      "boardToken": "cloudflare"
+    }
   },
   {
     "name": "ZipRecruiter",
@@ -61,7 +75,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/ziprecruiter",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "ziprecruiter" }
+    "atsConfig": {
+      "boardToken": "ziprecruiter"
+    }
   },
   {
     "name": "ClickHouse",
@@ -69,7 +85,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/clickhouse",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "clickhouse" }
+    "atsConfig": {
+      "boardToken": "clickhouse"
+    }
   },
   {
     "name": "Affirm",
@@ -77,7 +95,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/affirm",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "affirm" }
+    "atsConfig": {
+      "boardToken": "affirm"
+    }
   },
   {
     "name": "GitLab",
@@ -85,7 +105,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/gitlab",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "gitlab" }
+    "atsConfig": {
+      "boardToken": "gitlab"
+    }
   },
   {
     "name": "Reddit",
@@ -93,7 +115,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/reddit",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "reddit" }
+    "atsConfig": {
+      "boardToken": "reddit"
+    }
   },
   {
     "name": "Gusto",
@@ -101,7 +125,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/gusto",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "gusto" }
+    "atsConfig": {
+      "boardToken": "gusto"
+    }
   },
   {
     "name": "Amplitude",
@@ -109,7 +135,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/amplitude",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "amplitude" }
+    "atsConfig": {
+      "boardToken": "amplitude"
+    }
   },
   {
     "name": "Airtable",
@@ -117,7 +145,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/airtable",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "airtable" }
+    "atsConfig": {
+      "boardToken": "airtable"
+    }
   },
   {
     "name": "Temporal",
@@ -125,7 +155,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/temporaltechnologies",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "temporaltechnologies" }
+    "atsConfig": {
+      "boardToken": "temporaltechnologies"
+    }
   },
   {
     "name": "LaunchDarkly",
@@ -133,7 +165,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/launchdarkly",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "launchdarkly" }
+    "atsConfig": {
+      "boardToken": "launchdarkly"
+    }
   },
   {
     "name": "Scale AI",
@@ -141,7 +175,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/scaleai",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "scaleai" }
+    "atsConfig": {
+      "boardToken": "scaleai"
+    }
   },
   {
     "name": "Together AI",
@@ -149,7 +185,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/togetherai",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "togetherai" }
+    "atsConfig": {
+      "boardToken": "togetherai"
+    }
   },
   {
     "name": "Contentful",
@@ -157,7 +195,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/contentful",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "contentful" }
+    "atsConfig": {
+      "boardToken": "contentful"
+    }
   },
   {
     "name": "Fireblocks",
@@ -165,7 +205,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/fireblocks",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "fireblocks" }
+    "atsConfig": {
+      "boardToken": "fireblocks"
+    }
   },
   {
     "name": "SingleStore",
@@ -173,7 +215,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/singlestore",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "singlestore" }
+    "atsConfig": {
+      "boardToken": "singlestore"
+    }
   },
   {
     "name": "Labelbox",
@@ -181,7 +225,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/labelbox",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "labelbox" }
+    "atsConfig": {
+      "boardToken": "labelbox"
+    }
   },
   {
     "name": "Alchemy",
@@ -189,7 +235,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/alchemy",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "alchemy" }
+    "atsConfig": {
+      "boardToken": "alchemy"
+    }
   },
   {
     "name": "Materialize",
@@ -197,7 +245,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/materialize",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "materialize" }
+    "atsConfig": {
+      "boardToken": "materialize"
+    }
   },
   {
     "name": "Blockchain.com",
@@ -205,7 +255,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/blockchain",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "blockchain" }
+    "atsConfig": {
+      "boardToken": "blockchain"
+    }
   },
   {
     "name": "PlanetScale",
@@ -213,7 +265,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/planetscale",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "planetscale" }
+    "atsConfig": {
+      "boardToken": "planetscale"
+    }
   },
   {
     "name": "project44",
@@ -221,7 +275,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/project44",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "project44" }
+    "atsConfig": {
+      "boardToken": "project44"
+    }
   },
   {
     "name": "Mercari",
@@ -229,7 +285,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/mercari",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "mercari" }
+    "atsConfig": {
+      "boardToken": "mercari"
+    }
   },
   {
     "name": "Grafana Labs",
@@ -237,7 +295,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/grafanalabs",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "grafanalabs" }
+    "atsConfig": {
+      "boardToken": "grafanalabs"
+    }
   },
   {
     "name": "Attentive",
@@ -245,7 +305,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/attentive",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "attentive" }
+    "atsConfig": {
+      "boardToken": "attentive"
+    }
   },
   {
     "name": "Marqeta",
@@ -253,7 +315,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/marqeta",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "marqeta" }
+    "atsConfig": {
+      "boardToken": "marqeta"
+    }
   },
   {
     "name": "Doximity",
@@ -261,7 +325,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/doximity",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "doximity" }
+    "atsConfig": {
+      "boardToken": "doximity"
+    }
   },
   {
     "name": "Culture Amp",
@@ -269,7 +335,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/cultureamp",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "cultureamp" }
+    "atsConfig": {
+      "boardToken": "cultureamp"
+    }
   },
   {
     "name": "Apollo",
@@ -277,7 +345,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/apollo",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "apollo" }
+    "atsConfig": {
+      "boardToken": "apollo"
+    }
   },
   {
     "name": "Zscaler",
@@ -285,7 +355,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/zscaler",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "zscaler" }
+    "atsConfig": {
+      "boardToken": "zscaler"
+    }
   },
   {
     "name": "Klaviyo",
@@ -293,7 +365,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/klaviyo",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "klaviyo" }
+    "atsConfig": {
+      "boardToken": "klaviyo"
+    }
   },
   {
     "name": "Asana",
@@ -301,7 +375,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/asana",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "asana" }
+    "atsConfig": {
+      "boardToken": "asana"
+    }
   },
   {
     "name": "Abnormal Security",
@@ -309,7 +385,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/abnormalsecurity",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "abnormalsecurity" }
+    "atsConfig": {
+      "boardToken": "abnormalsecurity"
+    }
   },
   {
     "name": "Carta",
@@ -317,7 +395,9 @@
     "careersUrl": "https://boards.greenhouse.io/carta",
     "industry": "Fintech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "carta" }
+    "atsConfig": {
+      "boardToken": "carta"
+    }
   },
   {
     "name": "Datadog",
@@ -325,7 +405,9 @@
     "careersUrl": "https://boards.greenhouse.io/datadog",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "datadog" }
+    "atsConfig": {
+      "boardToken": "datadog"
+    }
   },
   {
     "name": "Discord",
@@ -333,7 +415,9 @@
     "careersUrl": "https://boards.greenhouse.io/discord",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "discord" }
+    "atsConfig": {
+      "boardToken": "discord"
+    }
   },
   {
     "name": "CockroachDB",
@@ -341,7 +425,9 @@
     "careersUrl": "https://boards.greenhouse.io/cockroachlabs",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "cockroachlabs" }
+    "atsConfig": {
+      "boardToken": "cockroachlabs"
+    }
   },
   {
     "name": "Webflow",
@@ -349,7 +435,9 @@
     "careersUrl": "https://boards.greenhouse.io/webflow",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "webflow" }
+    "atsConfig": {
+      "boardToken": "webflow"
+    }
   },
   {
     "name": "Postman",
@@ -357,7 +445,9 @@
     "careersUrl": "https://boards.greenhouse.io/postman",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "postman" }
+    "atsConfig": {
+      "boardToken": "postman"
+    }
   },
   {
     "name": "Chime",
@@ -365,7 +455,9 @@
     "careersUrl": "https://boards.greenhouse.io/chime",
     "industry": "Fintech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "chime" }
+    "atsConfig": {
+      "boardToken": "chime"
+    }
   },
   {
     "name": "Notion",
@@ -373,7 +465,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/notion",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "notion" }
+    "atsConfig": {
+      "boardSlug": "notion"
+    }
   },
   {
     "name": "OpenAI",
@@ -381,7 +475,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/openai",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "openai" }
+    "atsConfig": {
+      "boardSlug": "openai"
+    }
   },
   {
     "name": "Ramp",
@@ -389,7 +485,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/ramp",
     "industry": "Fintech",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "ramp" }
+    "atsConfig": {
+      "boardSlug": "ramp"
+    }
   },
   {
     "name": "ElevenLabs",
@@ -397,7 +495,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/elevenlabs",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "elevenlabs" }
+    "atsConfig": {
+      "boardSlug": "elevenlabs"
+    }
   },
   {
     "name": "Plaid",
@@ -405,7 +505,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/plaid",
     "industry": "Fintech",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "plaid" }
+    "atsConfig": {
+      "boardSlug": "plaid"
+    }
   },
   {
     "name": "Cursor",
@@ -413,7 +515,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/cursor",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "cursor" }
+    "atsConfig": {
+      "boardSlug": "cursor"
+    }
   },
   {
     "name": "Perplexity",
@@ -421,7 +525,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/perplexity",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "perplexity" }
+    "atsConfig": {
+      "boardSlug": "perplexity"
+    }
   },
   {
     "name": "Linear",
@@ -429,7 +535,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/linear",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "linear" }
+    "atsConfig": {
+      "boardSlug": "linear"
+    }
   },
   {
     "name": "Spotify",
@@ -437,7 +545,9 @@
     "careersUrl": "https://jobs.lever.co/spotify",
     "industry": "Technology",
     "atsType": "lever",
-    "atsConfig": { "companySlug": "spotify" }
+    "atsConfig": {
+      "companySlug": "spotify"
+    }
   },
   {
     "name": "Brex",
@@ -445,7 +555,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/brex",
     "industry": "Fintech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "brex" }
+    "atsConfig": {
+      "boardToken": "brex"
+    }
   },
   {
     "name": "Faire",
@@ -453,7 +565,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/faire",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "faire" }
+    "atsConfig": {
+      "boardToken": "faire"
+    }
   },
   {
     "name": "Anduril",
@@ -461,7 +575,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/andurilindustries",
     "industry": "Defense Tech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "andurilindustries" }
+    "atsConfig": {
+      "boardToken": "andurilindustries"
+    }
   },
   {
     "name": "Pinterest",
@@ -469,7 +585,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/pinterest",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "pinterest" }
+    "atsConfig": {
+      "boardToken": "pinterest"
+    }
   },
   {
     "name": "Instacart",
@@ -477,7 +595,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/instacart",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "instacart" }
+    "atsConfig": {
+      "boardToken": "instacart"
+    }
   },
   {
     "name": "Lattice",
@@ -485,7 +605,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/lattice",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "lattice" }
+    "atsConfig": {
+      "boardToken": "lattice"
+    }
   },
   {
     "name": "Mercury",
@@ -493,7 +615,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/mercury",
     "industry": "Fintech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "mercury" }
+    "atsConfig": {
+      "boardToken": "mercury"
+    }
   },
   {
     "name": "Robinhood",
@@ -501,7 +625,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/robinhood",
     "industry": "Fintech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "robinhood" }
+    "atsConfig": {
+      "boardToken": "robinhood"
+    }
   },
   {
     "name": "Discord",
@@ -509,7 +635,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/discord",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "discord" }
+    "atsConfig": {
+      "boardToken": "discord"
+    }
   },
   {
     "name": "MongoDB",
@@ -517,7 +645,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/mongodb",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "mongodb" }
+    "atsConfig": {
+      "boardToken": "mongodb"
+    }
   },
   {
     "name": "Coursera",
@@ -525,7 +655,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/coursera",
     "industry": "EdTech",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "coursera" }
+    "atsConfig": {
+      "boardToken": "coursera"
+    }
   },
   {
     "name": "Box",
@@ -533,7 +665,9 @@
     "careersUrl": "https://job-boards.greenhouse.io/boxinc",
     "industry": "Technology",
     "atsType": "greenhouse",
-    "atsConfig": { "boardToken": "boxinc" }
+    "atsConfig": {
+      "boardToken": "boxinc"
+    }
   },
   {
     "name": "Pinecone",
@@ -541,7 +675,9 @@
     "careersUrl": "https://jobs.ashbyhq.com/pinecone",
     "industry": "Technology",
     "atsType": "ashby",
-    "atsConfig": { "boardSlug": "pinecone" }
+    "atsConfig": {
+      "boardSlug": "pinecone"
+    }
   },
   {
     "name": "Salesforce",
@@ -549,7 +685,11 @@
     "careersUrl": "https://salesforce.wd12.myworkdayjobs.com",
     "industry": "Technology",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://salesforce.wd12.myworkdayjobs.com", "company": "salesforce", "siteName": "External_Career_Site" }
+    "atsConfig": {
+      "baseUrl": "https://salesforce.wd12.myworkdayjobs.com",
+      "company": "salesforce",
+      "siteName": "External_Career_Site"
+    }
   },
   {
     "name": "Adobe",
@@ -557,7 +697,11 @@
     "careersUrl": "https://adobe.wd5.myworkdayjobs.com",
     "industry": "Technology",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://adobe.wd5.myworkdayjobs.com", "company": "adobe", "siteName": "external_experienced" }
+    "atsConfig": {
+      "baseUrl": "https://adobe.wd5.myworkdayjobs.com",
+      "company": "adobe",
+      "siteName": "external_experienced"
+    }
   },
   {
     "name": "Walmart",
@@ -565,7 +709,11 @@
     "careersUrl": "https://walmart.wd5.myworkdayjobs.com",
     "industry": "Retail",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://walmart.wd5.myworkdayjobs.com", "company": "walmart", "siteName": "WalmartExternal" }
+    "atsConfig": {
+      "baseUrl": "https://walmart.wd5.myworkdayjobs.com",
+      "company": "walmart",
+      "siteName": "WalmartExternal"
+    }
   },
   {
     "name": "Capital One",
@@ -573,7 +721,11 @@
     "careersUrl": "https://capitalone.wd12.myworkdayjobs.com",
     "industry": "Financial Services",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://capitalone.wd12.myworkdayjobs.com", "company": "capitalone", "siteName": "Capital_One" }
+    "atsConfig": {
+      "baseUrl": "https://capitalone.wd12.myworkdayjobs.com",
+      "company": "capitalone",
+      "siteName": "Capital_One"
+    }
   },
   {
     "name": "Cisco",
@@ -581,7 +733,11 @@
     "careersUrl": "https://cisco.wd5.myworkdayjobs.com",
     "industry": "Technology",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://cisco.wd5.myworkdayjobs.com", "company": "cisco", "siteName": "Cisco_Careers" }
+    "atsConfig": {
+      "baseUrl": "https://cisco.wd5.myworkdayjobs.com",
+      "company": "cisco",
+      "siteName": "Cisco_Careers"
+    }
   },
   {
     "name": "Netflix",
@@ -589,7 +745,11 @@
     "careersUrl": "https://netflix.wd108.myworkdayjobs.com",
     "industry": "Technology",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://netflix.wd108.myworkdayjobs.com", "company": "netflix", "siteName": "Netflix" }
+    "atsConfig": {
+      "baseUrl": "https://netflix.wd108.myworkdayjobs.com",
+      "company": "netflix",
+      "siteName": "Netflix"
+    }
   },
   {
     "name": "Intel",
@@ -597,7 +757,11 @@
     "careersUrl": "https://intel.wd1.myworkdayjobs.com",
     "industry": "Technology",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://intel.wd1.myworkdayjobs.com", "company": "intel", "siteName": "External" }
+    "atsConfig": {
+      "baseUrl": "https://intel.wd1.myworkdayjobs.com",
+      "company": "intel",
+      "siteName": "External"
+    }
   },
   {
     "name": "Morgan Stanley",
@@ -605,7 +769,11 @@
     "careersUrl": "https://ms.wd5.myworkdayjobs.com",
     "industry": "Financial Services",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://ms.wd5.myworkdayjobs.com", "company": "ms", "siteName": "External" }
+    "atsConfig": {
+      "baseUrl": "https://ms.wd5.myworkdayjobs.com",
+      "company": "ms",
+      "siteName": "External"
+    }
   },
   {
     "name": "Target",
@@ -613,7 +781,11 @@
     "careersUrl": "https://target.wd5.myworkdayjobs.com",
     "industry": "Retail",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://target.wd5.myworkdayjobs.com", "company": "target", "siteName": "targetcareers" }
+    "atsConfig": {
+      "baseUrl": "https://target.wd5.myworkdayjobs.com",
+      "company": "target",
+      "siteName": "targetcareers"
+    }
   },
   {
     "name": "Johnson & Johnson",
@@ -621,7 +793,11 @@
     "careersUrl": "https://jj.wd5.myworkdayjobs.com",
     "industry": "Healthcare",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://jj.wd5.myworkdayjobs.com", "company": "jj", "siteName": "JJ" }
+    "atsConfig": {
+      "baseUrl": "https://jj.wd5.myworkdayjobs.com",
+      "company": "jj",
+      "siteName": "JJ"
+    }
   },
   {
     "name": "GE Aerospace",
@@ -629,7 +805,11 @@
     "careersUrl": "https://geaerospace.wd5.myworkdayjobs.com",
     "industry": "Aerospace & Defense",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://geaerospace.wd5.myworkdayjobs.com", "company": "geaerospace", "siteName": "GE_ExternalSite" }
+    "atsConfig": {
+      "baseUrl": "https://geaerospace.wd5.myworkdayjobs.com",
+      "company": "geaerospace",
+      "siteName": "GE_ExternalSite"
+    }
   },
   {
     "name": "GE Vernova",
@@ -637,7 +817,11 @@
     "careersUrl": "https://gevernova.wd5.myworkdayjobs.com",
     "industry": "Energy",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://gevernova.wd5.myworkdayjobs.com", "company": "gevernova", "siteName": "Vernova_ExternalSite" }
+    "atsConfig": {
+      "baseUrl": "https://gevernova.wd5.myworkdayjobs.com",
+      "company": "gevernova",
+      "siteName": "Vernova_ExternalSite"
+    }
   },
   {
     "name": "GE HealthCare",
@@ -645,6 +829,118 @@
     "careersUrl": "https://gehc.wd5.myworkdayjobs.com",
     "industry": "Healthcare",
     "atsType": "workday",
-    "atsConfig": { "baseUrl": "https://gehc.wd5.myworkdayjobs.com", "company": "gehc", "siteName": "GEHC_ExternalSite" }
+    "atsConfig": {
+      "baseUrl": "https://gehc.wd5.myworkdayjobs.com",
+      "company": "gehc",
+      "siteName": "GEHC_ExternalSite"
+    }
+  },
+  {
+    "name": "HP Inc",
+    "slug": "hp",
+    "careersUrl": "https://hp.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://hp.wd5.myworkdayjobs.com",
+      "company": "hp",
+      "siteName": "ExternalCareerSite"
+    }
+  },
+  {
+    "name": "HPE",
+    "slug": "hpe",
+    "careersUrl": "https://hpe.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://hpe.wd5.myworkdayjobs.com",
+      "company": "hpe",
+      "siteName": "Jobsathpe"
+    }
+  },
+  {
+    "name": "Mastercard",
+    "slug": "mastercard",
+    "careersUrl": "https://mastercard.wd1.myworkdayjobs.com",
+    "industry": "Financial Services",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://mastercard.wd1.myworkdayjobs.com",
+      "company": "mastercard",
+      "siteName": "CorporateCareers"
+    }
+  },
+  {
+    "name": "Boeing",
+    "slug": "boeing",
+    "careersUrl": "https://boeing.wd1.myworkdayjobs.com",
+    "industry": "Aerospace & Defense",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://boeing.wd1.myworkdayjobs.com",
+      "company": "boeing",
+      "siteName": "EXTERNAL_CAREERS"
+    }
+  },
+  {
+    "name": "Bank of America",
+    "slug": "bankofamerica",
+    "careersUrl": "https://ghr.wd1.myworkdayjobs.com",
+    "industry": "Financial Services",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://ghr.wd1.myworkdayjobs.com",
+      "company": "ghr",
+      "siteName": "Lateral-US"
+    }
+  },
+  {
+    "name": "Northrop Grumman",
+    "slug": "northropgrumman",
+    "careersUrl": "https://ngc.wd1.myworkdayjobs.com",
+    "industry": "Aerospace & Defense",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://ngc.wd1.myworkdayjobs.com",
+      "company": "ngc",
+      "siteName": "Northrop_Grumman_External_Site"
+    }
+  },
+  {
+    "name": "Procter & Gamble",
+    "slug": "pg",
+    "careersUrl": "https://pg.wd5.myworkdayjobs.com",
+    "industry": "Consumer Goods",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://pg.wd5.myworkdayjobs.com",
+      "company": "pg",
+      "siteName": "1000"
+    }
+  },
+  {
+    "name": "PwC",
+    "slug": "pwc",
+    "careersUrl": "https://pwc.wd3.myworkdayjobs.com",
+    "industry": "Professional Services",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://pwc.wd3.myworkdayjobs.com",
+      "company": "pwc",
+      "siteName": "Global_Experienced_Careers"
+    }
+  },
+  {
+    "name": "Visa",
+    "slug": "visa",
+    "careersUrl": "https://visa.wd5.myworkdayjobs.com",
+    "industry": "Financial Services",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://visa.wd5.myworkdayjobs.com",
+      "company": "visa",
+      "siteName": "Visa"
+    }
   }
 ]

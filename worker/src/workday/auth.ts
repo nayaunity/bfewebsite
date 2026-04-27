@@ -111,11 +111,20 @@ export async function signupOrSignin(args: AuthArgs): Promise<AuthResult> {
   const hasWizardForm = await page.locator(aid("formField-legalName--firstName"))
     .first().isVisible({ timeout: 2000 }).catch(() => false);
   if (hasProgressBar || hasWizardForm) {
-    const hasAuthForm = await page.locator(`${aid("createAccountSubmitButton")}, ${aid("signInSubmitButton")}`)
-      .first().isVisible({ timeout: 1500 }).catch(() => false);
+    // Wait longer for auth elements — some tenants render the progress bar
+    // before the auth form is fully painted (NVIDIA, RTX).
+    const hasAuthForm = await page.locator(`${aid("createAccountSubmitButton")}, ${aid("signInSubmitButton")}, ${aid("signInLink")}, ${aid("email")}[type="password"], input[type="password"]`)
+      .first().isVisible({ timeout: 3000 }).catch(() => false);
     if (!hasAuthForm) {
-      steps.push("workday: no auth gate detected — wizard starts immediately");
-      return { success: true, isNewAccount: false };
+      // Double-check: if there are actual form fields (name, address), it's a
+      // real wizard. If the page is mostly empty, auth likely failed silently.
+      const hasRealFields = await page.locator(`${aid("formField-legalName--firstName")}, ${aid("formField-firstName")}, ${aid("formField-addressLine1")}, ${aid("formField-country")}`)
+        .first().isVisible({ timeout: 2000 }).catch(() => false);
+      if (hasRealFields) {
+        steps.push("workday: no auth gate detected — wizard starts immediately");
+        return { success: true, isNewAccount: false };
+      }
+      steps.push("workday: progress bar visible but no form fields — auth may have failed silently, proceeding with signup");
     }
   }
 
@@ -204,6 +213,25 @@ async function fillSignupForm(args: AuthArgs, accountEmail: string, password: st
     }
   }
 
+  // Dismiss cookie consent banners that may overlay the submit button.
+  for (const cookieSel of [
+    'button:has-text("Accept")',
+    'button:has-text("Accept All")',
+    'button:has-text("Accept Cookies")',
+    'button:has-text("I Accept")',
+    'button[data-automation-id="legalAcceptButton"]',
+    '[id*="cookie"] button',
+    '[class*="cookie"] button',
+  ]) {
+    const cookieBtn = page.locator(cookieSel).first();
+    if (await cookieBtn.isVisible({ timeout: 500 }).catch(() => false)) {
+      await cookieBtn.click({ timeout: 2000 }).catch(() => {});
+      steps.push(`workday: dismissed cookie banner via ${cookieSel}`);
+      await page.waitForTimeout(500);
+      break;
+    }
+  }
+
   // Scroll submit button into view and give the form time to enable it.
   await page.evaluate("window.scrollTo(0, document.body.scrollHeight)").catch(() => {});
   await page.waitForTimeout(1000);
@@ -224,6 +252,20 @@ async function fillSignupForm(args: AuthArgs, accountEmail: string, password: st
   await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
   await page.waitForTimeout(2000);
 
+  // If the create account button is still visible, the submit may not have worked.
+  // Retry with JavaScript click as a fallback.
+  const stillHasCreate = await page.locator(aid("createAccountSubmitButton")).first()
+    .isVisible({ timeout: 1000 }).catch(() => false);
+  if (stillHasCreate) {
+    steps.push("workday: create-account button still visible after submit — retrying via JS click");
+    await page.evaluate(`(function(){
+      var btn = document.querySelector('[data-automation-id="createAccountSubmitButton"]');
+      if (btn) btn.click();
+    })()`).catch(() => {});
+    await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
+    await page.waitForTimeout(2000);
+  }
+
   // Check for signup errors (e.g., "email already in use", validation failures).
   const errorText = await page.evaluate(`(function(){
     var errs = document.querySelectorAll('[data-automation-id*="error"], [role="alert"], .error-message, [class*="error"]');
@@ -237,9 +279,11 @@ async function fillSignupForm(args: AuthArgs, accountEmail: string, password: st
   // email, poll the inbound table for the verify link.
   const url = page.url();
   const html = await page.content().catch(() => "");
+  const bodyText = await page.evaluate(() => document.body?.innerText?.slice(0, 500) || "").catch(() => "");
+  steps.push(`workday: post-create-account url=${url.slice(0, 150)} bodySnippet="${bodyText.replace(/\n/g, " ").slice(0, 200)}"`);
   const needsEmailVerify =
     /verify|confirm/i.test(url) ||
-    /please verify|check your email|verification email|confirm your email/i.test(html);
+    /please verify|check your email|verification email|confirm your email|we sent|we.ve sent|activate your/i.test(html);
 
   if (needsEmailVerify) {
     steps.push("workday: email verification gate detected, polling InboundEmail");
