@@ -235,7 +235,7 @@ async function selectFirstDropdownOption(page: Page, formFieldAid: string): Prom
     trigger = page.locator(`[data-automation-id="${formFieldAid}"] button`).first();
     if (!(await trigger.isVisible({ timeout: 1000 }).catch(() => false))) return false;
   }
-  const preBtnText = ((await trigger.textContent().catch(() => "")) ?? "").trim();
+  const preBtnText = (String(await trigger.textContent().catch(() => ""))).trim();
   const preSelectedCount = await page.locator(`[data-automation-id="${formFieldAid}"] [data-automation-id="selectedItem"]`).count().catch(() => 0);
   await trigger.click({ timeout: 2000 }).catch(() => {});
   await page.waitForTimeout(600);
@@ -277,7 +277,7 @@ async function selectFirstDropdownOption(page: Page, formFieldAid: string): Prom
   // Check selectedItem (multiselects) or button text change (regular dropdowns)
   const fdSelected = await page.locator(`[data-automation-id="${formFieldAid}"] [data-automation-id="selectedItem"]`).count().catch(() => 0);
   if (fdSelected > preSelectedCount) return true;
-  const postBtnText = ((await trigger.textContent().catch(() => "")) ?? "").trim();
+  const postBtnText = (String(await trigger.textContent().catch(() => ""))).trim();
   if (postBtnText !== preBtnText && postBtnText.length > 0) return true;
   return false;
 }
@@ -566,7 +566,7 @@ async function fillSearchableDropdown(page: Page, formFieldAid: string, searchTe
 async function selectDropdownViaKeyboard(page: Page, formFieldAid: string, preferText?: string): Promise<boolean> {
   const trigger = page.locator(`[data-automation-id="${formFieldAid}"] button[aria-haspopup]`).first();
   if (!(await trigger.isVisible({ timeout: 1500 }).catch(() => false))) return false;
-  const preBtnText = ((await trigger.textContent().catch(() => "")) ?? "").trim();
+  const preBtnText = (String(await trigger.textContent().catch(() => ""))).trim();
   const preSelectedCount = await page.locator(`[data-automation-id="${formFieldAid}"] [data-automation-id="selectedItem"]`).count().catch(() => 0);
   await trigger.focus().catch(() => {});
   await trigger.press("Enter").catch(() => trigger.press("Space").catch(() => {}));
@@ -594,7 +594,7 @@ async function selectDropdownViaKeyboard(page: Page, formFieldAid: string, prefe
   const selected = await page.locator(`[data-automation-id="${formFieldAid}"] [data-automation-id="selectedItem"]`).count().catch(() => 0);
   if (selected > preSelectedCount) return true;
   // For regular dropdowns (non-multiselect), check if button text actually changed
-  const postBtnText = ((await trigger.textContent().catch(() => "")) ?? "").trim();
+  const postBtnText = (String(await trigger.textContent().catch(() => ""))).trim();
   if (postBtnText !== preBtnText && postBtnText.length > 0 && !/select|choose|--/i.test(postBtnText)) return true;
   return false;
 }
