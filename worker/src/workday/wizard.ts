@@ -1085,6 +1085,7 @@ export async function runWorkdayWizard(args: WizardArgs): Promise<ApplyResult> {
       const bodyText = ((await page.evaluate(`document.body.innerText`).catch(() => "")) as string).slice(0, 1000);
       const success =
         /\/(completed|confirmation)\/application/i.test(url) ||
+        /Job_Application_ID=/i.test(url) ||
         /application submitted|thank you|application received/i.test(bodyText);
       if (success) {
         steps.push("workday-wizard: ✓ submission confirmed");

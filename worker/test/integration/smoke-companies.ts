@@ -33,7 +33,7 @@ import { randomBytes } from "crypto";
 import { createClient } from "@libsql/client";
 import { applyToJob } from "../../src/apply-engine";
 
-process.env.DRY_RUN = "true";
+process.env.DRY_RUN = process.env.DRY_RUN ?? "true";
 process.env.HEADLESS = process.env.HEADLESS ?? "true";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -327,7 +327,7 @@ async function main() {
   const resumeUrl = u.resumeUrl;
   const resumeName = u.resumeName || "resume.pdf";
 
-  console.log(`\n=== smoke-companies (DRY_RUN=true, ${CANDIDATES.length} companies) ===\n`);
+  console.log(`\n=== smoke-companies (DRY_RUN=${process.env.DRY_RUN}, ${CANDIDATES.length} companies) ===\n`);
 
   const results: SmokeResult[] = [];
 
