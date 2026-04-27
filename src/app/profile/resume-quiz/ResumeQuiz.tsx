@@ -67,7 +67,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
 
       if (rewriteRes.ok) {
         const data = await rewriteRes.json();
-        setRewriteUrl(data.htmlUrl);
+        setRewriteUrl(data.pdfUrl);
         setPhase("done");
       } else if (rewriteRes.status === 403) {
         const data = await rewriteRes.json();
@@ -279,7 +279,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           <p className="text-[var(--gray-600)] mb-8">
             We&apos;ve rewritten your resume to lead with measurable results.
             {rewriteUrl
-              ? " Open it below to review, then save as PDF using your browser's Print function (Cmd+P)."
+              ? " Open it below to download your new PDF."
               : " Our team will use your answers to craft an optimized version tailored to your experience."}
           </p>
           <div className="flex flex-col gap-3 items-center">

@@ -113,8 +113,8 @@ async function getQuizData() {
           stage = "quiz_completed";
         }
 
-        if (parsed.resumeRewrite?.htmlUrl) {
-          rewriteUrl = parsed.resumeRewrite.htmlUrl;
+        if (parsed.resumeRewrite?.pdfUrl || parsed.resumeRewrite?.htmlUrl) {
+          rewriteUrl = parsed.resumeRewrite.pdfUrl || parsed.resumeRewrite.htmlUrl;
           rewriteCreatedAt = parsed.resumeRewrite.createdAt || null;
           stage = "rewrite_ready";
         }

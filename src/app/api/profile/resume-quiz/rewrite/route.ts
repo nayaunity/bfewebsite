@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import Anthropic from "@anthropic-ai/sdk";
 
+export const maxDuration = 60;
+
 const anthropic = new Anthropic();
 
 export async function POST() {
@@ -19,6 +21,7 @@ export async function POST() {
       firstName: true,
       lastName: true,
       currentTitle: true,
+      linkedinUrl: true,
       applicationAnswers: true,
       subscriptionTier: true,
       subscriptionStatus: true,
@@ -35,7 +38,7 @@ export async function POST() {
   }
 
   const isPaying =
-    user.subscriptionStatus === "active" &&
+    (user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing") &&
     ["starter", "pro"].includes(user.subscriptionTier);
 
   if (!isPaying) {
@@ -158,6 +161,7 @@ REWRITE RULES:
 
 APPLICANT: ${user.firstName || ""} ${user.lastName || ""}
 ${user.currentTitle ? `CURRENT TITLE: ${user.currentTitle}` : ""}
+${user.linkedinUrl ? `LINKEDIN URL: ${user.linkedinUrl.split("?")[0]} (hyperlink "LinkedIn" in the contact line to this URL)` : ""}
 
 The HTML must be ATS-friendly, single-column:
 - System fonts only (Arial, Helvetica, sans-serif)
@@ -211,7 +215,7 @@ Output the complete HTML resume now:`;
     );
   }
 
-  // Wrap if not a full HTML doc
+  // Ensure full HTML document
   if (
     !rewrittenHTML.toLowerCase().includes("<!doctype") &&
     !rewrittenHTML.toLowerCase().includes("<html")
@@ -219,23 +223,25 @@ Output the complete HTML resume now:`;
     rewrittenHTML = wrapHTML(rewrittenHTML);
   }
 
-  // Convert HTML to PDF using a serverless-friendly approach:
-  // Store HTML and let the client render/download, OR use Puppeteer.
-  // For now, store the HTML and create a simple PDF via the browser-side.
-  // We'll upload the HTML as a blob and let the user download it.
-
-  // Actually, let's generate a proper PDF. On Vercel serverless we can use
-  // @vercel/og or a lightweight HTML-to-PDF. But Playwright won't work on
-  // Vercel Edge. Instead, store the HTML and provide a download endpoint.
-  // The client-side component will render and offer print-to-PDF.
+  // Render HTML to PDF via headless Chromium
+  let pdfBuffer: Buffer;
+  try {
+    pdfBuffer = await renderPdf(rewrittenHTML);
+  } catch (err) {
+    console.error("PDF generation failed:", err);
+    return NextResponse.json(
+      { error: "PDF generation failed" },
+      { status: 500 }
+    );
+  }
 
   const timestamp = Date.now();
-  const fileName = `impact-resume-${user.firstName || "user"}-${user.lastName || ""}-${timestamp}.html`;
+  const pdfName = `impact-resume-${user.firstName || "user"}-${user.lastName || ""}-${timestamp}.pdf`;
 
   const blob = await put(
-    `resumes/${user.id}/impact-optimized/${fileName}`,
-    rewrittenHTML,
-    { access: "public", contentType: "text/html", addRandomSuffix: true }
+    `resumes/${user.id}/impact-optimized/${pdfName}`,
+    pdfBuffer,
+    { access: "public", contentType: "application/pdf", addRandomSuffix: true }
   );
 
   // Save the rewrite URL in applicationAnswers
@@ -252,17 +258,39 @@ Output the complete HTML resume now:`;
       applicationAnswers: JSON.stringify({
         ...existing,
         resumeRewrite: {
-          htmlUrl: blob.url,
+          pdfUrl: blob.url,
           createdAt: new Date().toISOString(),
         },
       }),
     },
   });
 
-  return NextResponse.json({
-    htmlUrl: blob.url,
-    message: "Resume rewritten successfully. Open the URL to view, then use your browser's Print to save as PDF.",
+  return NextResponse.json({ pdfUrl: blob.url });
+}
+
+async function renderPdf(html: string): Promise<Buffer> {
+  const chromium = (await import("@sparticuz/chromium")).default;
+  const puppeteer = (await import("puppeteer-core")).default;
+
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: { width: 816, height: 1056 },
+    executablePath: await chromium.executablePath(),
+    headless: true,
   });
+
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "networkidle0" });
+    const pdf = await page.pdf({
+      format: "Letter",
+      margin: { top: "0.5in", bottom: "0.5in", left: "0.6in", right: "0.6in" },
+      printBackground: true,
+    });
+    return Buffer.from(pdf);
+  } finally {
+    await browser.close();
+  }
 }
 
 function wrapHTML(bodyHTML: string): string {
@@ -278,7 +306,7 @@ function wrapHTML(bodyHTML: string): string {
       line-height: 1.5;
       color: #111;
       background: #fff;
-      padding: 0.5in 0.6in;
+      padding: 0;
     }
     h1 { font-size: 16px; margin-bottom: 2px; }
     h2 { font-size: 13px; text-transform: uppercase; border-bottom: 1px solid #333; margin: 12px 0 6px; padding-bottom: 2px; }
@@ -287,9 +315,6 @@ function wrapHTML(bodyHTML: string): string {
     ul { margin-left: 18px; margin-bottom: 6px; }
     li { margin-bottom: 2px; }
     a { color: #111; text-decoration: none; }
-    @media print {
-      body { padding: 0; }
-    }
   </style>
 </head>
 <body>
