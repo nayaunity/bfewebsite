@@ -1,4 +1,4 @@
-# Session Handoff — April 14–27, 2026 (Apr 27: multi-tenant Workday 5/5 PASSED — Salesforce, Adobe, Capital One, Walmart, Cisco all passing; deploy still NOT yet done)
+# Session Handoff — April 14–27, 2026 (Apr 27: Workday expanded to 13 tenants. 8 new passing: Netflix, Intel, Morgan Stanley, Target, JnJ, GE Aerospace/Vernova/HealthCare. Deploy still NOT yet done)
 
 ## Current State
 
@@ -13,12 +13,21 @@
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Uncommitted as of end of Apr 27 session (working tree on `auto-apply-saas`)
-Working-tree changes ready to commit (all 5 Workday tenants passing DRY_RUN smoke):
-- `worker/src/workday/tenants.ts` — 5 tenants: Walmart, Adobe, Salesforce, Capital One, Cisco. Per-tenant question rules for each. Generic question rules expanded (sanctions, government entity, relative employed).
-- `worker/src/workday/wizard.ts` — generalized cross-tenant wizard driver. Key changes: `clearAndType` helper with React nativeInputValueSetter+_valueTracker fallback, continuous MMDDYYYY keyboard date fill for Workday's auto-advance date widget, stuck-step detection (bail after 3 retries on same step), broader multiselect discovery for "How Did You Hear", work experience + education field filling, catch-all empty-input discovery, checkbox force-checking for hidden consent fields (Capital One), popover cleanup, scrolling fallbacks for Next button.
-- `worker/test/integration/smoke-companies.ts` — Cisco added to WORKDAY_ONLY_CANDIDATES. Capital One config corrected `wd1` -> `wd12`. SMOKE_FRESH_EMAIL harness for disposable test emails.
+Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DRY_RUN smoke):
+- `worker/src/workday/tenants.ts` — 26 tenants defined (5 validated + 21 pending). Per-tenant question rules for Walmart, Adobe, Salesforce, Capital One, Cisco. Generic question rules expanded (sanctions, government entity, relative employed).
+- `worker/src/workday/wizard.ts` — heavily expanded cross-tenant wizard driver. Key changes since 5-tenant baseline:
+  - `fillSearchableDropdown` helper for Workday's server-side autocomplete fields (school, field of study) with retry + shorter search term fallback
+  - Phone Device Type discovery: tries `formField-phoneType`, `formField-phoneDeviceType`, then label-based discovery for any dropdown with "phone type/device type" in label text
+  - Education fields: school/fieldOfStudy searchable dropdowns, degree dropdown, education date range (educationStartDate/End, from/to, startYear/endYear)
+  - Skills tagger: types "Python", waits for autocomplete option, clicks or presses Enter
+  - Citizenship multiselect on VD page: prefers "United States" option
+  - Application Questions: context-aware text inputs (salary -> "70000", years experience -> "0", dates -> "05/2026")
+  - Address Line 2 fill ("Apt 1") for tenants that require it
+  - Name field fallback: `formField-legalName--firstName` -> `formField-firstName`
+  - Remaining-text-inputs discovery on My Information page
+- `worker/test/integration/smoke-companies.ts` — 20 new Workday tenants added to WORKDAY_ONLY_CANDIDATES, SMOKE_SINGLE support for individual tenant testing.
 - `src/lib/scrapers/workday.ts` — two-pass scrape (default + intern search).
-- `src/data/auto-apply-companies.json` — 4 Workday tenants added: Salesforce, Adobe, Walmart, Capital One. (Cisco still needs to be added after commit.)
+- `src/data/auto-apply-companies.json` — 8 new Workday tenants added (Netflix, Intel, Morgan Stanley, Target, Johnson & Johnson, GE Aerospace, GE Vernova, GE HealthCare). Total: 81 companies, 13 Workday.
 
 ### Infrastructure
 - **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
@@ -57,6 +66,52 @@ Working-tree changes ready to commit (all 5 Workday tenants passing DRY_RUN smok
 ---
 
 ## What Was Done This Session (April 15-26)
+
+### 32. Apr 27 cont'd — Workday expansion: 20 new tenants tested, 8 passing, added to auto-apply
+
+**Goal:** Smoke-test 20 new Workday tenants and add passing ones to `auto-apply-companies.json`.
+
+**Final scorecard (20 new tenants):**
+| Tenant | Result | Error / Notes |
+|---|---|---|
+| Netflix | PASSED | |
+| Intel | PASSED | Citizenship multiselect fix |
+| Morgan Stanley | PASSED | |
+| Target | PASSED | Skills tagger fix |
+| Johnson & Johnson | PASSED | Salary text input fix |
+| GE Aerospace | PASSED | |
+| GE Vernova | PASSED | |
+| GE HealthCare | PASSED | |
+| HP Inc | FAILED | stuck-step-1 (phone device type field not filling) |
+| HPE | FAILED | hung/timeout during browser automation |
+| Northrop Grumman | FAILED | pressSequentially timeout (auth or field mismatch) |
+| Bank of America | FAILED | stuck-step-2 (school searchable dropdown not selecting) |
+| PwC | FAILED | stuck-step-1 (credential reuse / auth confusion) |
+| Procter & Gamble | FAILED | stuck-step-2 (school searchable dropdown) |
+| NVIDIA | FAILED | auth gate not detected (7-step wizard) |
+| RTX | FAILED | auth gate not detected (7-step wizard) |
+| Broadcom | FAILED | login/authentication required |
+| Visa | FAILED | "How Did You Hear About Us?" multiselect never fills |
+| Boeing | FAILED | graduation date widget not filling |
+| Mastercard | FAILED | hung/timeout during browser automation |
+
+**Wizard fixes made this session:**
+1. `fillSearchableDropdown` helper for server-side autocomplete fields (school, field of study)
+2. Phone Device Type: `formField-phoneType` -> `formField-phoneDeviceType` fallback -> label-based discovery
+3. Skills tagger: type "Python", wait for autocomplete, click option
+4. Citizenship multiselect: prefer "United States" on VD page
+5. Context-aware AQ text inputs: salary -> "70000", years experience -> "0"
+6. Address Line 2: always fill "Apt 1"
+7. Education dates: educationStartDate/End, from/to, startYear/endYear
+8. Name field fallback: `formField-legalName--firstName` -> `formField-firstName`
+
+**Known issues for follow-up session:**
+- NVIDIA/RTX: 7-step wizard auth gate detection needs deeper investigation (auth page looks like step 1)
+- Broadcom: completely different auth flow, needs separate handling
+- HP Inc/Northrop/HPE: Phone Device Type label-based discovery didn't match. Need non-headless debugging to inspect actual field automation IDs
+- BofA/PwC/P&G: School searchable dropdown autocomplete results not appearing. Possible server-side search latency or different autocomplete pattern
+- Boeing: graduation date widget uses unknown automation ID pattern
+- Visa: "How Did You Hear" is a different widget type than multiselect or dropdown
 
 ### 31. Apr 27 — Cisco added as 5th Workday tenant + date widget fix: 5/5 tenants PASSED (NOT YET DEPLOYED)
 

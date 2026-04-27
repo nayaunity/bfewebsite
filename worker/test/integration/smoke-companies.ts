@@ -63,11 +63,33 @@ interface Candidate {
 // Snowflake (Phenom), ServiceNow (SmartRecruiters), Intuit (Lever) — not on Workday.
 const WORKDAY_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cloudflare",   companySlug: "cloudflare",  ats: "greenhouse", boardSlug: "cloudflare",  control: true },
+  // Validated tenants (5)
   { company: "Salesforce",   companySlug: "salesforce",  ats: "workday",    workday: { baseUrl: "https://salesforce.wd12.myworkdayjobs.com", company: "salesforce", siteName: "External_Career_Site" } },
   { company: "Adobe",        companySlug: "adobe",       ats: "workday",    workday: { baseUrl: "https://adobe.wd5.myworkdayjobs.com",       company: "adobe",      siteName: "external_experienced" } },
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
   { company: "Capital One",  companySlug: "capitalone",  ats: "workday",    workday: { baseUrl: "https://capitalone.wd12.myworkdayjobs.com", company: "capitalone", siteName: "Capital_One" } },
   { company: "Walmart",      companySlug: "walmart",     ats: "workday",    workday: { baseUrl: "https://walmart.wd5.myworkdayjobs.com",     company: "walmart",    siteName: "WalmartExternal" } },
+  // New tenants (20, pending smoke validation)
+  { company: "Netflix",           companySlug: "netflix",          ats: "workday", workday: { baseUrl: "https://netflix.wd108.myworkdayjobs.com",    company: "netflix",     siteName: "Netflix" } },
+  { company: "Intel",             companySlug: "intel",            ats: "workday", workday: { baseUrl: "https://intel.wd1.myworkdayjobs.com",        company: "intel",       siteName: "External" } },
+  { company: "NVIDIA",            companySlug: "nvidia",           ats: "workday", workday: { baseUrl: "https://nvidia.wd5.myworkdayjobs.com",       company: "nvidia",      siteName: "NVIDIAExternalCareerSite" } },
+  { company: "HP Inc",            companySlug: "hp",               ats: "workday", workday: { baseUrl: "https://hp.wd5.myworkdayjobs.com",           company: "hp",          siteName: "ExternalCareerSite" } },
+  { company: "HPE",               companySlug: "hpe",              ats: "workday", workday: { baseUrl: "https://hpe.wd5.myworkdayjobs.com",          company: "hpe",         siteName: "Jobsathpe" } },
+  { company: "Broadcom",          companySlug: "broadcom",         ats: "workday", workday: { baseUrl: "https://broadcom.wd1.myworkdayjobs.com",     company: "broadcom",    siteName: "External_Career" } },
+  { company: "Visa",              companySlug: "visa",             ats: "workday", workday: { baseUrl: "https://visa.wd5.myworkdayjobs.com",         company: "visa",        siteName: "Visa" } },
+  { company: "Mastercard",        companySlug: "mastercard",       ats: "workday", workday: { baseUrl: "https://mastercard.wd1.myworkdayjobs.com",   company: "mastercard",  siteName: "CorporateCareers" } },
+  { company: "Morgan Stanley",    companySlug: "morganstanley",    ats: "workday", workday: { baseUrl: "https://ms.wd5.myworkdayjobs.com",           company: "ms",          siteName: "External" } },
+  { company: "Bank of America",   companySlug: "bankofamerica",    ats: "workday", workday: { baseUrl: "https://ghr.wd1.myworkdayjobs.com",          company: "ghr",         siteName: "Lateral-US" } },
+  { company: "PwC",               companySlug: "pwc",              ats: "workday", workday: { baseUrl: "https://pwc.wd3.myworkdayjobs.com",          company: "pwc",         siteName: "Global_Experienced_Careers" } },
+  { company: "Target",            companySlug: "target",           ats: "workday", workday: { baseUrl: "https://target.wd5.myworkdayjobs.com",       company: "target",      siteName: "targetcareers" } },
+  { company: "Johnson & Johnson", companySlug: "jnj",              ats: "workday", workday: { baseUrl: "https://jj.wd5.myworkdayjobs.com",           company: "jj",          siteName: "JJ" } },
+  { company: "Procter & Gamble",  companySlug: "pg",               ats: "workday", workday: { baseUrl: "https://pg.wd5.myworkdayjobs.com",           company: "pg",          siteName: "1000" } },
+  { company: "GE Aerospace",      companySlug: "geaerospace",      ats: "workday", workday: { baseUrl: "https://geaerospace.wd5.myworkdayjobs.com",  company: "geaerospace", siteName: "GE_ExternalSite" } },
+  { company: "GE Vernova",        companySlug: "gevernova",        ats: "workday", workday: { baseUrl: "https://gevernova.wd5.myworkdayjobs.com",    company: "gevernova",   siteName: "Vernova_ExternalSite" } },
+  { company: "GE HealthCare",     companySlug: "gehealthcare",     ats: "workday", workday: { baseUrl: "https://gehc.wd5.myworkdayjobs.com",         company: "gehc",        siteName: "GEHC_ExternalSite" } },
+  { company: "Boeing",            companySlug: "boeing",           ats: "workday", workday: { baseUrl: "https://boeing.wd1.myworkdayjobs.com",       company: "boeing",      siteName: "EXTERNAL_CAREERS" } },
+  { company: "Northrop Grumman",  companySlug: "northropgrumman",  ats: "workday", workday: { baseUrl: "https://ngc.wd1.myworkdayjobs.com",          company: "ngc",         siteName: "Northrop_Grumman_External_Site" } },
+  { company: "RTX",               companySlug: "rtx",              ats: "workday", workday: { baseUrl: "https://globalhr.wd5.myworkdayjobs.com",     company: "globalhr",    siteName: "REC_RTX_Ext_Gateway" } },
 ];
 
 // Sprint-1 iteration loop: just Walmart. Skips control + irrelevant tenants

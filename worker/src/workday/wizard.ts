@@ -256,6 +256,43 @@ async function selectMultiselect(page: Page, formFieldAid: string, preferText?: 
   return true;
 }
 
+async function fillSearchableDropdown(page: Page, formFieldAid: string, searchText: string, steps: string[]): Promise<boolean> {
+  const input = page.locator(`[data-automation-id="${formFieldAid}"] input`).first();
+  if (!(await input.isVisible({ timeout: 1500 }).catch(() => false))) return false;
+  const existing = await input.inputValue().catch(() => "");
+  if (existing.trim()) return true;
+  // Try typing the search text and waiting for autocomplete options.
+  // Workday's server-side search can be slow, so wait up to 3s.
+  await input.click().catch(() => {});
+  await input.fill("").catch(() => {});
+  await input.pressSequentially(searchText, { delay: 60 });
+  await page.waitForTimeout(2000);
+  let opt = page.locator('[role="option"]:not([data-automation-id="selectedItem"])')
+    .filter({ hasText: new RegExp(escape(searchText.split(" ")[0]), "i") }).first();
+  if (await opt.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await opt.click().catch(() => {});
+    await page.waitForTimeout(500);
+    steps.push(`workday-wizard: selected "${searchText}" from ${formFieldAid} dropdown`);
+    return true;
+  }
+  // Retry: clear, re-type a shorter search term for broader results.
+  const shortSearch = searchText.split(" ").slice(0, 2).join(" ");
+  await input.fill("").catch(() => {});
+  await page.waitForTimeout(300);
+  await input.pressSequentially(shortSearch, { delay: 80 });
+  await page.waitForTimeout(2000);
+  opt = page.locator('[role="option"]:not([data-automation-id="selectedItem"])').first();
+  if (await opt.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await opt.click().catch(() => {});
+    await page.waitForTimeout(500);
+    steps.push(`workday-wizard: selected first option from ${formFieldAid} (short search "${shortSearch}")`);
+    return true;
+  }
+  await page.keyboard.press("Escape").catch(() => {});
+  steps.push(`workday-wizard: typed "${searchText}" in ${formFieldAid} (no dropdown option matched)`);
+  return true;
+}
+
 async function listOptions(page: Page): Promise<string[]> {
   return (await page.evaluate(`(function(){
     return Array.from(document.querySelectorAll('[role="option"]')).filter(function(el){
@@ -438,9 +475,17 @@ async function fillMyInformation(page: Page, applicant: ApplicantData, tenant: W
     }
   }
 
-  if (applicant.firstName) await typeIntoFormField(page, "formField-legalName--firstName", applicant.firstName);
-  if (applicant.lastName) await typeIntoFormField(page, "formField-legalName--lastName", applicant.lastName);
+  // Name fields: some tenants use legalName--firstName, others use firstName directly.
+  if (applicant.firstName) {
+    const nameFilled = await typeIntoFormField(page, "formField-legalName--firstName", applicant.firstName);
+    if (!nameFilled) await typeIntoFormField(page, "formField-firstName", applicant.firstName);
+  }
+  if (applicant.lastName) {
+    const nameFilled = await typeIntoFormField(page, "formField-legalName--lastName", applicant.lastName);
+    if (!nameFilled) await typeIntoFormField(page, "formField-lastName", applicant.lastName);
+  }
   await typeIntoFormField(page, "formField-addressLine1", applicant.city || "1 Apply Lane");
+  await typeIntoFormField(page, "formField-addressLine2", "Apt 1");
   if (applicant.city) await typeIntoFormField(page, "formField-city", applicant.city);
   if (applicant.usState) await selectFormFieldDropdown(page, "formField-countryRegion", applicant.usState);
   await typeIntoFormField(page, "formField-postalCode", "80202");
@@ -453,9 +498,57 @@ async function fillMyInformation(page: Page, applicant: ApplicantData, tenant: W
     await typeIntoFormField(page, "formField-email", applicant.email || "");
   }
 
-  await selectFormFieldDropdown(page, "formField-phoneType", "Mobile");
+  // Phone type: automation ID varies widely across tenants. Try known IDs
+  // first, then discover by label text.
+  let phoneTypeFilled = await selectFormFieldDropdown(page, "formField-phoneType", "Mobile");
+  if (!phoneTypeFilled) phoneTypeFilled = await selectFormFieldDropdown(page, "formField-phoneDeviceType", "Mobile");
+  if (!phoneTypeFilled) {
+    const phoneDropdowns = (await page.evaluate(`(function(){
+      return Array.from(document.querySelectorAll('[data-automation-id^="formField-"]')).filter(function(el){
+        var r = el.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return false;
+        if (!el.querySelector('button[aria-haspopup]')) return false;
+        var text = (el.innerText || el.textContent || '').toLowerCase();
+        return /phone.*type|device.*type|phone.*device/i.test(text);
+      }).map(function(el){ return el.getAttribute('data-automation-id') || ''; });
+    })()`)) as string[];
+    for (const dd of phoneDropdowns) {
+      phoneTypeFilled = await selectFormFieldDropdown(page, dd, "Mobile");
+      if (phoneTypeFilled) break;
+    }
+  }
   await selectFormFieldDropdown(page, "formField-countryPhoneCode", "United States of America");
   if (applicant.phone) await typeIntoFormField(page, "formField-phoneNumber", applicant.phone.replace(/\D/g, ""));
+
+  // Fill any remaining required empty text inputs (e.g., referral name/email
+  // sub-fields that appear after "How Did You Hear" selection).
+  const remainingInputs = (await page.evaluate(`(function(){
+    return Array.from(document.querySelectorAll('[data-automation-id^="formField-"] input[type="text"], [data-automation-id^="formField-"] input:not([type])')).filter(function(el){
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) return false;
+      if (el.type === 'file' || el.type === 'hidden') return false;
+      if (el.value && el.value.trim()) return false;
+      var ff = el.closest('[data-automation-id^="formField-"]');
+      if (!ff) return false;
+      var label = (ff.innerText || ff.textContent || '').trim().toLowerCase();
+      if (/first name|last name|address|city|postal|zip|phone number|email/i.test(label)) return false;
+      return true;
+    }).map(function(el){
+      var ff = el.closest('[data-automation-id^="formField-"]');
+      return { aid: ff.getAttribute('data-automation-id') || '', label: (ff.innerText || ff.textContent || '').trim().split('\\n')[0].slice(0, 100) };
+    });
+  })()`)) as { aid: string; label: string }[];
+  for (const ri of remainingInputs) {
+    const label = ri.label.toLowerCase();
+    let value = "N/A";
+    if (/name|email|refer/i.test(label)) value = "Job Board";
+    const input = page.locator(`[data-automation-id="${ri.aid}"] input`).first();
+    if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
+      await input.click().catch(() => {});
+      await input.pressSequentially(value, { delay: 60 });
+    }
+  }
+
   await page.locator("h1").first().click({ force: true, timeout: 1500 }).catch(() => {});
   await page.waitForTimeout(800);
   steps.push("workday-wizard: filled step 1 (My Information)");
@@ -537,8 +630,54 @@ async function fillMyExperience(page: Page, applicant: ApplicantData, resumePath
     steps.push("workday-wizard: filled work experience fields");
   }
 
+  // Education fields — School, Degree, Field of Study BEFORE catch-all so
+  // searchable dropdown selections register properly.
+  await fillSearchableDropdown(page, "formField-school", "University of Maryland", steps);
+  await fillSearchableDropdown(page, "formField-fieldOfStudy", "Computer Science", steps);
+  await selectFormFieldDropdown(page, "formField-degree", "Bachelor");
+  // Education dates: From / To
+  await fillWorkdayDate(page, "educationStartDate", steps);
+  await fillWorkdayDate(page, "educationEndDate", steps);
+  // Some tenants use "from" / "to" automation IDs for education
+  const fromField = page.locator('[data-automation-id="formField-from"], [data-automation-id="formField-startYear"]').first();
+  if (await fromField.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const input = fromField.locator("input").first();
+    if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
+      const val = await input.inputValue().catch(() => "");
+      if (!val) { await input.click().catch(() => {}); await input.pressSequentially("2023", { delay: 60 }); }
+    }
+  }
+  const toField = page.locator('[data-automation-id="formField-to"], [data-automation-id="formField-endYear"]').first();
+  if (await toField.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const input = toField.locator("input").first();
+    if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
+      const val = await input.inputValue().catch(() => "");
+      if (!val) { await input.click().catch(() => {}); await input.pressSequentially("2026", { delay: 60 }); }
+    }
+  }
+  steps.push("workday-wizard: filled education fields");
+
+  // Skills tagger: some tenants require adding at least one skill via a tag input.
+  const skillsInput = page.locator('[data-automation-id*="skill" i] input, [data-automation-id*="skills" i] input').first();
+  if (await skillsInput.isVisible({ timeout: 1500 }).catch(() => false)) {
+    const sVal = await skillsInput.inputValue().catch(() => "");
+    if (!sVal) {
+      await skillsInput.click().catch(() => {});
+      await skillsInput.pressSequentially("Python", { delay: 60 });
+      await page.waitForTimeout(600);
+      const skillOpt = page.locator('[role="option"]').filter({ hasText: /Python/i }).first();
+      if (await skillOpt.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await skillOpt.click().catch(() => {});
+      } else {
+        await page.keyboard.press("Enter").catch(() => {});
+      }
+      await page.waitForTimeout(300);
+      steps.push("workday-wizard: added skill 'Python' via tag input");
+    }
+  }
+
   // Catch-all: discover ALL empty required text inputs on the page and fill
-  // them with sensible defaults. Handles fields with non-standard automation IDs.
+  // them with sensible defaults. Skip fields already handled above.
   const emptyFields = (await page.evaluate(`(function(){
     return Array.from(document.querySelectorAll('[data-automation-id^="formField-"] input[type="text"], [data-automation-id^="formField-"] input:not([type])')).filter(function(el){
       var r = el.getBoundingClientRect();
@@ -547,6 +686,8 @@ async function fillMyExperience(page: Page, applicant: ApplicantData, resumePath
       if (el.value && el.value.trim()) return false;
       var ff = el.closest('[data-automation-id^="formField-"]');
       if (!ff) return false;
+      var aid = ff.getAttribute('data-automation-id') || '';
+      if (/school|degree|fieldOfStudy|skill/i.test(aid)) return false;
       return true;
     }).map(function(el){
       var ff = el.closest('[data-automation-id^="formField-"]');
@@ -560,8 +701,6 @@ async function fillMyExperience(page: Page, applicant: ApplicantData, resumePath
     if (/company/i.test(label)) value = "University of Maryland";
     else if (/job title|role|position/i.test(label)) value = applicant.currentTitle || "Software Engineer Intern";
     else if (/location|city/i.test(label)) value = applicant.city || "Denver, CO";
-    else if (/school|university|institution/i.test(label)) value = "University of Maryland";
-    else if (/field of study|major/i.test(label)) value = "Computer Science";
     else if (/gpa/i.test(label)) value = "3.5";
     else continue;
     const input = page.locator(`[data-automation-id="${ef.aid}"] input`).first();
@@ -573,24 +712,6 @@ async function fillMyExperience(page: Page, applicant: ApplicantData, resumePath
       if (!got) await input.fill(value).catch(() => {});
       steps.push(`workday-wizard: catch-all filled "${ef.label}" (${ef.aid}) = "${value}"`);
     }
-  }
-
-  // Education fields — School, Degree if present and empty.
-  const schoolField = page.locator('[data-automation-id*="school" i] input').first();
-  if (await schoolField.isVisible({ timeout: 2000 }).catch(() => false)) {
-    const sVal = await schoolField.inputValue().catch(() => "");
-    if (!sVal) {
-      await schoolField.click().catch(() => {});
-      await schoolField.pressSequentially("University of Maryland", { delay: 60 });
-      await page.waitForTimeout(800);
-      const schoolOpt = page.locator('[role="option"]').filter({ hasText: /Maryland/i }).first();
-      if (await schoolOpt.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await schoolOpt.click().catch(() => {});
-        await page.waitForTimeout(500);
-      }
-    }
-    await selectFormFieldDropdown(page, "formField-degree", "Bachelor");
-    steps.push("workday-wizard: filled education fields");
   }
 
   // LinkedIn URL is at the bottom of the page, plain text input.
@@ -660,7 +781,7 @@ async function fillApplicationQuestions(page: Page, tenant: WorkdayTenant, steps
     }
   }
 
-  // Also handle text inputs on the AQ page (e.g., "Please explain" free-text fields).
+  // Also handle text inputs on the AQ page (e.g., salary, "Please explain" free-text fields).
   const textInputs = (await page.evaluate(`(function(){
     return Array.from(document.querySelectorAll('[data-automation-id^="formField-"] input[type="text"], [data-automation-id^="formField-"] textarea')).filter(function(el){
       var r = el.getBoundingClientRect();
@@ -671,14 +792,20 @@ async function fillApplicationQuestions(page: Page, tenant: WorkdayTenant, steps
       return !el.value;
     }).map(function(el){
       var ff = el.closest('[data-automation-id^="formField-"]');
-      return { aid: ff.getAttribute('data-automation-id') || '', tag: el.tagName };
+      var label = (ff.innerText || ff.textContent || '').trim().split('\\n')[0].slice(0, 200);
+      return { aid: ff.getAttribute('data-automation-id') || '', tag: el.tagName, label: label };
     });
-  })()`)) as { aid: string; tag: string }[];
+  })()`)) as { aid: string; tag: string; label: string }[];
   for (const ti of textInputs) {
     const input = page.locator(`[data-automation-id="${ti.aid}"] ${ti.tag.toLowerCase()}`).first();
     if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
+      const label = ti.label.toLowerCase();
+      let value = "N/A";
+      if (/salary|compensation|pay|wage/i.test(label)) value = "70000";
+      else if (/year|experience/i.test(label)) value = "0";
+      else if (/date|when|graduation/i.test(label)) value = "05/2026";
       await input.click().catch(() => {});
-      await input.pressSequentially("N/A", { delay: 30 }).catch(() => {});
+      await input.pressSequentially(value, { delay: 30 }).catch(() => {});
     }
   }
 
@@ -696,15 +823,16 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     return Array.from(document.querySelectorAll('[data-automation-id^="formField-"]')).filter(function(el){
       var r = el.getBoundingClientRect();
       if (r.width <= 0 || r.height <= 0) return false;
-      if (!el.querySelector('button[aria-haspopup], select, [role="listbox"], [data-automation-id="multiSelectContainer"]')) return false;
+      if (!el.querySelector('button[aria-haspopup], select, [role="listbox"], [data-automation-id="multiSelectContainer"], [data-automation-id="promptIcon"]')) return false;
       var aid = (el.getAttribute('data-automation-id') || '').toLowerCase();
       if (/date|esignature/.test(aid)) return false;
       if (el.querySelector('[data-automation-id*="dateSection"]')) return false;
       return true;
     }).map(function(el){
-      return { aid: el.getAttribute('data-automation-id') || '', text: (el.innerText || el.textContent || '').trim().slice(0, 200) };
+      var isMs = !!el.querySelector('[data-automation-id="multiSelectContainer"], [data-automation-id="promptIcon"]');
+      return { aid: el.getAttribute('data-automation-id') || '', text: (el.innerText || el.textContent || '').trim().slice(0, 200), isMultiselect: isMs };
     });
-  })()`)) as FieldRef[];
+  })()`)) as (FieldRef & { isMultiselect: boolean })[];
   for (const ff of genderFields) {
     const label = ff.text.toLowerCase();
     let preferText = "Decline to Self Identify";
@@ -713,6 +841,12 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     else if (/race|ethnic/i.test(label)) preferText = "Decline to Self Identify";
     else if (/veteran/i.test(label)) preferText = "not a veteran";
     else if (/disability|disab/i.test(label)) preferText = "prefer not";
+    else if (/citizen/i.test(label)) preferText = "United States";
+
+    if (ff.isMultiselect) {
+      await selectMultiselect(page, ff.aid, preferText);
+      continue;
+    }
 
     const trigger = page.locator(`[data-automation-id="${ff.aid}"] button[aria-haspopup]`).first();
     if (!(await trigger.isVisible({ timeout: 1500 }).catch(() => false))) continue;
@@ -864,7 +998,8 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     // Find any formField container that has date widget sub-components.
     const dateContainerAids = [
       "formField-esignatureDate", "formField-date", "formField-dateSigned",
-      "formField-signatureDate", "formField-Date",
+      "formField-signatureDate", "formField-Date", "formField-expectedGraduationDate",
+      "formField-graduationDate",
     ];
     for (const aid of dateContainerAids) {
       const container = page.locator(`[data-automation-id="${aid}"]`).first();

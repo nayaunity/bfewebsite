@@ -582,5 +582,69 @@
     "industry": "Technology",
     "atsType": "workday",
     "atsConfig": { "baseUrl": "https://cisco.wd5.myworkdayjobs.com", "company": "cisco", "siteName": "Cisco_Careers" }
+  },
+  {
+    "name": "Netflix",
+    "slug": "netflix",
+    "careersUrl": "https://netflix.wd108.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://netflix.wd108.myworkdayjobs.com", "company": "netflix", "siteName": "Netflix" }
+  },
+  {
+    "name": "Intel",
+    "slug": "intel",
+    "careersUrl": "https://intel.wd1.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://intel.wd1.myworkdayjobs.com", "company": "intel", "siteName": "External" }
+  },
+  {
+    "name": "Morgan Stanley",
+    "slug": "morganstanley",
+    "careersUrl": "https://ms.wd5.myworkdayjobs.com",
+    "industry": "Financial Services",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://ms.wd5.myworkdayjobs.com", "company": "ms", "siteName": "External" }
+  },
+  {
+    "name": "Target",
+    "slug": "target",
+    "careersUrl": "https://target.wd5.myworkdayjobs.com",
+    "industry": "Retail",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://target.wd5.myworkdayjobs.com", "company": "target", "siteName": "targetcareers" }
+  },
+  {
+    "name": "Johnson & Johnson",
+    "slug": "jnj",
+    "careersUrl": "https://jj.wd5.myworkdayjobs.com",
+    "industry": "Healthcare",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://jj.wd5.myworkdayjobs.com", "company": "jj", "siteName": "JJ" }
+  },
+  {
+    "name": "GE Aerospace",
+    "slug": "geaerospace",
+    "careersUrl": "https://geaerospace.wd5.myworkdayjobs.com",
+    "industry": "Aerospace & Defense",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://geaerospace.wd5.myworkdayjobs.com", "company": "geaerospace", "siteName": "GE_ExternalSite" }
+  },
+  {
+    "name": "GE Vernova",
+    "slug": "gevernova",
+    "careersUrl": "https://gevernova.wd5.myworkdayjobs.com",
+    "industry": "Energy",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://gevernova.wd5.myworkdayjobs.com", "company": "gevernova", "siteName": "Vernova_ExternalSite" }
+  },
+  {
+    "name": "GE HealthCare",
+    "slug": "gehealthcare",
+    "careersUrl": "https://gehc.wd5.myworkdayjobs.com",
+    "industry": "Healthcare",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://gehc.wd5.myworkdayjobs.com", "company": "gehc", "siteName": "GEHC_ExternalSite" }
   }
 ]

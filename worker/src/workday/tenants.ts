@@ -182,6 +182,127 @@ export const WORKDAY_TENANTS: WorkdayTenant[] = [
     siteName: "Cisco_Careers",
     questionRules: CISCO_QUESTION_RULES,
   },
+  // --- New tenants (Apr 27, pending smoke validation) ---
+  {
+    host: "netflix.wd108.myworkdayjobs.com",
+    name: "Netflix",
+    apiTenant: "netflix",
+    siteName: "Netflix",
+  },
+  {
+    host: "intel.wd1.myworkdayjobs.com",
+    name: "Intel",
+    apiTenant: "intel",
+    siteName: "External",
+  },
+  {
+    host: "nvidia.wd5.myworkdayjobs.com",
+    name: "NVIDIA",
+    apiTenant: "nvidia",
+    siteName: "NVIDIAExternalCareerSite",
+  },
+  {
+    host: "hp.wd5.myworkdayjobs.com",
+    name: "HP Inc",
+    apiTenant: "hp",
+    siteName: "ExternalCareerSite",
+  },
+  {
+    host: "hpe.wd5.myworkdayjobs.com",
+    name: "HPE",
+    apiTenant: "hpe",
+    siteName: "Jobsathpe",
+  },
+  {
+    host: "broadcom.wd1.myworkdayjobs.com",
+    name: "Broadcom",
+    apiTenant: "broadcom",
+    siteName: "External_Career",
+  },
+  {
+    host: "visa.wd5.myworkdayjobs.com",
+    name: "Visa",
+    apiTenant: "visa",
+    siteName: "Visa",
+  },
+  {
+    host: "mastercard.wd1.myworkdayjobs.com",
+    name: "Mastercard",
+    apiTenant: "mastercard",
+    siteName: "CorporateCareers",
+  },
+  {
+    host: "ms.wd5.myworkdayjobs.com",
+    name: "Morgan Stanley",
+    apiTenant: "ms",
+    siteName: "External",
+  },
+  {
+    host: "ghr.wd1.myworkdayjobs.com",
+    name: "Bank of America",
+    apiTenant: "ghr",
+    siteName: "Lateral-US",
+  },
+  {
+    host: "pwc.wd3.myworkdayjobs.com",
+    name: "PwC",
+    apiTenant: "pwc",
+    siteName: "Global_Experienced_Careers",
+  },
+  {
+    host: "target.wd5.myworkdayjobs.com",
+    name: "Target",
+    apiTenant: "target",
+    siteName: "targetcareers",
+  },
+  {
+    host: "jj.wd5.myworkdayjobs.com",
+    name: "Johnson & Johnson",
+    apiTenant: "jj",
+    siteName: "JJ",
+  },
+  {
+    host: "pg.wd5.myworkdayjobs.com",
+    name: "Procter & Gamble",
+    apiTenant: "pg",
+    siteName: "1000",
+  },
+  {
+    host: "geaerospace.wd5.myworkdayjobs.com",
+    name: "GE Aerospace",
+    apiTenant: "geaerospace",
+    siteName: "GE_ExternalSite",
+  },
+  {
+    host: "gevernova.wd5.myworkdayjobs.com",
+    name: "GE Vernova",
+    apiTenant: "gevernova",
+    siteName: "Vernova_ExternalSite",
+  },
+  {
+    host: "gehc.wd5.myworkdayjobs.com",
+    name: "GE HealthCare",
+    apiTenant: "gehc",
+    siteName: "GEHC_ExternalSite",
+  },
+  {
+    host: "boeing.wd1.myworkdayjobs.com",
+    name: "Boeing",
+    apiTenant: "boeing",
+    siteName: "EXTERNAL_CAREERS",
+  },
+  {
+    host: "ngc.wd1.myworkdayjobs.com",
+    name: "Northrop Grumman",
+    apiTenant: "ngc",
+    siteName: "Northrop_Grumman_External_Site",
+  },
+  {
+    host: "globalhr.wd5.myworkdayjobs.com",
+    name: "RTX",
+    apiTenant: "globalhr",
+    siteName: "REC_RTX_Ext_Gateway",
+  },
 ];
 
 export function answerForQuestion(tenant: WorkdayTenant, questionText: string): string {
