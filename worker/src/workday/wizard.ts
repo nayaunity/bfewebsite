@@ -43,6 +43,30 @@ function escape(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+async function clearAndType(page: Page, loc: Locator, value: string): Promise<void> {
+  await loc.click().catch(() => {});
+  await loc.fill(value).catch(async () => {
+    await loc.press("Control+a").catch(() => {});
+    await loc.press("Backspace").catch(() => {});
+    await page.waitForTimeout(100);
+    await loc.pressSequentially(value, { delay: 80 });
+  });
+  await page.waitForTimeout(200);
+  const got = await loc.inputValue().catch(() => "");
+  if (got.trim() !== value.trim()) {
+    await loc.evaluate((el: HTMLInputElement, v: string) => {
+      const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+      if (nativeSetter) nativeSetter.call(el, v);
+      const tracker = (el as any)._valueTracker;
+      if (tracker) tracker.setValue("");
+      el.dispatchEvent(new Event("focus", { bubbles: true }));
+      el.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: v }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+      el.dispatchEvent(new Event("blur", { bubbles: true }));
+    }, value).catch(() => {});
+  }
+}
+
 async function detectStep(page: Page): Promise<{ current: number; total: number; rawText: string }> {
   const rawText = (await page.evaluate(`(function(){
     var bar = document.querySelector('[data-automation-id="progressBar"]') ||
@@ -816,8 +840,7 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
         ? page.locator(`[data-automation-id="${ti.aid}"], #${ti.aid}`).first()
         : page.locator("input").filter({ hasText: "" }).nth(i);
     if (await input.isVisible({ timeout: 500 }).catch(() => false)) {
-      await input.click().catch(() => {});
-      await input.pressSequentially(value, { delay: 60 });
+      await clearAndType(page, input, value);
       textFilled++;
       steps.push(`workday-wizard: filled ${ti.sel} input "${ti.label}" = "${value}"`);
     }
@@ -853,9 +876,7 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
       if (await monthEl.isVisible({ timeout: 500 }).catch(() => false)) {
         const tag = await monthEl.evaluate((el: Element) => el.tagName).catch(() => "");
         if (tag === "INPUT") {
-          await monthEl.click().catch(() => {});
-          await monthEl.fill("").catch(() => {});
-          await monthEl.pressSequentially(String(monthIdx + 1), { delay: 60 });
+          await clearAndType(page, monthEl, String(monthIdx + 1));
           await monthEl.press("Tab").catch(() => {});
         } else {
           await monthEl.click().catch(() => {});
@@ -872,18 +893,14 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
       // Day input
       const dayInput = container.locator('[data-automation-id="dateSectionDay-input"]').first();
       if (await dayInput.isVisible({ timeout: 500 }).catch(() => false)) {
-        await dayInput.click().catch(() => {});
-        await dayInput.fill("").catch(() => {});
-        await dayInput.pressSequentially(dayStr, { delay: 60 });
+        await clearAndType(page, dayInput, dayStr);
         await dayInput.press("Tab").catch(() => {});
       }
 
       // Year input
       const yearInput = container.locator('[data-automation-id="dateSectionYear-input"]').first();
       if (await yearInput.isVisible({ timeout: 500 }).catch(() => false)) {
-        await yearInput.click().catch(() => {});
-        await yearInput.fill("").catch(() => {});
-        await yearInput.pressSequentially(yearStr, { delay: 60 });
+        await clearAndType(page, yearInput, yearStr);
         await yearInput.press("Tab").catch(() => {});
       }
 
@@ -914,38 +931,57 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     // Strategy 2: find dateSectionMonth/Day/Year anywhere on the page
     // (for containers with unknown automation-ids).
     if (!dateFilled) {
-      const monthWidget = page.locator('[data-automation-id="dateSectionMonth-input"]').first();
+      const allMonths = page.locator('[data-automation-id="dateSectionMonth-input"]');
+      const monthCount = await allMonths.count().catch(() => 0);
+      const monthWidget = allMonths.first();
       if (await monthWidget.isVisible({ timeout: 500 }).catch(() => false)) {
         const tag = await monthWidget.evaluate((el: Element) => el.tagName).catch(() => "");
+        const monthVal = String(monthIdx + 1).padStart(2, "0");
+        steps.push(`workday-wizard: date S2 found ${monthCount} month widgets (tag=${tag}), filling M=${monthVal} D=${dayStr} Y=${yearStr}`);
         if (tag === "INPUT") {
-          await monthWidget.click().catch(() => {});
-          await monthWidget.fill("").catch(() => {});
-          await monthWidget.pressSequentially(String(monthIdx + 1), { delay: 60 });
-          await monthWidget.press("Tab").catch(() => {});
+          // Workday's date widget auto-advances: after 2 digits in month the
+          // cursor jumps to day, after 2 in day it jumps to year. Type the
+          // full date as continuous digits into the month field and let
+          // auto-advance distribute them: MMDDYYYY.
+          await monthWidget.scrollIntoViewIfNeeded({ timeout: 1000 }).catch(() => {});
+          await monthWidget.click().catch(async () => {
+            await monthWidget.evaluate((e: HTMLInputElement) => { e.focus(); e.select(); }).catch(() => {});
+          });
+          await page.waitForTimeout(200);
+          await page.keyboard.press("Control+a");
+          await page.keyboard.press("Backspace");
+          await page.waitForTimeout(100);
+          const fullDate = `${monthVal}${dayStr}${yearStr}`;
+          await page.keyboard.type(fullDate, { delay: 80 });
+          await page.waitForTimeout(500);
+          const mAfter = await monthWidget.inputValue().catch(() => "?");
+          const dAfter = await page.locator('[data-automation-id="dateSectionDay-input"]').first().inputValue().catch(() => "?");
+          const yAfter = await page.locator('[data-automation-id="dateSectionYear-input"]').first().inputValue().catch(() => "?");
+          steps.push(`workday-wizard: date S2 typed "${fullDate}" → "${mAfter}/${dAfter}/${yAfter}"`);
         } else {
           await monthWidget.click().catch(() => {});
           await page.waitForTimeout(400);
           const opt = page.locator('[role="option"]').filter({ hasText: monthNames[monthIdx] }).first();
           if (await opt.isVisible({ timeout: 1500 }).catch(() => false)) await opt.click().catch(() => {});
           await page.waitForTimeout(300);
+          const dayW = page.locator('[data-automation-id="dateSectionDay-input"]').first();
+          if (await dayW.isVisible({ timeout: 500 }).catch(() => false)) {
+            await clearAndType(page, dayW, dayStr);
+          }
+          const yearW = page.locator('[data-automation-id="dateSectionYear-input"]').first();
+          if (await yearW.isVisible({ timeout: 500 }).catch(() => false)) {
+            await clearAndType(page, yearW, yearStr);
+          }
         }
-        const dayW = page.locator('[data-automation-id="dateSectionDay-input"]').first();
-        if (await dayW.isVisible({ timeout: 500 }).catch(() => false)) {
-          await dayW.click().catch(() => {});
-          await dayW.fill("").catch(() => {});
-          await dayW.pressSequentially(dayStr, { delay: 60 });
-          await dayW.press("Tab").catch(() => {});
-        }
-        const yearW = page.locator('[data-automation-id="dateSectionYear-input"]').first();
-        if (await yearW.isVisible({ timeout: 500 }).catch(() => false)) {
-          await yearW.click().catch(() => {});
-          await yearW.fill("").catch(() => {});
-          await yearW.pressSequentially(yearStr, { delay: 60 });
-          await yearW.press("Tab").catch(() => {});
-        }
+        // Click somewhere neutral to dismiss any open popover and trigger blur validation.
+        await page.locator("h1, h2").first().click({ force: true, timeout: 1500 }).catch(() => {});
+        await page.waitForTimeout(500);
         dateFilled = true;
         textFilled++;
-        steps.push("workday-wizard: filled date widget (global dateSection* search)");
+        const mVal = await monthWidget.inputValue().catch(() => "?");
+        const dVal = await page.locator('[data-automation-id="dateSectionDay-input"]').first().inputValue().catch(() => "?");
+        const yVal = await page.locator('[data-automation-id="dateSectionYear-input"]').first().inputValue().catch(() => "?");
+        steps.push(`workday-wizard: filled date widget (global dateSection* search) → ${mVal}/${dVal}/${yVal}`);
       }
     }
 
@@ -992,31 +1028,7 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
     }
 
     if (!dateFilled) {
-      // Diagnostic dump (kept for future debugging).
-      const diag = (await page.evaluate(`(function(){
-        var inputs = Array.from(document.querySelectorAll('input, textarea, select, button[aria-haspopup]')).map(function(el){
-          var r = el.getBoundingClientRect();
-          var ff = el.closest('[data-automation-id]');
-          return {
-            tag: el.tagName, type: el.type || '', vis: r.width > 0 && r.height > 0,
-            val: (el.value || el.innerText || '').slice(0,30), aid: ff ? ff.getAttribute('data-automation-id') : '',
-            ownAid: el.getAttribute('data-automation-id') || '',
-            ph: el.placeholder || '', aria: el.getAttribute('aria-label') || ''
-          };
-        });
-        var dateEls = Array.from(document.querySelectorAll('*')).filter(function(el){
-          var aid = el.getAttribute('data-automation-id') || '';
-          var t = (el.innerText || el.textContent || '').trim();
-          return (t.length < 100 && /\\bdate\\b/i.test(t) && el.children.length < 5)
-            || /date/i.test(aid);
-        }).slice(0,8).map(function(el){
-          return { tag: el.tagName, aid: el.getAttribute('data-automation-id') || '',
-            text: (el.innerText || '').trim().slice(0,80), cls: (el.className || '').slice(0,60) };
-        });
-        return { inputs: inputs, dateEls: dateEls };
-      })()`)) as Record<string, unknown>;
-      steps.push(`workday-wizard: DATE DIAG inputs=${JSON.stringify((diag.inputs as unknown[]).slice(0,12))}`);
-      steps.push(`workday-wizard: DATE DIAG dateEls=${JSON.stringify(diag.dateEls)}`);
+      steps.push("workday-wizard: no date widget found on this page");
     }
   }
 
@@ -1030,6 +1042,9 @@ async function fillVoluntaryDisclosures(page: Page, applicant: ApplicantData, st
 
 export async function runWorkdayWizard(args: WizardArgs): Promise<ApplyResult> {
   const { page, tenant, applicant, resumePath, steps, deadlineMs } = args;
+
+  let lastStep = -1;
+  let sameStepRetries = 0;
 
   for (let iter = 0; iter < MAX_WIZARD_ITERATIONS; iter++) {
     if (deadlineMs() <= 0) return { success: false, error: "workday-wizard-budget-exhausted", steps };
@@ -1108,6 +1123,17 @@ export async function runWorkdayWizard(args: WizardArgs): Promise<ApplyResult> {
         return Array.from(errs).map(function(e){ return (e.innerText || e.textContent || '').trim(); }).filter(Boolean).join(' | ').slice(0, 300);
       })()`).catch(() => "") as string);
       if (errors) steps.push(`workday-wizard: validation errors: ${errors}`);
+    }
+
+    if (postClick.current === lastStep) {
+      sameStepRetries++;
+      if (sameStepRetries >= 3) {
+        steps.push(`workday-wizard: stuck on step ${postClick.current} after ${sameStepRetries} retries`);
+        return { success: false, error: `workday-wizard-stuck-step-${postClick.current}`, steps };
+      }
+    } else {
+      lastStep = postClick.current;
+      sameStepRetries = 0;
     }
   }
 

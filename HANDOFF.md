@@ -1,4 +1,4 @@
-# Session Handoff — April 14–26, 2026 (Apr 26 final: multi-tenant Workday 4/4 PASSED — Salesforce, Adobe, Capital One, Walmart all in catalog; deploy still NOT yet done)
+# Session Handoff — April 14–27, 2026 (Apr 27: multi-tenant Workday 5/5 PASSED — Salesforce, Adobe, Capital One, Walmart, Cisco all passing; deploy still NOT yet done)
 
 ## Current State
 
@@ -12,13 +12,13 @@
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
-### Uncommitted as of end of Apr 26 session (working tree on `auto-apply-saas`)
-Working-tree changes ready to commit (all 4 Workday tenants passing DRY_RUN smoke):
-- `worker/src/workday/tenants.ts` — 4 tenants: Walmart, Adobe, Salesforce, Capital One. Per-tenant question rules for each. Generic question rules expanded (sanctions, government entity, relative employed).
-- `worker/src/workday/wizard.ts` — generalized cross-tenant wizard driver. Key changes: fillWorkdayDate helper, broader multiselect discovery for "How Did You Hear", work experience + education field filling, catch-all empty-input discovery, checkbox force-checking for hidden consent fields (Capital One), popover cleanup, scrolling fallbacks for Next button.
-- `worker/test/integration/smoke-companies.ts` — Capital One config corrected `wd1` -> `wd12`. SMOKE_FRESH_EMAIL harness for disposable test emails.
+### Uncommitted as of end of Apr 27 session (working tree on `auto-apply-saas`)
+Working-tree changes ready to commit (all 5 Workday tenants passing DRY_RUN smoke):
+- `worker/src/workday/tenants.ts` — 5 tenants: Walmart, Adobe, Salesforce, Capital One, Cisco. Per-tenant question rules for each. Generic question rules expanded (sanctions, government entity, relative employed).
+- `worker/src/workday/wizard.ts` — generalized cross-tenant wizard driver. Key changes: `clearAndType` helper with React nativeInputValueSetter+_valueTracker fallback, continuous MMDDYYYY keyboard date fill for Workday's auto-advance date widget, stuck-step detection (bail after 3 retries on same step), broader multiselect discovery for "How Did You Hear", work experience + education field filling, catch-all empty-input discovery, checkbox force-checking for hidden consent fields (Capital One), popover cleanup, scrolling fallbacks for Next button.
+- `worker/test/integration/smoke-companies.ts` — Cisco added to WORKDAY_ONLY_CANDIDATES. Capital One config corrected `wd1` -> `wd12`. SMOKE_FRESH_EMAIL harness for disposable test emails.
 - `src/lib/scrapers/workday.ts` — two-pass scrape (default + intern search).
-- `src/data/auto-apply-companies.json` — 4 Workday tenants added: Salesforce, Adobe, Walmart, Capital One. All 4 passed final confirmation smoke (`smoke-results-2026-04-26T17-55-09-964Z.json`).
+- `src/data/auto-apply-companies.json` — 4 Workday tenants added: Salesforce, Adobe, Walmart, Capital One. (Cisco still needs to be added after commit.)
 
 ### Infrastructure
 - **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
@@ -57,6 +57,44 @@ Working-tree changes ready to commit (all 4 Workday tenants passing DRY_RUN smok
 ---
 
 ## What Was Done This Session (April 15-26)
+
+### 31. Apr 27 — Cisco added as 5th Workday tenant + date widget fix: 5/5 tenants PASSED (NOT YET DEPLOYED)
+
+**Goal of session:** Fix Cisco and Capital One Workday date widget failures (stuck on Self-Identify/Voluntary Disclosures steps), then get all 5 tenants passing.
+
+**Final result: 5/5 Workday tenants PASSED DRY_RUN smoke (`smoke-results-2026-04-27T02-46-45-700Z.json`):**
+| Tenant | Duration | 
+|---|---|
+| Cloudflare (control) | 42.0s |
+| Salesforce | 84.7s |
+| Adobe | 136.5s |
+| Cisco | 136.4s |
+| Capital One | 143.1s |
+| Walmart | 88.2s |
+
+**Key fix: Workday date widget filling (`wizard.ts`)**
+
+Workday's e-signature date uses a 3-part widget (month/day/year separate INPUT elements with `dateSectionMonth-input`, `dateSectionDay-input`, `dateSectionYear-input` automation IDs). After 2 digits in month, Workday auto-advances cursor to day, then after 2 in day to year.
+
+Previous approaches that FAILED:
+- `fill()` + `pressSequentially()` per field: React controlled inputs drop the values
+- `nativeInputValueSetter` via `page.evaluate()`: Sets DOM values but Capital One's React state doesn't pick them up (flaky: worked 1/3 times)
+- `_valueTracker.setValue("")` reset: No improvement on Capital One
+- Per-field keyboard typing with click between fields: Auto-advance conflicts cause garbled values ("2/20/26" instead of "04/26/2026")
+
+**Working approach**: Type the full date as continuous digits `MMDDYYYY` (e.g., "04262026") into the month field via `page.keyboard.type()`. Workday's auto-advance distributes the digits naturally across month/day/year fields. This matches real user behavior and works reliably on all tenants.
+
+**Other changes:**
+- `clearAndType` helper: tries `fill()`, falls back to Ctrl+A+Backspace+pressSequentially, then `nativeInputValueSetter` with `_valueTracker` reset as last resort
+- Stuck-step detection: wizard bails after 3 retries on the same step (error code `workday-wizard-stuck-step-{N}`)
+- Removed verbose DATE DIAG logging from production steps
+- Cisco tenant added to `tenants.ts` with question rules (former employee, referral, non-compete)
+
+**Still TODO:**
+- Add Cisco to `auto-apply-companies.json`
+- Commit all changes
+- Add 23 newly discovered Workday companies to system
+- Deploy
 
 ### 30. Apr 26 cont'd — Multi-tenant Workday generalization: 4/4 tenants PASSED (NOT YET DEPLOYED)
 
@@ -100,7 +138,7 @@ Working-tree changes ready to commit (all 4 Workday tenants passing DRY_RUN smok
 - Capital One consent checkbox hidden: Workday hides native `<input type="checkbox">` behind styled `<label>`. Fixed with `force: true` targeting `formField-acceptTermsAndAgreements`.
 
 **What's NOT covered yet:**
-- Snowflake, ServiceNow, Cisco, Intuit still get 422 from Workday API (wrong siteName). Sprint 3: careers-page config harvest.
+- Snowflake, ServiceNow, Intuit still get 422 from Workday API (wrong siteName). Sprint 3: careers-page config harvest. **Cisco now fixed and passing.**
 - No live (non-DRY_RUN) submission tested. Next step: a single live apply per tenant.
 
 ### 29. Apr 26 cont'd — Workday env install, seekingInternship backfill applied, multi-tenant Workday smoke = 0/4 (SUPERSEDED by section 30)

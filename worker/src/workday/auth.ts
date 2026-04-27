@@ -347,17 +347,51 @@ async function fillSigninForm(args: AuthArgs, accountEmail: string, password: st
     await page.screenshot({ path: `worker/test/integration/wd-debug-post-signin-${Date.now()}.png`, fullPage: true }).catch(() => {});
   }
 
-  // Detect sign-in failure: if the auth page is still showing after submit,
-  // the credentials were wrong or the account doesn't exist on this tenant.
-  // Fall back to account creation by reloading the apply page (which shows
-  // the Create Account form by default).
+  // Check if the user is actually logged in by looking for their email in the
+  // top nav bar (Workday shows user email/name in a utility menu when logged in).
+  const loggedIn = await page.evaluate((email: string) => {
+    return document.body.innerText.includes(email) ||
+      !!document.querySelector('[data-automation-id="Candidate Home"]') ||
+      !!document.querySelector('a[href*="candidateHome"]') ||
+      (document.querySelectorAll('[data-automation-id="utilityMenuButton"]').length >= 3);
+  }, accountEmail).catch(() => false);
+
+  if (loggedIn) {
+    // Sign-in succeeded. Check for "Something went wrong" error (happens when
+    // re-applying to a job that already has a draft application from a previous
+    // DRY_RUN). Handle by navigating back to the job URL to reset.
+    const hasError = await page.evaluate(() => {
+      return /something went wrong/i.test(document.body.innerText || "");
+    }).catch(() => false);
+    if (hasError) {
+      steps.push("workday: signed in but got 'Something went wrong' — refreshing wizard");
+      // Try refreshing — Workday may recover from a transient SPA error.
+      await page.reload({ waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
+      await page.waitForTimeout(3000);
+
+      // If still showing error, navigate to the wizard URL directly (we're
+      // already logged in so the auth gate should be skipped).
+      const stillError = await page.evaluate(() =>
+        /something went wrong/i.test(document.body.innerText || ""),
+      ).catch(() => false);
+      if (stillError) {
+        const wizardUrl = page.url().replace(/\/apply\/.*$/, "") + "/apply/applyManually";
+        steps.push(`workday: still error after reload — navigating to ${wizardUrl}`);
+        await page.goto(wizardUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
+        await page.waitForTimeout(3000);
+      }
+    }
+    steps.push("workday: signin flow complete");
+    return { success: true, isNewAccount: false };
+  }
+
+  // Sign-in failed: auth page still visible. Fall back to account creation.
   const stillOnAuth = await page.locator(`${aid("createAccountSubmitButton")}, ${aid("signInSubmitButton")}`)
     .first().isVisible({ timeout: 2000 }).catch(() => false);
   if (stillOnAuth || /create account/i.test(postSigninTitle)) {
     steps.push("workday: signin failed (auth page still visible) — reloading for account creation");
     await page.reload({ waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS }).catch(() => {});
     await page.waitForTimeout(2000);
-    // Re-click Apply → Apply Manually to get back to the auth gate.
     await clickIfVisible(page.locator(aid("adventureButton")).first(), "Apply (retry)", steps);
     await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => {});
     await clickIfVisible(page.locator(aid("applyManually")).first(), "Apply Manually (retry)", steps);

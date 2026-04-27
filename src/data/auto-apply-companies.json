@@ -574,5 +574,13 @@
     "industry": "Financial Services",
     "atsType": "workday",
     "atsConfig": { "baseUrl": "https://capitalone.wd12.myworkdayjobs.com", "company": "capitalone", "siteName": "Capital_One" }
+  },
+  {
+    "name": "Cisco",
+    "slug": "cisco",
+    "careersUrl": "https://cisco.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": { "baseUrl": "https://cisco.wd5.myworkdayjobs.com", "company": "cisco", "siteName": "Cisco_Careers" }
   }
 ]
