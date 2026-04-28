@@ -1,10 +1,10 @@
-# Session Handoff — April 14–27, 2026 (Apr 27: UTM tracking, resume quiz auto-retry, auto-apply progress stepper deployed. Workday expanded to 13 tenants but worker NOT yet deployed)
+# Session Handoff — April 14–27, 2026 (Apr 27 evening: Mission Log dashboard redesign + fluid responsive layout + auto-apply payment-failed gating fix deployed. Workday expanded to 13 tenants but worker NOT yet deployed)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `cd2e36c` (Apr 27, auto-apply progress stepper + UTM tracking + resume quiz auto-retry deployed).
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `cd2e36c` (in sync with main). **Apr 26 Workday worker changes still uncommitted** — see "Uncommitted as of Apr 27" below.
+- **main** — production code, deployed to Vercel. Head: `8ec1efb` (Apr 27 evening, Mission Log dashboard redesign + fluid responsive + payment-failed gating fix all deployed).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `cf0b960` (in sync with main via fast-forward). **Apr 26 Workday worker changes still uncommitted** — see "Uncommitted as of Apr 27" below.
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
@@ -30,7 +30,7 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 - `src/data/auto-apply-companies.json` — 8 new Workday tenants added (Netflix, Intel, Morgan Stanley, Target, Johnson & Johnson, GE Aerospace, GE Vernova, GE HealthCare). Total: 81 companies, 13 Workday.
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 27 `cd2e36c` (UTM tracking + resume quiz auto-retry + auto-apply progress stepper).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 27 evening `8ec1efb` (Mission Log dashboard redesign + fluid responsive layout + auto-apply payment-failed gating fix).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`, **`WorkdayCredential` (Apr 25)** for per-(user, tenant) Workday auto-apply credentials. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), `detailsReviewedAt` (Apr 18), **`seekingInternship` + `preferenceBannerDismissedAt` (Apr 25)** for internship-only matching. New columns on `BrowseSession`: `lastHeartbeatAt` (Apr 18), **`seekingInternship` (Apr 25)**. New column on `TempOnboarding`: **`confirmedSeekingInternship` (Apr 25)**. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -65,7 +65,53 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 
 ---
 
-## What Was Done This Session (April 15-26)
+## What Was Done This Session (April 15-27)
+
+### 36. Apr 27 evening — Mission Log dashboard redesign + responsive layout + payment-failed gating fix (deployed)
+
+**Goal:** Reskin `/profile/applications` with the Mission Log design from claude.ai/design (orange/cream receipt-stack aesthetic), make the layout truly responsive across viewports, and fix a misleading error where past-due users hitting "Start Applying Now" were told "Monthly limit reached" instead of the actual reason (their card had been declined).
+
+**Mission Log dashboard redesign — `ApplicationsDashboard.tsx`:**
+- Replaced the render tree with the Mission Log layout: counted-up hero ("We applied to N jobs for you"), ticker band of recent applications, quota strip (usage meter + Start CTA + rotating tip), receipt-stack of applications grouped by date with rotated APPLIED / IN FLIGHT stamps + match bars + monogram avatars, and a sidebar with live queue + most-applied leaderboard + pro-move tip
+- Inlined helpers as TSX: `HeroStat`, `Monogram`, `Stamp`, `MatchBar`, `TornEdge`, `TailoredBadge`, `Ticker`, `useCountUp`, `companyColor` (hash-based palette)
+- **Zero functionality dropped:** all 5 banners (PaymentFailed, TrialCapReached, TrialRequired, InternshipPreference, Resume Quiz CTA), profile-readiness checklist, Today's Auto-Apply stepper with 8s polling, celebration banner, resume comparison card with Original/Tailored buttons, free-tier upsell with dismiss, search/filter all preserved
+- New derived stats computed in `page.tsx` (no schema change): `thisWeek`, `matchAvg` (only over discoveries with a real `matchScore`), `streak` (consecutive calendar days with ≥1 applied app)
+- Animations added in `globals.css`: `marquee` (55s), `fadeSlide`, `slideDown`, `.no-scrollbar` helper
+
+**Fluid responsive layout — `page.tsx` + dashboard:**
+- Container went from `max-w-6xl` → `max-w-7xl` → `max-w-[1600px]` → finally `w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20`. Fixed-width caps were leaving giant white margins on ultrawide displays; padding-based sizing fills the viewport gracefully at all widths
+- Hero headline scales `text-4xl md:text-5xl lg:text-6xl xl:text-[68px] 2xl:text-[80px]`
+- Hero subtitle gets `max-w-3xl` so it doesn't span the entire ultrawide row
+- Hero stat values scale `text-4xl xl:text-5xl`
+- Main grid sidebar grows: `lg:300px → xl:360px → 2xl:400px`, with `minmax(0,1fr)` on the receipt column to prevent overflow
+- Verified at 390 / 1280 / 1440 / 1920 / 2560 with Playwright
+
+**Copy fixes:**
+- Hero math: `uniqueCompanies` was being computed across ALL applications (applied + skipped + failed + pending), so a user with 9 applied + 5 skipped showed "We applied to 9 jobs for you. Across 14 companies" — implying failures. Now filters to only `submitted`/`applied` rows so the math is internally consistent
+- Sidebar idle line: dropped the "Queue is idle" sentence and converted MT → ET. New copy: **"Next scan 5:00 AM ET."**
+- Footer caption: dropped "Auto-generated" and converted MT → ET. New copy: **"End of log · Next run 5:00 AM ET"**
+
+**Auto-apply payment-failed gating fix — `lib/subscription.ts` + 3 routes:**
+- **Bug:** `/api/auto-apply/start` always returned `"Monthly limit reached (X/Y). Upgrade for more."` even when `canApply()` actually denied for `payment-failed` (card decline) or `trial-required`. A past-due user with 9/100 used would see a false monthly-limit error.
+- **Fix:** Added `usageErrorMessage(usage)` helper in `lib/subscription.ts` that maps `canApply().reason` to the correct user-facing copy:
+  - `payment-failed` → *"Auto-apply is paused. We couldn't process your last payment. Update your card in account settings and applications will resume automatically."*
+  - `trial-required` → *"Your free tier has ended. Start your 7-day trial to keep applying."*
+  - default (`monthly-cap`) → *"Monthly limit reached (X/Y). Upgrade for more."*
+- Wired into `/api/auto-apply/start`, `/api/auto-apply` (one-shot), and `/api/auto-apply/browse` so the three start paths can never drift again. The `browse` route already had the right pattern but with duplicated copy; consolidated to the helper.
+- Dashboard CTA itself stays as "Start Applying Now" for past-due users — clicking it now surfaces the correct payment-failed copy in the red error line below the quota strip. The PaymentFailedBanner above still owns the "Update payment method" CTA. Initially I replaced the button with an "Applications paused" pill but Naya wanted the button-then-error flow instead, so I reverted that.
+
+**Files changed:**
+- `src/lib/subscription.ts` — added `usageErrorMessage()`
+- `src/app/api/auto-apply/start/route.ts` — uses helper
+- `src/app/api/auto-apply/route.ts` — uses helper
+- `src/app/api/auto-apply/browse/route.ts` — uses helper (consolidated existing branch)
+- `src/app/profile/applications/page.tsx` — fluid container, derived stats, fixed `uniqueCompanies` math
+- `src/app/profile/applications/ApplicationsDashboard.tsx` — full Mission Log render tree (~900 lines), copy fixes
+- `src/app/globals.css` — Mission Log animations
+
+**Commits (auto-apply-saas → main):** `628f73a` Mission Log redesign + fluid responsive · `4b6617d` copy fixes (company count, ET times, footer) · `d2934d2` payment-failed gating fix · `cf0b960` revert past-due CTA pill. Final on main: **`8ec1efb`**.
+
+**Local test seed:** `scripts/seed-mission-log.ts` — populates 25 BrowseDiscovery rows + active BrowseSession (38 companies, 7/12 applied) for user `cmkjad7op007l118884s0vsyu`. Auth bypass for testing via `scripts/mint-session.ts` which uses `@auth/core/jwt encode()` with `salt: "authjs.session-token"`.
 
 ### 35. Apr 27 — Auto-apply progress stepper: redesigned + deployed
 
