@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { canApply } from "@/lib/subscription";
+import { canApply, usageErrorMessage } from "@/lib/subscription";
 import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
@@ -18,11 +18,13 @@ export async function POST() {
 
   const userId = session.user.id;
 
-  // Check tier limits
+  // Check tier limits — gating reasons (payment-failed, trial-required,
+  // monthly-cap) are surfaced via canApply().reason; share copy through
+  // usageErrorMessage so the start/browse/apply paths stay in sync.
   const usage = await canApply(userId);
   if (!usage.allowed) {
     return NextResponse.json(
-      { error: `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`, usage },
+      { error: usageErrorMessage(usage), usage },
       { status: 403 }
     );
   }

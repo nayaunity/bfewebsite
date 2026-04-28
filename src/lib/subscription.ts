@@ -160,6 +160,27 @@ export async function canApply(userId: string): Promise<{
 }
 
 /**
+ * Convert a denied canApply() result into user-facing error copy.
+ * Centralised so the start, browse, and one-shot apply routes never drift
+ * from each other (the original /start route was reporting "Monthly limit
+ * reached" even when the real reason was a card decline).
+ */
+export function usageErrorMessage(usage: {
+  used: number;
+  limit: number;
+  reason?: "trial-required" | "monthly-cap" | "payment-failed";
+}): string {
+  switch (usage.reason) {
+    case "payment-failed":
+      return "Auto-apply is paused. We couldn't process your last payment. Update your card in account settings and applications will resume automatically.";
+    case "trial-required":
+      return "Your free tier has ended. Start your 7-day trial to keep applying.";
+    default:
+      return `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`;
+  }
+}
+
+/**
  * Increment the user's monthly application count.
  */
 export async function incrementAppCount(
