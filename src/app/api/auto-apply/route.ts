@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { canApply, incrementAppCount } from "@/lib/subscription";
+import { canApply, incrementAppCount, usageErrorMessage } from "@/lib/subscription";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 
@@ -14,14 +14,13 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Check subscription limits
+  // Check subscription limits — payment-failed and trial-required surfaces
+  // route through usageErrorMessage so a card decline never shows up as a
+  // "monthly limit reached" error.
   const usage = await canApply(session.user.id);
   if (!usage.allowed) {
     return NextResponse.json(
-      {
-        error: `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade your plan for more applications.`,
-        usage,
-      },
+      { error: usageErrorMessage(usage), usage },
       { status: 403 }
     );
   }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { canApply } from "@/lib/subscription";
+import { canApply, usageErrorMessage } from "@/lib/subscription";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 import { logError } from "@/lib/error-logger";
@@ -46,16 +46,14 @@ export async function POST(request: Request) {
     );
   }
 
-  // Check subscription limits
+  // Check subscription limits — payment-failed copy lives in
+  // usageErrorMessage so it stays consistent with /start and /apply.
   const usage = await canApply(session.user.id);
   if (!usage.allowed) {
-    const error =
-      usage.reason === "payment-failed"
-        ? "Your last payment didn't go through. Please update your card to resume applying."
-        : usage.reason === "trial-required"
-        ? "Your free tier has ended. Start your 7-day trial to keep applying."
-        : `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`;
-    return NextResponse.json({ error, usage }, { status: 403 });
+    return NextResponse.json(
+      { error: usageErrorMessage(usage), usage },
+      { status: 403 }
+    );
   }
 
   // Validate profile
