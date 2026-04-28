@@ -203,7 +203,7 @@ export default async function ApplicationsPage() {
               total: allApplications.length,
               applied,
               failed,
-              uniqueCompanies: new Set(allApplications.map((a) => a.company)).size,
+              uniqueCompanies: new Set(allApplications.filter((a) => a.status === "submitted" || a.status === "applied").map((a) => a.company)).size,
               thisWeek,
               matchAvg,
               streak,

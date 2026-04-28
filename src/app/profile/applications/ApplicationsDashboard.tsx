@@ -1159,7 +1159,7 @@ export default function ApplicationsDashboard({
             </div>
             {liveApps.length === 0 ? (
               <p className="text-sm text-[var(--gray-600)]">
-                Queue is idle. Next scan 3:00 AM MT.
+                Next scan 5:00 AM ET.
               </p>
             ) : (
               <ul className="space-y-2.5">
@@ -1221,7 +1221,7 @@ export default function ApplicationsDashboard({
 
       {/* Footer caption */}
       <p className="mt-10 text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)] text-center">
-        End of log &middot; Auto-generated &middot; Next run 3:00 AM MT
+        End of log &middot; Next run 5:00 AM ET
       </p>
     </div>
   );
