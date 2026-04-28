@@ -120,6 +120,39 @@ export default async function ApplicationsPage() {
   const applied = allApplications.filter((a) => a.status === "submitted" || a.status === "applied").length;
   const failed = allApplications.filter((a) => a.status === "failed").length;
 
+  // Hero stats for the Mission Log layout. Computed from real data so the
+  // server stays the source of truth (no schema change).
+  const oneWeekAgoMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const thisWeek = allApplications.filter((a) => {
+    if (a.status !== "submitted" && a.status !== "applied") return false;
+    const ts = a.submittedAt ?? a.createdAt;
+    return ts ? new Date(ts).getTime() >= oneWeekAgoMs : false;
+  }).length;
+
+  const matchScores = allApplications
+    .filter((a) => (a.status === "submitted" || a.status === "applied") && typeof a.matchScore === "number")
+    .map((a) => a.matchScore as number);
+  const matchAvg = matchScores.length
+    ? Math.round(matchScores.reduce((s, n) => s + n, 0) / matchScores.length)
+    : 0;
+
+  // Streak: consecutive calendar days back from today with >=1 applied app.
+  const appliedDateSet = new Set(
+    allApplications
+      .filter((a) => a.status === "submitted" || a.status === "applied")
+      .map((a) => {
+        const ts = a.submittedAt ?? a.createdAt;
+        return new Date(ts).toISOString().slice(0, 10);
+      })
+  );
+  let streak = 0;
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  while (appliedDateSet.has(cursor.toISOString().slice(0, 10))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
   // Extract user's preferred roles: profile targetRole (JSON array or string) > onboarding data
   let userRoles: string[] = [];
   if (user?.targetRole) {
@@ -143,7 +176,7 @@ export default async function ApplicationsPage() {
       <Navigation />
       <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
         <PagePresenceTracker page="applications" />
-        <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20 py-8 md:py-12">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -166,7 +199,15 @@ export default async function ApplicationsPage() {
           {/* Main Dashboard */}
           <ApplicationsDashboard
             initialApplications={allApplications}
-            stats={{ total: allApplications.length, applied, failed, uniqueCompanies: new Set(allApplications.map((a) => a.company)).size }}
+            stats={{
+              total: allApplications.length,
+              applied,
+              failed,
+              uniqueCompanies: new Set(allApplications.map((a) => a.company)).size,
+              thisWeek,
+              matchAvg,
+              streak,
+            }}
             usage={{ used: usageData.used, limit: usageData.limit, tier: usageData.tier }}
             totalActiveJobs={totalActiveJobs}
             appliedCompanies={[...new Set(allApplications.filter(a => a.status === "submitted" || a.status === "applied").map(a => a.company))].slice(0, 5)}
