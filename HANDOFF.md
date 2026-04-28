@@ -1,10 +1,10 @@
-# Session Handoff — April 14–27, 2026 (Apr 27: Workday expanded to 13 tenants. 8 new passing: Netflix, Intel, Morgan Stanley, Target, JnJ, GE Aerospace/Vernova/HealthCare. Deploy still NOT yet done)
+# Session Handoff — April 14–27, 2026 (Apr 27: UTM tracking, resume quiz auto-retry, auto-apply progress stepper deployed. Workday expanded to 13 tenants but worker NOT yet deployed)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `e04b7db` (Apr 24, Daniel Cooke bug-fixes merged + deployed). **NO Apr 25-26 work has been deployed yet.**
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `58c9f99` (Apr 25 Internship + catalog + Workday POC). **Apr 26 working tree has uncommitted changes** — see "Uncommitted as of Apr 26" below.
+- **main** — production code, deployed to Vercel. Head: `cd2e36c` (Apr 27, auto-apply progress stepper + UTM tracking + resume quiz auto-retry deployed).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `cd2e36c` (in sync with main). **Apr 26 Workday worker changes still uncommitted** — see "Uncommitted as of Apr 27" below.
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
@@ -30,7 +30,7 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 - `src/data/auto-apply-companies.json` — 8 new Workday tenants added (Netflix, Intel, Morgan Stanley, Target, Johnson & Johnson, GE Aerospace, GE Vernova, GE HealthCare). Total: 81 companies, 13 Workday.
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: ~10 deploys on Apr 18-19 (verification fix → watchdog → backfill → trial pill → cap=5 → conversion banner → dropdown handler → applicationEmail provisioning → JD-YOE matcher → apply-for-user.ts parity). Most recent: main `d32da13`.
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 27 `cd2e36c` (UTM tracking + resume quiz auto-retry + auto-apply progress stepper).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`, **`WorkdayCredential` (Apr 25)** for per-(user, tenant) Workday auto-apply credentials. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), `detailsReviewedAt` (Apr 18), **`seekingInternship` + `preferenceBannerDismissedAt` (Apr 25)** for internship-only matching. New columns on `BrowseSession`: `lastHeartbeatAt` (Apr 18), **`seekingInternship` (Apr 25)**. New column on `TempOnboarding`: **`confirmedSeekingInternship` (Apr 25)**. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -66,6 +66,38 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 ---
 
 ## What Was Done This Session (April 15-26)
+
+### 35. Apr 27 — Auto-apply progress stepper: redesigned + deployed
+
+**Goal:** User feedback said auto-apply felt like a black box. Added live progress feedback to the applications dashboard.
+
+**What shipped (deployed to prod):**
+- **New polling endpoint** `GET /api/auto-apply/progress` — lightweight route returning `status`, `totalCompanies`, `companiesDone`, `jobsFound`, `jobsApplied`, `jobsSkipped`, `startedAt` for today's session
+- **Progress stepper UI** in `ApplicationsDashboard.tsx` — replaces the old discovery list with a 3-step stepper (scan, match, apply) that never shows specific job/company names (avoids looking bad when jobs fail)
+- **Live polling** every 8s while session is active, auto-reloads page on completion
+- **Brand-consistent design**: orange gradient progress bar, spinner on active step, vertical connector line, "Running"/"Complete" pill badges, big applied count on completion
+- No company or job names shown at any point during processing
+
+**Commit:** `cd2e36c` on both `main` and `auto-apply-saas`
+
+### 34. Apr 27 — UTM tracking + resume quiz auto-retry (deployed)
+
+**Goal:** Track marketing attribution from UTM params (LinkedIn post `?utm_source=linkedin&utm_medium=social&utm_campaign=200mrr`) and fix the resume quiz flow for users who upgrade mid-quiz.
+
+**What shipped:**
+- UTM fields added to `PagePresence` and `User` models (first-touch attribution, never overwrites)
+- `usePagePresence.ts` captures UTM from URL, caches in localStorage, sends with heartbeats
+- Signup route copies UTM from PagePresence to User record via `visitorId` linkage
+- Admin dashboard shows UTM Attribution table (source/medium/campaign with visitor + signup counts)
+- Resume quiz auto-retries rewrite if answers were submitted but PDF generation failed/timed out (handles upgrade-mid-quiz and timeout recovery)
+- `maxDuration` bumped from 60 to 120 on resume rewrite route (Claude API + Chromium PDF was timing out)
+- Standalone script `scripts/rewrite-resume-for-user.ts` for manual resume rewrites
+
+**Commits:** `b004d26` (UTM + quiz auto-retry)
+
+### 33. Apr 27 — Kasey Arnold resume rewrite diagnosis + fix
+
+**Root cause:** Kasey completed the quiz while trialing, then upgraded to Starter. The rewrite endpoint had `maxDuration: 60` which was too tight for Claude API call + Chromium PDF render. Fixed by bumping to 120s and adding auto-detect-and-retrigger on page load (if answers submitted but no rewrite URL, auto-triggers rewrite).
 
 ### 32. Apr 27 cont'd — Workday expansion: 20 new tenants tested, 8 passing, added to auto-apply
 
