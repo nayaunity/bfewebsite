@@ -630,19 +630,12 @@ export default function ApplicationsDashboard({
             )}
           </div>
 
-          {/* Start Applying CTA — gates on payment status, profileReady, hasActiveSession, atLimit */}
+          {/* Start Applying CTA — gates on profileReady, hasActiveSession, atLimit */}
           <div className="flex justify-start lg:justify-center">
             {hasActiveSession ? (
               <span className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.15em] rounded-xl bg-[#fef3ef] text-[#ef562a]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#ef562a] animate-pulse" />
                 Session running
-              </span>
-            ) : showPaymentFailedBanner ? (
-              <span className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.15em] rounded-xl bg-red-50 text-red-700">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Applications paused
               </span>
             ) : atLimit ? (
               <Link
