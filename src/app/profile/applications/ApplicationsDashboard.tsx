@@ -45,9 +45,13 @@ interface Stats {
 
 interface TodayActivity {
   status: string;
+  totalCompanies: number;
+  companiesDone: number;
   jobsFound: number;
   jobsApplied: number;
   jobsFailed: number;
+  jobsSkipped: number;
+  startedAt: string | null;
   discoveries: Array<{
     id: string;
     company: string;
@@ -55,6 +59,36 @@ interface TodayActivity {
     status: string;
     createdAt: string;
   }>;
+}
+
+function StepRow({ done, active, label, detail }: { done: boolean; active: boolean; label: string; detail?: string }) {
+  return (
+    <div className="flex items-start gap-3.5 relative py-2.5 first:pt-0 last:pb-0">
+      <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 relative z-10 ${
+        done ? "bg-green-100" : active ? "bg-[#fef3ef] shadow-[0_0_0_4px_rgba(239,86,42,0.1)]" : "bg-[var(--gray-100)]"
+      }`}>
+        {done ? (
+          <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+        ) : active ? (
+          <div className="w-3 h-3 border-2 border-[#fef3ef] border-t-[#ef562a] rounded-full animate-spin" />
+        ) : (
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--gray-200)]" />
+        )}
+      </div>
+      <div className="pt-0.5">
+        <span className={`text-[13px] leading-tight font-medium ${
+          done ? "text-green-600" : active ? "text-[var(--foreground)]" : "text-[var(--gray-600)]/70"
+        }`}>
+          {label}
+        </span>
+        {detail && (
+          <p className="text-[11px] text-[var(--gray-600)] mt-0.5">{detail}</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function ApplicationsDashboard({
@@ -101,8 +135,37 @@ export default function ApplicationsDashboard({
   const [starting, setStarting] = useState(false);
   const [startResult, setStartResult] = useState<{ success?: boolean; message?: string; error?: string } | null>(null);
 
-  const hasActiveSession = todayActivity?.status === "queued" || todayActivity?.status === "processing";
+  const [liveProgress, setLiveProgress] = useState<{
+    status: string;
+    totalCompanies: number;
+    companiesDone: number;
+    jobsFound: number;
+    jobsApplied: number;
+    jobsSkipped: number;
+  } | null>(null);
+
+  const sessionStatus = liveProgress?.status ?? todayActivity?.status;
+  const hasActiveSession = sessionStatus === "queued" || sessionStatus === "processing";
   const atLimit = usage ? usage.used >= usage.limit : false;
+
+  useEffect(() => {
+    if (!hasActiveSession) return;
+    const poll = setInterval(async () => {
+      try {
+        const res = await fetch("/api/auto-apply/progress");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.active && data.status === "completed") {
+          setLiveProgress(data);
+          clearInterval(poll);
+          setTimeout(() => window.location.reload(), 2000);
+          return;
+        }
+        if (data.active) setLiveProgress(data);
+      } catch {}
+    }, 8000);
+    return () => clearInterval(poll);
+  }, [hasActiveSession]);
   const [checkingOut, setCheckingOut] = useState(false);
   const [celebrationDismissed, setCelebrationDismissed] = useState(false);
   const [dismissedTailorRows, setDismissedTailorRows] = useState<Set<string>>(new Set());
@@ -309,71 +372,130 @@ export default function ApplicationsDashboard({
       </div>
 
       {/* Today's Auto-Apply Activity */}
-      {todayActivity && (
-        <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[var(--card-border)] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${
-                todayActivity.status === "processing" || todayActivity.status === "queued"
-                  ? "bg-blue-500 animate-pulse"
-                  : todayActivity.status === "completed"
-                    ? "bg-green-500"
-                    : "bg-red-500"
-              }`} />
-              <h2 className="text-sm font-semibold text-[var(--foreground)]">
+      {todayActivity && (() => {
+        const p = liveProgress ?? todayActivity;
+        const isActive = p.status === "queued" || p.status === "processing";
+        const isComplete = p.status === "completed";
+        const companiesTotal = p.totalCompanies || 0;
+        const companiesDone = p.companiesDone || 0;
+        const found = p.jobsFound || 0;
+        const applied = p.jobsApplied || 0;
+        const progressPct = companiesTotal > 0 ? Math.round((companiesDone / companiesTotal) * 100) : 0;
+
+        const scanDone = companiesDone > 0;
+        const scanComplete = companiesTotal > 0 && companiesDone >= companiesTotal;
+        const hasMatches = found > 0;
+        const applyingStarted = applied > 0 || (scanComplete && hasMatches);
+
+        return (
+          <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[14px] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[var(--gray-100)] flex items-center justify-between">
+              <h2 className="text-[15px] font-semibold text-[var(--foreground)]">
                 Today&apos;s Auto-Apply
               </h2>
+              {isActive ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#fef3ef] text-[#ef562a]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#ef562a] animate-pulse" />
+                  Running
+                </span>
+              ) : isComplete ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-green-50 text-green-600">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                  Complete
+                </span>
+              ) : null}
             </div>
-            <div className="flex items-center gap-4 text-xs text-[var(--gray-600)]">
-              <span>{todayActivity.jobsFound} found</span>
-              <span className="text-green-600 font-medium">{todayActivity.jobsApplied} applied</span>
-            </div>
-          </div>
 
-          {todayActivity.discoveries.filter((d) => d.status !== "failed").length > 0 ? (
-            <div className="divide-y divide-[var(--card-border)] max-h-64 overflow-y-auto">
-              {todayActivity.discoveries.filter((d) => d.status !== "failed").map((d) => (
-                <div key={d.id} className="px-5 py-2.5 flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[var(--foreground)] truncate">{d.jobTitle}</p>
-                    <p className="text-xs text-[var(--gray-600)]">{d.company}</p>
+            {isActive ? (
+              <div className="px-5 py-5">
+                {companiesTotal > 0 && (
+                  <div className="mb-6">
+                    <div className="flex items-baseline justify-between mb-2">
+                      <span className="text-xs text-[var(--gray-600)]">
+                        {scanComplete ? "Submitting applications" : "Scanning your target companies"}
+                      </span>
+                      <span className="text-xl font-bold text-[#ef562a]">{progressPct}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[var(--gray-100)] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#ef562a] to-[#f97316] transition-all duration-700 ease-out"
+                        style={{ width: `${progressPct}%` }}
+                      />
+                    </div>
                   </div>
-                  <span className={`ml-3 shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full ${
-                    d.status === "applied"
-                      ? "bg-green-100 text-green-700"
-                      : d.status === "applying"
-                        ? "bg-blue-50 text-blue-600"
-                        : d.status === "failed"
-                          ? "bg-red-50 text-red-600"
-                          : "bg-[var(--gray-100)] text-[var(--gray-600)]"
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${
-                      d.status === "applied"
-                        ? "bg-green-500"
-                        : d.status === "applying"
-                          ? "bg-blue-500 animate-pulse"
-                          : d.status === "failed"
-                            ? "bg-red-500"
-                            : "bg-[var(--gray-600)]"
-                    }`} />
-                    {d.status === "applied" ? "Applied" :
-                     d.status === "applying" ? "Applying..." :
-                     d.status === "failed" ? "Failed" : d.status}
-                  </span>
+                )}
+
+                <div className="relative pl-4">
+                  <div className={`absolute left-[23px] top-7 bottom-7 w-0.5 ${
+                    scanComplete ? "bg-green-400" : scanDone ? "bg-gradient-to-b from-[#ef562a] via-[#ef562a] to-[var(--gray-200)]" : "bg-[var(--gray-200)]"
+                  }`} />
+                  <StepRow
+                    done={scanComplete}
+                    active={!scanComplete}
+                    label={
+                      scanComplete
+                        ? `Scanned ${companiesTotal} companies`
+                        : "Scanning companies for open roles"
+                    }
+                    detail={!scanComplete && scanDone ? `${companiesDone} of ${companiesTotal} companies checked` : undefined}
+                  />
+                  <StepRow
+                    done={scanComplete && hasMatches}
+                    active={scanDone && !scanComplete}
+                    label={
+                      hasMatches
+                        ? `Found ${found} matching role${found !== 1 ? "s" : ""}`
+                        : "Matching your profile to open positions"
+                    }
+                  />
+                  <StepRow
+                    done={false}
+                    active={hasMatches && scanComplete}
+                    label="Tailoring resume & submitting applications"
+                    detail={applyingStarted && applied > 0 ? `${applied} of ${found} sent` : undefined}
+                  />
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-5 py-6 text-center text-sm text-[var(--gray-600)]">
-              {todayActivity.status === "queued"
-                ? "Your jobs are queued and will be processed shortly..."
-                : todayActivity.status === "processing"
-                  ? "Scanning for matching jobs..."
-                  : "No matching jobs found today. We'll check again tomorrow."}
-            </div>
-          )}
-        </div>
-      )}
+
+                <div className="mt-5 text-center text-[11px] text-[var(--gray-600)] bg-[var(--gray-100)] rounded-lg py-2.5 px-4">
+                  This usually takes a few minutes. You can leave this page and come back.
+                </div>
+              </div>
+            ) : isComplete ? (
+              <div className="px-5 py-5">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">
+                      Today&apos;s session complete
+                    </p>
+                    <p className="text-xs text-[var(--gray-600)] mt-0.5">
+                      {applied > 0
+                        ? `Scanned ${companiesTotal} companies, found ${found} matching role${found !== 1 ? "s" : ""}`
+                        : `Scanned ${companiesTotal} companies. No matching roles found today. We scan again tomorrow at 3 AM MT.`}
+                    </p>
+                  </div>
+                  {applied > 0 && (
+                    <div className="text-right pl-4">
+                      <span className="text-[28px] font-bold text-green-600 leading-none">{applied}</span>
+                      <span className="block text-[11px] text-[var(--gray-600)]">applied</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="px-5 py-6 text-center text-sm text-[var(--gray-600)]">
+                {p.status === "queued"
+                  ? "Your session is queued and will start shortly..."
+                  : "Session ended. We'll try again tomorrow at 3 AM MT."}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Celebration Banner — shown after first success, before hitting limit */}
       {usage && usage.tier === "free" && stats.applied >= 1 && !atLimit && !celebrationDismissed && (

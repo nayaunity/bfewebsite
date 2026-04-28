@@ -69,10 +69,14 @@ export default async function ApplicationsPage() {
         id: true,
         status: true,
         targetRole: true,
+        totalCompanies: true,
+        companiesDone: true,
         jobsFound: true,
         jobsApplied: true,
         jobsFailed: true,
+        jobsSkipped: true,
         createdAt: true,
+        startedAt: true,
         discoveries: {
           orderBy: { createdAt: "desc" },
           select: {
@@ -185,9 +189,13 @@ export default async function ApplicationsPage() {
             // user dashboard. Keep todayActivity neutral.
             todayActivity={todaySession ? {
               status: todaySession.status,
+              totalCompanies: todaySession.totalCompanies,
+              companiesDone: todaySession.companiesDone,
               jobsFound: todaySession.jobsFound,
               jobsApplied: todaySession.jobsApplied,
               jobsFailed: todaySession.jobsFailed,
+              jobsSkipped: todaySession.jobsSkipped,
+              startedAt: todaySession.startedAt?.toISOString() || null,
               discoveries: todaySession.discoveries.map((d) => ({
                 id: d.id,
                 company: d.company,
