@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireFullAdmin } from "@/lib/admin";
 import { AlertBanner } from "./AlertBanner";
@@ -66,10 +67,9 @@ async function getStats() {
       where: { lastSeenAt: { gte: weekStart } },
       _count: true,
     }).then(r => r.length),
-    prisma.pagePresence.groupBy({
-      by: ["visitorId"],
-      _count: true,
-    }).then(r => r.length),
+    prisma.$queryRaw<[{ count: bigint }]>`
+      SELECT COUNT(DISTINCT "visitorId") as count FROM "PagePresence"
+    `.then(r => Number(r[0].count)),
     prisma.blogView.count({ where: { viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { viewedAt: { gte: weekStart } } }),
     prisma.linkClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -135,17 +135,18 @@ interface UtmRow {
 }
 
 async function getUtmStats(): Promise<UtmRow[]> {
-  const visitorGroups = await prisma.pagePresence.groupBy({
-    by: ["utmSource", "utmMedium", "utmCampaign"],
-    where: { utmSource: { not: null } },
-    _count: { visitorId: true },
-  });
-
-  const signupGroups = await prisma.user.groupBy({
-    by: ["utmSource", "utmMedium", "utmCampaign"],
-    where: { utmSource: { not: null } },
-    _count: { id: true },
-  });
+  const [visitorGroups, signupGroups] = await Promise.all([
+    prisma.pagePresence.groupBy({
+      by: ["utmSource", "utmMedium", "utmCampaign"],
+      where: { utmSource: { not: null } },
+      _count: { visitorId: true },
+    }),
+    prisma.user.groupBy({
+      by: ["utmSource", "utmMedium", "utmCampaign"],
+      where: { utmSource: { not: null } },
+      _count: { id: true },
+    }),
+  ]);
 
   const signupMap = new Map<string, number>();
   for (const g of signupGroups) {
@@ -186,9 +187,13 @@ async function getOpenAlerts() {
   }));
 }
 
+const getCachedStats = unstable_cache(getStats, ["admin-dashboard-stats"], { revalidate: 60 });
+const getCachedUtmStats = unstable_cache(getUtmStats, ["admin-dashboard-utm"], { revalidate: 120 });
+const getCachedAlerts = unstable_cache(getOpenAlerts, ["admin-dashboard-alerts"], { revalidate: 30 });
+
 export default async function AdminDashboard() {
   await requireFullAdmin();
-  const [stats, openAlerts, utmStats] = await Promise.all([getStats(), getOpenAlerts(), getUtmStats()]);
+  const [stats, openAlerts, utmStats] = await Promise.all([getCachedStats(), getCachedAlerts(), getCachedUtmStats()]);
 
   const contentCards = [
     {

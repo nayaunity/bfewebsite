@@ -7,9 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLinksPage() {
   await requireAdmin();
-  const links = await prisma.link.findMany({
-    orderBy: { order: "asc" },
-  });
+  const links = await prisma.link.findMany({ orderBy: { order: "asc" } });
 
   return (
     <div className="pb-20 lg:pb-0">

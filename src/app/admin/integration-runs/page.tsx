@@ -10,8 +10,8 @@ function fmtDuration(ms: number | null): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
-function fmtAgo(d: Date, nowMs: number): string {
-  const diff = nowMs - d.getTime();
+function fmtAgo(d: Date | string, nowMs: number): string {
+  const diff = nowMs - new Date(d).getTime();
   const min = Math.floor(diff / 60_000);
   if (min < 1) return "just now";
   if (min < 60) return `${min}m ago`;
@@ -47,9 +47,7 @@ interface UrlResult {
   errorMessage?: string;
 }
 
-export default async function IntegrationRunsPage() {
-  await requireAdmin();
-
+async function loadIntegrationRuns() {
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const runs = await prisma.integrationRun.findMany({
@@ -57,7 +55,13 @@ export default async function IntegrationRunsPage() {
     orderBy: { startedAt: "desc" },
     take: 50,
   });
-  const nowMs = now.getTime();
+  return { runs, nowMs: now.getTime() };
+}
+
+export default async function IntegrationRunsPage() {
+  await requireAdmin();
+
+  const { runs, nowMs } = await loadIntegrationRuns();
 
   const latest = runs[0];
 

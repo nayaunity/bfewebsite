@@ -1,8 +1,16 @@
+import { cache } from "react";
 import { auth } from "./auth";
 import { prisma } from "./prisma";
 import { redirect } from "next/navigation";
 
 export type UserRole = "admin" | "contributor" | "operations" | "user" | null;
+
+const getUserRole = cache(async (userId: string) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+});
 
 /**
  * Check if the current user has admin panel access (admin or contributor).
@@ -16,12 +24,7 @@ export async function requireAdmin() {
     redirect("/auth/signin?callbackUrl=/admin");
   }
 
-  // Fetch role from database
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
-
+  const user = await getUserRole(session.user.id);
   const role = user?.role as UserRole;
 
   // Allow admin, contributor, and operations roles
@@ -43,11 +46,7 @@ export async function checkAdmin() {
     return { isAdmin: false, session: null };
   }
 
-  // Fetch role from database
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
+  const user = await getUserRole(session.user.id);
 
   return {
     isAdmin: user?.role === "admin",
@@ -67,11 +66,7 @@ export async function checkContentAdmin() {
     return { allowed: false, session: null };
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
-
+  const user = await getUserRole(session.user.id);
   const allowed = user?.role === "admin" || user?.role === "contributor";
   return { allowed, session };
 }
@@ -87,14 +82,9 @@ export async function requireFullAdmin() {
     redirect("/auth/signin?callbackUrl=/admin");
   }
 
-  // Fetch role from database
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
+  const user = await getUserRole(session.user.id);
 
   if (user?.role !== "admin") {
-    // Non-admin roles get redirected to their landing page
     if (user?.role === "operations") redirect("/admin/auto-apply");
     redirect("/admin/jobs");
   }

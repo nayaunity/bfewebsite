@@ -4,9 +4,7 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function ErrorsPage() {
-  await requireAdmin();
-
+async function loadErrors() {
   const [recentErrors, errorsByEndpoint, errorsByDay] = await Promise.all([
     prisma.errorLog.findMany({
       orderBy: { createdAt: "desc" },
@@ -22,6 +20,13 @@ export default async function ErrorsPage() {
       GROUP BY DATE(createdAt) ORDER BY day DESC
     `.catch(() => []),
   ]);
+  return { recentErrors, errorsByEndpoint, errorsByDay };
+}
+
+export default async function ErrorsPage() {
+  await requireAdmin();
+
+  const { recentErrors, errorsByEndpoint, errorsByDay } = await loadErrors();
 
   return (
     <div>

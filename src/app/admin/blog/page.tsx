@@ -29,7 +29,7 @@ async function getBlogAnalytics() {
     }),
   ]);
 
-  const viewsMap = new Map(viewsByPost.map((v) => [v.slug, v._count.id]));
+  const viewsMap = Object.fromEntries(viewsByPost.map((v) => [v.slug, v._count.id]));
 
   return {
     total: totalViews,
@@ -40,10 +40,7 @@ async function getBlogAnalytics() {
 }
 
 export default async function AdminBlogPage() {
-  const [posts, analytics] = await Promise.all([
-    getAllPostsMeta(),
-    getBlogAnalytics(),
-  ]);
+  const [posts, analytics] = await Promise.all([getAllPostsMeta(), getBlogAnalytics()]);
 
   return (
     <div className="pb-20 lg:pb-0">
@@ -121,7 +118,7 @@ export default async function AdminBlogPage() {
         ) : (
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {posts.map((post) => {
-              const views = analytics.viewsMap.get(post.slug) || 0;
+              const views = analytics.viewsMap[post.slug] || 0;
               return (
                 <div
                   key={post.slug}

@@ -4,9 +4,7 @@ import UserTable from "./UserTable";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminAutoApplyPage() {
-  await requireAdmin();
-
+async function loadAutoApplyData() {
   const [
     totalDiscoveries,
     discoveryByStatus,
@@ -60,6 +58,22 @@ export default async function AdminAutoApplyPage() {
     }),
     prisma.user.count(),
   ]);
+
+  return { totalDiscoveries, discoveryByStatus, discoveryByCompany, browseSessions, optedInUsers, users, totalUsers };
+}
+
+export default async function AdminAutoApplyPage() {
+  await requireAdmin();
+
+  const {
+    totalDiscoveries,
+    discoveryByStatus,
+    discoveryByCompany,
+    browseSessions,
+    optedInUsers,
+    users,
+    totalUsers,
+  } = await loadAutoApplyData();
 
   const statusMap = discoveryByStatus.reduce(
     (acc, s) => {
@@ -125,7 +139,7 @@ export default async function AdminAutoApplyPage() {
         autoApplyEnabled: u.autoApplyEnabled,
         resumeUrl: u.resumeUrl,
         targetRole: u.targetRole,
-        createdAt: u.createdAt.toISOString(),
+        createdAt: new Date(u.createdAt).toISOString(),
         sessionCount: u._count.browseSessions,
       }))} />
 
