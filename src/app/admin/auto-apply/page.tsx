@@ -54,6 +54,7 @@ async function loadAutoApplyData() {
         targetRole: true,
         createdAt: true,
         currentPeriodEnd: true,
+        subscribedAt: true,
         _count: { select: { browseSessions: true } },
       },
     }),
@@ -142,6 +143,7 @@ export default async function AdminAutoApplyPage() {
         targetRole: u.targetRole,
         createdAt: new Date(u.createdAt).toISOString(),
         currentPeriodEnd: u.currentPeriodEnd ? new Date(u.currentPeriodEnd).toISOString() : null,
+        subscribedAt: u.subscribedAt ? new Date(u.subscribedAt).toISOString() : null,
         sessionCount: u._count.browseSessions,
       }))} />
 

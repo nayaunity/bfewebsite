@@ -26,17 +26,30 @@ export async function activateSubscription(params: {
   )?.current_period_end;
   const currentPeriodEnd = rootPeriodEnd ?? itemPeriodEnd;
 
+  const isActive = subscription.status === "active";
+
+  const updateData: Record<string, unknown> = {
+    subscriptionTier: tier,
+    subscriptionStatus: isActive ? "active" : subscription.status,
+    stripeSubscriptionId: subscription.id,
+    currentPeriodEnd: currentPeriodEnd
+      ? new Date(currentPeriodEnd * 1000)
+      : null,
+  };
+
+  if (isActive) {
+    const existing = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { subscribedAt: true },
+    });
+    if (!existing?.subscribedAt) {
+      updateData.subscribedAt = new Date();
+    }
+  }
+
   await prisma.user.update({
     where: { id: userId },
-    data: {
-      subscriptionTier: tier,
-      subscriptionStatus:
-        subscription.status === "active" ? "active" : subscription.status,
-      stripeSubscriptionId: subscription.id,
-      currentPeriodEnd: currentPeriodEnd
-        ? new Date(currentPeriodEnd * 1000)
-        : null,
-    },
+    data: updateData,
   });
 }
 
