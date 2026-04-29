@@ -10,8 +10,8 @@ function fmtDuration(ms: number | null): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
-function fmtAgo(d: Date, nowMs: number): string {
-  const diff = nowMs - d.getTime();
+function fmtAgo(d: Date | string, nowMs: number): string {
+  const diff = nowMs - new Date(d).getTime();
   const min = Math.floor(diff / 60_000);
   if (min < 1) return "just now";
   if (min < 60) return `${min}m ago`;
@@ -84,7 +84,7 @@ export default async function ScrapeRunsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {crons.map((cron) => {
             const latest = latestByCron.get(cron);
-            const stale = latest && nowMs - latest.startedAt.getTime() > 30 * 60 * 60 * 1000;
+            const stale = latest && nowMs - new Date(latest.startedAt).getTime() > 30 * 60 * 60 * 1000;
             const bad = !latest || latest.status === "failed" || stale;
             return (
               <div
@@ -163,7 +163,7 @@ export default async function ScrapeRunsPage() {
                 <tr key={r.id} className="border-t border-[var(--card-border)]">
                   <td className="px-4 py-2">{r.cron}</td>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    {r.startedAt.toISOString().replace("T", " ").slice(0, 19)} UTC
+                    {new Date(r.startedAt).toISOString().replace("T", " ").slice(0, 19)} UTC
                   </td>
                   <td className="px-4 py-2"><StatusPill status={r.status} /></td>
                   <td className="px-4 py-2 text-right">{fmtDuration(r.durationMs)}</td>

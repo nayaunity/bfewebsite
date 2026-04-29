@@ -24,7 +24,6 @@ export default async function CapConversionApprovePage({
     select: { id: true, email: true, firstName: true, subscriptionTier: true, conversionEmailSentAt: true },
   });
 
-  // Build PREVIEW drafts only (no coupon creation yet — coupons are created at send time).
   const drafts = [];
   for (const u of users) {
     const draft = await buildDraft(u.email, { createCoupon: false });

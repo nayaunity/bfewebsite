@@ -3,7 +3,7 @@ import { requireFullAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
-function formatDate(date: Date): string {
+function formatDate(date: Date | string): string {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

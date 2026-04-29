@@ -110,7 +110,7 @@ export default async function StuckFieldsPage() {
                   <td className="px-4 py-2 text-right font-semibold">{row.count}</td>
                   <td className="px-4 py-2">{row.company}</td>
                   <td className="px-4 py-2"><FailurePill type={row.failureType} /></td>
-                  <td className="px-4 py-2 whitespace-nowrap">{row.lastSeen.toISOString().replace("T", " ").slice(0, 16)}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{new Date(row.lastSeen).toISOString().replace("T", " ").slice(0, 16)}</td>
                   <td className="px-4 py-2">
                     <a href={row.samplePageUrl} target="_blank" rel="noreferrer" className="text-[#ef562a] hover:underline truncate inline-block max-w-xs">
                       {row.samplePageUrl.slice(0, 60)}{row.samplePageUrl.length > 60 ? "…" : ""}

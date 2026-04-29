@@ -32,7 +32,7 @@ export default async function AdminTicketsPage() {
         type: t.type,
         status: t.status,
         page: t.page,
-        createdAt: t.createdAt.toISOString(),
+        createdAt: new Date(t.createdAt).toISOString(),
         userEmail: t.user.email,
         userName: [t.user.firstName, t.user.lastName].filter(Boolean).join(" ") || null,
       }))} />

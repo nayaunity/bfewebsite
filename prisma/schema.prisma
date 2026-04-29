@@ -503,6 +503,7 @@ model PagePresence {
   @@index([lastSeenAt])
   @@index([country])
   @@index([utmSource])
+  @@index([page, lastSeenAt])
 }
 
 model Link {

@@ -8,10 +8,7 @@ interface PageProps {
   searchParams: Promise<{ search?: string; page?: string }>;
 }
 
-export default async function AdminJobsPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const search = params.search || "";
-  const page = parseInt(params.page || "1");
+async function loadJobs(search: string, page: number) {
   const limit = 20;
   const offset = (page - 1) * limit;
 
@@ -40,7 +37,17 @@ export default async function AdminJobsPage({ searchParams }: PageProps) {
     prisma.job.count({ where }),
   ]);
 
-  const totalPages = Math.ceil(total / limit);
+  return { jobs, total, totalPages: Math.ceil(total / limit) };
+}
+
+export default async function AdminJobsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const search = params.search || "";
+  const page = parseInt(params.page || "1");
+
+  const { jobs, total, totalPages } = await loadJobs(search, page);
+  const limit = 20;
+  const offset = (page - 1) * limit;
 
   return (
     <div className="pb-20 lg:pb-0">

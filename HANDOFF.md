@@ -1,10 +1,10 @@
-# Session Handoff — April 14–27, 2026 (Apr 27: UTM tracking, resume quiz auto-retry, auto-apply progress stepper deployed. Workday expanded to 13 tenants but worker NOT yet deployed)
+# Session Handoff — April 14–28, 2026 (Apr 28: Workday expanded to 22 tenants, worker deployed to Railway. Live test 16/22 passing)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel. Head: `cd2e36c` (Apr 27, auto-apply progress stepper + UTM tracking + resume quiz auto-retry deployed).
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `cd2e36c` (in sync with main). **Apr 26 Workday worker changes still uncommitted** — see "Uncommitted as of Apr 27" below.
+- **main** — production code, deployed to Vercel + Railway. Head: `768f33c` (Apr 28, Workday 22 tenants + TS null-safety fix).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `768f33c` (in sync with main via fast-forward). All Workday changes committed and deployed.
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
@@ -12,25 +12,11 @@
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
-### Uncommitted as of end of Apr 27 session (working tree on `auto-apply-saas`)
-Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DRY_RUN smoke):
-- `worker/src/workday/tenants.ts` — 26 tenants defined (5 validated + 21 pending). Per-tenant question rules for Walmart, Adobe, Salesforce, Capital One, Cisco. Generic question rules expanded (sanctions, government entity, relative employed).
-- `worker/src/workday/wizard.ts` — heavily expanded cross-tenant wizard driver. Key changes since 5-tenant baseline:
-  - `fillSearchableDropdown` helper for Workday's server-side autocomplete fields (school, field of study) with retry + shorter search term fallback
-  - Phone Device Type discovery: tries `formField-phoneType`, `formField-phoneDeviceType`, then label-based discovery for any dropdown with "phone type/device type" in label text
-  - Education fields: school/fieldOfStudy searchable dropdowns, degree dropdown, education date range (educationStartDate/End, from/to, startYear/endYear)
-  - Skills tagger: types "Python", waits for autocomplete option, clicks or presses Enter
-  - Citizenship multiselect on VD page: prefers "United States" option
-  - Application Questions: context-aware text inputs (salary -> "70000", years experience -> "0", dates -> "05/2026")
-  - Address Line 2 fill ("Apt 1") for tenants that require it
-  - Name field fallback: `formField-legalName--firstName` -> `formField-firstName`
-  - Remaining-text-inputs discovery on My Information page
-- `worker/test/integration/smoke-companies.ts` — 20 new Workday tenants added to WORKDAY_ONLY_CANDIDATES, SMOKE_SINGLE support for individual tenant testing.
-- `src/lib/scrapers/workday.ts` — two-pass scrape (default + intern search).
-- `src/data/auto-apply-companies.json` — 8 new Workday tenants added (Netflix, Intel, Morgan Stanley, Target, Johnson & Johnson, GE Aerospace, GE Vernova, GE HealthCare). Total: 81 companies, 13 Workday.
+### Committed and deployed as of Apr 28
+All Workday expansion changes are committed and deployed to both Vercel and Railway. No uncommitted worker changes remain.
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 27 `cd2e36c` (UTM tracking + resume quiz auto-retry + auto-apply progress stepper).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 28 `768f33c` (Workday 22-tenant expansion).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`, **`WorkdayCredential` (Apr 25)** for per-(user, tenant) Workday auto-apply credentials. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), `detailsReviewedAt` (Apr 18), **`seekingInternship` + `preferenceBannerDismissedAt` (Apr 25)** for internship-only matching. New columns on `BrowseSession`: `lastHeartbeatAt` (Apr 18), **`seekingInternship` (Apr 25)**. New column on `TempOnboarding`: **`confirmedSeekingInternship` (Apr 25)**. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -65,7 +51,114 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 
 ---
 
-## What Was Done This Session (April 15-26)
+## What Was Done This Session (April 15-28)
+
+### 37. Apr 27-28 — Workday expansion: 22 tenants total, deployed + live tested (16/22 passing)
+
+**Goal:** Fix the remaining failing Workday tenants (PwC, Visa, Procter & Gamble, Northrop Grumman) from session 32, deploy to Railway, and live-test all tenants.
+
+**Wizard fixes (`worker/src/workday/wizard.ts`):**
+1. **DOB date fix:** Date widget was filling today's date (2026) for ALL date fields including Date of Birth. Added `isDob` detection in both Strategy 1 (`dateContainerAids` list) and Strategy 2 (DOM tree walk). DOB fields now get 01/15/2003 instead of today's date.
+2. **Role Description textarea:** Work experience section filled jobTitle, company, location, dates but never filled `formField-roleDescription`. Added explicit textarea fill with generic description. This was blocking Visa (and likely Adobe, HP Inc in live).
+3. **False-positive dropdown detection:** `selectFirstDropdownOption`, `selectMultiselect`, and `selectDropdownViaKeyboard` were returning `true` based on `inputVal.trim().length > 0` even when no selection was made. Fixed to check `selectedItem` count and button text change pre/post click.
+4. **VD unfilled dropdown fallback:** After the main genderFields loop, added a retry pass that discovers unfilled dropdowns and tries keyboard/first-option/searchable approaches. Handles citizenship status, nationality, marital status fields.
+5. **Skip dropdown filter inputs in catch-all:** The remaining-empty-inputs catch-all was typing "N/A" into search/filter inputs inside dropdown containers, preventing proper dropdown selection. Added check to skip inputs inside elements with `button[aria-haspopup]`, `promptIcon`, or `multiSelectContainer`.
+6. **TS2531 null safety:** `textContent()` returns `string | null`. Used `String()` wrapper for Railway compat (older TS version didn't accept `?? ""`).
+
+**New companies added to `auto-apply-companies.json`:**
+HP Inc, HPE, Mastercard, Boeing, Bank of America, Northrop Grumman, Procter & Gamble, PwC, Visa (9 new). Total: **90 companies, 22 Workday tenants**.
+
+**DRY_RUN smoke results (all 22 fixable tenants PASSED):**
+Salesforce, Adobe, Cisco, Capital One, Walmart, Netflix, Intel, HP Inc, HPE, Morgan Stanley, Target, J&J, GE Aerospace, GE Vernova, GE HealthCare, Mastercard, Boeing, Bank of America, Northrop Grumman, Procter & Gamble, PwC, Visa.
+
+**Live test results (DRY_RUN=false, actual submit):**
+| Tenant | Result | Duration | Notes |
+|---|---|---|---|
+| Salesforce | PASSED | 203s | |
+| Adobe | FAILED | 410s | stuck-step-2 (roleDescription? worked in dry run) |
+| Cisco | PASSED | 176s | |
+| Capital One | PASSED | 224s | Verify link arrived 11s |
+| Walmart | PASSED | 173s | |
+| Netflix | PASSED | 149s | |
+| Intel | PASSED | 201s | |
+| HP Inc | FAILED | 353s | stuck-step-2 (same pattern as Adobe) |
+| HPE | PASSED | 160s | |
+| Visa | PASSED | 352s | |
+| Mastercard | FAILED | 212s | iteration-cap-hit |
+| Morgan Stanley | PASSED | 170s | |
+| Bank of America | PASSED | 329s | Verify link arrived 8s |
+| PwC | FAILED | 167s | stuck-step-3 (was step 4 in dry run) |
+| Target | PASSED | 175s | |
+| J&J | PASSED | 224s | |
+| P&G | FAILED | 267s | iteration-cap-hit |
+| GE Aerospace | PASSED | 206s | |
+| GE Vernova | PASSED | 161s | |
+| GE HealthCare | PASSED | 166s | |
+| Boeing | PASSED | 226s | |
+| Northrop Grumman | FAILED | 269s | iteration-cap-hit |
+| NVIDIA | FAILED (expected) | 14s | unfixable: signup email field not found |
+| Broadcom | FAILED (expected) | 5s | unfixable: login/auth required |
+| RTX | FAILED (expected) | 11s | unfixable: signup email field not found |
+
+**Live pass rate: 16/22 fixable tenants (73%)**
+
+**Failures to investigate next session:**
+- **stuck-step-2 (Adobe, HP Inc):** Passed dry run but failed live. Likely the job picked for live test has a different step 2 layout (extra required fields). Need to check the smoke results JSON steps.
+- **iteration-cap-hit (Mastercard, P&G, Northrop Grumman):** Passed dry run but hit iteration cap live. These tenants may have extra validation steps or post-submit flows that the wizard loops through without advancing.
+- **stuck-step-3 (PwC):** Passed dry run on step 4 after DOB fix, but live test stuck on step 3. Different job may have different step layout.
+
+**Commits:**
+- `90ad9df` Workday expansion: PwC + Visa passing, 22 total tenants (DOB fix + roleDescription)
+- `c784aff` Fix TS2531 null checks in wizard.ts textContent() calls
+- `768f33c` Fix TS2531: use String() for textContent() null safety (Railway compat)
+
+**Deployed:** Vercel (frontend) + Railway (worker) both on `768f33c`.
+
+### 36. Apr 27 evening — Mission Log dashboard redesign + responsive layout + payment-failed gating fix (deployed)
+
+**Goal:** Reskin `/profile/applications` with the Mission Log design from claude.ai/design (orange/cream receipt-stack aesthetic), make the layout truly responsive across viewports, and fix a misleading error where past-due users hitting "Start Applying Now" were told "Monthly limit reached" instead of the actual reason (their card had been declined).
+
+**Mission Log dashboard redesign — `ApplicationsDashboard.tsx`:**
+- Replaced the render tree with the Mission Log layout: counted-up hero ("We applied to N jobs for you"), ticker band of recent applications, quota strip (usage meter + Start CTA + rotating tip), receipt-stack of applications grouped by date with rotated APPLIED / IN FLIGHT stamps + match bars + monogram avatars, and a sidebar with live queue + most-applied leaderboard + pro-move tip
+- Inlined helpers as TSX: `HeroStat`, `Monogram`, `Stamp`, `MatchBar`, `TornEdge`, `TailoredBadge`, `Ticker`, `useCountUp`, `companyColor` (hash-based palette)
+- **Zero functionality dropped:** all 5 banners (PaymentFailed, TrialCapReached, TrialRequired, InternshipPreference, Resume Quiz CTA), profile-readiness checklist, Today's Auto-Apply stepper with 8s polling, celebration banner, resume comparison card with Original/Tailored buttons, free-tier upsell with dismiss, search/filter all preserved
+- New derived stats computed in `page.tsx` (no schema change): `thisWeek`, `matchAvg` (only over discoveries with a real `matchScore`), `streak` (consecutive calendar days with ≥1 applied app)
+- Animations added in `globals.css`: `marquee` (55s), `fadeSlide`, `slideDown`, `.no-scrollbar` helper
+
+**Fluid responsive layout — `page.tsx` + dashboard:**
+- Container went from `max-w-6xl` → `max-w-7xl` → `max-w-[1600px]` → finally `w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20`. Fixed-width caps were leaving giant white margins on ultrawide displays; padding-based sizing fills the viewport gracefully at all widths
+- Hero headline scales `text-4xl md:text-5xl lg:text-6xl xl:text-[68px] 2xl:text-[80px]`
+- Hero subtitle gets `max-w-3xl` so it doesn't span the entire ultrawide row
+- Hero stat values scale `text-4xl xl:text-5xl`
+- Main grid sidebar grows: `lg:300px → xl:360px → 2xl:400px`, with `minmax(0,1fr)` on the receipt column to prevent overflow
+- Verified at 390 / 1280 / 1440 / 1920 / 2560 with Playwright
+
+**Copy fixes:**
+- Hero math: `uniqueCompanies` was being computed across ALL applications (applied + skipped + failed + pending), so a user with 9 applied + 5 skipped showed "We applied to 9 jobs for you. Across 14 companies" — implying failures. Now filters to only `submitted`/`applied` rows so the math is internally consistent
+- Sidebar idle line: dropped the "Queue is idle" sentence and converted MT → ET. New copy: **"Next scan 5:00 AM ET."**
+- Footer caption: dropped "Auto-generated" and converted MT → ET. New copy: **"End of log · Next run 5:00 AM ET"**
+
+**Auto-apply payment-failed gating fix — `lib/subscription.ts` + 3 routes:**
+- **Bug:** `/api/auto-apply/start` always returned `"Monthly limit reached (X/Y). Upgrade for more."` even when `canApply()` actually denied for `payment-failed` (card decline) or `trial-required`. A past-due user with 9/100 used would see a false monthly-limit error.
+- **Fix:** Added `usageErrorMessage(usage)` helper in `lib/subscription.ts` that maps `canApply().reason` to the correct user-facing copy:
+  - `payment-failed` → *"Auto-apply is paused. We couldn't process your last payment. Update your card in account settings and applications will resume automatically."*
+  - `trial-required` → *"Your free tier has ended. Start your 7-day trial to keep applying."*
+  - default (`monthly-cap`) → *"Monthly limit reached (X/Y). Upgrade for more."*
+- Wired into `/api/auto-apply/start`, `/api/auto-apply` (one-shot), and `/api/auto-apply/browse` so the three start paths can never drift again. The `browse` route already had the right pattern but with duplicated copy; consolidated to the helper.
+- Dashboard CTA itself stays as "Start Applying Now" for past-due users — clicking it now surfaces the correct payment-failed copy in the red error line below the quota strip. The PaymentFailedBanner above still owns the "Update payment method" CTA. Initially I replaced the button with an "Applications paused" pill but Naya wanted the button-then-error flow instead, so I reverted that.
+
+**Files changed:**
+- `src/lib/subscription.ts` — added `usageErrorMessage()`
+- `src/app/api/auto-apply/start/route.ts` — uses helper
+- `src/app/api/auto-apply/route.ts` — uses helper
+- `src/app/api/auto-apply/browse/route.ts` — uses helper (consolidated existing branch)
+- `src/app/profile/applications/page.tsx` — fluid container, derived stats, fixed `uniqueCompanies` math
+- `src/app/profile/applications/ApplicationsDashboard.tsx` — full Mission Log render tree (~900 lines), copy fixes
+- `src/app/globals.css` — Mission Log animations
+
+**Commits (auto-apply-saas → main):** `628f73a` Mission Log redesign + fluid responsive · `4b6617d` copy fixes (company count, ET times, footer) · `d2934d2` payment-failed gating fix · `cf0b960` revert past-due CTA pill. Final on main: **`8ec1efb`**.
+
+**Local test seed:** `scripts/seed-mission-log.ts` — populates 25 BrowseDiscovery rows + active BrowseSession (38 companies, 7/12 applied) for user `cmkjad7op007l118884s0vsyu`. Auth bypass for testing via `scripts/mint-session.ts` which uses `@auth/core/jwt encode()` with `salt: "authjs.session-token"`.
 
 ### 35. Apr 27 — Auto-apply progress stepper: redesigned + deployed
 
@@ -99,7 +192,7 @@ Working-tree changes ready to commit (13 Workday tenants total, 8 new passing DR
 
 **Root cause:** Kasey completed the quiz while trialing, then upgraded to Starter. The rewrite endpoint had `maxDuration: 60` which was too tight for Claude API call + Chromium PDF render. Fixed by bumping to 120s and adding auto-detect-and-retrigger on page load (if answers submitted but no rewrite URL, auto-triggers rewrite).
 
-### 32. Apr 27 cont'd — Workday expansion: 20 new tenants tested, 8 passing, added to auto-apply
+### 32. Apr 27 cont'd — Workday expansion: 20 new tenants tested, 8 passing (superseded by session 37)
 
 **Goal:** Smoke-test 20 new Workday tenants and add passing ones to `auto-apply-companies.json`.
 
