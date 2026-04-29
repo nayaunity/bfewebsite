@@ -15,6 +15,7 @@ interface UserRow {
   targetRole: string | null;
   createdAt: string;
   currentPeriodEnd: string | null;
+  subscribedAt: string | null;
   sessionCount: number;
 }
 
@@ -171,14 +172,9 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-right text-[10px] text-[var(--gray-600)]">
-                    {u.currentPeriodEnd && u.subscriptionTier !== "free" ? (() => {
-                      const periodEnd = new Date(u.currentPeriodEnd);
-                      const subscribed = new Date(periodEnd);
-                      subscribed.setMonth(subscribed.getMonth() - 1);
-                      return subscribed.toLocaleDateString("en-US", {
-                        month: "short", day: "numeric", year: "numeric",
-                      });
-                    })() : "—"}
+                    {u.subscribedAt ? new Date(u.subscribedAt).toLocaleDateString("en-US", {
+                      month: "short", day: "numeric", year: "numeric",
+                    }) : "—"}
                   </td>
                 </tr>
               ))
