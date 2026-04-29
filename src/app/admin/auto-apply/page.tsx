@@ -53,6 +53,7 @@ async function loadAutoApplyData() {
         resumeUrl: true,
         targetRole: true,
         createdAt: true,
+        currentPeriodEnd: true,
         _count: { select: { browseSessions: true } },
       },
     }),
@@ -140,6 +141,7 @@ export default async function AdminAutoApplyPage() {
         resumeUrl: u.resumeUrl,
         targetRole: u.targetRole,
         createdAt: new Date(u.createdAt).toISOString(),
+        currentPeriodEnd: u.currentPeriodEnd ? new Date(u.currentPeriodEnd).toISOString() : null,
         sessionCount: u._count.browseSessions,
       }))} />
 
