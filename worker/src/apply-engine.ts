@@ -2414,6 +2414,9 @@ async function _applyToJobInner(
       steps.push(`Navigated to ATS: ${page.url()}`);
 
       if (await isLoginPage(page)) {
+        if (page.url().toLowerCase().includes("icims.com")) {
+          return { success: false, error: "iCIMS not supported (login required)", steps };
+        }
         return { success: false, error: "Login/authentication required on ATS", steps };
       }
     }

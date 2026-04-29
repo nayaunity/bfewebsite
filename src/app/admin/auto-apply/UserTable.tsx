@@ -14,6 +14,7 @@ interface UserRow {
   resumeUrl: string | null;
   targetRole: string | null;
   createdAt: string;
+  currentPeriodEnd: string | null;
   sessionCount: number;
 }
 
@@ -116,7 +117,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
               <th className="text-center px-4 py-2">Sessions</th>
               <th className="text-center px-4 py-2">Resume</th>
               <th className="text-center px-4 py-2">Auto</th>
-              <th className="text-right px-4 py-2">Joined</th>
+              <th className="text-right px-4 py-2">Subscribed</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--card-border)]">
@@ -170,9 +171,14 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-right text-[10px] text-[var(--gray-600)]">
-                    {new Date(u.createdAt).toLocaleDateString("en-US", {
-                      month: "short", day: "numeric", year: "numeric",
-                    })}
+                    {u.currentPeriodEnd && u.subscriptionTier !== "free" ? (() => {
+                      const periodEnd = new Date(u.currentPeriodEnd);
+                      const subscribed = new Date(periodEnd);
+                      subscribed.setMonth(subscribed.getMonth() - 1);
+                      return subscribed.toLocaleDateString("en-US", {
+                        month: "short", day: "numeric", year: "numeric",
+                      });
+                    })() : "—"}
                   </td>
                 </tr>
               ))

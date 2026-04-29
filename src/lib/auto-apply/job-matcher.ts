@@ -347,11 +347,31 @@ const EXCLUDED_URL_PATTERNS: { pattern: RegExp; reason: string }[] = [
     pattern: /stripe\.com\/jobs\/listing\/.*(intern|new[-_]?grad|university)/i,
     reason: "Stripe intern/new-grad: 8-min timeout cluster (88 cohort failures)",
   },
+  {
+    pattern: /icims\.com/i,
+    reason: "iCIMS forces login wall on every job — no deterministic handler yet",
+  },
 ];
+
+// Career-portal hosts known to redirect to login.icims.com. The applyUrl alone
+// doesn't reveal iCIMS — the redirect happens at runtime — so we maintain a
+// curated list discovered from BrowseDiscovery error traces.
+const ICIMS_BACKED_HOSTS = new Set<string>([
+  "careers.arm.com",
+  "careers.docusign.com",
+]);
 
 export function isUrlExcluded(url: string): { excluded: boolean; reason?: string } {
   for (const { pattern, reason } of EXCLUDED_URL_PATTERNS) {
     if (pattern.test(url)) return { excluded: true, reason };
+  }
+  try {
+    const host = new URL(url).host.toLowerCase();
+    if (ICIMS_BACKED_HOSTS.has(host)) {
+      return { excluded: true, reason: "iCIMS-backed careers site (no handler)" };
+    }
+  } catch {
+    // malformed URL — fall through
   }
   return { excluded: false };
 }
