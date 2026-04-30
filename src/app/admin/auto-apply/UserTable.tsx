@@ -118,7 +118,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
               <th className="text-center px-4 py-2">Sessions</th>
               <th className="text-center px-4 py-2">Resume</th>
               <th className="text-center px-4 py-2">Auto</th>
-              <th className="text-right px-4 py-2">Subscribed</th>
+              <th className="text-right px-4 py-2">{tierFilter === "trial" ? "Started" : "Subscribed"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--card-border)]">
