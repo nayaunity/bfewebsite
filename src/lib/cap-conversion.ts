@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { stripe, STRIPE_PRICES } from "@/lib/stripe";
+import { getCurrentPeriodStart } from "@/lib/subscription";
 
 const BLOCKED_COMPANIES = [
   "openai", "ramp", "notion", "perplexity", "linear", "elevenlabs",
@@ -224,14 +225,19 @@ export async function findCapConversionCandidates(): Promise<
         { freeTierEndsAt: { gt: sevenDaysOut } },
       ],
     },
-    select: { id: true, email: true },
+    select: { id: true, email: true, subscribedAt: true, createdAt: true },
   });
 
   const candidates: { userId: string; email: string; cappedAt: Date }[] = [];
 
   for (const u of users) {
+    const periodStart = getCurrentPeriodStart(u);
     const applies = await prisma.browseDiscovery.findMany({
-      where: { session: { userId: u.id }, status: "applied" },
+      where: {
+        session: { userId: u.id },
+        status: "applied",
+        createdAt: { gte: periodStart },
+      },
       orderBy: { createdAt: "asc" },
       select: { createdAt: true },
       take: 5,

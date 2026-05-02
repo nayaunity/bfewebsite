@@ -3,6 +3,7 @@ import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-brow
 import { checkAnthropicCredits, isCreditExhaustionError } from "./apply-engine";
 import { postCreditAlert } from "./alerts";
 import { logWorkerError } from "./error-log";
+import { readQuotaWithLazyReset } from "./period";
 
 async function getSessionUserId(sessionId: string): Promise<string | null> {
   try {
@@ -355,12 +356,10 @@ export async function processNextBrowseSession(): Promise<boolean> {
         break;
       }
 
-      // Monthly quota + free-tier sunset wall + trial guardrail
-      const quotaCheck = await db.execute({
-        sql: `SELECT monthlyAppCount, subscriptionTier, subscriptionStatus, freeTierEndsAt FROM User WHERE id = ?`,
-        args: [session.userId],
-      });
-      const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string; freeTierEndsAt: string | null } | undefined;
+      // Monthly quota + free-tier sunset wall + trial guardrail. Resets the
+      // counter lazily if the user has crossed their subscription/signup
+      // anniversary since the last reset.
+      const currentUser = await readQuotaWithLazyReset(session.userId);
       // Payment-failed wall: mirror src/lib/subscription.ts canApply().
       // Stripe flipped the sub to past_due/unpaid after a failed charge;
       // do not consume paid resources until the invoice clears.
@@ -516,11 +515,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
       log(session.id, "info", `Verification retry queue: ${verificationRetryQueue.length} jobs`);
       for (const job of verificationRetryQueue) {
         // Re-check quota before retry — user may have hit cap during the main loop
-        const quotaCheck = await db.execute({
-          sql: `SELECT monthlyAppCount, subscriptionTier, subscriptionStatus FROM User WHERE id = ?`,
-          args: [session.userId],
-        });
-        const u = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string; subscriptionStatus: string } | undefined;
+        const u = await readQuotaWithLazyReset(session.userId);
         if (
           u &&
           (u.subscriptionStatus === "past_due" || u.subscriptionStatus === "unpaid")
@@ -748,12 +743,8 @@ export async function processNextBrowseSession(): Promise<boolean> {
           break;
         }
 
-        // Check monthly quota
-        const quotaCheck = await db.execute({
-          sql: `SELECT monthlyAppCount, subscriptionTier FROM User WHERE id = ?`,
-          args: [session.userId],
-        });
-        const currentUser = quotaCheck.rows?.[0] as unknown as { monthlyAppCount: number; subscriptionTier: string } | undefined;
+        // Check monthly quota — lazy-reset on anniversary boundary
+        const currentUser = await readQuotaWithLazyReset(session.userId);
         const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
         const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
         if (currentUser && currentUser.monthlyAppCount >= limit) {
