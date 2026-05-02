@@ -65,7 +65,44 @@ export function tierFromPriceId(priceId: string | undefined): "starter" | "pro" 
 }
 
 /**
- * Get user's subscription tier, resetting the monthly counter if needed.
+ * Start of the user's current monthly period. Anchors on the subscription
+ * anniversary (subscribedAt) for paid users and on signup (createdAt) for
+ * free users. Pure — no DB. Mirrored in worker/src/period.ts.
+ */
+export function getCurrentPeriodStart(user: {
+  subscribedAt: Date | null;
+  createdAt: Date;
+}): Date {
+  const anchor = user.subscribedAt ?? user.createdAt;
+  const now = new Date();
+  const anchorDay = anchor.getUTCDate();
+  const h = anchor.getUTCHours();
+  const m = anchor.getUTCMinutes();
+  const s = anchor.getUTCSeconds();
+
+  const buildAt = (year: number, month: number): Date => {
+    // month may be -1 (Dec of previous year) — normalize.
+    let y = year;
+    let mo = month;
+    if (mo < 0) {
+      mo += 12;
+      y -= 1;
+    }
+    const daysInMonth = new Date(Date.UTC(y, mo + 1, 0)).getUTCDate();
+    const day = Math.min(anchorDay, daysInMonth);
+    return new Date(Date.UTC(y, mo, day, h, m, s, 0));
+  };
+
+  let candidate = buildAt(now.getUTCFullYear(), now.getUTCMonth());
+  if (candidate > now) {
+    candidate = buildAt(now.getUTCFullYear(), now.getUTCMonth() - 1);
+  }
+  return candidate;
+}
+
+/**
+ * Get user's subscription tier, resetting the monthly counter if the user
+ * has crossed their subscription/signup anniversary since the last reset.
  */
 export async function getUserTier(userId: string) {
   const user = await prisma.user.findUnique({
@@ -78,23 +115,40 @@ export async function getUserTier(userId: string) {
       monthlyAppResetAt: true,
       currentPeriodEnd: true,
       freeTierEndsAt: true,
+      subscribedAt: true,
+      createdAt: true,
     },
   });
 
   if (!user) return null;
 
-  // Check if monthly counter needs resetting (new month)
-  const now = new Date();
+  const periodStart = getCurrentPeriodStart(user);
   const resetAt = new Date(user.monthlyAppResetAt);
-  if (
-    now.getMonth() !== resetAt.getMonth() ||
-    now.getFullYear() !== resetAt.getFullYear()
-  ) {
+
+  if (resetAt < periodStart) {
+    // Recompute counter from BrowseSession history rather than zeroing
+    // blindly — keeps the worker's increments and the lazy reset in agreement
+    // if they race across the boundary. Uses datetime() so the comparison
+    // works across both storage formats (worker writes 'YYYY-MM-DD HH:MM:SS'
+    // via raw SQL, Prisma writes ISO 'YYYY-MM-DDTHH:MM:SS.sssZ').
+    const rows = await prisma.$queryRaw<{ s: number | bigint | null }[]>`
+      SELECT COALESCE(SUM(jobsApplied), 0) AS s
+      FROM BrowseSession
+      WHERE userId = ${userId}
+        AND startedAt IS NOT NULL
+        AND datetime(startedAt) >= datetime(${periodStart.toISOString()})
+    `;
+    const recomputed = Number(rows[0]?.s ?? 0);
+
     await prisma.user.update({
       where: { id: userId },
-      data: { monthlyAppCount: 0, monthlyTailorCount: 0, monthlyAppResetAt: now },
+      data: {
+        monthlyAppCount: recomputed,
+        monthlyTailorCount: 0,
+        monthlyAppResetAt: periodStart,
+      },
     });
-    return { ...user, monthlyAppCount: 0 };
+    return { ...user, monthlyAppCount: recomputed, monthlyTailorCount: 0 };
   }
 
   return user;

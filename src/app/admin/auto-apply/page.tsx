@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
+import { getCurrentPeriodStart } from "@/lib/subscription";
 import UserTable from "./UserTable";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +62,26 @@ async function loadAutoApplyData() {
     prisma.user.count(),
   ]);
 
-  return { totalDiscoveries, discoveryByStatus, discoveryByCompany, browseSessions, optedInUsers, users, totalUsers };
+  // Derive per-user "apps this period" live from BrowseSession.jobsApplied so
+  // the column reflects the user's actual subscription/signup-anniversary
+  // period, not whatever stale value monthlyAppCount happens to hold.
+  const sessionRows = await prisma.browseSession.findMany({
+    where: { userId: { in: users.map((u) => u.id) } },
+    select: { userId: true, jobsApplied: true, startedAt: true },
+  });
+  const periodAppliedByUser = new Map<string, number>();
+  for (const u of users) {
+    const periodStart = getCurrentPeriodStart(u);
+    let sum = 0;
+    for (const s of sessionRows) {
+      if (s.userId !== u.id) continue;
+      if (!s.startedAt || s.startedAt < periodStart) continue;
+      sum += s.jobsApplied;
+    }
+    periodAppliedByUser.set(u.id, sum);
+  }
+
+  return { totalDiscoveries, discoveryByStatus, discoveryByCompany, browseSessions, optedInUsers, users, totalUsers, periodAppliedByUser };
 }
 
 export default async function AdminAutoApplyPage() {
@@ -75,6 +95,7 @@ export default async function AdminAutoApplyPage() {
     optedInUsers,
     users,
     totalUsers,
+    periodAppliedByUser,
   } = await loadAutoApplyData();
 
   const statusMap = discoveryByStatus.reduce(
@@ -137,7 +158,7 @@ export default async function AdminAutoApplyPage() {
         lastName: u.lastName,
         subscriptionTier: u.subscriptionTier,
         subscriptionStatus: u.subscriptionStatus,
-        monthlyAppCount: u.monthlyAppCount,
+        periodApplied: periodAppliedByUser.get(u.id) ?? 0,
         autoApplyEnabled: u.autoApplyEnabled,
         resumeUrl: u.resumeUrl,
         targetRole: u.targetRole,

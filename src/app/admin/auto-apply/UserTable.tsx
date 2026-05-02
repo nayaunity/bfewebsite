@@ -9,7 +9,7 @@ interface UserRow {
   lastName: string | null;
   subscriptionTier: string;
   subscriptionStatus: string;
-  monthlyAppCount: number;
+  periodApplied: number;
   autoApplyEnabled: boolean;
   resumeUrl: string | null;
   targetRole: string | null;
@@ -152,7 +152,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     {u.targetRole || "—"}
                   </td>
                   <td className="px-4 py-2.5 text-center text-xs text-[var(--foreground)]">
-                    {u.monthlyAppCount}
+                    {u.periodApplied}
                   </td>
                   <td className="px-4 py-2.5 text-center text-xs text-[var(--foreground)]">
                     {u.sessionCount}
@@ -172,9 +172,18 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-right text-[10px] text-[var(--gray-600)]">
-                    {u.subscribedAt ? new Date(u.subscribedAt).toLocaleDateString("en-US", {
-                      month: "short", day: "numeric", year: "numeric",
-                    }) : "—"}
+                    {(() => {
+                      const dateStr = isTrial(u)
+                        ? (u.currentPeriodEnd
+                            ? new Date(new Date(u.currentPeriodEnd).getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                            : null)
+                        : u.subscribedAt;
+                      return dateStr
+                        ? new Date(dateStr).toLocaleDateString("en-US", {
+                            month: "short", day: "numeric", year: "numeric",
+                          })
+                        : "—";
+                    })()}
                   </td>
                 </tr>
               ))
