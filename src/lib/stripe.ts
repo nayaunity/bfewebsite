@@ -22,9 +22,15 @@ export const STRIPE_COURSE_PRICES = {
 
 export const TIER_LIMITS: Record<
   string,
-  { appsPerMonth: number; maxResumes: number; tailoredPerMonth: number }
+  {
+    appsPerMonth: number;
+    maxResumes: number;
+    tailoredPerMonth: number;
+    portfolioEnabled: boolean;
+    portfolioRegenerationsPerMonth: number;
+  }
 > = {
-  free: { appsPerMonth: 5, maxResumes: 3, tailoredPerMonth: 1 },
-  starter: { appsPerMonth: 100, maxResumes: 5, tailoredPerMonth: 9999 },
-  pro: { appsPerMonth: 300, maxResumes: 10, tailoredPerMonth: 9999 },
+  free: { appsPerMonth: 5, maxResumes: 3, tailoredPerMonth: 1, portfolioEnabled: false, portfolioRegenerationsPerMonth: 0 },
+  starter: { appsPerMonth: 100, maxResumes: 5, tailoredPerMonth: 9999, portfolioEnabled: true, portfolioRegenerationsPerMonth: 3 },
+  pro: { appsPerMonth: 300, maxResumes: 10, tailoredPerMonth: 9999, portfolioEnabled: true, portfolioRegenerationsPerMonth: 9999 },
 };

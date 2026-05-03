@@ -84,6 +84,7 @@ model User {
   browseSessions      BrowseSession[]
   tickets             Ticket[]
   workdayCredentials  WorkdayCredential[]
+  portfolio           Portfolio?
 
   @@index([role])
   @@index([stripeCustomerId])
@@ -616,4 +617,57 @@ model WorkdayCredential {
 
   @@unique([userId, tenantHost])
   @@index([userId])
+}
+
+model Portfolio {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  slug            String    @unique
+  status          String    @default("draft")
+  themeId         String    @default("nebula")
+  headline        String?
+  bio             String?
+  sections        String?
+  colorPalette    String?
+  heroImageUrl    String?
+  generationLog   String?
+  errorMessage    String?
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+  lastGeneratedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets PortfolioAsset[]
+
+  @@index([slug])
+  @@index([userId])
+  @@index([status])
+}
+
+model PortfolioAsset {
+  id          String   @id @default(cuid())
+  portfolioId String
+  section     String
+  blobUrl     String
+  prompt      String?
+  lumaJobId   String?
+  createdAt   DateTime @default(now())
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId])
+  @@index([section])
+}
+
+model PortfolioView {
+  id          String   @id @default(cuid())
+  portfolioId String
+  visitorId   String?
+  referrer    String?
+  viewedAt    DateTime @default(now())
+
+  @@index([portfolioId])
+  @@index([viewedAt])
 }

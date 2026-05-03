@@ -1,4 +1,4 @@
-# Session Handoff — April 14–28, 2026 (Apr 28: Workday expanded to 22 tenants, worker deployed to Railway. Live test 16/22 passing)
+# Session Handoff — May 3, 2026 (Portfolio Generator: resume-to-portfolio with Luma uni-1 + 3D visuals, full pipeline built)
 
 ## Current State
 
@@ -10,6 +10,7 @@
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
 - **apply-engine-fixes** — feature branch from Apr 15, 6 commits. Kept around for reference.
 - **resume-builder** — the resume builder feature (not yet deployed). Head: `6e0fe3a`.
+- **portfolio-gen** — NEW. Portfolio generator feature with Luma uni-1 + Three.js. Not yet merged to main.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
 ### Committed and deployed as of Apr 28
@@ -51,7 +52,55 @@ All Workday expansion changes are committed and deployed to both Vercel and Rail
 
 ---
 
-## What Was Done This Session (April 15-28)
+## What Was Done May 3 — Portfolio Generator (Luma uni-1 + Three.js + Framer Motion)
+
+### 38. May 3 — Full portfolio generation pipeline built on `portfolio-gen` branch
+
+**Goal:** Let users generate a professional portfolio website directly from their resume, with AI-generated visuals (Luma uni-1) and interactive 3D particle effects (Three.js).
+
+**Database:**
+- Added `Portfolio`, `PortfolioAsset`, `PortfolioView` tables to Prisma schema and pushed to Turso via raw SQL.
+- `Portfolio` has one-to-one with `User`, stores headline, bio, sections (JSON), colorPalette (JSON), heroImageUrl, generation status/log.
+
+**Backend (generation pipeline):**
+- `src/lib/luma.ts` — Luma Agents API client (raw fetch, no SDK). createGeneration, pollUntilDone, generateAndUploadToBlob, generateMultipleImages. Handles 429 retry, presigned URL download + Vercel Blob upload.
+- `src/lib/portfolio-generator.ts` — Claude Sonnet content generation via tool_use. Generates headline, bio, enhanced experience, skills, education, color palette, and Luma image prompts.
+- `src/app/api/portfolio/generate/route.ts` — POST, maxDuration: 300. Full pipeline: download resume -> extract text -> Claude content -> Luma images (parallel) -> assemble. Fire-and-forget with status polling.
+- `src/app/api/portfolio/status/route.ts` — GET, returns generation progress step.
+- `src/app/api/portfolio/route.ts` — GET/PATCH/DELETE for portfolio CRUD.
+- `src/app/api/portfolio/[slug]/route.ts` — GET public portfolio data (published only).
+
+**Frontend (3D + animations):**
+- Installed `three`, `@react-three/fiber`, `@react-three/drei`, `framer-motion`, `@types/three`.
+- `ParticleNebula.tsx` — 2000 particles in spherical cloud, mouse-reactive rotation, breathing size oscillation, additive blending. Colors from user's Claude-generated palette.
+- `SceneWrapper.tsx` — dynamic import (ssr: false), CSS gradient fallback for mobile (<768px).
+- Section components: `PortfolioHero`, `BioSection`, `ExperienceTimeline`, `SkillsCloud`, `EducationSection`, `ContactFooter`. All use Framer Motion whileInView scroll animations.
+- `PortfolioClient.tsx` — client component assembling all sections with dark theme.
+- `PortfolioGenerator.tsx` — generation progress UI with step labels, progress bar, polling.
+
+**Pages:**
+- `/portfolio` — dashboard (generate CTA, or manage existing). Auth required.
+- `/portfolio/[slug]` — public portfolio view. No auth needed. Full-screen 3D hero + scrolling sections.
+- `/portfolio/customize` — edit headline, bio, publish toggle.
+- Added portfolio CTA card to profile page.
+
+**Subscription gating:**
+- Extended `TIER_LIMITS` with `portfolioEnabled` and `portfolioRegenerationsPerMonth`.
+- Free: no access. Starter: 3 regenerations/month. Pro: unlimited.
+
+**Visually tested:** Desktop (1280px) and mobile (390px) with Playwright screenshots. 3D particles render centered on desktop, CSS fallback on mobile. All sections (hero, about, experience timeline, skills cloud, education, contact) render correctly.
+
+**NOT yet done:**
+- Not committed or deployed. All changes are on `portfolio-gen` branch.
+- `LUMA_AGENTS_API_KEY` needs to be set in Vercel env vars before deploying.
+- View analytics recording route (`/api/portfolio/view`) not built yet (using existing `/api/blog/view` as placeholder).
+- Admin dashboard integration (portfolio count, view stats) not built yet.
+- Pricing page copy update not done yet.
+- No Playwright e2e test suite yet.
+
+---
+
+## What Was Done Previous Sessions (April 15-28)
 
 ### 37. Apr 27-28 — Workday expansion: 22 tenants total, deployed + live tested (16/22 passing)
 
