@@ -107,13 +107,20 @@ export async function POST() {
     },
   });
 
-  // Run the pipeline without awaiting the response (fire-and-forget)
-  // The client polls /api/portfolio/status for progress
-  runPipeline(record.id, user.id, user.resumeUrl!, user.firstName || "", user.lastName || "").catch(
-    (err) => console.error("Portfolio pipeline error:", err)
-  );
+  // Run the full pipeline (maxDuration: 300 gives us 5 minutes).
+  // Client polls /api/portfolio/status for live progress updates.
+  await runPipeline(record.id, user.id, user.resumeUrl!, user.firstName || "", user.lastName || "");
 
-  return NextResponse.json({ portfolioId: record.id, slug: record.slug, status: "generating" });
+  const final = await prisma.portfolio.findUnique({
+    where: { id: record.id },
+    select: { status: true, slug: true, errorMessage: true },
+  });
+
+  return NextResponse.json({
+    portfolioId: record.id,
+    slug: final?.slug || record.slug,
+    status: final?.status || "ready",
+  });
 }
 
 async function appendLog(portfolioId: string, step: string) {
