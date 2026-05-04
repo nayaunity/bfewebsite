@@ -193,7 +193,7 @@ function seniorityMatchScore(
 
   if (years <= 2) {
     if (isHardSenior) return -1;   // Hard-block Staff/Principal/Director/Head/VP/Chief
-    if (isSenior) return 0.1;      // Soft-penalize Senior/Sr/Lead
+    if (isSenior) return -1;       // Hard-block Senior/Sr/Lead (was soft 0.1, leaked through)
     if (isJunior || isIntern || isNewGrad) return 1;
     return 0.6;
   }
@@ -506,6 +506,8 @@ export async function matchJobsForProfile(
     // unconditionally; everything else has to clear the title regex.
     if (seekingInternship) {
       if (job.type !== "Internship" && !looksLikeInternshipTitle(job.title)) continue;
+    } else {
+      if (job.type === "Internship" || looksLikeInternshipTitle(job.title)) continue;
     }
 
     const roleScore = roleMatchScore(job.title, keywordSets);
