@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { TIER_LIMITS } from "@/lib/stripe";
+import { calculatePacing, type PacingResult, type PacingStatus } from "@/lib/pacing";
+import { getCurrentPeriodStart } from "@/lib/subscription";
+import { runPacingDiagnostics, buildDiagnosticSummary, type PacingDiagnostics } from "@/lib/pacing-diagnostics";
 
 const SINCE_HOURS = 24;
 
@@ -26,6 +29,9 @@ interface UserReport {
   appliedJobs: AppliedJob[];
   failures: string[];
   stuckFields: string[];
+  pacing: PacingResult | null;
+  diagnostics: PacingDiagnostics | null;
+  diagnosticSummary: string | null;
 }
 
 interface DailyReport {
@@ -41,6 +47,20 @@ interface DailyReport {
   topFailureCompanies: { company: string; count: number }[];
   topStuckFields: { label: string; count: number }[];
   flags: string[];
+  pacingAlerts: {
+    userId: string;
+    name: string;
+    email: string;
+    tier: string;
+    status: PacingStatus;
+    appsSent: number;
+    effectiveCap: number;
+    daysRemaining: number;
+    projectedTotal: number;
+    maxPossible: number;
+    irrecoverable: boolean;
+    diagnosticSummary: string;
+  }[];
 }
 
 export async function buildDailyReport(): Promise<DailyReport> {
@@ -54,7 +74,11 @@ export async function buildDailyReport(): Promise<DailyReport> {
       lastName: true,
       email: true,
       subscriptionTier: true,
+      subscriptionStatus: true,
       monthlyAppCount: true,
+      subscribedAt: true,
+      createdAt: true,
+      currentPeriodEnd: true,
     },
   });
 
@@ -148,6 +172,9 @@ export async function buildDailyReport(): Promise<DailyReport> {
       appliedJobs,
       failures,
       stuckFields: [],
+      pacing: null,
+      diagnostics: null,
+      diagnosticSummary: null,
     });
   }
 
@@ -199,6 +226,99 @@ export async function buildDailyReport(): Promise<DailyReport> {
     }
   }
 
+  // Pacing checks for all paying users (not just those with recent sessions)
+  const pacingAlerts: DailyReport["pacingAlerts"] = [];
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  for (const u of payingUsers) {
+    if (u.subscriptionStatus !== "active") continue;
+
+    // Recompute apps from sessions for accuracy. Fetch all and filter in JS
+    // because worker writes startedAt as 'YYYY-MM-DD HH:MM:SS' via raw SQL
+    // while Prisma compares with ISO format, causing silent mismatches in SQLite.
+    const periodStart = getCurrentPeriodStart(u);
+    let periodApps = 0;
+    const allUserSessions = await prisma.browseSession.findMany({
+      where: { userId: u.id },
+      select: { jobsApplied: true, startedAt: true },
+    });
+    for (const s of allUserSessions) {
+      if (!s.startedAt || s.startedAt < periodStart) continue;
+      periodApps += s.jobsApplied;
+    }
+
+    const pacing = calculatePacing({
+      subscribedAt: u.subscribedAt,
+      createdAt: u.createdAt,
+      currentPeriodEnd: u.currentPeriodEnd,
+      subscriptionTier: u.subscriptionTier,
+      subscriptionStatus: u.subscriptionStatus,
+      monthlyAppCount: periodApps,
+    });
+
+    const name = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown";
+
+    // Attach pacing to the user report if they had recent sessions
+    const userReport = users.find((ur) => ur.email === u.email);
+    if (userReport) userReport.pacing = pacing;
+
+    if (pacing.status === "on_track") continue;
+
+    const diag = await runPacingDiagnostics(u.id, periodStart);
+    const summary = buildDiagnosticSummary(diag);
+
+    if (userReport) {
+      userReport.diagnostics = diag;
+      userReport.diagnosticSummary = summary;
+    }
+
+    pacingAlerts.push({
+      userId: u.id,
+      name,
+      email: u.email,
+      tier: u.subscriptionTier,
+      status: pacing.status,
+      appsSent: pacing.appsSent,
+      effectiveCap: pacing.effectiveCap,
+      daysRemaining: pacing.daysRemaining,
+      projectedTotal: pacing.projectedTotal,
+      maxPossible: pacing.maxPossible,
+      irrecoverable: pacing.irrecoverable,
+      diagnosticSummary: summary,
+    });
+
+    // Create AdminAlert for at_risk / critical users (deduplicated per user per day)
+    if (pacing.status === "at_risk" || pacing.status === "critical") {
+      const existing = await prisma.adminAlert.findFirst({
+        where: {
+          kind: "pacing_risk",
+          resolvedAt: null,
+          createdAt: { gte: twentyFourHoursAgo },
+          metadata: { contains: u.id },
+        },
+      });
+      if (!existing) {
+        await prisma.adminAlert.create({
+          data: {
+            kind: "pacing_risk",
+            severity: pacing.status === "critical" ? "high" : "medium",
+            message: `${name} (${u.subscriptionTier}) is ${pacing.status}: ${pacing.appsSent}/${pacing.effectiveCap} apps with ${pacing.daysRemaining} days left. Projected: ${pacing.projectedTotal}. ${summary}`,
+            metadata: JSON.stringify({
+              userId: u.id,
+              pacingStatus: pacing.status,
+              appsSent: pacing.appsSent,
+              effectiveCap: pacing.effectiveCap,
+              daysRemaining: pacing.daysRemaining,
+              projectedTotal: pacing.projectedTotal,
+              maxPossible: pacing.maxPossible,
+              irrecoverable: pacing.irrecoverable,
+            }),
+          },
+        });
+      }
+    }
+  }
+
   return {
     totalPaying: payingUsers.length,
     starterCount,
@@ -212,6 +332,7 @@ export async function buildDailyReport(): Promise<DailyReport> {
     topFailureCompanies,
     topStuckFields,
     flags,
+    pacingAlerts,
   };
 }
 
@@ -252,6 +373,16 @@ export function formatReportText(r: DailyReport): string {
   } else {
     lines.push("USER DETAIL");
     lines.push("  No paying user sessions in the last 24h.");
+    lines.push("");
+  }
+
+  if (r.pacingAlerts.length > 0) {
+    lines.push("PACING ALERTS");
+    for (const p of r.pacingAlerts) {
+      const label = p.status.toUpperCase().replace("_", " ");
+      lines.push(`  * ${p.name} (${p.tier}) ${label}: ${p.appsSent}/${p.effectiveCap} apps, ${p.daysRemaining} days left. Projected: ${p.projectedTotal}.${p.irrecoverable ? " CANNOT REACH CAP." : ""}`);
+      lines.push(`    ${p.diagnosticSummary}`);
+    }
     lines.push("");
   }
 
@@ -326,6 +457,21 @@ export function formatReportHtml(r: DailyReport): string {
     }
   }
 
+  let pacingBody = "";
+  if (r.pacingAlerts.length > 0) {
+    for (const p of r.pacingAlerts) {
+      const color = p.status === "critical" ? "#c00" : p.status === "at_risk" ? "#d97706" : "#ca8a04";
+      const label = p.status.toUpperCase().replace("_", " ");
+      pacingBody += `<div style="margin-bottom:8px;padding:8px 10px;border-left:3px solid ${color};background:#fafafa;border-radius:4px;">`;
+      pacingBody += `<div><strong>${p.name}</strong> (${p.tier}) <span style="color:${color};font-weight:700;">${label}</span></div>`;
+      pacingBody += `<div style="font-size:13px;">${p.appsSent}/${p.effectiveCap} apps, ${p.daysRemaining} days left. Projected: ${p.projectedTotal}.${p.irrecoverable ? " <strong style='color:#c00;'>CANNOT REACH CAP.</strong>" : ""}</div>`;
+      pacingBody += `<div style="font-size:12px;color:#666;margin-top:2px;">${p.diagnosticSummary}</div>`;
+      pacingBody += `</div>`;
+    }
+  } else {
+    pacingBody = "<div style='color:#16a34a;'>All paying users on track.</div>";
+  }
+
   let failBody = "";
   if (r.topFailureCompanies.length > 0) {
     failBody = r.topFailureCompanies.map((c) => `<div>${c.company}: ${c.count}</div>`).join("");
@@ -351,6 +497,7 @@ export function formatReportHtml(r: DailyReport): string {
     <table width="100%" cellpadding="0" cellspacing="0">
       ${section("Overview", overviewBody)}
       ${section("User Detail", userBody)}
+      ${section("Pacing Alerts", pacingBody)}
       ${section("Top Failure Companies", failBody)}
       ${section("Top Stuck Fields", stuckBody)}
       ${section("Flags", flagBody)}

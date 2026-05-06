@@ -17,6 +17,9 @@ interface UserRow {
   currentPeriodEnd: string | null;
   subscribedAt: string | null;
   sessionCount: number;
+  pacingStatus: "on_track" | "behind" | "at_risk" | "critical" | null;
+  pacePercent: number | null;
+  irrecoverable: boolean;
 }
 
 const TIERS = [
@@ -118,13 +121,14 @@ export default function UserTable({ users }: { users: UserRow[] }) {
               <th className="text-center px-4 py-2">Sessions</th>
               <th className="text-center px-4 py-2">Resume</th>
               <th className="text-center px-4 py-2">Auto</th>
+              <th className="text-center px-4 py-2">Pace</th>
               <th className="text-right px-4 py-2">{tierFilter === "trial" ? "Started" : "Subscribed"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--card-border)]">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-xs text-[var(--gray-600)]">
+                <td colSpan={9} className="px-4 py-6 text-center text-xs text-[var(--gray-600)]">
                   No users match this filter
                 </td>
               </tr>
@@ -169,6 +173,31 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                       <span className="text-green-600 text-xs">On</span>
                     ) : (
                       <span className="text-[var(--gray-600)] text-xs">Off</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    {u.pacingStatus === null ? (
+                      <span className="text-[var(--gray-600)] text-[10px]">--</span>
+                    ) : u.pacingStatus === "on_track" ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-green-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                        OK
+                      </span>
+                    ) : u.pacingStatus === "behind" ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-yellow-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+                        {u.pacePercent}%
+                      </span>
+                    ) : u.pacingStatus === "at_risk" ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-orange-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                        {u.pacePercent}%
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-red-700" title="Cannot reach cap even at max daily pace">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                        {u.irrecoverable ? "Can't hit cap" : `${u.pacePercent}%`}
+                      </span>
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-right text-[10px] text-[var(--gray-600)]">

@@ -417,7 +417,7 @@ export interface MatchProfile {
 export async function matchJobsForProfile(
   profile: MatchProfile,
   maxJobs: number = 10,
-  opts: { excludeUrls?: Set<string> } = {}
+  opts: { excludeUrls?: Set<string>; userBlockedCompanies?: Set<string> } = {}
 ): Promise<MatchedJob[]> {
   if (!profile.targetRole) return [];
 
@@ -509,6 +509,7 @@ export async function matchJobsForProfile(
 
   for (const job of catalogJobs) {
     if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
+    if (opts.userBlockedCompanies?.has(job.company.toLowerCase())) continue;
     if (cooldownSlugs.has(job.companySlug)) continue;
     if (isUrlExcluded(job.applyUrl).excluded) continue;
     if (excludeUrls.has(job.applyUrl)) continue;
@@ -650,5 +651,25 @@ export async function matchJobsForUser(
     ...directApplied.map((a) => a.job.applyUrl),
   ]);
 
-  return matchJobsForProfile(user, maxJobs, { excludeUrls });
+  const [companyFails, companyWins] = await Promise.all([
+    prisma.browseDiscovery.groupBy({
+      by: ["company"],
+      where: { session: { userId }, status: "failed" },
+      _count: true,
+    }),
+    prisma.browseDiscovery.groupBy({
+      by: ["company"],
+      where: { session: { userId }, status: "applied" },
+      _count: true,
+    }),
+  ]);
+  const winMap = new Map(companyWins.map((c) => [c.company, c._count]));
+  const userBlockedCompanies = new Set<string>();
+  for (const cf of companyFails) {
+    if (cf._count >= 4 && !(winMap.get(cf.company) ?? 0)) {
+      userBlockedCompanies.add(cf.company.toLowerCase());
+    }
+  }
+
+  return matchJobsForProfile(user, maxJobs, { excludeUrls, userBlockedCompanies });
 }

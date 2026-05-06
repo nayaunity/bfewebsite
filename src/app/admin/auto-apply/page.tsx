@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { getCurrentPeriodStart } from "@/lib/subscription";
+import { calculatePacing, type PacingStatus } from "@/lib/pacing";
 import UserTable from "./UserTable";
 
 export const dynamic = "force-dynamic";
@@ -81,7 +82,23 @@ async function loadAutoApplyData() {
     periodAppliedByUser.set(u.id, sum);
   }
 
-  return { totalDiscoveries, discoveryByStatus, discoveryByCompany, browseSessions, optedInUsers, users, totalUsers, periodAppliedByUser };
+  // Compute pacing per paying user
+  const pacingByUser = new Map<string, { status: PacingStatus; pacePercent: number; irrecoverable: boolean }>();
+  for (const u of users) {
+    if (u.subscriptionTier === "free") continue;
+    if (u.subscriptionStatus !== "active") continue;
+    const result = calculatePacing({
+      subscribedAt: u.subscribedAt,
+      createdAt: u.createdAt,
+      currentPeriodEnd: u.currentPeriodEnd,
+      subscriptionTier: u.subscriptionTier,
+      subscriptionStatus: u.subscriptionStatus,
+      monthlyAppCount: periodAppliedByUser.get(u.id) ?? 0,
+    });
+    pacingByUser.set(u.id, { status: result.status, pacePercent: result.pacePercent, irrecoverable: result.irrecoverable });
+  }
+
+  return { totalDiscoveries, discoveryByStatus, discoveryByCompany, browseSessions, optedInUsers, users, totalUsers, periodAppliedByUser, pacingByUser };
 }
 
 export default async function AdminAutoApplyPage() {
@@ -96,6 +113,7 @@ export default async function AdminAutoApplyPage() {
     users,
     totalUsers,
     periodAppliedByUser,
+    pacingByUser,
   } = await loadAutoApplyData();
 
   const statusMap = discoveryByStatus.reduce(
@@ -150,23 +168,54 @@ export default async function AdminAutoApplyPage() {
         </div>
       </div>
 
+      {/* Pacing Summary */}
+      {(() => {
+        const pValues = [...pacingByUser.values()];
+        const behindCount = pValues.filter((p) => p.status === "behind").length;
+        const atRiskCount = pValues.filter((p) => p.status === "at_risk").length;
+        const criticalCount = pValues.filter((p) => p.status === "critical").length;
+        if (behindCount + atRiskCount + criticalCount === 0) return null;
+        return (
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+              <p className="text-2xl font-bold text-yellow-600">{behindCount}</p>
+              <p className="text-xs text-[var(--gray-600)]">Behind Pace</p>
+            </div>
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+              <p className="text-2xl font-bold text-orange-600">{atRiskCount}</p>
+              <p className="text-xs text-[var(--gray-600)]">At Risk</p>
+            </div>
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+              <p className="text-2xl font-bold text-red-600">{criticalCount}</p>
+              <p className="text-xs text-[var(--gray-600)]">Critical</p>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Users */}
-      <UserTable users={users.map((u) => ({
-        id: u.id,
-        email: u.email,
-        firstName: u.firstName,
-        lastName: u.lastName,
-        subscriptionTier: u.subscriptionTier,
-        subscriptionStatus: u.subscriptionStatus,
-        periodApplied: periodAppliedByUser.get(u.id) ?? 0,
-        autoApplyEnabled: u.autoApplyEnabled,
-        resumeUrl: u.resumeUrl,
-        targetRole: u.targetRole,
-        createdAt: new Date(u.createdAt).toISOString(),
-        currentPeriodEnd: u.currentPeriodEnd ? new Date(u.currentPeriodEnd).toISOString() : null,
-        subscribedAt: u.subscribedAt ? new Date(u.subscribedAt).toISOString() : null,
-        sessionCount: u._count.browseSessions,
-      }))} />
+      <UserTable users={users.map((u) => {
+        const pacing = pacingByUser.get(u.id);
+        return {
+          id: u.id,
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          subscriptionTier: u.subscriptionTier,
+          subscriptionStatus: u.subscriptionStatus,
+          periodApplied: periodAppliedByUser.get(u.id) ?? 0,
+          autoApplyEnabled: u.autoApplyEnabled,
+          resumeUrl: u.resumeUrl,
+          targetRole: u.targetRole,
+          createdAt: new Date(u.createdAt).toISOString(),
+          currentPeriodEnd: u.currentPeriodEnd ? new Date(u.currentPeriodEnd).toISOString() : null,
+          subscribedAt: u.subscribedAt ? new Date(u.subscribedAt).toISOString() : null,
+          sessionCount: u._count.browseSessions,
+          pacingStatus: pacing?.status ?? null,
+          pacePercent: pacing?.pacePercent ?? null,
+          irrecoverable: pacing?.irrecoverable ?? false,
+        };
+      })} />
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* By Company */}

@@ -8,7 +8,7 @@ import { ensureApplicationEmail } from "@/lib/application-email";
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-const DAILY_CAP = 10;
+const DAILY_CAP = 30;
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -112,6 +112,18 @@ export async function GET(request: NextRequest) {
         const matchedJobs = await matchJobsForUser(user.id, remaining * 3);
 
         if (matchedJobs.length === 0) {
+          const [totalActive, attemptedCount] = await Promise.all([
+            prisma.job.count({ where: { isActive: true } }),
+            prisma.browseDiscovery.count({
+              where: {
+                session: { userId: user.id },
+                status: { in: ["applied", "applying", "failed"] },
+              },
+            }),
+          ]);
+          console.log(
+            `[Daily Apply] ${user.email}: no matches. ${totalActive} active jobs, ${attemptedCount} already attempted by user`
+          );
           results.push({
             userId: user.id,
             email: user.email,

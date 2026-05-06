@@ -328,7 +328,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
     for (const job of jobs) {
       // Dedup
       const dedupCheck = await db.execute({
-        sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying') LIMIT 1`,
+        sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying', 'failed') LIMIT 1`,
         args: [session.userId, job.applyUrl],
       });
       if (dedupCheck.rows && dedupCheck.rows.length > 0) continue;
@@ -689,7 +689,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
         // Check if already applied to this URL in ANY previous session or current session
         const dedupCheck = await db.execute({
-          sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying') LIMIT 1`,
+          sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying', 'failed') LIMIT 1`,
           args: [session.userId, job.applyUrl],
         });
 
