@@ -60,7 +60,9 @@ export function hasInternationalLocation(location: string): boolean {
 export function isUserUS(countryOfResidence: string | null | undefined): boolean {
   if (!countryOfResidence) return true; // Default assumption: US
   const c = countryOfResidence.toLowerCase();
-  return c.includes("us") || c.includes("united states") || c.includes("america");
+  // Word-boundary match so "Mauritius", "Belarus", "Cyprus", "Australia"
+  // (which all contain the substring "us") aren't classified as US.
+  return c.includes("united states") || c.includes("america") || /\b(us|usa)\b/.test(c);
 }
 
 /** Classify a job's location into "us", "international", or "both". */
@@ -71,4 +73,49 @@ export function computeRegion(location: string): "us" | "international" | "both"
   if (isUS && isIntl) return "both";
   if (isIntl) return "international";
   return "us"; // default — bare "Remote" etc. assumed US
+}
+
+// Lowercase tokens we expect to see in a job's `location` string for each
+// non-US country we have users in. Used by the matcher to allow non-US users
+// to see jobs in their own country while blocking jobs from other countries.
+// Keys are lowercase normalized country names.
+const COUNTRY_TOKENS: Record<string, string[]> = {
+  canada: ["canada", "toronto", "vancouver", "montreal", "ottawa", "calgary", "edmonton", "ontario", "quebec", "alberta", "british columbia"],
+  "united kingdom": ["united kingdom", "uk", "england", "scotland", "wales", "london", "manchester", "edinburgh", "bristol", "birmingham", "leeds", "glasgow"],
+  india: ["india", "bangalore", "bengaluru", "mumbai", "delhi", "hyderabad", "chennai", "pune", "kolkata", "gurgaon", "noida"],
+  australia: ["australia", "sydney", "melbourne", "brisbane", "perth", "adelaide", "canberra"],
+  germany: ["germany", "deutschland", "berlin", "munich", "münchen", "hamburg", "frankfurt", "cologne", "köln"],
+  france: ["france", "paris", "lyon", "marseille", "toulouse"],
+  ireland: ["ireland", "dublin", "cork"],
+  netherlands: ["netherlands", "amsterdam", "rotterdam", "utrecht", "hague"],
+  singapore: ["singapore"],
+  nigeria: ["nigeria", "lagos", "abuja", "ibadan", "port harcourt"],
+  kenya: ["kenya", "nairobi", "mombasa"],
+  ghana: ["ghana", "accra", "kumasi"],
+  "south africa": ["south africa", "johannesburg", "cape town", "pretoria", "durban"],
+  "united arab emirates": ["united arab emirates", "uae", "dubai", "abu dhabi"],
+  rwanda: ["rwanda", "kigali"],
+  tanzania: ["tanzania", "dar es salaam", "dodoma"],
+  cameroon: ["cameroon", "yaoundé", "yaounde", "douala"],
+  morocco: ["morocco", "casablanca", "rabat"],
+  pakistan: ["pakistan", "karachi", "lahore", "islamabad"],
+  belgium: ["belgium", "brussels", "antwerp"],
+  mauritius: ["mauritius", "port louis"],
+  palestine: ["palestine", "gaza", "ramallah", "west bank"],
+};
+
+/**
+ * Returns lowercase tokens that should appear in a job's `location` string
+ * for a job to be considered eligible for a user residing in `country`.
+ * Falls back to the lowercased country string itself for countries not in
+ * the explicit map.
+ */
+export function getUserCountryTokens(country: string | null | undefined): string[] {
+  if (!country) return [];
+  const normalized = country.trim().toLowerCase();
+  if (COUNTRY_TOKENS[normalized]) return COUNTRY_TOKENS[normalized];
+  for (const [key, tokens] of Object.entries(COUNTRY_TOKENS)) {
+    if (normalized.includes(key)) return tokens;
+  }
+  return [normalized];
 }
