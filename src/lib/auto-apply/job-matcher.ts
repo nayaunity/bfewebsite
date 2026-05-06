@@ -351,6 +351,9 @@ const BLOCKED_COMPANIES = new Set([
   "linear",       // 1/X (Ashby anti-bot)
   "elevenlabs",   // Ashby anti-bot
   "anthropic",    // Apr 18: stuck-page on udvlenkhtaivan run; uses Greenhouse but with anti-bot or DOM that breaks our handlers
+  "cursor",       // Ashby anti-bot — 0/25 attempts
+  "plaid",        // Ashby anti-bot — 0/10 attempts
+  "pinecone",     // Ashby anti-bot — 1/6 attempts
   // May 6 smoke-test failures: custom career portals wrapping Greenhouse/Lever
   "vercel",       // 3 fields skipped without resolution
   "stripe",       // Page state unchanged after multiple actions

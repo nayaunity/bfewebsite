@@ -590,6 +590,63 @@ async function waitForGreenhouseFrame(page: Page): Promise<Frame | null> {
 }
 
 // ============================================================================
+// COOKIE / CONSENT BANNER DISMISSAL
+// ============================================================================
+
+async function dismissCookieBanners(page: Page, steps: string[]): Promise<void> {
+  const selectors = [
+    '[id*="cookie"] button',
+    '[class*="cookie"] button',
+    '[id*="consent"] button',
+    '[class*="consent"] button',
+    '#onetrust-accept-btn-handler',
+    '[class*="cookieConsent"] button',
+    '[data-testid*="cookie"] button',
+    'button[data-cookieconsent="accept"]',
+    '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
+    'button:has-text("Accept All")',
+    'button:has-text("Accept Cookies")',
+    'button:has-text("Accept all cookies")',
+    'button:has-text("I Accept")',
+    'button:has-text("Got it")',
+    'button:has-text("Agree")',
+  ];
+
+  for (const sel of selectors) {
+    try {
+      const btn = page.locator(sel).first();
+      if (await btn.isVisible({ timeout: 300 }).catch(() => false)) {
+        await btn.click({ timeout: 1500 }).catch(() => {});
+        steps.push(`Dismissed cookie banner via: ${sel}`);
+        await page.waitForTimeout(500);
+        return;
+      }
+    } catch {}
+  }
+
+  try {
+    const removed = await page.evaluate(() => {
+      let count = 0;
+      const all = document.querySelectorAll("div, section, aside");
+      for (const el of all) {
+        const style = getComputedStyle(el);
+        if (
+          (style.position === "fixed" || style.position === "sticky") &&
+          parseInt(style.zIndex || "0", 10) > 999 &&
+          el.getBoundingClientRect().height < window.innerHeight * 0.5 &&
+          (el.textContent || "").toLowerCase().match(/cookie|consent|privacy|gdpr/)
+        ) {
+          (el as HTMLElement).style.display = "none";
+          count++;
+        }
+      }
+      return count;
+    });
+    if (removed > 0) steps.push(`Removed ${removed} cookie overlay(s) via JS`);
+  } catch {}
+}
+
+// ============================================================================
 // ROLE-BASED INTERACTION HELPERS
 // ============================================================================
 
@@ -2136,7 +2193,7 @@ CRITICAL RULES:
 - Fill ONE field per step.
 - Skip fields that already show a value (not "Select...").
 - If a field value is empty/blank in APPLICATION ANSWERS and the field is optional, SKIP it.
-- If you've tried filling a field 2+ times and it keeps failing, SKIP it and move to the next field.
+- If you've tried filling a field 3+ times and it keeps failing, SKIP it and move to the next field.
 - For free-text questions, use the ROLE ANSWERS above, adapted to the specific company.
 - BEFORE clicking Submit: scan the page for any required fields (marked with *) that are still empty or show placeholder text. If you find any, fill them FIRST. Do NOT click Submit until all required fields have values.
 - For date fields ("Pick date...", "Start date"): use format MM/DD/YYYY. If the applicant says "Immediately", use today's date.
@@ -2392,6 +2449,7 @@ async function _applyToJobInner(
     });
     await page.addStyleTag({ content: animKillerCss }).catch(() => {});
     await page.waitForTimeout(2000);
+    await dismissCookieBanners(page, steps);
     steps.push(`Navigated to: ${page.url()}`);
 
     // Early login detection
@@ -2411,6 +2469,7 @@ async function _applyToJobInner(
       });
       await page.addStyleTag({ content: animKillerCss }).catch(() => {});
       await page.waitForTimeout(2000);
+      await dismissCookieBanners(page, steps);
       steps.push(`Navigated to ATS: ${page.url()}`);
 
       if (await isLoginPage(page)) {
@@ -2437,7 +2496,12 @@ async function _applyToJobInner(
     if (ats === "Greenhouse") {
       const readyFrame = await waitForGreenhouseFrame(page);
       if (!readyFrame) {
-        return { success: false, error: "Greenhouse form iframe is not loading or accessible tree is empty — cannot proceed with form filling", steps };
+        const mainSnapshot = await page.locator("body").ariaSnapshot({ timeout: 5000 }).catch(() => "");
+        if (mainSnapshot && mainSnapshot.length > 500 && /apply|resume|first.?name|last.?name|email/i.test(mainSnapshot)) {
+          steps.push("Greenhouse iframe not found but form detected on main page");
+        } else {
+          steps.push("Greenhouse iframe not loading — falling through to Claude agent loop");
+        }
       }
     }
 
@@ -2569,14 +2633,14 @@ async function _applyToJobInner(
         // is structurally broken (filter mismatch, portal-rendered menu, etc.)
         // additional attempts cost ~1 min of Claude+Playwright each and never
         // resolve. Text fields are usually salvageable with a different value.
-        const cap = action.action === "select_dropdown" ? 2 : 3;
+        const cap = action.action === "select_dropdown" ? 3 : 4;
         if (fieldAttempts[fieldKey] >= cap && !skippedFields.includes(fieldKey)) {
           skippedFields.push(fieldKey);
           steps.push(`SKIPPING field "${fieldKey}" after ${fieldAttempts[fieldKey]} failed attempts (cap=${cap})`);
           // Cascade bailout: if we've already skipped 3+ fields the form is
           // structurally broken for us — don't burn 20 more steps hoping Claude
           // will route around it.
-          if (skippedFields.length >= 3) {
+          if (skippedFields.length >= 5) {
             const snap = await captureFailureSnapshot(page, `stuck-cascade-${new URL(applyUrl).hostname}`);
             const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
             return {
