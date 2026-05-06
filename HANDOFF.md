@@ -1,10 +1,12 @@
-# Session Handoff — May 3, 2026 (Portfolio Generator: resume-to-portfolio with Luma uni-1 + 3D visuals, full pipeline built)
+# Session Handoff — May 3-5, 2026 (Auto-apply matcher fixes from two SaaS tickets — intern/senior gates + country-aware location filter; Portfolio Generator built May 3)
 
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel + Railway. Head: `768f33c` (Apr 28, Workday 22 tenants + TS null-safety fix).
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `768f33c` (in sync with main via fast-forward). All Workday changes committed and deployed.
+- **main** — production code, deployed to Vercel + Railway. Head: `e03fc2c` (May 5, country-aware matcher merge). Includes the May 3 Orionna intern/senior fix (`1f823e5`) and the May 5 Jananee country-aware location fix (`a554624`).
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `e03fc2c` (fast-forwarded to main on May 5; the country-aware fix touches `worker/src/browse-loop.ts` so Railway picked up a fresh build). In sync with main.
+- **fix-mismatch-orionna-may2** — closed/deleted May 3 after merge. Carried the intern + senior-for-1yoe gates.
+- **fix-mismatch-jananee-may3** — closed/deleted May 5 after merge. Carried the country-aware location filter (Vercel + worker mirror).
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
 - **seven-day-trial** — Apr 17 working branch. Fully merged and deployed.
 - **cap-conversion-drip** — prior working branch. All commits merged to main.
@@ -13,11 +15,11 @@
 - **portfolio-gen** — NEW. Portfolio generator feature with Luma uni-1 + Three.js. Not yet merged to main.
 - **applications** — prior working branch, at `b43d7ac` (behind main).
 
-### Committed and deployed as of Apr 28
-All Workday expansion changes are committed and deployed to both Vercel and Railway. No uncommitted worker changes remain.
+### Committed and deployed as of May 5
+Auto-apply matcher fixes (intern/senior gates + country-aware location) are committed and deployed to both Vercel and Railway. No uncommitted code changes. The two ticket fix-branches are merged and deleted on origin.
 
 ### Infrastructure
-- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: Apr 28 `768f33c` (Workday 22-tenant expansion).
+- **Vercel** — frontend (www.theblackfemaleengineer.com). Latest prod deploy: May 5 `e03fc2c` (`bfewebsite-9z3jq1s5n-nyaradzo-beres-projects.vercel.app`, country-aware matcher).
 - **Railway** — worker (browse-loop + apply-engine). **Now runs xvfb-wrapped headed Chromium**, not headless. Dockerfile installs `tini` + `xvfb` + full Chromium binary. Memory budget ~+300MB, well within 8GB. **Note:** auto-apply-saas pushed many times Apr 18-19; deploy-induced session resets observed (worker keeps applying from in-memory matchedJobs after I cancel a session — see "Technical Debt").
 - **Turso** — production database. Tables added across recent sessions: `AdminAlert`, `ScrapeRun`, `CompanyCooldown`, `StuckField`, `IntegrationRun`, `CapConversionDigest`, **`WorkdayCredential` (Apr 25)** for per-(user, tenant) Workday auto-apply credentials. New columns on `User`: `resumeBuilderUsed`, `workLocations`, `conversionEmailSentAt`, `freeTierEndsAt` (Apr 17), `freeTierSunsetEmailAt` (Apr 17), `detailsReviewedAt` (Apr 18), **`seekingInternship` + `preferenceBannerDismissedAt` (Apr 25)** for internship-only matching. New columns on `BrowseSession`: `lastHeartbeatAt` (Apr 18), **`seekingInternship` (Apr 25)**. New column on `TempOnboarding`: **`confirmedSeekingInternship` (Apr 25)**. Pushed via raw SQL (Prisma CLI can't push to Turso directly).
 - **Browserbase** — account created Apr 15 (free tier). Project ID `ef5472ad-c1fd-4d03-a3dc-23af1c7e1247`. API key pasted in chat -> **TREAT AS COMPROMISED, ROTATE**. Free-tier A/B showed zero lift -- see section 11.
@@ -49,6 +51,82 @@ All Workday expansion changes are committed and deployed to both Vercel and Rail
 - `BROWSERBASE_ROLLOUT_PCT` — Railway only. `0-100` hashes `userId` mod 100; enables BB for that % of sessions. For cohort A/B.
 - `DRY_RUN` — When `true`, applyToJob fills the form but stops before submit. Used by the integration suite only.
 - `WORKDAY_CREDENTIAL_KEY` — **NEW Apr 25, INSTALLED IN PROD Apr 26.** 64-hex-char (32-byte) AES-256-GCM master key for encrypting Workday account passwords. Set on Vercel (Production scope, `--sensitive`) + Railway (worker service). Same value in both. **Prod-key SHA-256 fingerprint (first 12 chars): `9c3eec9d53f4`** — use to verify Vercel + Railway have the same value. **Treat like ALERT_SECRET — never rotate lightly** because rotation invalidates every `WorkdayCredential.passwordEncrypted` row. Local-dev key from the Apr 25 + Apr 26 Claude transcripts is COMPROMISED — never reuse for prod.
+
+---
+
+## What Was Done May 3-5 — Two SaaS tickets shipped end-to-end
+
+### 39. May 3 — Jananee refund + cancellation (separate from her later matcher ticket)
+
+**Context:** Jananee Muththalagan (`muthtj@gmail.com`, id `f4bd7804-bdc2-48a8-aab4-d99a39d7f7da`, Toronto/Canada) signed up for the 7-day Starter trial on Apr 30, accidentally clicked the upgrade button (firing `/api/stripe/end-trial`) and got charged $29 immediately. Emailed asking for a refund.
+
+**Action:**
+1. Naya issued the $29 refund in the Stripe dashboard (manual).
+2. Naya canceled the subscription "Immediately" in Stripe (also manual). The webhook `customer.subscription.deleted` fired and synced our DB to `subscriptionTier=free, subscriptionStatus=canceled, stripeSubscriptionId=null`.
+3. Drafted + sent a confirmation email via Resend (id `adf30c6a-cf50-4fbf-9dad-6d43062648a7`).
+
+**Lesson on the flow:** issuing a refund alone in Stripe does NOT cancel the subscription, so the customer would have been re-charged on the next renewal. Always pair refund + cancel-immediately for one-off refunds. Captured in conversation, no code change.
+
+### 40. May 3 — Orionna mismatch ticket → intern + senior heuristic gates
+
+**Ticket:** Orionna Moore (`orionnamoore1@gmail.com`, id `62c86bce-0f0a-4404-85b1-d11c28f752e2`, US, 1 yoe, CSM at USAA) reported "Auto Apply MisMatch" on May 2 saying the matcher was applying for roles clearly not skill/experience matched. Diagnosis: 6 applies across two sessions, 4 obviously wrong (2x Twilio internships despite `seekingInternship=false`, 2x "Senior Product Designer" despite 1 yoe), 2 borderline (QA Engineer Core Database, Project Manager).
+
+**Root cause (`src/lib/auto-apply/job-matcher.ts`):**
+- The seniority heuristic at line 194-198 returned `1` for any `isIntern || isNewGrad || isJunior` for early-career users, with NO inverse gate for `seekingInternship=false`. Internships scored 1.00.
+- The "Senior" branch returned 0.1 (a soft penalty) for `years <= 2`, which combined with role + remote scores still cleared the apply threshold. "Senior Product Designer" titles got 0.82.
+
+**Fix (`fix-mismatch-orionna-may2`, commit `1f823e5`, merged `4e94fdd`):**
+1. Mirror the existing `if (seekingInternship)` block at line 507-509 with an `else` that drops `job.type === "Internship"` and `looksLikeInternshipTitle(job.title)` for users who didn't opt in.
+2. Promote `if (isSenior)` for `years <= 2` from `0.1` to `-1` (hard reject) so titles like "Senior Product Designer" fail the early-skip in `matchJobsForProfile`.
+3. Did NOT touch role-keyword tokenization or LLM filter prompt — kept scope tight. The "QA Engineer Core Database" class of issue is better fixed by improving `llmQualityFilter` after we have decision-logging data; recommended next step is wiring `BrowseDiscovery.decision/decisionReason/applyResult` columns (already exist on schema, not populated).
+
+**Validated:** 13/13 intern detection, both Senior PD titles correctly hard-blocked at 1 yoe, all 9 legitimate matches from her actual sessions still pass through.
+
+**Worker not touched** — this fix lives in `src/lib/auto-apply/...` which is consumed only by Vercel cron + API routes. Worker reads pre-matched `BrowseSession.matchedJobs`, doesn't re-match.
+
+### 41. May 3-5 — Jananee "remote applications" ticket → country-aware location filter (matcher + worker)
+
+**Ticket:** Jananee filed a SECOND ticket May 3 about international roles being applied for despite her being in Canada. 5 applies in her one session, all to international roles tagged correctly in our DB (UK, India, Sydney AU, 2x Remote-UK).
+
+**Root cause (two related bugs):**
+1. `isUserUS` in `src/lib/job-region.ts` used a substring match on "us", false-positively classifying Mauritius / Belarus / Cyprus / Australia users as US (1 Mauritius user in prod actually affected).
+2. `locationMatchScore` in `src/lib/auto-apply/job-matcher.ts:137-145` qualified BOTH international-blocking checks with `userUS &&`. For non-US users, the entire international gate was skipped, so they got matched to roles in any country regardless of eligibility (~40 affected non-US users in prod across 18 countries).
+
+**Fix (`fix-mismatch-jananee-may3`, commit `a554624`, merged `e03fc2c`):**
+1. `isUserUS`: switched from `c.includes("us") || ...` to `c.includes("united states") || c.includes("america") || /\b(us|usa)\b/.test(c)` (word-boundary).
+2. New `COUNTRY_TOKENS` map + `getUserCountryTokens(country)` helper in `src/lib/job-region.ts`. Covers all 18 non-US countries currently in prod (Canada, UK, India, Nigeria, Kenya, SA, Ghana, Germany, Belgium, etc.) plus a fallback to the lowercased country name for future countries.
+3. `locationMatchScore`: refactored the gate so it fires for everyone. US users keep existing behavior (international/foreign-string rejected). Non-US users: `region === "international"` jobs require a country-token match using a custom `(^|[^a-z0-9])TOKEN([^a-z0-9]|$)` regex (handles accented tokens like `yaoundé` and avoids substring traps like "Indianapolis, Indiana" hitting the "india" token).
+4. **Mirrored same change in `worker/src/browse-loop.ts`** which had its own duplicate `isUserUS` (line 1034) and the same `if (isUserUS(...))` qualifier on the slow-path location filter at line 712. Worker's fast path consumes pre-matched jobs, but the slow path does its own discovery-time location check; without this mirror the slow path would still leak.
+
+**Validated against prod data:**
+- All 5 of Jananee's actual matched jobs now correctly rejected.
+- Per-country intl-pool counts post-fix: Canada 369, UK 539, India 392, Germany 150. Sparse-coverage countries (Nigeria, Kenya, SA, Ghana, etc.) get 0 intl matches but still see the 8,029 region=us jobs (they were already seeing those pre-fix, so net change is "noise removed" not "user excluded").
+- US user behavior unchanged (no regression).
+- "Indianapolis, Indiana" correctly rejected for India users.
+
+**Known unfixed issues, intentionally out of scope:**
+- Bare "Remote" jobs default to `region: "us"` in `computeRegion`. Non-US users still see them and apply, even though many are US-only by company policy. Fix would require either reading job descriptions or a "seekingUSJobs" user pref. Latent pre-existing.
+- `region: "both"` jobs (186 in prod) pass all gates for everyone. An Indian user could still get matched to a "Remote, US/Canada" role they're not eligible for. Pre-existing behavior, separate bug.
+
+### 42. May 3-5 — Account resets + free-access goodwill (DB writes, not committed)
+
+For both ticket users, after the corresponding fix shipped:
+
+| User | Email | userId | DB writes |
+|---|---|---|---|
+| Orionna Moore | orionnamoore1@gmail.com | `62c86bce-0f0a-4404-85b1-d11c28f752e2` | `monthlyAppCount: 6 → 0`; `freeTierEndsAt: 2026-04-26 → 2026-06-04` |
+| Jananee Muththalagan | muthtj@gmail.com | `f4bd7804-bdc2-48a8-aab4-d99a39d7f7da` | `freeTierEndsAt: 2026-04-30 → 2026-06-04` (count was already 0 from cancellation) |
+
+Both received fix-live emails via Resend offering free access to test the new matcher (no Stripe action — they remain `tier=free, status=canceled`, just bypass the free-tier sunset wall via the extended `freeTierEndsAt`). Resend ids: Orionna `dd3e3cc4-f7b2-49ca-b318-dbbf63fff24f`, Jananee `281e5bde-5f0d-4515-8d20-451ef3610581`.
+
+**Subject-line slip to flag:** Orionna's subject was "Re: Auto Apply MisMatch — fixes are live" (em-dash) — violates the no-em-dash rule. Body was clean. Naya chose to leave it. Memory updated to specifically call out subject lines as a slip-zone before sending.
+
+### 43. Things NOT done that the ticket work surfaced
+
+- **`BrowseDiscovery.decision/decisionReason/applyResult` columns are unpopulated.** Schema has them; nothing writes them. Wiring this up is the unblock for evaluating `llmQualityFilter` quality (Orionna ticket follow-up). Recommended as the next infra task before any further matcher tightening, including the eventual move to vector matching.
+- **Vector matching** still not justified. Two tickets in, both fixable with surgical heuristic changes. Decision data (above) is the prerequisite for moving past the heuristic + LLM stack.
+- **Bare "Remote" → US default** still leaks through for non-US users. Out of scope for May 5 fix.
+- **`region: "both"` jobs** pass all gates for everyone. Pre-existing.
 
 ---
 
