@@ -16,6 +16,28 @@
 
 **At the start of every new session, read `HANDOFF.md` in the project root.** It contains the current state of the project, what was done in the last session, known issues, and next steps. This is critical context you need before making any changes.
 
+## Production API Keys (Resend, Stripe, etc.)
+
+When running scripts that call third-party APIs (Resend, Stripe, Anthropic, etc.), **never use `cut` to extract env var values**. Values may or may not be quoted and may contain `=` characters. Use this pattern instead:
+
+```bash
+RESEND_API_KEY=$(grep "^RESEND_API_KEY=" .env.production | head -1 | sed 's/^RESEND_API_KEY=//' | tr -d '"') \
+STRIPE_SECRET_KEY=$(grep "^STRIPE_SECRET_KEY=" .env.vercel-prod | head -1 | sed 's/^STRIPE_SECRET_KEY=//' | tr -d '"') \
+npx tsx -e "..."
+```
+
+**If an API key returns 400/401 (invalid)**, the local env files are stale. Pull fresh keys from Vercel:
+
+```bash
+vercel env pull .env.vercel-live --environment production
+```
+
+Then use `.env.vercel-live` as the source. **Always delete `.env.vercel-live` after use** (it contains all production secrets):
+
+```bash
+rm -f .env.vercel-live
+```
+
 ## Database Architecture
 
 This project uses **two separate databases**:
