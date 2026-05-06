@@ -709,8 +709,11 @@ export async function processNextBrowseSession(): Promise<boolean> {
           continue;
         }
 
-        // Location filter — skip foreign jobs for US-based users
-        if (isUserUS(user.countryOfResidence)) {
+        // Location filter — fire for both US and non-US users.
+        // US users: skip anything tagged international or with foreign tokens.
+        // Non-US users: skip international jobs not in their own country
+        // (mirrors the matcher fix from the May 3 "remote applications" ticket).
+        {
           const jobLoc = await db.execute({
             sql: "SELECT location, region FROM Job WHERE applyUrl = ? LIMIT 1",
             args: [job.applyUrl],
@@ -719,10 +722,21 @@ export async function processNextBrowseSession(): Promise<boolean> {
           if (loc) {
             const location = (loc.location as string || "").toLowerCase();
             const region = loc.region as string || "";
-            if (region === "international" || isForeignLocation(location)) {
+            const userIsUS = isUserUS(user.countryOfResidence);
+            let skipReason: string | null = null;
+            if (userIsUS) {
+              if (region === "international" || isForeignLocation(location)) {
+                skipReason = "Location mismatch (non-US)";
+              }
+            } else if (region === "international") {
+              if (!locationMatchesUserCountry(location, user.countryOfResidence)) {
+                skipReason = `Location mismatch (not in ${user.countryOfResidence})`;
+              }
+            }
+            if (skipReason) {
               companyResult.skipped++;
-              await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", "Location mismatch (non-US)");
-              console.log(`[Browse] Skipped ${job.title} — non-US location: ${loc.location}`);
+              await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", skipReason);
+              console.log(`[Browse] Skipped ${job.title} — ${skipReason}: ${loc.location}`);
               continue;
             }
           }
@@ -1034,9 +1048,60 @@ const NON_US_INDICATORS = [
 function isUserUS(country: string | null | undefined): boolean {
   if (!country) return true; // default to US if unset
   const c = country.toLowerCase();
-  return c.includes("us") || c.includes("united states") || c.includes("america");
+  // Word-boundary match so "Mauritius", "Belarus", "Cyprus", "Australia"
+  // (which all contain the substring "us") aren't classified as US.
+  return c.includes("united states") || c.includes("america") || /\b(us|usa)\b/.test(c);
 }
 
 function isForeignLocation(location: string): boolean {
   return NON_US_INDICATORS.some((ind) => location.includes(ind));
+}
+
+// Lowercase tokens we expect to see in a job's `location` string for each
+// non-US country we have users in. Mirror of src/lib/job-region.ts so the
+// worker's own location gate can allow non-US users to see jobs in their
+// country while blocking jobs from other countries.
+const COUNTRY_TOKENS: Record<string, string[]> = {
+  canada: ["canada", "toronto", "vancouver", "montreal", "ottawa", "calgary", "edmonton", "ontario", "quebec", "alberta", "british columbia"],
+  "united kingdom": ["united kingdom", "uk", "england", "scotland", "wales", "london", "manchester", "edinburgh", "bristol", "birmingham", "leeds", "glasgow"],
+  india: ["india", "bangalore", "bengaluru", "mumbai", "delhi", "hyderabad", "chennai", "pune", "kolkata", "gurgaon", "noida"],
+  australia: ["australia", "sydney", "melbourne", "brisbane", "perth", "adelaide", "canberra"],
+  germany: ["germany", "deutschland", "berlin", "munich", "münchen", "hamburg", "frankfurt", "cologne", "köln"],
+  france: ["france", "paris", "lyon", "marseille", "toulouse"],
+  ireland: ["ireland", "dublin", "cork"],
+  netherlands: ["netherlands", "amsterdam", "rotterdam", "utrecht", "hague"],
+  singapore: ["singapore"],
+  nigeria: ["nigeria", "lagos", "abuja", "ibadan", "port harcourt"],
+  kenya: ["kenya", "nairobi", "mombasa"],
+  ghana: ["ghana", "accra", "kumasi"],
+  "south africa": ["south africa", "johannesburg", "cape town", "pretoria", "durban"],
+  "united arab emirates": ["united arab emirates", "uae", "dubai", "abu dhabi"],
+  rwanda: ["rwanda", "kigali"],
+  tanzania: ["tanzania", "dar es salaam", "dodoma"],
+  cameroon: ["cameroon", "yaoundé", "yaounde", "douala"],
+  morocco: ["morocco", "casablanca", "rabat"],
+  pakistan: ["pakistan", "karachi", "lahore", "islamabad"],
+  belgium: ["belgium", "brussels", "antwerp"],
+  mauritius: ["mauritius", "port louis"],
+  palestine: ["palestine", "gaza", "ramallah", "west bank"],
+};
+
+function getUserCountryTokens(country: string | null | undefined): string[] {
+  if (!country) return [];
+  const normalized = country.trim().toLowerCase();
+  if (COUNTRY_TOKENS[normalized]) return COUNTRY_TOKENS[normalized];
+  for (const [key, tokens] of Object.entries(COUNTRY_TOKENS)) {
+    if (normalized.includes(key)) return tokens;
+  }
+  return [normalized];
+}
+
+function locationMatchesUserCountry(location: string, country: string | null | undefined): boolean {
+  const tokens = getUserCountryTokens(country);
+  if (tokens.length === 0) return false;
+  const ll = location.toLowerCase();
+  return tokens.some((t) => {
+    const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(ll);
+  });
 }

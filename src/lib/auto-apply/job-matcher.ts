@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { ROLE_OPTIONS } from "@/lib/role-options";
-import { isUserUS } from "@/lib/job-region";
+import { isUserUS, getUserCountryTokens } from "@/lib/job-region";
 import { looksLikeInternshipTitle } from "@/lib/scrapers/job-filter";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -132,16 +132,30 @@ function locationMatchScore(
   userCountry: string | null
 ): number {
   const userUS = isUserUS(userCountry);
-
-  // Primary gate: use pre-computed region field from DB
-  if (userUS && jobRegion === "international") {
-    return -1;
-  }
-
-  // Belt-and-suspenders: string-based check as secondary safety net
   const locLower = jobLocation.toLowerCase();
-  if (userUS && isForeignJob(locLower) && !isUSJob(locLower)) {
-    return -1;
+
+  if (userUS) {
+    // US users: reject anything tagged international, with a string-based
+    // safety net against scraper miscategorisation.
+    if (jobRegion === "international") return -1;
+    if (isForeignJob(locLower) && !isUSJob(locLower)) return -1;
+  } else {
+    // Non-US users: reject international jobs that aren't in the user's
+    // own country. Without this gate the matcher used to send Canadian /
+    // UK / Indian users to roles in random other countries (the May 3
+    // "remote applications" ticket).
+    if (jobRegion === "international") {
+      const tokens = getUserCountryTokens(userCountry);
+      if (tokens.length === 0) return -1;
+      // Word-boundary match so "Indianapolis, Indiana" doesn't match
+      // the "india" token via substring. Custom boundaries (not `\b`)
+      // so accented tokens like "yaoundé" still work.
+      const inUserCountry = tokens.some((t) => {
+        const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(locLower);
+      });
+      if (!inUserCountry) return -1;
+    }
   }
 
   if (!userPref) return 0.5;
