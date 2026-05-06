@@ -77,6 +77,7 @@ async function getUserData(userId: string) {
       subscriptionTier: true,
       subscriptionStatus: true,
       stripeCustomerId: true,
+      currentPeriodEnd: true,
       freeTierEndsAt: true,
       resumeUrl: true,
       resumeName: true,
@@ -413,6 +414,8 @@ export default async function ProfilePage({
                 role: user.role,
                 emailVerified: !!user.emailVerified,
                 stripeCustomerId: user.stripeCustomerId,
+                subscriptionStatus: user.subscriptionStatus,
+                currentPeriodEnd: user.currentPeriodEnd?.toISOString() ?? null,
                 lessonsCompleted: user._count.progress,
                 winsShared: user._count.microWins,
               }}

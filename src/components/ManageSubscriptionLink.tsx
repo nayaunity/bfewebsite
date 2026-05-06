@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 
-export function ManageSubscriptionLink() {
+interface Props {
+  className?: string;
+  label?: string;
+}
+
+export function ManageSubscriptionLink({ className, label }: Props = {}) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -22,9 +27,9 @@ export function ManageSubscriptionLink() {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors disabled:opacity-50"
+      className={className || "text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors disabled:opacity-50"}
     >
-      {loading ? "Loading..." : "Manage Billing"}
+      {loading ? "Loading..." : (label || "Manage Billing")}
     </button>
   );
 }

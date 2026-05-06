@@ -10,6 +10,8 @@ interface Props {
     role: string;
     emailVerified: boolean;
     stripeCustomerId: string | null;
+    subscriptionStatus: string | null;
+    currentPeriodEnd: string | null;
     lessonsCompleted: number;
     winsShared: number;
   };
@@ -52,6 +54,21 @@ export function AccountSection({ user, tier }: Props) {
           </span>
         </div>
 
+        <div className="flex justify-between items-center py-2">
+          <span className="text-sm text-[var(--gray-600)]">Subscription</span>
+          <span className="text-sm font-medium text-[var(--foreground)]">
+            {user.subscriptionStatus === "trialing" && user.currentPeriodEnd
+              ? `Trial (ends ${new Date(user.currentPeriodEnd).toLocaleDateString("en-US", { month: "short", day: "numeric" })})`
+              : user.subscriptionStatus === "active"
+                ? "Active"
+                : user.subscriptionStatus === "past_due"
+                  ? "Past Due"
+                  : user.subscriptionStatus === "canceled"
+                    ? "Canceled"
+                    : "Free"}
+          </span>
+        </div>
+
         {user.lessonsCompleted > 0 && (
           <div className="flex justify-between items-center py-2">
             <span className="text-sm text-[var(--gray-600)]">Lessons completed</span>
@@ -71,6 +88,22 @@ export function AccountSection({ user, tier }: Props) {
         )}
       </div>
 
+      {user.subscriptionStatus === "trialing" && user.currentPeriodEnd && (
+        <div className="mt-3 p-3 rounded-lg" style={{ background: "var(--accent-blue-bg, #fef3c7)", border: "1px solid var(--card-border)" }}>
+          <p className="text-sm text-[var(--foreground)]">
+            Your free trial ends on{" "}
+            <span className="font-semibold">
+              {new Date(user.currentPeriodEnd).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            . You will be charged $29/mo after that. Cancel anytime below.
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-4 pt-4 border-t border-[var(--card-border)]">
         <Link
           href="/profile/applications"
@@ -89,7 +122,12 @@ export function AccountSection({ user, tier }: Props) {
           {tier === "free" ? "Upgrade Plan" : "Change Plan"}
         </Link>
 
-        {user.stripeCustomerId && <ManageSubscriptionLink />}
+        {user.stripeCustomerId && (
+          <ManageSubscriptionLink
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-[var(--card-border)] text-sm font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)] transition-colors disabled:opacity-50"
+            label={user.subscriptionStatus === "trialing" ? "Manage Billing / Cancel" : "Manage Billing"}
+          />
+        )}
       </div>
 
       {user.role === "admin" && (

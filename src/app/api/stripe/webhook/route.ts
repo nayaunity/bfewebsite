@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { activateSubscription, tierFromPriceId } from "@/lib/subscription";
+import { buildTrialConfirmationDraft } from "@/lib/trial-confirmation";
+import { Resend } from "resend";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -105,6 +107,23 @@ export async function POST(request: NextRequest) {
         }
 
         await activateSubscription({ userId, subscription, tier });
+
+        if (subscription.status === "trialing") {
+          try {
+            const draft = await buildTrialConfirmationDraft(userId);
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            await resend.emails.send({
+              from: "Naya <naya@theblackfemaleengineer.com>",
+              replyTo: "theblackfemaleengineer@gmail.com",
+              to: draft.email,
+              subject: draft.subject,
+              html: draft.html,
+              text: draft.text,
+            });
+          } catch (emailErr) {
+            console.error("[webhook] trial confirmation email failed:", emailErr);
+          }
+        }
         break;
       }
 

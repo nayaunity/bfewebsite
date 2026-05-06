@@ -63,7 +63,8 @@ model User {
   workLocations       String?
   conversionEmailSentAt DateTime?
   freeTierEndsAt        DateTime?
-  freeTierSunsetEmailAt DateTime?
+  freeTierSunsetEmailAt     DateTime?
+  trialEndReminderSentAt    DateTime?
   detailsReviewedAt     DateTime?
   seekingInternship           Boolean? @default(false)
   visitorId                   String?

@@ -73,17 +73,17 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
             </p>
           ) : (
             <p className="text-[var(--gray-600)] mb-8">
-              Sign in to start applying. If your plan doesn&apos;t show up right
-              away, refresh the dashboard in a minute.
+              If your plan doesn&apos;t show up right away, refresh the
+              dashboard in a minute.
             </p>
           )}
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/auth/signin?callbackUrl=/profile/applications"
+              href="/profile/applications"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#ef562a] hover:bg-[#d94a22] text-white font-semibold transition-colors"
             >
-              Sign in to dashboard
+              Go to dashboard
             </Link>
             <Link
               href="/"
@@ -94,7 +94,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
           </div>
 
           <p className="text-xs text-[var(--gray-600)] mt-8">
-            Questions? Reply to the email we just sent, or write to{" "}
+            Questions? Write to{" "}
             <a
               href="mailto:theblackfemaleengineer@gmail.com"
               className="underline hover:text-[#ef562a]"
