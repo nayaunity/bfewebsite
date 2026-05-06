@@ -351,6 +351,16 @@ const BLOCKED_COMPANIES = new Set([
   "linear",       // 1/X (Ashby anti-bot)
   "elevenlabs",   // Ashby anti-bot
   "anthropic",    // Apr 18: stuck-page on udvlenkhtaivan run; uses Greenhouse but with anti-bot or DOM that breaks our handlers
+  // May 6 smoke-test failures: custom career portals wrapping Greenhouse/Lever
+  "vercel",       // 3 fields skipped without resolution
+  "stripe",       // Page state unchanged after multiple actions
+  "dropbox",      // Page state unchanged after multiple actions
+  "squarespace",  // Redirects to login page
+  "toast",        // Cookie consent dialog blocks form
+  "elastic",      // Application form in unreachable iframe
+  "navan",        // Worker hung 15+ min, no heartbeat
+  "hubspot",      // Page stuck / custom portal
+  "palantir",     // Custom portal, form not reachable
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).
