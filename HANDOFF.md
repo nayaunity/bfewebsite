@@ -1,4 +1,91 @@
-# Session Handoff — May 3-5, 2026 (Auto-apply matcher fixes from two SaaS tickets — intern/senior gates + country-aware location filter; Portfolio Generator built May 3)
+# Session Handoff — May 6, 2026 (Subscription lifecycle fixes + Brian throughput maximization)
+
+## What Was Done May 6
+
+### Subscription Lifecycle Fixes (Myshawne Stallings refund ticket)
+
+**Context:** Myshawne Stallings (`mstallings.dev@gmail.com`, id `cmngbg9qq00f5jv04x7ogzzv3`) emailed complaining about: (1) unexpected charge after free trial, (2) no subscription confirmation email, (3) no cancellation option visible on the site.
+
+**Code fixes deployed (commit `412cb7d`, merged to main, deployed to Vercel):**
+
+1. **Trial confirmation email** - Webhook (`src/app/api/stripe/webhook/route.ts`) now sends a Resend email on `checkout.session.completed` when `subscription.status === "trialing"`. Template in `src/lib/trial-confirmation.ts`. Includes trial end date, $29/mo charge info, cancel instructions.
+
+2. **Trial-ending reminder cron** - New `src/app/api/cron/trial-ending-reminder/route.ts` runs daily at 3pm UTC (9am MT). Finds users with `subscriptionStatus = "trialing"` whose `currentPeriodEnd` is within 2 days, sends a warning email. Template in `src/lib/trial-ending-reminder.ts`. Added `trialEndReminderSentAt DateTime?` to User schema (pushed to both local and prod Turso).
+
+3. **Prominent cancellation UI** - `AccountSection.tsx` now shows a "Subscription" row (Trial/Active/Past Due/Canceled/Free), a blue callout box with trial end date and charge amount when trialing, and a styled "Manage Billing / Cancel" button (was previously a tiny gray text link). `ManageSubscriptionLink.tsx` now accepts `className` and `label` props.
+
+4. **Success page fixes** - Removed false "Reply to the email we just sent" copy from `/subscription/success/page.tsx`. Changed "Sign in to dashboard" to "Go to dashboard" (links to `/profile/applications` instead of `/auth/signin`).
+
+5. **CLAUDE.md** - Added production API key extraction guide. Use `sed` + `tr -d '"'` instead of `cut` for env var extraction. Documented `vercel env pull` fallback for stale local keys.
+
+**Refund + cancellation (manual in Stripe dashboard):**
+- Naya issued $29 refund in Stripe dashboard
+- Naya canceled subscription immediately in Stripe
+- Webhook `customer.subscription.deleted` fired and synced DB: `subscriptionTier=free, subscriptionStatus=canceled, stripeSubscriptionId=null`
+- Confirmation email sent via Resend (id `e19bef45-435b-4d65-b2c0-aa81bda822d5`)
+
+**Cron schedule updated** (`vercel.json`):
+| Schedule (UTC) | Time (MT) | Endpoint | Purpose |
+|---|---|---|---|
+| `0 15 * * *` | 9:00am | `/api/cron/trial-ending-reminder` | 2-day warning before trial charge |
+
+### Brian McLaren Investigation + Throughput Fixes
+
+Brian's daily-apply cron stopped creating sessions because the job pool appeared exhausted. Root causes identified and fixed:
+
+1. **Worker dedup bug**: `browse-loop.ts` fast-path (line 331) and slow-path (line 692) dedup queries only excluded `applied` and `applying` statuses, not `failed`. Fixed to include `failed`, preventing re-attempts of broken URLs.
+
+2. **DAILY_CAP raised**: 10 to 30 in both `daily-apply/route.ts` and `pacing.ts` to allow more attempts per day.
+
+3. **Per-user chronic-fail filter**: Added to `job-matcher.ts`. Companies with 4+ failures and 0 successes for a specific user get blocked from matching. Brian's blocked: Chime (5), Grafana Labs (6), OpenAI (12), Perplexity (4).
+
+4. **Diagnostic logging**: When `matchedJobs.length === 0`, the daily-apply cron now logs total active jobs and user's attempted count to identify pool exhaustion vs. filter issues.
+
+### 10 New Companies Added, Smoke-Tested, 9 Blocked
+
+Added Vercel, Stripe, Dropbox, Squarespace, Toast, Elastic, Fastly, Navan, HubSpot, Palantir to `auto-apply-companies.json`. Scraped 1,886 jobs into production. Created `scripts/scrape-new-companies.ts` for targeted scraping.
+
+Smoke-tested all 10 via real BrowseSession on admin account. Results:
+- **Fastly**: PASSED (kept in company list)
+- **Vercel**: FAILED (3 fields skipped without resolution)
+- **Stripe**: FAILED (page state unchanged)
+- **Dropbox**: FAILED (page state unchanged)
+- **Squarespace**: FAILED (redirects to login page)
+- **Toast**: FAILED (cookie consent dialog blocks form)
+- **Elastic**: FAILED (app form in unreachable iframe)
+- **Navan**: FAILED (worker hung 15+ min)
+- **HubSpot**: FAILED (page stuck / custom portal)
+- **Palantir**: FAILED (custom portal, form not reachable)
+
+All 9 failing companies added to `BLOCKED_COMPANIES` in `job-matcher.ts` and removed from `auto-apply-companies.json` (100 companies down to 91).
+
+### Brian's Current State (as of May 6)
+- **Plan**: Starter ($29/mo, 100 apps/mo), period ends May 10
+- **Used**: 23 of 100 apps, 77 remaining
+- **Success rate**: 26% (28 applied / 106 attempts)
+- **Available FE jobs**: 328 (after all filters), 41 companies
+- **Top companies by available jobs**: Anduril (95), Cloudflare (28), Cursor (20), Klaviyo (17), Scale AI (14), Glean (14), Figma (12)
+- **At DAILY_CAP=30 with 26% rate**: ~8 successful apps/day x 4 days = ~32 more, total ~55
+
+### Uncommitted Changes (on auto-apply-saas)
+- `src/lib/auto-apply/job-matcher.ts` - 9 failing companies added to BLOCKED_COMPANIES
+- `src/data/auto-apply-companies.json` - 9 failing companies removed (100 to 91)
+- `src/lib/pacing.ts` - DAILY_CAP 10 to 30
+- `src/lib/pacing-diagnostics.ts` - new file (pacing diagnostics)
+- `src/app/api/cron/daily-apply/route.ts` - DAILY_CAP 10 to 30, diagnostic logging
+- `worker/src/browse-loop.ts` - dedup fix (include 'failed' in exclusion)
+- `scripts/scrape-new-companies.ts` - one-time scraper for 10 new companies
+- `scripts/test-new-companies.ts` - smoke-test session creator
+- `scripts/check-test-results.ts` - smoke-test result checker
+
+### Scripts Created (in scripts/)
+- `scrape-new-companies.ts` - Direct scraper for specific companies against prod DB
+- `test-new-companies.ts` - Creates test BrowseSession with 1 job per company
+- `check-test-results.ts` - Queries BrowseDiscovery for test session results
+
+---
+
+# Prior Session Handoff — May 3-5, 2026 (Auto-apply matcher fixes from two SaaS tickets — intern/senior gates + country-aware location filter; Portfolio Generator built May 3)
 
 ## Current State
 
