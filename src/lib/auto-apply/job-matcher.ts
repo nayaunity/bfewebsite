@@ -302,7 +302,7 @@ Respond in this exact format, one per line:
   try {
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 512,
+      max_tokens: Math.max(512, candidates.length * 4),
       messages: [{ role: "user", content: prompt }],
     });
 

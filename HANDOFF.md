@@ -1,4 +1,4 @@
-# Session Handoff — May 6, 2026 (Subscription lifecycle fixes + Brian throughput maximization)
+# Session Handoff — May 6, 2026 (Subscription lifecycle fixes + Apply engine success rate overhaul)
 
 ## What Was Done May 6
 
@@ -59,16 +59,45 @@ Smoke-tested all 10 via real BrowseSession on admin account. Results:
 
 All 9 failing companies added to `BLOCKED_COMPANIES` in `job-matcher.ts` and removed from `auto-apply-companies.json` (100 companies down to 91).
 
+### Apply Engine Success Rate Overhaul (2 rounds of iteration)
+
+Smoke-tested apply engine changes against Brian's top 6 Greenhouse companies (Anduril, Cloudflare, Klaviyo, Scale AI, Glean, Figma). Results:
+
+| Round | Applied | Failed | Rate | Key Changes |
+|---|---|---|---|---|
+| Round 1 (OLD code) | 0 | 3 | 0% | Baseline (all openFlyout timeouts) |
+| Round 1 (NEW code) | 0 | 4 | 0% | Cookie dismissal + loosened caps + iframe soft-fail |
+| **Round 2** | **4** | **2** | **67%** | + Apply-button nav + faster openFlyout + stuck recovery |
+
+**8 changes deployed to Railway (worker/src/apply-engine.ts):**
+1. Cookie banner dismissal (15 known selectors + JS overlay removal)
+2. Loosened field skip cascade (3 skipped fields to abort -> raised to 5)
+3. Greenhouse iframe soft-fail (hard error -> fallthrough to Claude loop)
+4. Apply-button navigation for listing/career pages (fixed Klaviyo + Scale AI)
+5. openFlyout per-strategy timeout reduction (3000ms -> 1500ms)
+6. Stuck detection loosened (4 -> 5 consecutive unchanged) with scroll recovery
+7. S6 dispatchEvent evaluate timeout (30000ms -> 2000ms)
+8. TypeScript NodeList iteration fix in cookie dismissal
+
+**Remaining failures (Anduril + Glean):** Both have ~51% historical success rates. Failures are job-specific (some positions have problematic dropdowns), not company-wide. The S6 timeout fix reclaims ~28 seconds per failing dropdown, potentially saving some from 12-minute overall timeout.
+
+**Historical failure distribution (2066 total failures):**
+- stuck-page-unchanged: 778 (37.6%) - partially addressed by scroll recovery
+- uncategorized: 663 (32.1%) - includes 77x Browserbase config (now blocked)
+- openFlyout-timeout: 427 (20.7%) - addressed by faster timeouts + S6 fix
+- spam-flagged: 136 (6.6%) - anti-bot, not fixable
+- wrong-page: 20 (1.0%) - addressed by apply-button navigation
+
 ### Brian's Current State (as of May 6)
 - **Plan**: Starter ($29/mo, 100 apps/mo), period ends May 10
 - **Used**: 23 of 100 apps, 77 remaining
-- **Success rate**: 26% (28 applied / 106 attempts)
+- **Success rate**: 26% baseline (28 applied / 106 attempts), expected ~50-67% with new engine
 - **Available FE jobs**: 328 (after all filters), 41 companies
-- **Top companies by available jobs**: Anduril (95), Cloudflare (28), Cursor (20), Klaviyo (17), Scale AI (14), Glean (14), Figma (12)
-- **At DAILY_CAP=30 with 26% rate**: ~8 successful apps/day x 4 days = ~32 more, total ~55
+- **ISSUE: Last daily-apply session was April 26** (10 days ago). CRON may not be firing for Brian. Needs investigation.
+- **Top companies by available jobs**: Anduril (95), Cloudflare (28), Klaviyo (17), Scale AI (14), Glean (14), Figma (12)
 
 ### Uncommitted Changes (on auto-apply-saas)
-- `src/lib/auto-apply/job-matcher.ts` - 9 failing companies added to BLOCKED_COMPANIES
+- `src/lib/auto-apply/job-matcher.ts` - 12 companies added to BLOCKED_COMPANIES (3 Ashby + 9 smoke-test failures)
 - `src/data/auto-apply-companies.json` - 9 failing companies removed (100 to 91)
 - `src/lib/pacing.ts` - DAILY_CAP 10 to 30
 - `src/lib/pacing-diagnostics.ts` - new file (pacing diagnostics)
@@ -77,6 +106,8 @@ All 9 failing companies added to `BLOCKED_COMPANIES` in `job-matcher.ts` and rem
 - `scripts/scrape-new-companies.ts` - one-time scraper for 10 new companies
 - `scripts/test-new-companies.ts` - smoke-test session creator
 - `scripts/check-test-results.ts` - smoke-test result checker
+- `scripts/smoke-test-greenhouse.ts` - Greenhouse-specific smoke tester
+- `scripts/measure-success-rate.ts` - Per-company success rate analyzer
 
 ### Scripts Created (in scripts/)
 - `scrape-new-companies.ts` - Direct scraper for specific companies against prod DB
