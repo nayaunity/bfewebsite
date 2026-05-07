@@ -140,6 +140,12 @@ const CAPITALONE_QUESTION_RULES: QuestionRule[] = [
   { pattern: /background check|consent.*check/i, answer: "Yes" },
 ];
 
+const NOVARTIS_QUESTION_RULES: QuestionRule[] = [
+  { pattern: /social media|professional network|influenced.*apply|inspired.*apply/i, answer: "LinkedIn" },
+  { pattern: /non-?compete|restrictive.*covenant|agreement.*employer/i, answer: "No" },
+  { pattern: /previously.*novartis|novartis.*previously|former.*novartis/i, answer: "No" },
+];
+
 const CISCO_QUESTION_RULES: QuestionRule[] = [
   { pattern: /previously.*cisco|cisco.*previously|former.*cisco/i, answer: "No" },
   { pattern: /referred|referral|employee.*refer/i, answer: "No" },
@@ -302,6 +308,26 @@ export const WORKDAY_TENANTS: WorkdayTenant[] = [
     name: "RTX",
     apiTenant: "globalhr",
     siteName: "REC_RTX_Ext_Gateway",
+  },
+  // --- May 7 new tenants ---
+  {
+    host: "unisys.wd5.myworkdayjobs.com",
+    name: "Unisys",
+    apiTenant: "unisys",
+    siteName: "External",
+  },
+  {
+    host: "novartis.wd3.myworkdayjobs.com",
+    name: "Novartis",
+    apiTenant: "novartis",
+    siteName: "Novartis_Careers",
+    questionRules: NOVARTIS_QUESTION_RULES,
+  },
+  {
+    host: "tmobile.wd1.myworkdayjobs.com",
+    name: "T-Mobile",
+    apiTenant: "tmobile",
+    siteName: "External",
   },
 ];
 

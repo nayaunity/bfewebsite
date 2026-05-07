@@ -92,6 +92,32 @@ const WORKDAY_ONLY_CANDIDATES: Candidate[] = [
   { company: "RTX",               companySlug: "rtx",              ats: "workday", workday: { baseUrl: "https://globalhr.wd5.myworkdayjobs.com",     company: "globalhr",    siteName: "REC_RTX_Ext_Gateway" } },
 ];
 
+// May 7 new companies — 13 Greenhouse + 4 Workday
+const MAY7_NEW_CANDIDATES: Candidate[] = [
+  // Greenhouse (native URLs verified)
+  { company: "Verkada",     companySlug: "verkada",     ats: "greenhouse", boardSlug: "verkada" },
+  { company: "PagerDuty",   companySlug: "pagerduty",   ats: "greenhouse", boardSlug: "pagerduty" },
+  { company: "Tanium",      companySlug: "tanium",      ats: "greenhouse", boardSlug: "tanium" },
+  { company: "Chainguard",  companySlug: "chainguard",  ats: "greenhouse", boardSlug: "chainguard" },
+  { company: "Lithic",      companySlug: "lithic",      ats: "greenhouse", boardSlug: "lithic" },
+  { company: "HeyGen",      companySlug: "heygen",      ats: "greenhouse", boardSlug: "heygen" },
+  { company: "Calendly",    companySlug: "calendly",    ats: "greenhouse", boardSlug: "calendly" },
+  { company: "Braze",       companySlug: "braze",       ats: "greenhouse", boardSlug: "braze" },
+  { company: "Iterable",    companySlug: "iterable",    ats: "greenhouse", boardSlug: "iterable" },
+  { company: "DeepMind",    companySlug: "deepmind",    ats: "greenhouse", boardSlug: "deepmind" },
+  { company: "Kalshi",      companySlug: "kalshi",      ats: "greenhouse", boardSlug: "kalshi" },
+  { company: "Medium",      companySlug: "medium",      ats: "greenhouse", boardSlug: "medium" },
+  { company: "Relativity",  companySlug: "relativity",  ats: "greenhouse", boardSlug: "relativity" },
+  // Workday
+  { company: "NVIDIA",      companySlug: "nvidia",      ats: "workday",    workday: { baseUrl: "https://nvidia.wd5.myworkdayjobs.com", company: "nvidia", siteName: "NVIDIAExternalCareerSite" } },
+  { company: "Unisys",      companySlug: "unisys",      ats: "workday",    workday: { baseUrl: "https://unisys.wd5.myworkdayjobs.com", company: "unisys", siteName: "External" } },
+  { company: "Novartis",    companySlug: "novartis",    ats: "workday",    workday: { baseUrl: "https://novartis.wd3.myworkdayjobs.com", company: "novartis", siteName: "Novartis_Careers" } },
+  { company: "T-Mobile",    companySlug: "tmobile",     ats: "workday",    workday: { baseUrl: "https://tmobile.wd1.myworkdayjobs.com", company: "tmobile", siteName: "External" } },
+];
+
+// May 7 Workday-only subset (re-run with WORKDAY_CREDENTIAL_KEY)
+const MAY7_WORKDAY_CANDIDATES: Candidate[] = MAY7_NEW_CANDIDATES.filter((c) => c.ats === "workday");
+
 // Sprint-1 iteration loop: just Walmart. Skips control + irrelevant tenants
 // so iteration cycles are 1-2 min instead of 12 min.
 const WALMART_ONLY_CANDIDATES: Candidate[] = [
@@ -102,17 +128,22 @@ const CISCO_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
 ];
 
+const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES];
 const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
-  ? [{ company: process.env.SMOKE_SINGLE, companySlug: process.env.SMOKE_SINGLE.toLowerCase().replace(/\s+/g, ""), ats: "workday" as Ats,
-       workday: (() => {
-         const match = WORKDAY_ONLY_CANDIDATES.find((c) => c.company.toLowerCase() === process.env.SMOKE_SINGLE!.toLowerCase()
-           || c.company.toLowerCase().includes(process.env.SMOKE_SINGLE!.toLowerCase()));
-         return match?.workday;
-       })() }].filter((c) => c.workday) as Candidate[]
+  ? (() => {
+      const slug = process.env.SMOKE_SINGLE!.toLowerCase();
+      const match = ALL_KNOWN_CANDIDATES.find((c) =>
+        c.company.toLowerCase() === slug || c.company.toLowerCase().includes(slug));
+      return match ? [match] : [];
+    })()
   : [];
 
 const CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? SINGLE_COMPANY_CANDIDATES
+  : process.env.SMOKE_MAY7 === "1"
+  ? MAY7_NEW_CANDIDATES
+  : process.env.SMOKE_MAY7_WD === "1"
+  ? MAY7_WORKDAY_CANDIDATES
   : process.env.SMOKE_CISCO_ONLY === "1"
   ? CISCO_ONLY_CANDIDATES
   : process.env.SMOKE_WALMART_ONLY === "1"

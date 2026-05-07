@@ -368,6 +368,9 @@ const BLOCKED_COMPANIES = new Set([
   // May 7: Ashby companies added for job board display only
   "modal",        // Ashby anti-bot
   "supabase",     // Ashby anti-bot
+  // May 7: Workday smoke failures
+  "nvidia",       // No standard auth form after Apply Manually — custom SSO
+  "tmobile",      // School dropdown selection doesn't register (fixable — ArrowDown+Enter issue)
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).

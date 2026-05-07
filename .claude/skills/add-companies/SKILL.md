@@ -12,7 +12,7 @@ Add new companies to the auto-apply job board: $ARGUMENTS
 
 ## Overview
 
-This skill handles the full pipeline: verify the company's ATS API works, add it to the config, scrape its jobs into production, and Playwright-test an actual application. Companies that pass get kept; fixable failures get iterated on; structural failures get blocked.
+This skill handles the full pipeline: verify the company's ATS API works, add it to the config, scrape its jobs into production, and **locally Playwright-test** an actual application per company. Companies that pass get kept; fixable failures get iterated on; structural failures get blocked.
 
 ## Step 1: Identify the Company's ATS Platform
 
@@ -215,28 +215,58 @@ The script handles Greenhouse, Lever, and Workday scraping. For each company it:
 
 If adding a company type not covered by the script (e.g., Ashby), add the scraping logic following the existing patterns.
 
-## Step 5: Playwright Application Testing (Per-Company, Iterative)
+## Step 5: Local Playwright Smoke Test (Per-Company, Iterative)
 
-**This is the most important step.** Every new company must be tested with a real Playwright application attempt. Do NOT batch-test. Test each company individually, observe failures, fix handlers if possible, block if not.
+**This is the most important step.** Every new company gets a dedicated local Playwright test using the existing smoke harness at `worker/test/integration/smoke-companies.ts`. Do NOT queue sessions on Railway. Test locally, observe, fix, re-test.
 
-### 5a. Create a test session
+### How the smoke test works
 
-Update `scripts/test-new-companies.ts` with the new company slugs in the `NEW_SLUGS` array, then run:
+The harness (`worker/test/integration/smoke-companies.ts`):
+1. Fetches one real job URL from the company's ATS API (prefers intern roles, falls back to FT)
+2. Calls `applyToJob()` directly with `DRY_RUN=true` (fills the entire form, stops before final submit)
+3. Uses a dedicated test user (`role = 'test'`) so no real applications are submitted
+4. Records pass/fail with error details and step traces
+5. Writes results to `worker/test/integration/smoke-results-{timestamp}.json`
 
-```bash
-DATABASE_URL=$(grep "^DATABASE_URL=" .env.production | head -1 | sed 's/^DATABASE_URL=//' | tr -d '"') \
-DATABASE_AUTH_TOKEN=$(grep "^DATABASE_AUTH_TOKEN=" .env.production | head -1 | sed 's/^DATABASE_AUTH_TOKEN=//' | tr -d '"') \
-npx tsx scripts/test-new-companies.ts
+### 5a. Add the new company to the CANDIDATES array
+
+Edit `worker/test/integration/smoke-companies.ts` and add the new company to the `CANDIDATES` array (or create a focused array for single-company testing):
+
+**Greenhouse:**
+```typescript
+{ company: "NewCo", companySlug: "newco", ats: "greenhouse", boardSlug: "newco" },
 ```
 
-This creates a `BrowseSession` using the admin test account (`theblackfemaleengineer@gmail.com`) with one job per new company. The Railway worker picks it up automatically.
+**Workday:**
+```typescript
+{ company: "NewCo", companySlug: "newco", ats: "workday", workday: { baseUrl: "https://newco.wd5.myworkdayjobs.com", company: "newco", siteName: "External" } },
+```
 
-### 5b. Monitor results
+**Ashby:**
+```typescript
+{ company: "NewCo", companySlug: "newco", ats: "ashby", boardSlug: "newco" },
+```
+
+### 5b. Run the smoke test
+
+Test a single company using the `SMOKE_SINGLE` env var:
 
 ```bash
-DATABASE_URL=$(grep "^DATABASE_URL=" .env.production | head -1 | sed 's/^DATABASE_URL=//' | tr -d '"') \
-DATABASE_AUTH_TOKEN=$(grep "^DATABASE_AUTH_TOKEN=" .env.production | head -1 | sed 's/^DATABASE_AUTH_TOKEN=//' | tr -d '"') \
-npx tsx scripts/check-test-results.ts {sessionId}
+cd worker && \
+DATABASE_URL=$(grep "^DATABASE_URL=" ../.env.production | head -1 | sed 's/^DATABASE_URL=//' | tr -d '"') \
+DATABASE_AUTH_TOKEN=$(grep "^DATABASE_AUTH_TOKEN=" ../.env.production | head -1 | sed 's/^DATABASE_AUTH_TOKEN=//' | tr -d '"') \
+ANTHROPIC_API_KEY=$(grep "^ANTHROPIC_API_KEY=" ../.env.production | head -1 | sed 's/^ANTHROPIC_API_KEY=//' | tr -d '"') \
+INTEGRATION_TEST_USER_ID=1d16e543-db6e-497b-b78b-28fbf0a30626 \
+DRY_RUN=true \
+HEADLESS=true \
+SMOKE_SINGLE="NewCo" \
+npx tsx test/integration/smoke-companies.ts
+```
+
+To test with a visible browser (useful for debugging):
+
+```bash
+HEADLESS=false SMOKE_SINGLE="NewCo" ... npx tsx test/integration/smoke-companies.ts
 ```
 
 ### 5c. Interpret results and iterate
@@ -245,12 +275,31 @@ For each company, the result will be one of:
 
 | Result | Action |
 |--------|--------|
-| **`applied`** | Company passes. Keep it in the config. |
-| **`failed` (fixable)** | Form field not filled, dropdown not selected, date picker issue, new field type. Fix the handler in `worker/src/apply-engine.ts` or the ATS-specific handler, then re-test. |
+| **`passed`** | Company works. Keep it in the config. |
+| **`failed` (fixable)** | Form field not filled, dropdown stuck, date picker issue, new field type. Fix the handler in `worker/src/apply-engine.ts` or the ATS-specific handler, then re-test the same company. |
 | **`failed` (structural)** | Custom portal redirect, login wall, anti-bot block, unreachable iframe, cookie consent blocking form. Add to `BLOCKED_COMPANIES`. |
-| **`skipped`** | No matching job found. Try with a different job. |
+| **`skipped_no_url`** | No jobs found on the board. Try again later or check the boardToken/slug. |
 
-### 5d. Block failed companies
+### 5d. Iteration cycle per company
+
+```
+For each new company:
+  1. Run SMOKE_SINGLE="CompanyName" smoke test
+  2. If passed -> mark as working, move to next company
+  3. If failed (fixable) ->
+     a. Read the error message and step trace from the smoke results JSON
+     b. Identify the handler issue (usually in worker/src/apply-engine.ts,
+        worker/src/workday/auth.ts, worker/src/workday/index.ts, or
+        worker/src/common-gates.ts)
+     c. Fix the handler code
+     d. Re-run SMOKE_SINGLE="CompanyName" for the same company
+     e. Repeat until it passes or is determined to be structural
+  4. If failed (structural) -> add to BLOCKED_COMPANIES, move to next
+```
+
+**Handler fixes benefit ALL companies on that ATS platform.** A dropdown fix for one Greenhouse company helps every Greenhouse company.
+
+### 5e. Block failed companies
 
 For companies with structural failures, add their slug to `BLOCKED_COMPANIES` in `src/lib/auto-apply/job-matcher.ts`:
 
@@ -263,34 +312,39 @@ const BLOCKED_COMPANIES = new Set([
 
 The company's jobs still appear on the job board for manual applications.
 
-### 5e. Fix and re-test
-
-For fixable failures:
-1. Read the error message from `check-test-results.ts`
-2. Identify the handler issue (usually in `worker/src/apply-engine.ts`, `worker/src/workday/auth.ts`, or `worker/src/verification.ts`)
-3. Fix the handler code
-4. Re-run the test for that specific company
-5. Repeat until it passes or is determined to be structural
-
-**Handler fixes benefit ALL companies on that ATS platform.** A new dropdown pattern fixed for one Greenhouse company helps every Greenhouse company.
-
 ### What to watch for during each test
 
+- **Flyout/dropdown timeouts**: Most common failure. Check `openFlyout` steps in the error trace. May need new selector patterns in apply-engine.ts.
 - **Email verification**: Does the company send a code? Does `worker/src/verification.ts` extract it? (Supports 6-digit, 8-char codes)
 - **Account creation**: Does Workday auth flow handle sign-up? (`worker/src/workday/auth.ts`)
+- **Role mismatch**: Did the job picker select a non-SWE role? Check the `fetchOneTestUrl` logic in smoke-companies.ts.
 - **Form fields**: All required fields filled? Any new field types?
 - **Redirects**: Does the apply URL stay on the native ATS domain?
 - **Anti-bot**: Does the page load normally or show a challenge/CAPTCHA?
-- **Timeouts**: Does the page load within 30s?
+- **Timeouts**: 12-min timeout usually means the form handler got stuck in a loop.
+
+### Env var reference
+
+| Var | Required | Description |
+|-----|----------|-------------|
+| `DATABASE_URL` | Yes | Turso prod URL (from `.env.production`) |
+| `DATABASE_AUTH_TOKEN` | Yes | Turso prod auth token |
+| `ANTHROPIC_API_KEY` | Yes | Claude API key for form-filling intelligence |
+| `INTEGRATION_TEST_USER_ID` | Yes | `1d16e543-db6e-497b-b78b-28fbf0a30626` (test user) |
+| `DRY_RUN` | Recommended | `true` = fill form but don't click submit |
+| `HEADLESS` | Optional | `false` to watch the browser, `true` (default) for headless |
+| `SMOKE_SINGLE` | Optional | Company name to test just one company |
+| `SMOKE_FRESH_EMAIL` | Optional | `1` to mint a fresh email (forces Workday account creation path) |
 
 ## Step 6: Report Results
 
 Print a summary table:
 
-| Company | ATS | Jobs Scraped | Playwright Test | Status |
-|---------|-----|-------------|----------------|--------|
-| Example | greenhouse | 42 | applied | PASS |
-| Example2 | lever | 15 | failed (login wall) | BLOCKED |
+| Company | ATS | Jobs Scraped | Smoke Test | Status |
+|---------|-----|-------------|------------|--------|
+| Example | greenhouse | 42 | passed | WORKING |
+| Example2 | ashby | 15 | n/a (anti-bot) | BLOCKED |
+| Example3 | workday | 200 | failed (login wall) | BLOCKED |
 
 Tell the user:
 - How many companies were added and are working
@@ -301,9 +355,10 @@ Tell the user:
 ## Important Rules
 
 - **Always verify the API first** before adding to the config
-- **Always Playwright-test** before considering a company "working"
+- **Always local Playwright-test** before considering a company "working". Do NOT queue sessions on Railway for testing.
 - **Iterate on fixable failures** instead of immediately blocking
-- **Never skip the duplicate check** - the config already has a duplicate Discord entry
+- **Never skip the duplicate check** - the config has had duplicate entries before
 - **Use `sed` not `cut`** for extracting env vars from `.env.production` (values may contain `=`)
 - **Ashby companies** are auto-apply blocked but still worth adding for the job board
 - **Do not deploy** unless the user explicitly asks
+- **Run tests from the `worker/` directory** since the smoke harness imports from `../../src/apply-engine`

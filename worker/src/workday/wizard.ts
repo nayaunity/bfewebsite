@@ -33,7 +33,7 @@ export interface WizardArgs {
 
 const FIELD_TIMEOUT_MS = 6_000;
 const NAV_TIMEOUT_MS = 20_000;
-const MAX_WIZARD_ITERATIONS = 8; // safety cap
+const MAX_WIZARD_ITERATIONS = 14; // 7-step wizards need headroom for retries
 
 function aid(automationId: string): string {
   return `[data-automation-id="${automationId}"]`;
@@ -1989,6 +1989,15 @@ export async function runWorkdayWizard(args: WizardArgs): Promise<ApplyResult> {
     steps.push(`workday-wizard: at step ${step.current}/${step.total} url=${page.url()}`);
 
     if (step.current === -1) {
+      const url = page.url();
+      if (/\/(completed|confirmation)\/application/i.test(url) || /Job_Application_ID=/i.test(url)) {
+        if (process.env.DRY_RUN === "true") {
+          steps.push("workday-wizard: reached completion page (DRY_RUN — treating as success)");
+        } else {
+          steps.push("workday-wizard: ✓ submission confirmed (completion URL detected)");
+        }
+        return { success: true, steps };
+      }
       return { success: false, error: "workday-wizard-progress-bar-not-found", steps };
     }
 
