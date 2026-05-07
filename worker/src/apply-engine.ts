@@ -848,7 +848,7 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
       target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, button: 0, view: window }));
       target.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, button: 0, view: window }));
       target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0, view: window }));
-    });
+    }, null, { timeout: 2000 });
     if (await isListboxOpen(frame, combobox)) { log("S6 dispatchEvent ok"); return; }
     log("S6 dispatchEvent no listbox");
   } catch (e) {
