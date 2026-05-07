@@ -4,11 +4,13 @@ import { canApply } from "@/lib/subscription";
 import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
+import { calculatePacing } from "@/lib/pacing";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-const DAILY_CAP = 30;
+const DEFAULT_DAILY_CAP = 10;
+const CATCHUP_DAILY_CAP = 30;
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -39,6 +41,12 @@ export async function GET(request: NextRequest) {
         firstName: true,
         targetRole: true,
         seekingInternship: true,
+        subscribedAt: true,
+        createdAt: true,
+        currentPeriodEnd: true,
+        subscriptionTier: true,
+        subscriptionStatus: true,
+        monthlyAppCount: true,
       },
     });
 
@@ -87,7 +95,19 @@ export async function GET(request: NextRequest) {
           continue;
         }
 
-        // Check daily cap
+        // Per-user daily cap: on-track users get 10/day, behind users catch up
+        const pacing = calculatePacing({
+          subscribedAt: user.subscribedAt,
+          createdAt: user.createdAt,
+          currentPeriodEnd: user.currentPeriodEnd,
+          subscriptionTier: user.subscriptionTier || "free",
+          subscriptionStatus: user.subscriptionStatus || "active",
+          monthlyAppCount: user.monthlyAppCount,
+        });
+        const dailyCap = pacing.status === "on_track"
+          ? DEFAULT_DAILY_CAP
+          : CATCHUP_DAILY_CAP;
+
         const todayApplied = await prisma.browseDiscovery.count({
           where: {
             session: { userId: user.id },
@@ -96,7 +116,7 @@ export async function GET(request: NextRequest) {
           },
         });
 
-        if (todayApplied >= DAILY_CAP) {
+        if (todayApplied >= dailyCap) {
           results.push({
             userId: user.id,
             email: user.email,
@@ -106,7 +126,7 @@ export async function GET(request: NextRequest) {
           continue;
         }
 
-        const remaining = Math.min(DAILY_CAP - todayApplied, usage.remaining);
+        const remaining = Math.min(dailyCap - todayApplied, usage.remaining);
 
         // Match 3x more jobs than needed so the worker has backups when applications fail
         const matchedJobs = await matchJobsForUser(user.id, remaining * 3);

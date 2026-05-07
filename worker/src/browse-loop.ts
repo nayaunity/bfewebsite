@@ -88,7 +88,7 @@ import targetCompanies from "../data/target-companies.json";
 const DELAY_BETWEEN_COMPANIES_MS = 10_000;
 const DELAY_BETWEEN_JOBS_MS = 5_000;
 const COMPANY_TIMEOUT_MS = 120_000;
-const DAILY_APP_CAP = 10;
+const DAILY_APP_CAP = 30;
 
 function log(sessionId: string, level: "info" | "warn" | "error", msg: string, meta?: Record<string, unknown>) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), sessionId, level, msg, ...meta }));
@@ -343,11 +343,12 @@ export async function processNextBrowseSession(): Promise<boolean> {
         continue;
       }
 
-      // Daily cap
+      // Daily cap — createdAt is stored as "YYYY-MM-DD HH:MM:SS" (no T),
+      // so wrap the param in datetime() to normalise the ISO string.
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const dailyCountResult = await db.execute({
-        sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d JOIN BrowseSession s ON d.sessionId = s.id WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= ?`,
+        sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d JOIN BrowseSession s ON d.sessionId = s.id WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= datetime(?)`,
         args: [session.userId, todayStart.toISOString()],
       });
       const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
@@ -748,7 +749,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         const dailyCountResult = await db.execute({
           sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d
                 JOIN BrowseSession s ON d.sessionId = s.id
-                WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= ?`,
+                WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= datetime(?)`,
           args: [session.userId, todayStart.toISOString()],
         });
         const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;

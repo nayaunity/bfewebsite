@@ -5,10 +5,12 @@ import { canApply, usageErrorMessage } from "@/lib/subscription";
 import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
+import { calculatePacing } from "@/lib/pacing";
 
 export const runtime = "nodejs";
 
-const DAILY_CAP = 30;
+const DEFAULT_DAILY_CAP = 10;
+const CATCHUP_DAILY_CAP = 30;
 
 export async function POST() {
   const session = await auth();
@@ -44,30 +46,18 @@ export async function POST() {
     );
   }
 
-  // Check daily cap
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const todayApplied = await prisma.browseDiscovery.count({
-    where: {
-      session: { userId },
-      status: "applied",
-      createdAt: { gte: todayStart },
-    },
-  });
-
-  if (todayApplied >= DAILY_CAP) {
-    return NextResponse.json(
-      { error: "Daily limit reached (10 applications per day). Try again tomorrow." },
-      { status: 403 }
-    );
-  }
-
-  // Validate profile
+  // Fetch user for pacing + profile validation
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
       firstName: true,
       targetRole: true,
+      subscribedAt: true,
+      createdAt: true,
+      currentPeriodEnd: true,
+      subscriptionTier: true,
+      subscriptionStatus: true,
+      monthlyAppCount: true,
     },
   });
 
@@ -78,7 +68,37 @@ export async function POST() {
     );
   }
 
-  const remaining = Math.min(DAILY_CAP - todayApplied, usage.remaining);
+  // Per-user daily cap: on-track users get 10/day, behind users catch up
+  const pacing = calculatePacing({
+    subscribedAt: user.subscribedAt,
+    createdAt: user.createdAt,
+    currentPeriodEnd: user.currentPeriodEnd,
+    subscriptionTier: user.subscriptionTier || "free",
+    subscriptionStatus: user.subscriptionStatus || "active",
+    monthlyAppCount: user.monthlyAppCount,
+  });
+  const dailyCap = pacing.status === "on_track"
+    ? DEFAULT_DAILY_CAP
+    : CATCHUP_DAILY_CAP;
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayApplied = await prisma.browseDiscovery.count({
+    where: {
+      session: { userId },
+      status: "applied",
+      createdAt: { gte: todayStart },
+    },
+  });
+
+  if (todayApplied >= dailyCap) {
+    return NextResponse.json(
+      { error: "Daily limit reached. Try again tomorrow." },
+      { status: 403 }
+    );
+  }
+
+  const remaining = Math.min(dailyCap - todayApplied, usage.remaining);
 
   // Match jobs — 3x for backup on failures
   const matchedJobs = await matchJobsForUser(userId, remaining * 3);
