@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PricingCards } from "./PricingCards";
+import { SupportEmail } from "@/components/SupportEmail";
 
 export const dynamic = "force-dynamic";
 
@@ -117,6 +118,7 @@ export default async function PricingPage() {
         </div>
       </div>
 
+      <SupportEmail />
       <Footer />
     </main>
   );

@@ -630,16 +630,6 @@
     }
   },
   {
-    "name": "Discord",
-    "slug": "discord",
-    "careersUrl": "https://job-boards.greenhouse.io/discord",
-    "industry": "Technology",
-    "atsType": "greenhouse",
-    "atsConfig": {
-      "boardToken": "discord"
-    }
-  },
-  {
     "name": "MongoDB",
     "slug": "mongodb",
     "careersUrl": "https://job-boards.greenhouse.io/mongodb",
@@ -951,6 +941,204 @@
     "atsType": "greenhouse",
     "atsConfig": {
       "boardToken": "fastly"
+    }
+  },
+  {
+    "name": "Verkada",
+    "slug": "verkada",
+    "careersUrl": "https://job-boards.greenhouse.io/verkada",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "verkada"
+    }
+  },
+  {
+    "name": "PagerDuty",
+    "slug": "pagerduty",
+    "careersUrl": "https://job-boards.greenhouse.io/pagerduty",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "pagerduty"
+    }
+  },
+  {
+    "name": "Tanium",
+    "slug": "tanium",
+    "careersUrl": "https://job-boards.greenhouse.io/tanium",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "tanium"
+    }
+  },
+  {
+    "name": "Chainguard",
+    "slug": "chainguard",
+    "careersUrl": "https://job-boards.greenhouse.io/chainguard",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "chainguard"
+    }
+  },
+  {
+    "name": "Lithic",
+    "slug": "lithic",
+    "careersUrl": "https://job-boards.greenhouse.io/lithic",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "lithic"
+    }
+  },
+  {
+    "name": "HeyGen",
+    "slug": "heygen",
+    "careersUrl": "https://job-boards.greenhouse.io/heygen",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "heygen"
+    }
+  },
+  {
+    "name": "Calendly",
+    "slug": "calendly",
+    "careersUrl": "https://job-boards.greenhouse.io/calendly",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "calendly"
+    }
+  },
+  {
+    "name": "Braze",
+    "slug": "braze",
+    "careersUrl": "https://job-boards.greenhouse.io/braze",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "braze"
+    }
+  },
+  {
+    "name": "Iterable",
+    "slug": "iterable",
+    "careersUrl": "https://job-boards.greenhouse.io/iterable",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "iterable"
+    }
+  },
+  {
+    "name": "DeepMind",
+    "slug": "deepmind",
+    "careersUrl": "https://job-boards.greenhouse.io/deepmind",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "deepmind"
+    }
+  },
+  {
+    "name": "Kalshi",
+    "slug": "kalshi",
+    "careersUrl": "https://job-boards.greenhouse.io/kalshi",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "kalshi"
+    }
+  },
+  {
+    "name": "Medium",
+    "slug": "medium",
+    "careersUrl": "https://job-boards.greenhouse.io/medium",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "medium"
+    }
+  },
+  {
+    "name": "Relativity",
+    "slug": "relativity",
+    "careersUrl": "https://job-boards.greenhouse.io/relativity",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "relativity"
+    }
+  },
+  {
+    "name": "Nvidia",
+    "slug": "nvidia",
+    "careersUrl": "https://nvidia.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://nvidia.wd5.myworkdayjobs.com",
+      "company": "nvidia",
+      "siteName": "NVIDIAExternalCareerSite"
+    }
+  },
+  {
+    "name": "Unisys",
+    "slug": "unisys",
+    "careersUrl": "https://unisys.wd5.myworkdayjobs.com",
+    "industry": "Technology",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://unisys.wd5.myworkdayjobs.com",
+      "company": "unisys",
+      "siteName": "External"
+    }
+  },
+  {
+    "name": "Novartis",
+    "slug": "novartis",
+    "careersUrl": "https://novartis.wd3.myworkdayjobs.com",
+    "industry": "Healthcare",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://novartis.wd3.myworkdayjobs.com",
+      "company": "novartis",
+      "siteName": "Novartis_Careers"
+    }
+  },
+  {
+    "name": "T-Mobile",
+    "slug": "tmobile",
+    "careersUrl": "https://tmobile.wd1.myworkdayjobs.com",
+    "industry": "Telecommunications",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://tmobile.wd1.myworkdayjobs.com",
+      "company": "tmobile",
+      "siteName": "External"
+    }
+  },
+  {
+    "name": "Modal",
+    "slug": "modal",
+    "careersUrl": "https://jobs.ashbyhq.com/modal",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": {
+      "boardSlug": "modal"
+    }
+  },
+  {
+    "name": "Supabase",
+    "slug": "supabase",
+    "careersUrl": "https://jobs.ashbyhq.com/supabase",
+    "industry": "Technology",
+    "atsType": "ashby",
+    "atsConfig": {
+      "boardSlug": "supabase"
     }
   }
 ]

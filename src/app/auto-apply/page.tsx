@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import PageViewTracker from "./PageViewTracker";
 import WaitlistForm from "./WaitlistForm";
+import { SupportEmail } from "@/components/SupportEmail";
 
 export const metadata = {
   title: "Auto Apply Beta | The Black Female Engineer",
@@ -143,6 +144,7 @@ export default function AutoApplyPage() {
             <WaitlistForm />
           </div>
         </section>
+        <SupportEmail />
       </main>
 
       <Footer />

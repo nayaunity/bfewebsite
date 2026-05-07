@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import { TicketWidget } from "@/components/TicketWidget";
+import { SupportEmail } from "@/components/SupportEmail";
 import { canApply } from "@/lib/subscription";
 
 export const dynamic = "force-dynamic";
@@ -247,6 +248,7 @@ export default async function ApplicationsPage() {
             } : null}
           />
         </div>
+        <SupportEmail />
         <TicketWidget page="applications" />
       </main>
       <Footer />

@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import PageViewTracker from "./PageViewTracker";
 import ReviewForm from "./ReviewForm";
+import { SupportEmail } from "@/components/SupportEmail";
 
 export const dynamic = "force-dynamic";
 
@@ -108,6 +109,7 @@ export default async function OnboardingReviewPage({ searchParams }: Props) {
           }}
           firstTime={firstTime}
         />
+        <SupportEmail />
       </main>
 
       <Footer />

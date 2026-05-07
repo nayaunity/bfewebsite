@@ -8,6 +8,7 @@ import ValueProp from "@/components/landing/ValueProp";
 import HowItWorks from "@/components/landing/HowItWorks";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
+import { SupportEmail } from "@/components/SupportEmail";
 
 export const metadata = {
   title: "Auto-Apply to Top Tech Jobs — The Black Female Engineer",
@@ -28,6 +29,7 @@ export default function LandingPage() {
         <HowItWorks />
         <FAQSection />
         <FinalCTA />
+        <SupportEmail />
       </main>
       <Footer />
     </>

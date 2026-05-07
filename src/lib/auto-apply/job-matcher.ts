@@ -365,6 +365,9 @@ const BLOCKED_COMPANIES = new Set([
   "navan",        // Worker hung 15+ min, no heartbeat
   "hubspot",      // Page stuck / custom portal
   "palantir",     // Custom portal, form not reachable
+  // May 7: Ashby companies added for job board display only
+  "modal",        // Ashby anti-bot
+  "supabase",     // Ashby anti-bot
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).
