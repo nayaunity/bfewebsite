@@ -278,6 +278,7 @@ Rules:
 - The job's core responsibility must align with the target role. The TITLE must describe the actual role — not just contain matching keywords in different contexts.
 - Seniority differences are OK (Senior, Staff, Lead versions of the same role = YES).
 - Adjacent technical roles are OK: "ML Engineer" matches "AI / ML Engineer", "Data Scientist" matches "Data Engineer".
+- SPECIALIZATION MATTERS: generic "Software Engineer" or "Full Stack Engineer" does NOT match "Frontend Engineer" unless the title or description explicitly focuses on frontend/UI work. A candidate targeting Frontend Engineer wants frontend-specific roles, not general SWE.
 - Non-technical roles do NOT match technical roles: "Program Manager" does NOT match "DevOps / SRE". "Marketing Manager" does NOT match "Frontend Engineer".
 - "Manager, Finance & Strategy" is a FINANCE role — the word "Product" in "Product Finance" describes the team, NOT the role. Say NO.
 - "Product Operations Manager" is NOT a Product Manager. Say NO.

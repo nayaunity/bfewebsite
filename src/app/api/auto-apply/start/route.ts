@@ -8,7 +8,7 @@ import { ensureApplicationEmail } from "@/lib/application-email";
 
 export const runtime = "nodejs";
 
-const DAILY_CAP = 10;
+const DAILY_CAP = 30;
 
 export async function POST() {
   const session = await auth();

@@ -1,7 +1,7 @@
 export const ROLE_OPTIONS = [
   {
     label: "Frontend Engineer",
-    searchTerms: "Frontend Engineer, UI Engineer, React Developer, Web Developer, Software Engineer",
+    searchTerms: "Frontend Engineer, Front End Engineer, Frontend Developer, UI Engineer, UI Developer, User Interface Engineer, UX Engineer, React Developer, Web Developer, JavaScript Engineer, TypeScript Engineer",
     description: "React, Vue, Angular, TypeScript, CSS, web apps",
   },
   {
