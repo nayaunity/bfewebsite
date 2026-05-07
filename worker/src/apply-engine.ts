@@ -627,7 +627,7 @@ async function dismissCookieBanners(page: Page, steps: string[]): Promise<void> 
   try {
     const removed = await page.evaluate(() => {
       let count = 0;
-      const all = document.querySelectorAll("div, section, aside");
+      const all = Array.from(document.querySelectorAll("div, section, aside"));
       for (const el of all) {
         const style = getComputedStyle(el);
         if (
@@ -774,7 +774,7 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
   try {
     const wrapper = combobox.locator('xpath=ancestor::*[contains(@class, "select__control")][1]').first();
     const toggle = wrapper.locator('button[aria-label="Toggle flyout"]').first();
-    await toggle.click({ timeout: 3000 });
+    await toggle.click({ timeout: 1500 });
     if (await isListboxOpen(frame, combobox)) { log("S1 wrapper-toggle ok"); return; }
     log("S1 wrapper-toggle clicked but no listbox");
   } catch (e) {
@@ -784,7 +784,7 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
   // Strategy 2: NEXT Toggle flyout button in document order
   try {
     const toggle = combobox.locator('xpath=following::button[@aria-label="Toggle flyout"][1]');
-    await toggle.click({ timeout: 3000 });
+    await toggle.click({ timeout: 1500 });
     if (await isListboxOpen(frame, combobox)) { log("S2 following-toggle ok"); return; }
     log("S2 following-toggle clicked but no listbox");
   } catch (e) {
@@ -793,7 +793,7 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
 
   // Strategy 3: Click the combobox itself
   try {
-    await combobox.click({ timeout: 3000 });
+    await combobox.click({ timeout: 1500 });
     if (await isListboxOpen(frame, combobox)) { log("S3 self-click ok"); return; }
     log("S3 self-click no listbox");
   } catch (e) {
@@ -803,7 +803,7 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
   // Strategy 4: toggle as descendant of a shared 1-3-level ancestor
   try {
     const parentToggle = combobox.locator('xpath=ancestor::*[position() <= 3]//button[@aria-label="Toggle flyout"]').first();
-    await parentToggle.click({ timeout: 3000 });
+    await parentToggle.click({ timeout: 1500 });
     if (await isListboxOpen(frame, combobox)) { log("S4 ancestor-toggle ok"); return; }
     log("S4 ancestor-toggle no listbox");
   } catch (e) {
@@ -818,9 +818,9 @@ async function openFlyout(frame: Frame, combobox: Locator, steps?: string[]): Pr
   try {
     const wrapper = combobox.locator('xpath=ancestor::*[contains(@class, "select__control")][1]').first();
     const toggle = wrapper.locator('button[aria-label="Toggle flyout"]').first();
-    await toggle.scrollIntoViewIfNeeded({ timeout: 2000 });
+    await toggle.scrollIntoViewIfNeeded({ timeout: 1000 });
     await frame.waitForTimeout(200);
-    const box = await toggle.boundingBox({ timeout: 2000 });
+    const box = await toggle.boundingBox({ timeout: 1000 });
     if (box) {
       const x = box.x + box.width / 2;
       const y = box.y + box.height / 2;
@@ -2480,6 +2480,39 @@ async function _applyToJobInner(
       }
     }
 
+    // If we're on a page without a visible form, try clicking an "Apply" button
+    const hasFormIndicators = await page.evaluate(() => {
+      const text = document.body.innerText?.slice(0, 5000) || "";
+      const hasForm = document.querySelector('form, iframe[src*="greenhouse"], iframe[src*="lever"]');
+      const hasFormText = /resume|cover letter|first.?name|last.?name|upload.*file/i.test(text);
+      return !!(hasForm || hasFormText);
+    }).catch(() => false);
+
+    if (!hasFormIndicators) {
+      const applyBtnSelectors = [
+        'a:has-text("Apply for this job")',
+        'button:has-text("Apply for this job")',
+        'a:has-text("Apply Now")',
+        'button:has-text("Apply Now")',
+        'a:has-text("Apply")',
+        'button:has-text("Apply")',
+        '[data-qa="apply-button"]',
+        'a[href*="/apply"]',
+      ];
+      for (const sel of applyBtnSelectors) {
+        try {
+          const btn = page.locator(sel).first();
+          if (await btn.isVisible({ timeout: 500 }).catch(() => false)) {
+            await btn.click({ timeout: 3000 });
+            steps.push(`Clicked apply button: ${sel}`);
+            await page.waitForTimeout(3000);
+            await dismissCookieBanners(page, steps);
+            break;
+          }
+        } catch {}
+      }
+    }
+
     // Wait for ATS iframes to load (Greenhouse forms in embedded pages can be slow)
     let ats = detectATS(page.url(), page);
     if (ats === "Unknown") {
@@ -2572,7 +2605,14 @@ async function _applyToJobInner(
       // Stuck detection
       if (snapshot === previousSnapshot) {
         stuckCount++;
-        if (stuckCount >= 4) {
+        if (stuckCount === 4) {
+          // Recovery attempt: scroll down to reveal obscured elements
+          await page.evaluate(() => window.scrollBy(0, 300)).catch(() => {});
+          await page.waitForTimeout(500);
+          steps.push("Stuck recovery: scrolled down 300px");
+          continue;
+        }
+        if (stuckCount >= 5) {
           const snap = await captureFailureSnapshot(page, `stuck-${new URL(applyUrl).hostname}`);
           const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
           return { success: false, error: `Stuck: page state unchanged after multiple actions${suffix}`, steps };
