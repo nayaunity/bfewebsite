@@ -118,6 +118,23 @@ export async function POST(request: NextRequest) {
       data: profileUpdate,
     });
 
+    if (temp.resumeBlobUrl) {
+      const existingResume = await prisma.userResume.findFirst({
+        where: { userId },
+      });
+      if (!existingResume) {
+        await prisma.userResume.create({
+          data: {
+            userId,
+            name: temp.resumeName || "Resume",
+            fileName: temp.resumeName || "resume.pdf",
+            blobUrl: temp.resumeBlobUrl,
+            isFallback: true,
+          },
+        });
+      }
+    }
+
     await prisma.tempOnboarding.update({
       where: { id: tempId },
       data: { linkedToUserId: userId, linkedAt: new Date() },
