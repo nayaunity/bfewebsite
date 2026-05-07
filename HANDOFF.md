@@ -1,6 +1,50 @@
-# Session Handoff — May 6, 2026 (Subscription lifecycle fixes + Apply engine success rate overhaul)
+# Session Handoff — May 6, 2026 (CRON silent exclusion fix + Frontend matching fix)
 
-## What Was Done May 6
+## What Was Done May 6 (Evening Session)
+
+### 17 Paying Users Silently Excluded from Daily CRON — Root Cause + Fix
+
+**Problem:** Only Anika (1 of 18+ paying users) was reaching her 100 app monthly limit. The other 17 paying users had 0-38 apps despite paying $29/mo. Investigation revealed the daily-apply CRON was silently skipping them.
+
+**Root cause:** The CRON eligibility query (`src/app/api/cron/daily-apply/route.ts:26-36`) requires `resumes: { some: {} }` (a UserResume record). But the onboarding flow (`src/app/api/onboarding/promote/route.ts`) only set `User.resumeUrl` (legacy single-resume field) and never created a UserResume record. Result: every user who onboarded had a resume URL but no UserResume row, so the CRON's Prisma `include` filter excluded them.
+
+**Fixes deployed:**
+
+1. **Onboarding promote endpoint** (`src/app/api/onboarding/promote/route.ts`, commit `e6f02ce`): After the `prisma.user.update`, now creates a UserResume record if the user uploaded a resume during onboarding and doesn't already have one. Uses `isFallback: true` flag.
+
+2. **Backfill** (one-time prod DB write): Created UserResume records for all 175 users who had `User.resumeUrl` but no UserResume row. All 17 affected paying users now have records.
+
+3. **CRON reporting bug identified** (not yet fixed): The CRON always reports `skipped_monthly_limit` when `canApply()` returns false, regardless of actual reason (could be `trial-required`, `payment-failed`, `free_sunset`). Low priority but misleading in logs.
+
+**Affected paying users (17):**
+Kimberly Bone (29 apps), Destiny Keel (38), Nahom Zeleke (16), Axel Iota (5), Lavandolyn Smith (5), Ebun Ashley (5), Courtnee Williams (5), Brittney Ball (5), Elias Taveras (5), Patrick Mwanza (4), Ruth Igbinehi (0), Manal Mahamat (2), Dupe Fajembola (5), Hanna Scott (5), Demilade Sodimu (5), Gerard Martelly (5), MiShannon Abazid (0).
+
+Two additional users (Logan Barnes, Samuel Ekpe) have 0 sessions but incomplete profiles (no targetRole/workAuth/country), so they'll still be skipped until they complete their profile.
+
+### Frontend Engineer Matching Fix (Brian McLaren)
+
+**Problem:** After adding "Software Engineer" to Frontend Engineer's searchTerms to fix Brian's `no_matches`, the matcher flooded him with generic SWE and Full Stack roles (2,126 matches) instead of actual frontend jobs. Screenshot showed zero frontend-titled roles in his session.
+
+**Fix (commit `327cc06`):**
+
+1. **`src/lib/role-options.ts`**: Replaced broad "Software Engineer" with specific frontend terms: `Frontend Engineer, Front End Engineer, Frontend Developer, UI Engineer, UI Developer, User Interface Engineer, UX Engineer, React Developer, Web Developer, JavaScript Engineer, TypeScript Engineer`. Database has 75+ active jobs matching these terms.
+
+2. **`src/lib/auto-apply/job-matcher.ts`**: Added LLM quality filter rule: "SPECIALIZATION MATTERS: generic 'Software Engineer' or 'Full Stack Engineer' does NOT match 'Frontend Engineer' unless the title or description explicitly focuses on frontend/UI work."
+
+3. **`src/app/api/auto-apply/start/route.ts`**: Bumped manual start `DAILY_CAP` from 10 to 30 to match the CRON's cap.
+
+### Brian's Current State (as of May 6)
+- **Plan**: Starter ($29/mo, 100 apps/mo), period ends May 10
+- **Used**: 23 of 100 apps, 77 remaining
+- **Success rate**: 26% baseline (28 applied / 106 attempts), expected ~50-67% with new engine
+- **Last session**: May 6 (triggered manually). Got 32 matched jobs but they were all generic SWE. Next session (post-fix) should match actual frontend roles.
+- **Available FE jobs**: 75+ with specific frontend titles in DB
+
+### LLM max_tokens Fix
+
+**`src/lib/auto-apply/job-matcher.ts`**: Fixed `max_tokens` in `llmQualityFilter` from static `512` to `Math.max(512, candidates.length * 4)`. Previously, large candidate batches could get truncated responses from the LLM.
+
+## Prior Session (May 6 Morning) — Subscription lifecycle fixes + Apply engine overhaul
 
 ### Subscription Lifecycle Fixes (Myshawne Stallings refund ticket)
 
@@ -29,7 +73,7 @@
 |---|---|---|---|
 | `0 15 * * *` | 9:00am | `/api/cron/trial-ending-reminder` | 2-day warning before trial charge |
 
-### Brian McLaren Investigation + Throughput Fixes
+### Brian McLaren Investigation + Throughput Fixes (Morning Session)
 
 Brian's daily-apply cron stopped creating sessions because the job pool appeared exhausted. Root causes identified and fixed:
 
@@ -79,22 +123,12 @@ Smoke-tested apply engine changes against Brian's top 6 Greenhouse companies (An
 7. S6 dispatchEvent evaluate timeout (30000ms -> 2000ms)
 8. TypeScript NodeList iteration fix in cookie dismissal
 
-**Remaining failures (Anduril + Glean):** Both have ~51% historical success rates. Failures are job-specific (some positions have problematic dropdowns), not company-wide. The S6 timeout fix reclaims ~28 seconds per failing dropdown, potentially saving some from 12-minute overall timeout.
-
 **Historical failure distribution (2066 total failures):**
 - stuck-page-unchanged: 778 (37.6%) - partially addressed by scroll recovery
 - uncategorized: 663 (32.1%) - includes 77x Browserbase config (now blocked)
 - openFlyout-timeout: 427 (20.7%) - addressed by faster timeouts + S6 fix
 - spam-flagged: 136 (6.6%) - anti-bot, not fixable
 - wrong-page: 20 (1.0%) - addressed by apply-button navigation
-
-### Brian's Current State (as of May 6)
-- **Plan**: Starter ($29/mo, 100 apps/mo), period ends May 10
-- **Used**: 23 of 100 apps, 77 remaining
-- **Success rate**: 26% baseline (28 applied / 106 attempts), expected ~50-67% with new engine
-- **Available FE jobs**: 328 (after all filters), 41 companies
-- **ISSUE: Last daily-apply session was April 26** (10 days ago). CRON may not be firing for Brian. Needs investigation.
-- **Top companies by available jobs**: Anduril (95), Cloudflare (28), Klaviyo (17), Scale AI (14), Glean (14), Figma (12)
 
 ### Uncommitted Changes (on auto-apply-saas)
 - `src/lib/auto-apply/job-matcher.ts` - 12 companies added to BLOCKED_COMPANIES (3 Ashby + 9 smoke-test failures)
@@ -121,8 +155,8 @@ Smoke-tested apply engine changes against Brian's top 6 Greenhouse companies (An
 ## Current State
 
 ### Branches
-- **main** — production code, deployed to Vercel + Railway. Head: `e03fc2c` (May 5, country-aware matcher merge). Includes the May 3 Orionna intern/senior fix (`1f823e5`) and the May 5 Jananee country-aware location fix (`a554624`).
-- **auto-apply-saas** — Railway worker deploys from this branch. Head: `e03fc2c` (fast-forwarded to main on May 5; the country-aware fix touches `worker/src/browse-loop.ts` so Railway picked up a fresh build). In sync with main.
+- **main** — production code, deployed to Vercel. Head: `327cc06` (May 6, Frontend matching fix + DAILY_CAP 30). Includes all May 3-6 fixes.
+- **auto-apply-saas** — Railway worker deploys from this branch. Head: `327cc06` (in sync with main).
 - **fix-mismatch-orionna-may2** — closed/deleted May 3 after merge. Carried the intern + senior-for-1yoe gates.
 - **fix-mismatch-jananee-may3** — closed/deleted May 5 after merge. Carried the country-aware location filter (Vercel + worker mirror).
 - **resume-first-onboarding** — Apr 19 branch, fully merged into main.
@@ -1072,6 +1106,12 @@ Walmart Workday board has 2,000 postings but only 7 active tech jobs after `isTe
 
 ### Stale WorkdayCredential rows for test user encrypted with local-dev key -- NEW Apr 26
 Today's smoke runs created rows in prod Turso `WorkdayCredential` for the test user `1d16e543-...` using the **local-dev** `WORKDAY_CREDENTIAL_KEY`, not the prod key (`9c3eec9d53f4`). Prod code path will be unable to decrypt them. Affected hosts: walmart, adobe, capitalone, possibly salesforce. Cleanup query in Apr 26 Next Steps Priority B. Doesn't affect any real user (no real users have used Workday yet).
+
+### CRON status reporting always says skipped_monthly_limit -- NEW May 6
+`src/app/api/cron/daily-apply/route.ts:63-68` always reports `skipped_monthly_limit` when `canApply()` returns false, regardless of actual reason (`trial-required`, `payment-failed`, `free_sunset`). Misleading in logs. Low priority but should be fixed eventually to surface actual skip reasons.
+
+### Two incomplete-profile users still excluded from CRON -- NEW May 6
+Logan Barnes and Samuel Ekpe have 0 sessions and now have UserResume records (from backfill), but still lack `targetRole`, `workAuthorized`, or `countryOfResidence`. They'll remain skipped until they complete their profile. Not a code bug, just incomplete onboarding data.
 
 ---
 
