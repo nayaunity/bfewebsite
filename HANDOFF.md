@@ -1,3 +1,116 @@
+# Session Handoff — May 8, 2026 (Application Health Oversight System + Cron Schedule Shift to Midnight MT)
+
+## What Was Done May 8 (Evening Session)
+
+### Application Health Oversight System
+
+**Problem:** No proactive monitoring of user application health. The daily-apply cron used a binary 10-or-30 daily cap with no graduated response. No quality checks on matches after applications were submitted. When users fell critically behind, Naya had to manually investigate. Users complained about bad matches with no systematic way to detect or prevent them.
+
+**Solution:** Built a fully automated health oversight system with three new components:
+
+#### 1. Pre-Apply Health Check Cron (`/api/cron/pre-apply-health-check`)
+
+Runs 10 minutes before daily-apply. For each eligible user:
+- Recomputes period apps from BrowseSession for accuracy
+- Calculates pacing status via `calculatePacing()`
+- Computes an adaptive strategy via `computeAdaptiveStrategy()`:
+
+| Pacing Status | Pace % | Daily Cap | Quality Threshold | Match Multiplier | Strategy |
+|---|---|---|---|---|---|
+| on_track | >= 90% | 8 | 0.55 (raised) | 2x | quality_gate |
+| on_track | 70-89% | 10 | none | 3x | default |
+| behind | 40-69% | 20 | none | 4x | catchup |
+| at_risk / critical | < 40% | 30 | none | 5x | aggressive_catchup |
+
+- For critical/at_risk users: runs `diagnoseAndRemediate()` which checks failure rate, match coverage, session gaps, profile completeness, stuck fields
+- Auto-escalates to Naya (AdminAlert) when human judgment is needed (incomplete profile, worker down, no matches available)
+- Stores everything in new `HealthCheck` table for audit trail
+
+#### 2. Daily-Apply Modified to Read Health Check
+
+`daily-apply/route.ts` now reads today's `HealthCheck` row for each user and uses the adaptive `dailyCap`, `qualityThreshold`, and `matchMultiplier` instead of the old binary logic. Falls back gracefully to existing 10/30 behavior if the health check didn't run.
+
+The matcher (`job-matcher.ts`) now accepts an optional `qualityThreshold` parameter. When set (e.g., 0.55 for ahead-of-pace users), jobs with composite score below the threshold are filtered out before the LLM quality gate, naturally slowing the pace while preserving only the best matches.
+
+#### 3. Post-Apply Quality Audit Cron (`/api/cron/post-apply-quality-audit`)
+
+Runs after the worker has had time to process sessions. For each completed session:
+- Fetches all discoveries with status "applied"
+- Sends batched job lists to Claude Haiku for quality rating (good/marginal/bad)
+- Stores verdicts in new `MatchQualityAudit` table
+- Creates AdminAlert if any user has >30% bad matches
+- Creates high-severity AdminAlert if system-wide bad match rate exceeds 20%
+- Gracefully falls back to "good" verdicts if LLM is unavailable
+
+#### 4. Enhanced Daily Report
+
+`paying-user-report.ts` now includes two new sections in the email:
+- **Health Oversight**: users on quality gate, catch-up mode, auto-remediated, escalated
+- **Match Quality Audit**: % good/marginal/bad, worst matches with reasoning
+
+The quality audit cron now runs BEFORE the report, so the report includes quality data (previously the report ran hours before any quality check existed).
+
+### Cron Schedule Shifted to Midnight MT
+
+**Problem:** With more users, sessions were still queued when Naya woke up at 10am MT. The old schedule had daily-apply at 09:30 UTC (3:30am MT), leaving only ~6.5 hours for the worker.
+
+**New schedule (all UTC, Mountain Time in parentheses):**
+
+```
+05:30 (11:30pm MT)  scrape-autoapply
+05:40 (11:40pm MT)  scrape-jobs
+05:50 (11:50pm MT)  pre-apply-health-check    [NEW]
+06:00 (midnight MT) daily-apply               [SHIFTED from 09:30]
+06:00-13:00         worker processes           (7 hours)
+13:00 (7:00am MT)   post-apply-quality-audit   [NEW]
+13:30 (7:30am MT)   paying-user-report         [SHIFTED from 13:30, now AFTER audit]
+14:00 (8:00am MT)   cap-conversion-digest
+14:30 (8:30am MT)   free-tier-sunset-warning
+15:00 (9:00am MT)   cleanup-anonymous-blobs
+15:30 (9:30am MT)   trial-ending-reminder
+```
+
+Note: During MST (Nov-Mar), midnight MT = 07:00 UTC, so the pipeline fires at 11:30pm MT in summer. The worker still gets 7 hours either way.
+
+### Schema Changes
+
+New models added to `prisma/schema.prisma`:
+- **`HealthCheck`**: audit trail for pre-cron decisions (userId, pacingStatus, dailyCapAssigned, qualityThreshold, matchMultiplier, strategy, remediationActions)
+- **`MatchQualityAudit`**: post-apply quality verdicts (discoveryId, sessionId, userId, jobTitle, company, qualityVerdict, qualityScore, reasoning)
+
+New fields on `BrowseSession`:
+- `qualityThreshold Float?` - threshold used for this session's matches
+- `healthCheckId String?` - links to the HealthCheck that spawned the session
+
+**Migration note:** Schema pushed to local dev DB via `prisma db push`. Production uses Turso which auto-migrates on deploy (Prisma generates the client at build time, and Turso handles additive schema changes).
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` | +HealthCheck, +MatchQualityAudit models; +2 fields on BrowseSession |
+| `src/lib/health-oversight.ts` | **NEW**: computeAdaptiveStrategy, diagnoseAndRemediate, auditMatchQuality |
+| `src/lib/auto-apply/job-matcher.ts` | +qualityThreshold param to matchJobsForProfile + matchJobsForUser |
+| `src/app/api/cron/pre-apply-health-check/route.ts` | **NEW**: pre-apply health check cron |
+| `src/app/api/cron/daily-apply/route.ts` | Reads HealthCheck, uses adaptive strategy with fallback |
+| `src/app/api/cron/post-apply-quality-audit/route.ts` | **NEW**: post-apply quality audit cron |
+| `src/lib/paying-user-report.ts` | +qualityAuditSummary, +healthCheckSummary sections in report |
+| `vercel.json` | +2 new cron entries, shifted all schedules to midnight MT block |
+
+### Known Issues / Next Steps
+
+1. **First run tonight.** The new crons fire for the first time at 11:50pm MT tonight. Check tomorrow's daily report email to verify the health check and quality audit sections populated correctly.
+
+2. **Quality threshold value (0.55) may need tuning.** The 0.55 threshold for ahead-of-pace users is a starting point. If users on quality_gate strategy get too few matches, lower it. If they still get marginal matches, raise it. The HealthCheck table records which strategy was used so you can correlate.
+
+3. **Stale user-blocked companies can't be auto-cleared yet.** The `diagnoseAndRemediate` function identifies companies blocked by the 4+ fails / 0 wins rule, but can't actually clear them because the block is computed fresh from BrowseDiscovery counts each run. A future improvement would be a whitelist table or aging out old failures.
+
+4. **Stale Anthropic API key in Vercel** (carried over from prior session). The key in `.env.vercel-prod` is 110 chars (stale/corrupted); the working key in `worker/.env` is 108 chars. Naya needs to update the Anthropic API key in Vercel environment variables. This affects the quality audit LLM calls (they'll fall back to "good" verdicts until the key is fixed).
+
+5. **No admin UI for health oversight yet.** All data is in the DB and in the daily report email. A dedicated `/admin/health-oversight` page showing HealthCheck history and quality audit trends per user would be nice but is lower priority.
+
+---
+
 # Session Handoff — May 8, 2026 (Phase 2 Company Expansion: 154 -> 205 companies, 14k+ new jobs, full smoke test sweep)
 
 ## What Was Done May 8 (Overnight Session)
