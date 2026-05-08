@@ -183,18 +183,80 @@ const CISCO_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
 ];
 
-const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES, ...MAY7_EXPANSION_CANDIDATES, ...MAY8_WORKDAY_CANDIDATES];
+// May 9 expansion — 49 Greenhouse + 2 Lever (all tokens/slugs API-verified)
+const MAY9_EXPANSION_CANDIDATES: Candidate[] = [
+  // Greenhouse — sorted by job count descending
+  { company: "SpaceX",             companySlug: "spacex",          ats: "greenhouse", boardSlug: "spacex" },
+  { company: "Pure Storage",       companySlug: "purestorage",     ats: "greenhouse", boardSlug: "purestorage" },
+  { company: "Rocket Lab",        companySlug: "rocketlab",       ats: "greenhouse", boardSlug: "rocketlab" },
+  { company: "One Medical",       companySlug: "onemedical",      ats: "greenhouse", boardSlug: "onemedical" },
+  { company: "Oscar Health",      companySlug: "oscar",           ats: "greenhouse", boardSlug: "oscar" },
+  { company: "Lucid Motors",      companySlug: "lucidmotors",     ats: "greenhouse", boardSlug: "lucidmotors" },
+  { company: "Unity",             companySlug: "unity3d",         ats: "greenhouse", boardSlug: "unity3d" },
+  { company: "Riot Games",        companySlug: "riotgames",       ats: "greenhouse", boardSlug: "riotgames" },
+  { company: "Wiz",               companySlug: "wizinc",          ats: "greenhouse", boardSlug: "wizinc" },
+  { company: "Scopely",           companySlug: "scopely",         ats: "greenhouse", boardSlug: "scopely" },
+  { company: "The New York Times", companySlug: "thenewyorktimes", ats: "greenhouse", boardSlug: "thenewyorktimes" },
+  { company: "Fivetran",          companySlug: "fivetran",        ats: "greenhouse", boardSlug: "fivetran" },
+  { company: "Payoneer",          companySlug: "payoneer",        ats: "greenhouse", boardSlug: "payoneer" },
+  { company: "Compass",           companySlug: "urbancompass",    ats: "greenhouse", boardSlug: "urbancompass" },
+  { company: "Motional",          companySlug: "motional",        ats: "greenhouse", boardSlug: "motional" },
+  { company: "Flexport",          companySlug: "flexport",        ats: "greenhouse", boardSlug: "flexport" },
+  { company: "Nuro",              companySlug: "nuro",            ats: "greenhouse", boardSlug: "nuro" },
+  { company: "ZoomInfo",          companySlug: "zoominfo",        ats: "greenhouse", boardSlug: "zoominfo" },
+  { company: "Vonage",            companySlug: "vonage",          ats: "greenhouse", boardSlug: "vonage" },
+  { company: "TripAdvisor",       companySlug: "tripadvisor",     ats: "greenhouse", boardSlug: "tripadvisor" },
+  { company: "Hightouch",         companySlug: "hightouch",       ats: "greenhouse", boardSlug: "hightouch" },
+  { company: "Orchard",           companySlug: "orchard",         ats: "greenhouse", boardSlug: "orchard" },
+  { company: "Zocdoc",            companySlug: "zocdoc",          ats: "greenhouse", boardSlug: "zocdoc" },
+  { company: "dbt Labs",          companySlug: "dbtlabsinc",      ats: "greenhouse", boardSlug: "dbtlabsinc" },
+  { company: "ChargePoint",       companySlug: "chargepoint",     ats: "greenhouse", boardSlug: "chargepoint" },
+  { company: "Neo4j",             companySlug: "neo4j",           ats: "greenhouse", boardSlug: "neo4j" },
+  { company: "Bill.com",          companySlug: "billcom",         ats: "greenhouse", boardSlug: "billcom" },
+  { company: "Take-Two Interactive", companySlug: "taketwo",      ats: "greenhouse", boardSlug: "taketwo" },
+  { company: "Betterment",        companySlug: "betterment",      ats: "greenhouse", boardSlug: "betterment" },
+  { company: "Nextdoor",          companySlug: "nextdoor",        ats: "greenhouse", boardSlug: "nextdoor" },
+  { company: "Khan Academy",      companySlug: "khanacademy",     ats: "greenhouse", boardSlug: "khanacademy" },
+  { company: "Maven Clinic",      companySlug: "mavenclinic",     ats: "greenhouse", boardSlug: "mavenclinic" },
+  { company: "Huntress",          companySlug: "huntress",        ats: "greenhouse", boardSlug: "huntress" },
+  { company: "Cross River Bank",  companySlug: "crossriverbank",  ats: "greenhouse", boardSlug: "crossriverbank" },
+  { company: "Fanatics",          companySlug: "fanaticsinc",     ats: "greenhouse", boardSlug: "fanaticsinc" },
+  { company: "Gemini",            companySlug: "gemini",          ats: "greenhouse", boardSlug: "gemini" },
+  { company: "StockX",            companySlug: "stockx",          ats: "greenhouse", boardSlug: "stockx" },
+  { company: "Locus Robotics",    companySlug: "locusrobotics",   ats: "greenhouse", boardSlug: "locusrobotics" },
+  { company: "Flatiron Health",   companySlug: "flatironhealth",  ats: "greenhouse", boardSlug: "flatironhealth" },
+  { company: "Vox Media",         companySlug: "voxmedia",        ats: "greenhouse", boardSlug: "voxmedia" },
+  { company: "Orca Security",     companySlug: "orcasecurity",    ats: "greenhouse", boardSlug: "orcasecurity" },
+  { company: "MinIO",             companySlug: "minio",           ats: "greenhouse", boardSlug: "minio" },
+  { company: "Udemy",             companySlug: "udemy",           ats: "greenhouse", boardSlug: "udemy" },
+  { company: "Customer.io",       companySlug: "customerio",      ats: "greenhouse", boardSlug: "customerio" },
+  { company: "Stability AI",      companySlug: "stabilityai",     ats: "greenhouse", boardSlug: "stabilityai" },
+  { company: "Redpanda",          companySlug: "redpandadata",    ats: "greenhouse", boardSlug: "redpandadata" },
+  { company: "Bitwarden",         companySlug: "bitwarden",       ats: "greenhouse", boardSlug: "bitwarden" },
+  { company: "StarTree",          companySlug: "startree",        ats: "greenhouse", boardSlug: "startree" },
+  { company: "Current",           companySlug: "current",         ats: "greenhouse", boardSlug: "current" },
+  // Lever
+  { company: "dLocal",            companySlug: "dlocal",          ats: "lever",      boardSlug: "dlocal" },
+  { company: "Ro",                companySlug: "ro",              ats: "lever",      boardSlug: "ro" },
+];
+
+const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES, ...MAY7_EXPANSION_CANDIDATES, ...MAY8_WORKDAY_CANDIDATES, ...MAY9_EXPANSION_CANDIDATES];
 const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? (() => {
       const slug = process.env.SMOKE_SINGLE!.toLowerCase();
-      const match = ALL_KNOWN_CANDIDATES.find((c) =>
-        c.company.toLowerCase() === slug || c.company.toLowerCase().includes(slug));
-      return match ? [match] : [];
+      const exact = ALL_KNOWN_CANDIDATES.find((c) =>
+        c.company.toLowerCase() === slug || c.companySlug === slug);
+      if (exact) return [exact];
+      const partial = ALL_KNOWN_CANDIDATES.find((c) =>
+        c.company.toLowerCase().includes(slug));
+      return partial ? [partial] : [];
     })()
   : [];
 
 const CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? SINGLE_COMPANY_CANDIDATES
+  : process.env.SMOKE_MAY9 === "1"
+  ? MAY9_EXPANSION_CANDIDATES
   : process.env.SMOKE_EXPANSION === "1"
   ? MAY7_EXPANSION_CANDIDATES
   : process.env.SMOKE_MAY7 === "1"
@@ -289,7 +351,7 @@ async function fetchAllJobs(c: Candidate): Promise<{ jobs: UrlCandidate[]; reaso
     const r = await fetch(url);
     if (!r.ok) return { jobs: [], reason: `greenhouse_${r.status}` };
     const data = await r.json() as { jobs?: Array<{ id: number; title: string; absolute_url: string }> };
-    return { jobs: (data.jobs ?? []).map((j) => ({ url: j.absolute_url, title: j.title })) };
+    return { jobs: (data.jobs ?? []).map((j) => ({ url: `https://boards.greenhouse.io/${c.boardSlug}/jobs/${j.id}`, title: j.title })) };
   }
 
   if (c.ats === "lever") {
@@ -551,7 +613,9 @@ async function main() {
   console.log(`\nWrote ${outPath}`);
 }
 
-main().catch((e) => {
+main().then(() => {
+  process.exit(0);
+}).catch((e) => {
   console.error("smoke-companies crashed:", e);
   process.exit(1);
 });

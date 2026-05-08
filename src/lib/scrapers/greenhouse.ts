@@ -95,7 +95,7 @@ export async function scrapeGreenhouse(
         type: employmentType,
         remote,
         postedAt: job.updated_at ? new Date(job.updated_at) : undefined,
-        applyUrl: job.absolute_url,
+        applyUrl: `https://boards.greenhouse.io/${config.boardToken}/jobs/${job.id}`,
         category: categorizeJob(job.title),
         tags: extractTags(job.title, job.content),
       };

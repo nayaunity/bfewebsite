@@ -64,27 +64,19 @@ function randomUserAgent(): string {
 async function findATSApplyLink(page: Page): Promise<string | null> {
   const currentUrl = page.url();
 
-  // Strategy 0: Known URL patterns — directly construct apply URL without parsing page
-  // This is more reliable than page parsing for SPAs that haven't fully loaded
-  if (/\/jobs\/listing\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
-    return currentUrl.replace(/\/?$/, "/apply");
-  }
-  if (/\/careers\/positions\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
-    return currentUrl.replace(/\/?$/, "/apply");
-  }
-  // Stripe-style: stripe.com/jobs/search?gh_jid=XXX → direct Greenhouse URL
+  // Strategy 0: gh_jid in URL → Greenhouse job ID. Check this FIRST because
+  // custom portals (Unity, etc.) embed gh_jid in URLs that also match path
+  // patterns like /careers/positions/ but don't support /apply suffix.
   const ghJidMatch = currentUrl.match(/[?&]gh_jid=(\d+)/);
   if (ghJidMatch) {
-    // Try to find the company's Greenhouse board from the page or construct a direct URL
     const ghJobId = ghJidMatch[1];
-    // Look for a Greenhouse iframe or link on the page first
+    // Look for a Greenhouse iframe or link on the page
     for (const frame of page.frames()) {
       const frameUrl = frame.url();
       if (frameUrl.includes("greenhouse.io") && frameUrl.includes(ghJobId)) {
         return frameUrl.includes("/apply") ? frameUrl : frameUrl.replace(/\/?$/, "");
       }
     }
-    // Fallback: construct board URL from page links
     const ghBoardUrl = await page.evaluate((jobId) => {
       const links = Array.from(document.querySelectorAll("a[href], iframe[src]"));
       for (const el of links) {
@@ -94,6 +86,33 @@ async function findATSApplyLink(page: Page): Promise<string | null> {
       return null;
     }, ghJobId);
     if (ghBoardUrl) return ghBoardUrl;
+    // No iframe or link found — construct direct Greenhouse URL from meta tags
+    // or page content. Many custom portals (Unity, etc.) don't embed the iframe
+    // but link to Greenhouse internally.
+    const ghBoardToken = await page.evaluate(() => {
+      const meta = document.querySelector('meta[name="greenhouse-board-token"], meta[property="greenhouse-board-token"]');
+      if (meta) return meta.getAttribute("content");
+      const scripts = Array.from(document.querySelectorAll("script")).map(s => s.textContent || "");
+      for (const s of scripts) {
+        const m = s.match(/board_token['":\s]+['"]([a-zA-Z0-9_-]+)['"]/);
+        if (m) return m[1];
+      }
+      return null;
+    });
+    if (ghBoardToken) {
+      return `https://boards.greenhouse.io/${ghBoardToken}/jobs/${ghJobId}`;
+    }
+  }
+
+  // Strategy 1: Known URL patterns — directly construct apply URL without parsing page
+  if (/\/jobs\/listing\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
+    return currentUrl.replace(/\/?$/, "/apply");
+  }
+  // /careers/positions/ pattern — only if no gh_jid (already handled above)
+  if (!ghJidMatch && /\/careers\/positions\//.test(currentUrl) && !currentUrl.endsWith("/apply")) {
+    const urlObj = new URL(currentUrl);
+    urlObj.pathname = urlObj.pathname.replace(/\/?$/, "/apply");
+    return urlObj.toString();
   }
 
   // Strategy 1: Look for "Apply" links on the page

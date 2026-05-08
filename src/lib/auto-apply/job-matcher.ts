@@ -374,6 +374,7 @@ const BLOCKED_COMPANIES = new Set([
   "tmobile",      // School dropdown selection doesn't register (fixable — ArrowDown+Enter issue)
   // May 8: Expansion smoke failures
   "roblox",       // Custom career portal (careers.roblox.com) — form not in Greenhouse iframe
+  "unity3d",      // GH redirects to unity.com/careers/ React SPA — Apply button not automatable
   // May 8: Workday smoke failures — custom login/SSO, no standard signup form
   "paypal",       // Stuck on ApplicationQuestions (step 3)
   "verizon",      // Custom login page — signup email field not found
