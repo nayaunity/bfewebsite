@@ -160,6 +160,19 @@ const MAY7_EXPANSION_CANDIDATES: Candidate[] = [
   { company: "Carvana",           companySlug: "carvana",           ats: "greenhouse", boardSlug: "carvana" },
 ];
 
+// May 8 expansion — Workday companies (all tenant configs verified via CXS API)
+const MAY8_WORKDAY_CANDIDATES: Candidate[] = [
+  { company: "PayPal",            companySlug: "paypal",          ats: "workday", workday: { baseUrl: "https://paypal.wd1.myworkdayjobs.com",          company: "paypal",          siteName: "jobs" } },
+  { company: "General Motors",    companySlug: "generalmotors",   ats: "workday", workday: { baseUrl: "https://generalmotors.wd5.myworkdayjobs.com",   company: "generalmotors",   siteName: "Careers_GM" } },
+  { company: "Verizon",           companySlug: "verizon",         ats: "workday", workday: { baseUrl: "https://verizon.wd12.myworkdayjobs.com",        company: "verizon",         siteName: "verizon-careers" } },
+  { company: "Accenture",         companySlug: "accenture",       ats: "workday", workday: { baseUrl: "https://accenture.wd103.myworkdayjobs.com",     company: "accenture",       siteName: "AccentureCareers" } },
+  { company: "3M",                companySlug: "3m",              ats: "workday", workday: { baseUrl: "https://3m.wd1.myworkdayjobs.com",              company: "3m",              siteName: "Search" } },
+  { company: "Caterpillar",       companySlug: "caterpillar",     ats: "workday", workday: { baseUrl: "https://cat.wd5.myworkdayjobs.com",             company: "cat",             siteName: "CaterpillarCareers" } },
+  { company: "Booz Allen Hamilton", companySlug: "boozallen",     ats: "workday", workday: { baseUrl: "https://bah.wd1.myworkdayjobs.com",             company: "bah",             siteName: "BAH_Jobs" } },
+  { company: "Broadcom",          companySlug: "broadcom",        ats: "workday", workday: { baseUrl: "https://broadcom.wd1.myworkdayjobs.com",        company: "broadcom",        siteName: "External_Career" } },
+  { company: "RTX",               companySlug: "rtx",             ats: "workday", workday: { baseUrl: "https://globalhr.wd5.myworkdayjobs.com",        company: "globalhr",        siteName: "REC_RTX_Ext_Gateway" } },
+];
+
 // Sprint-1 iteration loop: just Walmart. Skips control + irrelevant tenants
 // so iteration cycles are 1-2 min instead of 12 min.
 const WALMART_ONLY_CANDIDATES: Candidate[] = [
@@ -170,7 +183,7 @@ const CISCO_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
 ];
 
-const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES, ...MAY7_EXPANSION_CANDIDATES];
+const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES, ...MAY7_EXPANSION_CANDIDATES, ...MAY8_WORKDAY_CANDIDATES];
 const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? (() => {
       const slug = process.env.SMOKE_SINGLE!.toLowerCase();

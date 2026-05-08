@@ -1122,6 +1122,114 @@
     }
   },
   {
+    "name": "PayPal",
+    "slug": "paypal",
+    "careersUrl": "https://paypal.wd1.myworkdayjobs.com",
+    "industry": "Fintech",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://paypal.wd1.myworkdayjobs.com",
+      "company": "paypal",
+      "siteName": "jobs"
+    }
+  },
+  {
+    "name": "General Motors",
+    "slug": "generalmotors",
+    "careersUrl": "https://generalmotors.wd5.myworkdayjobs.com",
+    "industry": "Automotive",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://generalmotors.wd5.myworkdayjobs.com",
+      "company": "generalmotors",
+      "siteName": "Careers_GM"
+    }
+  },
+  {
+    "name": "Verizon",
+    "slug": "verizon",
+    "careersUrl": "https://verizon.wd12.myworkdayjobs.com",
+    "industry": "Telecommunications",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://verizon.wd12.myworkdayjobs.com",
+      "company": "verizon",
+      "siteName": "verizon-careers"
+    }
+  },
+  {
+    "name": "Accenture",
+    "slug": "accenture",
+    "careersUrl": "https://accenture.wd103.myworkdayjobs.com",
+    "industry": "Consulting",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://accenture.wd103.myworkdayjobs.com",
+      "company": "accenture",
+      "siteName": "AccentureCareers"
+    }
+  },
+  {
+    "name": "3M",
+    "slug": "3m",
+    "careersUrl": "https://3m.wd1.myworkdayjobs.com",
+    "industry": "Industrial",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://3m.wd1.myworkdayjobs.com",
+      "company": "3m",
+      "siteName": "Search"
+    }
+  },
+  {
+    "name": "Caterpillar",
+    "slug": "caterpillar",
+    "careersUrl": "https://cat.wd5.myworkdayjobs.com",
+    "industry": "Industrial",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://cat.wd5.myworkdayjobs.com",
+      "company": "cat",
+      "siteName": "CaterpillarCareers"
+    }
+  },
+  {
+    "name": "Booz Allen Hamilton",
+    "slug": "boozallen",
+    "careersUrl": "https://bah.wd1.myworkdayjobs.com",
+    "industry": "Consulting",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://bah.wd1.myworkdayjobs.com",
+      "company": "bah",
+      "siteName": "BAH_Jobs"
+    }
+  },
+  {
+    "name": "Broadcom",
+    "slug": "broadcom",
+    "careersUrl": "https://broadcom.wd1.myworkdayjobs.com",
+    "industry": "Semiconductors",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://broadcom.wd1.myworkdayjobs.com",
+      "company": "broadcom",
+      "siteName": "External_Career"
+    }
+  },
+  {
+    "name": "RTX",
+    "slug": "rtx",
+    "careersUrl": "https://globalhr.wd5.myworkdayjobs.com",
+    "industry": "Aerospace",
+    "atsType": "workday",
+    "atsConfig": {
+      "baseUrl": "https://globalhr.wd5.myworkdayjobs.com",
+      "company": "globalhr",
+      "siteName": "REC_RTX_Ext_Gateway"
+    }
+  },
+  {
     "name": "Modal",
     "slug": "modal",
     "careersUrl": "https://jobs.ashbyhq.com/modal",

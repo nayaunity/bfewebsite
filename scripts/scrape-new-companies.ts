@@ -58,6 +58,16 @@ const NEW_COMPANIES: Array<{
   { name: "SoFi", slug: "sofi", boardToken: "sofi", ats: "greenhouse" },
   { name: "Upstart", slug: "upstart", boardToken: "upstart", ats: "greenhouse" },
   { name: "Carvana", slug: "carvana", boardToken: "carvana", ats: "greenhouse" },
+  // === Workday (May 8 expansion — all tenants verified via CXS API) ===
+  { name: "PayPal", slug: "paypal", ats: "workday", baseUrl: "https://paypal.wd1.myworkdayjobs.com", company: "paypal", siteName: "jobs" },
+  { name: "General Motors", slug: "generalmotors", ats: "workday", baseUrl: "https://generalmotors.wd5.myworkdayjobs.com", company: "generalmotors", siteName: "Careers_GM" },
+  { name: "Verizon", slug: "verizon", ats: "workday", baseUrl: "https://verizon.wd12.myworkdayjobs.com", company: "verizon", siteName: "verizon-careers" },
+  { name: "Accenture", slug: "accenture", ats: "workday", baseUrl: "https://accenture.wd103.myworkdayjobs.com", company: "accenture", siteName: "AccentureCareers" },
+  { name: "3M", slug: "3m", ats: "workday", baseUrl: "https://3m.wd1.myworkdayjobs.com", company: "3m", siteName: "Search" },
+  { name: "Caterpillar", slug: "caterpillar", ats: "workday", baseUrl: "https://cat.wd5.myworkdayjobs.com", company: "cat", siteName: "CaterpillarCareers" },
+  { name: "Booz Allen Hamilton", slug: "boozallen", ats: "workday", baseUrl: "https://bah.wd1.myworkdayjobs.com", company: "bah", siteName: "BAH_Jobs" },
+  { name: "Broadcom", slug: "broadcom", ats: "workday", baseUrl: "https://broadcom.wd1.myworkdayjobs.com", company: "broadcom", siteName: "External_Career" },
+  { name: "RTX", slug: "rtx", ats: "workday", baseUrl: "https://globalhr.wd5.myworkdayjobs.com", company: "globalhr", siteName: "REC_RTX_Ext_Gateway" },
 ];
 
 interface GHJob {

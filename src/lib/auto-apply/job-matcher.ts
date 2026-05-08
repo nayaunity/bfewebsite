@@ -373,6 +373,13 @@ const BLOCKED_COMPANIES = new Set([
   "tmobile",      // School dropdown selection doesn't register (fixable — ArrowDown+Enter issue)
   // May 8: Expansion smoke failures
   "roblox",       // Custom career portal (careers.roblox.com) — form not in Greenhouse iframe
+  // May 8: Workday smoke failures — custom login/SSO, no standard signup form
+  "paypal",       // Stuck on ApplicationQuestions (step 3)
+  "verizon",      // Custom login page — signup email field not found
+  "accenture",    // Custom login page — signup email field not found
+  "boozallen",    // Custom login page — signup email field not found
+  "broadcom",     // Login/authentication required
+  "rtx",          // Unable to authenticate — custom auth flow
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).

@@ -329,6 +329,49 @@ export const WORKDAY_TENANTS: WorkdayTenant[] = [
     apiTenant: "tmobile",
     siteName: "External",
   },
+  // --- May 8 expansion ---
+  {
+    host: "paypal.wd1.myworkdayjobs.com",
+    name: "PayPal",
+    apiTenant: "paypal",
+    siteName: "jobs",
+  },
+  {
+    host: "generalmotors.wd5.myworkdayjobs.com",
+    name: "General Motors",
+    apiTenant: "generalmotors",
+    siteName: "Careers_GM",
+  },
+  {
+    host: "verizon.wd12.myworkdayjobs.com",
+    name: "Verizon",
+    apiTenant: "verizon",
+    siteName: "verizon-careers",
+  },
+  {
+    host: "accenture.wd103.myworkdayjobs.com",
+    name: "Accenture",
+    apiTenant: "accenture",
+    siteName: "AccentureCareers",
+  },
+  {
+    host: "3m.wd1.myworkdayjobs.com",
+    name: "3M",
+    apiTenant: "3m",
+    siteName: "Search",
+  },
+  {
+    host: "cat.wd5.myworkdayjobs.com",
+    name: "Caterpillar",
+    apiTenant: "cat",
+    siteName: "CaterpillarCareers",
+  },
+  {
+    host: "bah.wd1.myworkdayjobs.com",
+    name: "Booz Allen Hamilton",
+    apiTenant: "bah",
+    siteName: "BAH_Jobs",
+  },
 ];
 
 export function answerForQuestion(tenant: WorkdayTenant, questionText: string): string {
