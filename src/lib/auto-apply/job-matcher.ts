@@ -179,7 +179,8 @@ function locationMatchScore(
 function seniorityMatchScore(
   title: string,
   yearsOfExperience: string | null,
-  degree?: string | null
+  degree?: string | null,
+  seekingInternship?: boolean
 ): number {
   if (!yearsOfExperience) return 0.5;
 
@@ -202,7 +203,7 @@ function seniorityMatchScore(
   const isResearchScientist = /\bresearch scientist\b|\bapplied scientist\b/.test(titleLower);
   if (isResearchScientist && years <= 2 && !userHasPhD) return -1;
 
-  if (isIntern && years >= 3) return -1;
+  if (isIntern && years >= 3 && !seekingInternship) return -1;
   if (isNewGrad && years >= 4) return -1;
 
   if (years <= 2) {
@@ -462,17 +463,15 @@ export async function matchJobsForProfile(
   const isEarlyCareer = !isNaN(years) && years <= 2;
 
   if (seekingInternship) {
-    // Replace keyword sets entirely. Without this, the user's role keywords
-    // ("software", "engineer") still match every senior FT "Software Engineer"
-    // role. Require an intern term to match.
+    // Require BOTH a role keyword AND an intern term. Bare ["intern"] used to
+    // pull in "Marketing Internship - PR" for an "AI / ML Engineer" candidate
+    // because there was no role-specificity gate.
+    const roleKws = getSearchKeywords(roleLabels);
     keywordSets = [
-      ["intern"],
-      ["internship"],
-      ["co-op"],
-      ["coop"],
-      ["new", "grad"],
-      ["summer", "associate"],
-      ...getSearchKeywords(roleLabels).map((set) => [...set, "intern"]),
+      ...roleKws.map((set) => [...set, "intern"]),
+      ...roleKws.map((set) => [...set, "internship"]),
+      ...roleKws.map((set) => [...set, "co-op"]),
+      ...roleKws.map((set) => [...set, "coop"]),
     ];
   } else if (isEarlyCareer) {
     keywordSets.push(
@@ -568,7 +567,7 @@ export async function matchJobsForProfile(
     );
     if (locScore === -1) continue;
 
-    const seniorityScore = seniorityMatchScore(job.title, profile.yearsOfExperience, profile.degree);
+    const seniorityScore = seniorityMatchScore(job.title, profile.yearsOfExperience, profile.degree, seekingInternship);
     if (seniorityScore === -1) continue;
 
     const score = roleScore * 0.5 + locScore * 0.3 + seniorityScore * 0.2;

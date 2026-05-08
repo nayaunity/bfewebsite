@@ -24,9 +24,15 @@ export async function GET(request: NextRequest) {
     console.log("[Daily Apply] Starting automated job matching...");
     const startTime = Date.now();
 
-    // Find eligible users: complete profile with apps remaining (any tier)
+    // Find eligible users: paying users (starter/pro, active or trialing)
+    // with a complete profile and at least one resume. Free / past_due /
+    // canceled users are skipped by canApply() anyway, so excluding them at
+    // the query level keeps the 5-minute Vercel budget focused on users who
+    // will actually create sessions.
     const eligibleUsers = await prisma.user.findMany({
       where: {
+        subscriptionTier: { in: ["starter", "pro"] },
+        subscriptionStatus: { in: ["active", "trialing"] },
         firstName: { not: null },
         lastName: { not: null },
         phone: { not: null },
