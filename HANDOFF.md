@@ -67,7 +67,7 @@ Discovered tenant configs (host, apiTenant, siteName) via CXS API verification. 
 
 ### Known Issues / Next Steps
 
-1. **WORKDAY_CREDENTIAL_KEY not set in prod:** The env var exists but is empty in Vercel/Railway. A key was generated for smoke testing (`9db2a484...`). This key needs to be set in both Vercel and Railway for Workday account creation to work in production. Without it, all Workday applies will fail with "WORKDAY_CREDENTIAL_KEY env var is not set".
+1. **WORKDAY_CREDENTIAL_KEY — DONE:** Set in both Vercel and Railway (`9db2a484...`). Workday account creation now works in production.
 
 2. **Lever timeout in production:** Both Lever smoke tests hit the 12-min local timeout. In prod with Browserbase the timeout is 18 min. Monitor whether Lever companies succeed in production or if the timeout needs to be extended further.
 
