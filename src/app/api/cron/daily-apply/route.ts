@@ -101,18 +101,36 @@ export async function GET(request: NextRequest) {
           continue;
         }
 
-        // Per-user daily cap: on-track users get 10/day, behind users catch up
-        const pacing = calculatePacing({
-          subscribedAt: user.subscribedAt,
-          createdAt: user.createdAt,
-          currentPeriodEnd: user.currentPeriodEnd,
-          subscriptionTier: user.subscriptionTier || "free",
-          subscriptionStatus: user.subscriptionStatus || "active",
-          monthlyAppCount: user.monthlyAppCount,
+        // Read today's health check for adaptive strategy, fall back to
+        // existing binary logic if the health check cron didn't run.
+        const healthCheck = await prisma.healthCheck.findFirst({
+          where: { userId: user.id, runDate: { gte: todayStart } },
+          orderBy: { runDate: "desc" },
         });
-        const dailyCap = pacing.status === "on_track"
-          ? DEFAULT_DAILY_CAP
-          : CATCHUP_DAILY_CAP;
+
+        let dailyCap: number;
+        let qualityThreshold: number | undefined;
+        let matchMultiplier: number;
+
+        if (healthCheck) {
+          dailyCap = healthCheck.dailyCapAssigned;
+          qualityThreshold = healthCheck.qualityThreshold ?? undefined;
+          matchMultiplier = healthCheck.matchMultiplier;
+        } else {
+          const pacing = calculatePacing({
+            subscribedAt: user.subscribedAt,
+            createdAt: user.createdAt,
+            currentPeriodEnd: user.currentPeriodEnd,
+            subscriptionTier: user.subscriptionTier || "free",
+            subscriptionStatus: user.subscriptionStatus || "active",
+            monthlyAppCount: user.monthlyAppCount,
+          });
+          dailyCap = pacing.status === "on_track"
+            ? DEFAULT_DAILY_CAP
+            : CATCHUP_DAILY_CAP;
+          qualityThreshold = undefined;
+          matchMultiplier = 3;
+        }
 
         const todayApplied = await prisma.browseDiscovery.count({
           where: {
@@ -134,8 +152,11 @@ export async function GET(request: NextRequest) {
 
         const remaining = Math.min(dailyCap - todayApplied, usage.remaining);
 
-        // Match 3x more jobs than needed so the worker has backups when applications fail
-        const matchedJobs = await matchJobsForUser(user.id, remaining * 3);
+        const matchedJobs = await matchJobsForUser(
+          user.id,
+          remaining * matchMultiplier,
+          { qualityThreshold }
+        );
 
         if (matchedJobs.length === 0) {
           const [totalActive, attemptedCount] = await Promise.all([
@@ -205,6 +226,8 @@ export async function GET(request: NextRequest) {
             resumeName: resume.fileName,
             totalCompanies: companiesWithJobs.length,
             seekingInternship: user.seekingInternship === true,
+            qualityThreshold: qualityThreshold ?? null,
+            healthCheckId: healthCheck?.id ?? null,
           },
         });
 

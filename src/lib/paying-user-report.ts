@@ -61,6 +61,19 @@ interface DailyReport {
     irrecoverable: boolean;
     diagnosticSummary: string;
   }[];
+  qualityAuditSummary: {
+    totalAudited: number;
+    goodPercent: number;
+    marginalPercent: number;
+    badPercent: number;
+    worstMatches: Array<{ userName: string; jobTitle: string; company: string; reasoning: string }>;
+  };
+  healthCheckSummary: {
+    usersOnQualityGate: number;
+    usersOnCatchup: number;
+    usersRemediated: number;
+    usersEscalated: number;
+  };
 }
 
 export async function buildDailyReport(): Promise<DailyReport> {
@@ -319,6 +332,46 @@ export async function buildDailyReport(): Promise<DailyReport> {
     }
   }
 
+  // Quality audit summary from today's MatchQualityAudit records
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const qualityAudits = await prisma.matchQualityAudit.findMany({
+    where: { createdAt: { gte: todayStart } },
+    select: { userId: true, qualityVerdict: true, jobTitle: true, company: true, reasoning: true },
+  });
+
+  const qaTotal = qualityAudits.length;
+  const qaGood = qualityAudits.filter((a) => a.qualityVerdict === "good").length;
+  const qaMarginal = qualityAudits.filter((a) => a.qualityVerdict === "marginal").length;
+  const qaBad = qualityAudits.filter((a) => a.qualityVerdict === "bad").length;
+
+  const badMatches = qualityAudits.filter((a) => a.qualityVerdict === "bad");
+  const userNameMap = new Map(payingUsers.map((u) => [u.id, [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown"]));
+  const worstMatches = badMatches.slice(0, 5).map((a) => ({
+    userName: userNameMap.get(a.userId) || "Unknown",
+    jobTitle: a.jobTitle,
+    company: a.company,
+    reasoning: a.reasoning || "",
+  }));
+
+  // Health check summary from today's HealthCheck records
+  const healthChecks = await prisma.healthCheck.findMany({
+    where: { runDate: { gte: todayStart } },
+    select: { strategy: true, remediationActions: true },
+  });
+
+  const usersOnQualityGate = healthChecks.filter((h) => h.strategy === "quality_gate").length;
+  const usersOnCatchup = healthChecks.filter((h) => h.strategy === "catchup" || h.strategy === "aggressive_catchup").length;
+  const usersRemediated = healthChecks.filter((h) => h.remediationActions && h.remediationActions !== "null").length;
+  const usersEscalated = healthChecks.filter((h) => {
+    if (!h.remediationActions) return false;
+    try {
+      const actions = JSON.parse(h.remediationActions);
+      return Array.isArray(actions) && actions.includes("escalate");
+    } catch { return false; }
+  }).length;
+
   return {
     totalPaying: payingUsers.length,
     starterCount,
@@ -333,6 +386,19 @@ export async function buildDailyReport(): Promise<DailyReport> {
     topStuckFields,
     flags,
     pacingAlerts,
+    qualityAuditSummary: {
+      totalAudited: qaTotal,
+      goodPercent: qaTotal > 0 ? Math.round((qaGood / qaTotal) * 100) : 0,
+      marginalPercent: qaTotal > 0 ? Math.round((qaMarginal / qaTotal) * 100) : 0,
+      badPercent: qaTotal > 0 ? Math.round((qaBad / qaTotal) * 100) : 0,
+      worstMatches,
+    },
+    healthCheckSummary: {
+      usersOnQualityGate,
+      usersOnCatchup,
+      usersRemediated,
+      usersEscalated,
+    },
   };
 }
 
@@ -398,6 +464,33 @@ export function formatReportText(r: DailyReport): string {
     lines.push("TOP STUCK FIELDS (last 24h)");
     for (const s of r.topStuckFields) {
       lines.push(`  ${s.label}: ${s.count}`);
+    }
+    lines.push("");
+  }
+
+  if (r.healthCheckSummary.usersOnQualityGate > 0 || r.healthCheckSummary.usersOnCatchup > 0) {
+    lines.push("HEALTH OVERSIGHT");
+    lines.push(`  Quality gate (ahead of pace): ${r.healthCheckSummary.usersOnQualityGate} users`);
+    lines.push(`  Catch-up mode (behind pace): ${r.healthCheckSummary.usersOnCatchup} users`);
+    if (r.healthCheckSummary.usersRemediated > 0) {
+      lines.push(`  Auto-remediated: ${r.healthCheckSummary.usersRemediated} users`);
+    }
+    if (r.healthCheckSummary.usersEscalated > 0) {
+      lines.push(`  Escalated (needs attention): ${r.healthCheckSummary.usersEscalated} users`);
+    }
+    lines.push("");
+  }
+
+  if (r.qualityAuditSummary.totalAudited > 0) {
+    lines.push("MATCH QUALITY AUDIT");
+    lines.push(`  Audited: ${r.qualityAuditSummary.totalAudited} applications`);
+    lines.push(`  Good: ${r.qualityAuditSummary.goodPercent}% | Marginal: ${r.qualityAuditSummary.marginalPercent}% | Bad: ${r.qualityAuditSummary.badPercent}%`);
+    if (r.qualityAuditSummary.worstMatches.length > 0) {
+      lines.push("  Worst matches:");
+      for (const m of r.qualityAuditSummary.worstMatches) {
+        lines.push(`    x ${m.userName}: ${m.jobTitle} at ${m.company}`);
+        if (m.reasoning) lines.push(`      ${m.reasoning}`);
+      }
     }
     lines.push("");
   }
@@ -486,6 +579,39 @@ export function formatReportHtml(r: DailyReport): string {
     stuckBody = "<div style='color:#888;'>None</div>";
   }
 
+  let healthBody = "";
+  if (r.healthCheckSummary.usersOnQualityGate > 0 || r.healthCheckSummary.usersOnCatchup > 0) {
+    healthBody += `<div>Quality gate (ahead of pace): <strong>${r.healthCheckSummary.usersOnQualityGate}</strong> users</div>`;
+    healthBody += `<div>Catch-up mode (behind pace): <strong>${r.healthCheckSummary.usersOnCatchup}</strong> users</div>`;
+    if (r.healthCheckSummary.usersRemediated > 0) {
+      healthBody += `<div>Auto-remediated: <strong>${r.healthCheckSummary.usersRemediated}</strong> users</div>`;
+    }
+    if (r.healthCheckSummary.usersEscalated > 0) {
+      healthBody += `<div style="color:#c00;">Escalated (needs attention): <strong>${r.healthCheckSummary.usersEscalated}</strong> users</div>`;
+    }
+  } else {
+    healthBody = "<div style='color:#888;'>No health check data today.</div>";
+  }
+
+  let qualityBody = "";
+  if (r.qualityAuditSummary.totalAudited > 0) {
+    const qa = r.qualityAuditSummary;
+    const badColor = qa.badPercent > 20 ? "#c00" : qa.badPercent > 10 ? "#d97706" : "#16a34a";
+    qualityBody += `<div>Audited: <strong>${qa.totalAudited}</strong> applications</div>`;
+    qualityBody += `<div><span style="color:#16a34a;">Good: ${qa.goodPercent}%</span> | <span style="color:#d97706;">Marginal: ${qa.marginalPercent}%</span> | <span style="color:${badColor};">Bad: ${qa.badPercent}%</span></div>`;
+    if (qa.worstMatches.length > 0) {
+      qualityBody += `<div style="margin-top:6px;font-size:13px;font-weight:600;">Worst matches:</div>`;
+      for (const m of qa.worstMatches) {
+        qualityBody += `<div style="margin-left:12px;font-size:13px;color:#c00;">x ${m.userName}: ${m.jobTitle} at ${m.company}</div>`;
+        if (m.reasoning) {
+          qualityBody += `<div style="margin-left:24px;font-size:12px;color:#888;">${m.reasoning}</div>`;
+        }
+      }
+    }
+  } else {
+    qualityBody = "<div style='color:#888;'>No quality audit data today (audit runs at 17:00 UTC).</div>";
+  }
+
   let flagBody = "";
   if (r.flags.length === 0) {
     flagBody = "<div style='color:#888;'>No issues flagged today.</div>";
@@ -496,8 +622,10 @@ export function formatReportHtml(r: DailyReport): string {
   return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#111;max-width:640px;">
     <table width="100%" cellpadding="0" cellspacing="0">
       ${section("Overview", overviewBody)}
+      ${section("Health Oversight", healthBody)}
       ${section("User Detail", userBody)}
       ${section("Pacing Alerts", pacingBody)}
+      ${section("Match Quality Audit", qualityBody)}
       ${section("Top Failure Companies", failBody)}
       ${section("Top Stuck Fields", stuckBody)}
       ${section("Flags", flagBody)}

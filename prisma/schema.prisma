@@ -277,6 +277,8 @@ model BrowseSession {
   completedAt    DateTime?
   lastHeartbeatAt DateTime?
   seekingInternship Boolean? @default(false)
+  qualityThreshold  Float?
+  healthCheckId     String?
 
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   discoveries BrowseDiscovery[]
@@ -671,4 +673,41 @@ model PortfolioView {
 
   @@index([portfolioId])
   @@index([viewedAt])
+}
+
+model HealthCheck {
+  id                 String   @id @default(cuid())
+  userId             String
+  runDate            DateTime @default(now())
+  pacingStatus       String
+  appsSent           Int
+  effectiveCap       Int
+  daysRemaining      Int
+  dailyCapAssigned   Int
+  qualityThreshold   Float?
+  matchMultiplier    Int      @default(3)
+  strategy           String
+  remediationActions String?
+  createdAt          DateTime @default(now())
+
+  @@index([userId, runDate])
+  @@index([runDate])
+}
+
+model MatchQualityAudit {
+  id              String   @id @default(cuid())
+  discoveryId     String
+  sessionId       String
+  userId          String
+  jobTitle        String
+  company         String
+  userTargetRoles String
+  qualityVerdict  String
+  qualityScore    Float?
+  reasoning       String?
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([sessionId])
+  @@index([qualityVerdict, createdAt])
 }

@@ -448,7 +448,7 @@ export interface MatchProfile {
 export async function matchJobsForProfile(
   profile: MatchProfile,
   maxJobs: number = 10,
-  opts: { excludeUrls?: Set<string>; userBlockedCompanies?: Set<string> } = {}
+  opts: { excludeUrls?: Set<string>; userBlockedCompanies?: Set<string>; qualityThreshold?: number } = {}
 ): Promise<MatchedJob[]> {
   if (!profile.targetRole) return [];
 
@@ -572,6 +572,7 @@ export async function matchJobsForProfile(
     if (seniorityScore === -1) continue;
 
     const score = roleScore * 0.5 + locScore * 0.3 + seniorityScore * 0.2;
+    if (opts.qualityThreshold != null && score < opts.qualityThreshold) continue;
 
     const reasons: string[] = [];
     if (roleScore >= 0.8) reasons.push("Strong role match");
@@ -638,7 +639,8 @@ export async function matchJobsForProfile(
 
 export async function matchJobsForUser(
   userId: string,
-  maxJobs: number = 10
+  maxJobs: number = 10,
+  opts: { qualityThreshold?: number } = {}
 ): Promise<MatchedJob[]> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -700,5 +702,5 @@ export async function matchJobsForUser(
     }
   }
 
-  return matchJobsForProfile(user, maxJobs, { excludeUrls, userBlockedCompanies });
+  return matchJobsForProfile(user, maxJobs, { excludeUrls, userBlockedCompanies, qualityThreshold: opts.qualityThreshold });
 }
