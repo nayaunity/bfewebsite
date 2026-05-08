@@ -1,3 +1,80 @@
+# Session Handoff — May 7, 2026 (Daily-apply CRON throughput + intern matcher fixes; first confirmed Stripe interview)
+
+## What Was Done May 7 (Evening Session)
+
+### Investigation: 6 paying starters stuck at exactly 5 apps
+
+**Problem:** Admin dashboard screenshot showed 5+ paying starter users (Lavandolyn, Ebun, Courtnee, Brittney, Elias) at exactly 5/1 apps with 19% health. Patrick at 4/2. All subscribed Apr 26-28, last activity Apr 27 or earlier (Patrick last May 3). Logan and Samuel at 0/0 (incomplete profiles, correctly skipped).
+
+**Root cause: 3 bugs compounding:**
+
+1. **Daily-apply CRON eligibility had no subscription filter** (`src/app/api/cron/daily-apply/route.ts:28`). Query pulled 193 users (130 free:inactive + 22 free:canceled + 13 starter:past_due + 28 actually-payable). The 5 affected paying users sat at positions #145-169 in the loop. Vercel's 300s `maxDuration` ran out before reaching them. Confirmed by `BrowseSession.createdAt`: only 6/4/14 unique users got sessions on May 5/6/7 respectively.
+
+2. **`seniorityMatchScore` hard-blocked any title containing "Intern" for 3+ YOE users**, even when `seekingInternship: true` (`src/lib/auto-apply/job-matcher.ts:205`). PhD candidates like Patrick (5 YOE, AI/ML Engineer, seekingInternship=true) had every legitimate ML PhD intern role rejected (e.g. "PhD Machine Learning Engineer, Intern @ Stripe", "Machine Learning Intern (PhD) - Summer 2026 @ DoorDash").
+
+3. **Seeking-internship keyword sets dropped role specificity** (`src/lib/auto-apply/job-matcher.ts:464-485`). The bare `["intern"]` and `["internship"]` sets matched ANY internship regardless of target role. Patrick was getting "Marketing Internship - PR & Communications" and "Skillbridge - Enterprise Support Manager Internship" matched as relevant for an AI/ML Engineer profile.
+
+**Trial cap (`src/lib/subscription.ts:181`) was the historical reason the count was at 5** (during their 7-day trial Apr 26-28 to May 3-5, the cap was 5, hit day 1). After trial converted to active, cap moved to 100, but the CRON throughput bug starved them so they never ran again.
+
+### Fixes deployed (commit `3c58749`, merged main, deployed via `vercel --prod`)
+
+1. **`src/app/api/cron/daily-apply/route.ts`**: Added `subscriptionTier: { in: ["starter", "pro"] }` and `subscriptionStatus: { in: ["active", "trialing"] }` to the eligibility query. 193 -> 28 users. Affected users moved from positions #145-169 to #14-22.
+
+2. **`src/lib/auto-apply/job-matcher.ts:181`**: Added `seekingInternship?: boolean` parameter to `seniorityMatchScore`.
+
+3. **`src/lib/auto-apply/job-matcher.ts:206`**: Gated `if (isIntern && years >= 3) return -1;` behind `&& !seekingInternship`. PhD candidates with industry experience can now get matched to intern titles.
+
+4. **`src/lib/auto-apply/job-matcher.ts:464-475`**: Replaced bare `["intern"]`/`["internship"]`/`["co-op"]`/`["coop"]`/`["new","grad"]`/`["summer","associate"]` keyword sets with role-keyword + intern-term combos only. Now requires both a role token AND an internship term to match.
+
+5. **`src/lib/auto-apply/job-matcher.ts:570`**: Threaded `seekingInternship` into the `seniorityMatchScore` call site.
+
+### Verified end-to-end against prod (read-only, no writes)
+
+| User | canApply | Matched jobs | Sample top match |
+|------|----------|--------------|------------------|
+| Patrick (intern=true, AI/ML) | allowed 96/100 | 30 (was 10) | Machine Learning PhD Intern, Economics @ Instacart |
+| Elias (intern=false, Frontend) | allowed 95/100 | 30 | Frontend Software Engineer @ HeyGen |
+| Brittney (intern=false, DevAdvocate/EM) | allowed 95/100 | 30 | Senior Engineering Manager, DevEx @ GitLab |
+| Lavandolyn (intern=false, PM) | allowed 95/100 | 30 | Senior Design Program Manager II @ Instacart |
+| Courtnee (intern=false, PM) | allowed 95/100 | 30 | Senior Product Manager II - SecOps @ Sumo Logic |
+| Ebun (intern=false, PM) | allowed 95/100 | 30 | Senior Product Manager II - SecOps @ Sumo Logic |
+
+### Interview tracking dive
+
+User asked if any auto-apply applications had resulted in interviews. Searched `InboundEmail` table (3,916 rows) — first by keyword on subjects, then read-the-bodies on every distinct non-noise subject pattern (90 patterns).
+
+**2 confirmed interviews:**
+1. **Kimberly Bone — Stripe HackerRank Assessment (May 1)**: Real Stripe coding challenge, 60 minutes, expires May 22. Stripe email language: "We've reviewed your background and would like to invite you to the next step in our interview process". Recruiter named "Ella" signed the email.
+2. **Daniel Cooke — SingleStore Platform Engineer | Portugal (Apr 21)**: Full interview process completed, then rejection. Email language past-tense and role-specific: "Thank you for the time, effort, and thought you put into the interview process for the Platform Engineer | Portugal position".
+
+**Suspicious / discounted:** "Apollo Education Systems" sent the verbatim same "It was a pleasure meeting you!" rejection template to 5 users (Maqsuda, Brian, Nyaradzo, Elias, Kimberly) within 16 days. Almost certainly a softening boilerplate, not evidence of real meetings.
+
+**Caveat:** `InboundEmail` only catches mail to `apply.theblackfemaleengineer.com` forwarding addresses. Most recruiter outreach goes to candidates' personal emails on the resume and is invisible to the system. So 2 confirmed is a floor, not the actual count.
+
+### Congrats email sent to Kimberly
+
+Drafted, tightened (removed presumption of recruiter screen — the Stripe email actually said "we've reviewed your background", no screen yet), then sent via Resend.
+
+- Resend id: `fc58d6f7-1519-4bf7-9ca2-e115c75dd06d`
+- To: bone.kimberlyd@gmail.com
+- From: Naya <naya@theblackfemaleengineer.com>
+- Reply-To: theblackfemaleengineer@gmail.com
+- Subject: huge congrats on the stripe interview
+
+### Known issues / next steps
+
+1. **Catalog data pollution: full-time Stripe / Databricks SWE roles wrongly tagged `type: 'Internship'`.** 25+ "Senior Software Engineer - Backend / Distributed Data Systems / Database Engine Internals" entries are inside the internship-track pool. Worked around by the role-keyword tightening (Bug #3 fix) but the underlying data should be cleaned. Pollution likely came from a scraper that defaulted to `type: 'Internship'` on parse failure.
+
+2. **CRON budget still tight.** 28 users * ~18s/user matcher = ~8 minutes worst-case, vs 300s Vercel cap. In practice many users fast-skip via `canApply` / active-session checks, but no headroom for growth. Real fix is async per-user enqueue (Inngest / QStash) instead of inline serial `for...of`.
+
+3. **No automated tests on the matcher.** No `.github/workflows/`, no `package.json` test script, no CI. Verification was manual reads against prod data. Consider adding Vitest fixtures for `seniorityMatchScore` and the intern keyword logic before further matcher changes.
+
+4. **The next daily-apply CRON fires May 8 at 9:30 UTC.** All 6 affected users should run for the first time since Apr 26 / May 3. Patrick should now get role-relevant ML internship matches. To confirm sooner, manually trigger via `curl -H "Authorization: Bearer $CRON_SECRET" https://bfewebsite.vercel.app/api/cron/daily-apply` and check the JSON `results` array.
+
+5. **Interview-outcome tracking is essentially absent.** If you want a real interview rate metric, options are: (a) survey paying users directly, (b) build a "tag your responses" UI on the dashboard, (c) train a classifier over `InboundEmail` bodies and tag responses (limited utility because most recruiter mail bypasses the apply email).
+
+---
+
 # Session Handoff — May 8, 2026 (Mass Company Expansion: 45 new companies across 3 ATS platforms)
 
 ## What Was Done May 7-8 (Company Expansion Sprint)
