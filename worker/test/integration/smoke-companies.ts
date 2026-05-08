@@ -118,6 +118,48 @@ const MAY7_NEW_CANDIDATES: Candidate[] = [
 // May 7 Workday-only subset (re-run with WORKDAY_CREDENTIAL_KEY)
 const MAY7_WORKDAY_CANDIDATES: Candidate[] = MAY7_NEW_CANDIDATES.filter((c) => c.ats === "workday");
 
+// May 7 expansion — 15 Lever + 21 Greenhouse (all API-verified)
+const MAY7_EXPANSION_CANDIDATES: Candidate[] = [
+  // Lever companies
+  { company: "Mistral AI",      companySlug: "mistral",        ats: "lever", boardSlug: "mistral" },
+  { company: "Shield AI",       companySlug: "shieldai",       ats: "lever", boardSlug: "shieldai" },
+  { company: "Veeva Systems",   companySlug: "veeva",          ats: "lever", boardSlug: "veeva" },
+  { company: "Gopuff",          companySlug: "gopuff",         ats: "lever", boardSlug: "gopuff" },
+  { company: "Lyra Health",     companySlug: "lyrahealth",     ats: "lever", boardSlug: "lyrahealth" },
+  { company: "WHOOP",           companySlug: "whoop",          ats: "lever", boardSlug: "whoop" },
+  { company: "Octopus Energy",  companySlug: "octoenergy",     ats: "lever", boardSlug: "octoenergy" },
+  { company: "Aircall",         companySlug: "aircall",        ats: "lever", boardSlug: "aircall" },
+  { company: "Hive",            companySlug: "hive",           ats: "lever", boardSlug: "hive" },
+  { company: "Pigment",         companySlug: "pigment",        ats: "lever", boardSlug: "pigment" },
+  { company: "Aledade",         companySlug: "aledade",        ats: "lever", boardSlug: "aledade" },
+  { company: "GRAIL",           companySlug: "grailbio",       ats: "lever", boardSlug: "grailbio" },
+  { company: "Included Health", companySlug: "includedhealth", ats: "lever", boardSlug: "includedhealth" },
+  { company: "Loft Orbital",    companySlug: "loftorbital",    ats: "lever", boardSlug: "loftorbital" },
+  { company: "CaptivateIQ",     companySlug: "captivateiq",    ats: "lever", boardSlug: "captivateiq" },
+  // Greenhouse companies
+  { company: "Okta",              companySlug: "okta",              ats: "greenhouse", boardSlug: "okta" },
+  { company: "Coupang",           companySlug: "coupang",           ats: "greenhouse", boardSlug: "coupang" },
+  { company: "Roblox",            companySlug: "roblox",            ats: "greenhouse", boardSlug: "roblox" },
+  { company: "Applied Intuition", companySlug: "appliedintuition",  ats: "greenhouse", boardSlug: "appliedintuition" },
+  { company: "Lyft",              companySlug: "lyft",              ats: "greenhouse", boardSlug: "lyft" },
+  { company: "Block",             companySlug: "block",             ats: "greenhouse", boardSlug: "block" },
+  { company: "Twitch",            companySlug: "twitch",            ats: "greenhouse", boardSlug: "twitch" },
+  { company: "Airbnb",            companySlug: "airbnb",            ats: "greenhouse", boardSlug: "airbnb" },
+  { company: "Waymo",             companySlug: "waymo",             ats: "greenhouse", boardSlug: "waymo" },
+  { company: "Mixpanel",          companySlug: "mixpanel",          ats: "greenhouse", boardSlug: "mixpanel" },
+  { company: "Qualtrics",         companySlug: "qualtrics",         ats: "greenhouse", boardSlug: "qualtrics" },
+  { company: "Peloton",           companySlug: "peloton",           ats: "greenhouse", boardSlug: "peloton" },
+  { company: "Epic Games",        companySlug: "epicgames",         ats: "greenhouse", boardSlug: "epicgames" },
+  { company: "Opendoor",          companySlug: "opendoor",          ats: "greenhouse", boardSlug: "opendoor" },
+  { company: "New Relic",         companySlug: "newrelic",          ats: "greenhouse", boardSlug: "newrelic" },
+  { company: "Sumo Logic",        companySlug: "sumologic",         ats: "greenhouse", boardSlug: "sumologic" },
+  { company: "Nubank",            companySlug: "nubank",            ats: "greenhouse", boardSlug: "nubank" },
+  { company: "Adyen",             companySlug: "adyen",             ats: "greenhouse", boardSlug: "adyen" },
+  { company: "SoFi",              companySlug: "sofi",              ats: "greenhouse", boardSlug: "sofi" },
+  { company: "Upstart",           companySlug: "upstart",           ats: "greenhouse", boardSlug: "upstart" },
+  { company: "Carvana",           companySlug: "carvana",           ats: "greenhouse", boardSlug: "carvana" },
+];
+
 // Sprint-1 iteration loop: just Walmart. Skips control + irrelevant tenants
 // so iteration cycles are 1-2 min instead of 12 min.
 const WALMART_ONLY_CANDIDATES: Candidate[] = [
@@ -128,7 +170,7 @@ const CISCO_ONLY_CANDIDATES: Candidate[] = [
   { company: "Cisco",        companySlug: "cisco",       ats: "workday",    workday: { baseUrl: "https://cisco.wd5.myworkdayjobs.com",       company: "cisco",      siteName: "Cisco_Careers" } },
 ];
 
-const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES];
+const ALL_KNOWN_CANDIDATES: Candidate[] = [...WORKDAY_ONLY_CANDIDATES, ...MAY7_NEW_CANDIDATES, ...MAY7_EXPANSION_CANDIDATES];
 const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? (() => {
       const slug = process.env.SMOKE_SINGLE!.toLowerCase();
@@ -140,6 +182,8 @@ const SINGLE_COMPANY_CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
 
 const CANDIDATES: Candidate[] = process.env.SMOKE_SINGLE
   ? SINGLE_COMPANY_CANDIDATES
+  : process.env.SMOKE_EXPANSION === "1"
+  ? MAY7_EXPANSION_CANDIDATES
   : process.env.SMOKE_MAY7 === "1"
   ? MAY7_NEW_CANDIDATES
   : process.env.SMOKE_MAY7_WD === "1"

@@ -1140,5 +1140,365 @@
     "atsConfig": {
       "boardSlug": "supabase"
     }
+  },
+  {
+    "name": "Mistral AI",
+    "slug": "mistral",
+    "careersUrl": "https://jobs.lever.co/mistral",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "mistral"
+    }
+  },
+  {
+    "name": "Shield AI",
+    "slug": "shieldai",
+    "careersUrl": "https://jobs.lever.co/shieldai",
+    "industry": "Defense",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "shieldai"
+    }
+  },
+  {
+    "name": "Veeva Systems",
+    "slug": "veeva",
+    "careersUrl": "https://jobs.lever.co/veeva",
+    "industry": "Life Sciences",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "veeva"
+    }
+  },
+  {
+    "name": "Gopuff",
+    "slug": "gopuff",
+    "careersUrl": "https://jobs.lever.co/gopuff",
+    "industry": "Consumer Tech",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "gopuff"
+    }
+  },
+  {
+    "name": "Lyra Health",
+    "slug": "lyrahealth",
+    "careersUrl": "https://jobs.lever.co/lyrahealth",
+    "industry": "HealthTech",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "lyrahealth"
+    }
+  },
+  {
+    "name": "WHOOP",
+    "slug": "whoop",
+    "careersUrl": "https://jobs.lever.co/whoop",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "whoop"
+    }
+  },
+  {
+    "name": "Octopus Energy",
+    "slug": "octoenergy",
+    "careersUrl": "https://jobs.lever.co/octoenergy",
+    "industry": "Energy",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "octoenergy"
+    }
+  },
+  {
+    "name": "Aircall",
+    "slug": "aircall",
+    "careersUrl": "https://jobs.lever.co/aircall",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "aircall"
+    }
+  },
+  {
+    "name": "Hive",
+    "slug": "hive",
+    "careersUrl": "https://jobs.lever.co/hive",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "hive"
+    }
+  },
+  {
+    "name": "Pigment",
+    "slug": "pigment",
+    "careersUrl": "https://jobs.lever.co/pigment",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "pigment"
+    }
+  },
+  {
+    "name": "Aledade",
+    "slug": "aledade",
+    "careersUrl": "https://jobs.lever.co/aledade",
+    "industry": "HealthTech",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "aledade"
+    }
+  },
+  {
+    "name": "GRAIL",
+    "slug": "grailbio",
+    "careersUrl": "https://jobs.lever.co/grailbio",
+    "industry": "HealthTech",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "grailbio"
+    }
+  },
+  {
+    "name": "Included Health",
+    "slug": "includedhealth",
+    "careersUrl": "https://jobs.lever.co/includedhealth",
+    "industry": "HealthTech",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "includedhealth"
+    }
+  },
+  {
+    "name": "Loft Orbital",
+    "slug": "loftorbital",
+    "careersUrl": "https://jobs.lever.co/loftorbital",
+    "industry": "Aerospace",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "loftorbital"
+    }
+  },
+  {
+    "name": "CaptivateIQ",
+    "slug": "captivateiq",
+    "careersUrl": "https://jobs.lever.co/captivateiq",
+    "industry": "Technology",
+    "atsType": "lever",
+    "atsConfig": {
+      "companySlug": "captivateiq"
+    }
+  },
+  {
+    "name": "Okta",
+    "slug": "okta",
+    "careersUrl": "https://boards.greenhouse.io/okta",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "okta"
+    }
+  },
+  {
+    "name": "Coupang",
+    "slug": "coupang",
+    "careersUrl": "https://boards.greenhouse.io/coupang",
+    "industry": "E-commerce",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "coupang"
+    }
+  },
+  {
+    "name": "Roblox",
+    "slug": "roblox",
+    "careersUrl": "https://boards.greenhouse.io/roblox",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "roblox"
+    }
+  },
+  {
+    "name": "Applied Intuition",
+    "slug": "appliedintuition",
+    "careersUrl": "https://boards.greenhouse.io/appliedintuition",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "appliedintuition"
+    }
+  },
+  {
+    "name": "Lyft",
+    "slug": "lyft",
+    "careersUrl": "https://boards.greenhouse.io/lyft",
+    "industry": "Transportation",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "lyft"
+    }
+  },
+  {
+    "name": "Block",
+    "slug": "block",
+    "careersUrl": "https://boards.greenhouse.io/block",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "block"
+    }
+  },
+  {
+    "name": "Twitch",
+    "slug": "twitch",
+    "careersUrl": "https://boards.greenhouse.io/twitch",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "twitch"
+    }
+  },
+  {
+    "name": "Airbnb",
+    "slug": "airbnb",
+    "careersUrl": "https://boards.greenhouse.io/airbnb",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "airbnb"
+    }
+  },
+  {
+    "name": "Waymo",
+    "slug": "waymo",
+    "careersUrl": "https://boards.greenhouse.io/waymo",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "waymo"
+    }
+  },
+  {
+    "name": "Mixpanel",
+    "slug": "mixpanel",
+    "careersUrl": "https://boards.greenhouse.io/mixpanel",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "mixpanel"
+    }
+  },
+  {
+    "name": "Qualtrics",
+    "slug": "qualtrics",
+    "careersUrl": "https://boards.greenhouse.io/qualtrics",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "qualtrics"
+    }
+  },
+  {
+    "name": "Peloton",
+    "slug": "peloton",
+    "careersUrl": "https://boards.greenhouse.io/peloton",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "peloton"
+    }
+  },
+  {
+    "name": "Epic Games",
+    "slug": "epicgames",
+    "careersUrl": "https://boards.greenhouse.io/epicgames",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "epicgames"
+    }
+  },
+  {
+    "name": "Opendoor",
+    "slug": "opendoor",
+    "careersUrl": "https://boards.greenhouse.io/opendoor",
+    "industry": "Real Estate",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "opendoor"
+    }
+  },
+  {
+    "name": "New Relic",
+    "slug": "newrelic",
+    "careersUrl": "https://boards.greenhouse.io/newrelic",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "newrelic"
+    }
+  },
+  {
+    "name": "Sumo Logic",
+    "slug": "sumologic",
+    "careersUrl": "https://boards.greenhouse.io/sumologic",
+    "industry": "Technology",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "sumologic"
+    }
+  },
+  {
+    "name": "Nubank",
+    "slug": "nubank",
+    "careersUrl": "https://boards.greenhouse.io/nubank",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "nubank"
+    }
+  },
+  {
+    "name": "Adyen",
+    "slug": "adyen",
+    "careersUrl": "https://boards.greenhouse.io/adyen",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "adyen"
+    }
+  },
+  {
+    "name": "SoFi",
+    "slug": "sofi",
+    "careersUrl": "https://boards.greenhouse.io/sofi",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "sofi"
+    }
+  },
+  {
+    "name": "Upstart",
+    "slug": "upstart",
+    "careersUrl": "https://boards.greenhouse.io/upstart",
+    "industry": "Fintech",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "upstart"
+    }
+  },
+  {
+    "name": "Carvana",
+    "slug": "carvana",
+    "careersUrl": "https://boards.greenhouse.io/carvana",
+    "industry": "Automotive",
+    "atsType": "greenhouse",
+    "atsConfig": {
+      "boardToken": "carvana"
+    }
   }
 ]

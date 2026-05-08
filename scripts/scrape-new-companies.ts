@@ -12,35 +12,52 @@ const prisma = new PrismaClient({ adapter } as any);
 const NEW_COMPANIES: Array<{
   name: string;
   slug: string;
-  ats: "greenhouse" | "workday" | "ashby";
+  ats: "greenhouse" | "workday" | "ashby" | "lever";
   boardToken?: string;
   boardSlug?: string;
+  companySlug?: string;
   baseUrl?: string;
   company?: string;
   siteName?: string;
 }> = [
-  // Greenhouse (native URLs verified)
-  { name: "Verkada", slug: "verkada", boardToken: "verkada", ats: "greenhouse" },
-  { name: "PagerDuty", slug: "pagerduty", boardToken: "pagerduty", ats: "greenhouse" },
-  { name: "Tanium", slug: "tanium", boardToken: "tanium", ats: "greenhouse" },
-  { name: "Chainguard", slug: "chainguard", boardToken: "chainguard", ats: "greenhouse" },
-  { name: "Lithic", slug: "lithic", boardToken: "lithic", ats: "greenhouse" },
-  { name: "HeyGen", slug: "heygen", boardToken: "heygen", ats: "greenhouse" },
-  { name: "Calendly", slug: "calendly", boardToken: "calendly", ats: "greenhouse" },
-  { name: "Braze", slug: "braze", boardToken: "braze", ats: "greenhouse" },
-  { name: "Iterable", slug: "iterable", boardToken: "iterable", ats: "greenhouse" },
-  { name: "DeepMind", slug: "deepmind", boardToken: "deepmind", ats: "greenhouse" },
-  { name: "Kalshi", slug: "kalshi", boardToken: "kalshi", ats: "greenhouse" },
-  { name: "Medium", slug: "medium", boardToken: "medium", ats: "greenhouse" },
-  { name: "Relativity", slug: "relativity", boardToken: "relativity", ats: "greenhouse" },
-  // Workday
-  { name: "Nvidia", slug: "nvidia", ats: "workday", baseUrl: "https://nvidia.wd5.myworkdayjobs.com", company: "nvidia", siteName: "NVIDIAExternalCareerSite" },
-  { name: "Unisys", slug: "unisys", ats: "workday", baseUrl: "https://unisys.wd5.myworkdayjobs.com", company: "unisys", siteName: "External" },
-  { name: "Novartis", slug: "novartis", ats: "workday", baseUrl: "https://novartis.wd3.myworkdayjobs.com", company: "novartis", siteName: "Novartis_Careers" },
-  { name: "T-Mobile", slug: "tmobile", ats: "workday", baseUrl: "https://tmobile.wd1.myworkdayjobs.com", company: "tmobile", siteName: "External" },
-  // Ashby (job board display only)
-  { name: "Modal", slug: "modal", boardSlug: "modal", ats: "ashby" },
-  { name: "Supabase", slug: "supabase", boardSlug: "supabase", ats: "ashby" },
+  // === Lever (May 7 expansion — all slugs verified via api.lever.co) ===
+  { name: "Mistral AI", slug: "mistral", companySlug: "mistral", ats: "lever" },
+  { name: "Shield AI", slug: "shieldai", companySlug: "shieldai", ats: "lever" },
+  { name: "Veeva Systems", slug: "veeva", companySlug: "veeva", ats: "lever" },
+  { name: "Gopuff", slug: "gopuff", companySlug: "gopuff", ats: "lever" },
+  { name: "Lyra Health", slug: "lyrahealth", companySlug: "lyrahealth", ats: "lever" },
+  { name: "WHOOP", slug: "whoop", companySlug: "whoop", ats: "lever" },
+  { name: "Octopus Energy", slug: "octoenergy", companySlug: "octoenergy", ats: "lever" },
+  { name: "Aircall", slug: "aircall", companySlug: "aircall", ats: "lever" },
+  { name: "Hive", slug: "hive", companySlug: "hive", ats: "lever" },
+  { name: "Pigment", slug: "pigment", companySlug: "pigment", ats: "lever" },
+  { name: "Aledade", slug: "aledade", companySlug: "aledade", ats: "lever" },
+  { name: "GRAIL", slug: "grailbio", companySlug: "grailbio", ats: "lever" },
+  { name: "Included Health", slug: "includedhealth", companySlug: "includedhealth", ats: "lever" },
+  { name: "Loft Orbital", slug: "loftorbital", companySlug: "loftorbital", ats: "lever" },
+  { name: "CaptivateIQ", slug: "captivateiq", companySlug: "captivateiq", ats: "lever" },
+  // === Greenhouse (May 7 expansion — all tokens verified via boards-api.greenhouse.io) ===
+  { name: "Okta", slug: "okta", boardToken: "okta", ats: "greenhouse" },
+  { name: "Coupang", slug: "coupang", boardToken: "coupang", ats: "greenhouse" },
+  { name: "Roblox", slug: "roblox", boardToken: "roblox", ats: "greenhouse" },
+  { name: "Applied Intuition", slug: "appliedintuition", boardToken: "appliedintuition", ats: "greenhouse" },
+  { name: "Lyft", slug: "lyft", boardToken: "lyft", ats: "greenhouse" },
+  { name: "Block", slug: "block", boardToken: "block", ats: "greenhouse" },
+  { name: "Twitch", slug: "twitch", boardToken: "twitch", ats: "greenhouse" },
+  { name: "Airbnb", slug: "airbnb", boardToken: "airbnb", ats: "greenhouse" },
+  { name: "Waymo", slug: "waymo", boardToken: "waymo", ats: "greenhouse" },
+  { name: "Mixpanel", slug: "mixpanel", boardToken: "mixpanel", ats: "greenhouse" },
+  { name: "Qualtrics", slug: "qualtrics", boardToken: "qualtrics", ats: "greenhouse" },
+  { name: "Peloton", slug: "peloton", boardToken: "peloton", ats: "greenhouse" },
+  { name: "Epic Games", slug: "epicgames", boardToken: "epicgames", ats: "greenhouse" },
+  { name: "Opendoor", slug: "opendoor", boardToken: "opendoor", ats: "greenhouse" },
+  { name: "New Relic", slug: "newrelic", boardToken: "newrelic", ats: "greenhouse" },
+  { name: "Sumo Logic", slug: "sumologic", boardToken: "sumologic", ats: "greenhouse" },
+  { name: "Nubank", slug: "nubank", boardToken: "nubank", ats: "greenhouse" },
+  { name: "Adyen", slug: "adyen", boardToken: "adyen", ats: "greenhouse" },
+  { name: "SoFi", slug: "sofi", boardToken: "sofi", ats: "greenhouse" },
+  { name: "Upstart", slug: "upstart", boardToken: "upstart", ats: "greenhouse" },
+  { name: "Carvana", slug: "carvana", boardToken: "carvana", ats: "greenhouse" },
 ];
 
 interface GHJob {
@@ -57,6 +74,15 @@ interface WorkdayJob {
   externalPath: string;
   locationsText: string;
   postedOn: string;
+}
+
+interface LeverJob {
+  id: string;
+  text: string;
+  hostedUrl: string;
+  categories: { location?: string; commitment?: string };
+  createdAt: number;
+  descriptionPlain?: string;
 }
 
 interface AshbyJob {
@@ -96,6 +122,14 @@ async function scrapeWorkday(baseUrl: string, company: string, siteName: string)
     offset += limit;
   }
   return allJobs;
+}
+
+async function scrapeLever(companySlug: string): Promise<LeverJob[]> {
+  const url = `https://api.lever.co/v0/postings/${companySlug}?limit=100`;
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
 }
 
 async function scrapeAshby(boardSlug: string): Promise<AshbyJob[]> {
@@ -148,6 +182,41 @@ async function main() {
               description: (job.content || "").slice(0, 5000),
               source: "auto-apply", isActive: true,
               postedAt: new Date(job.updated_at),
+              category: "Software Engineering", tags: "[]",
+            },
+          });
+          saved++;
+        }
+        console.log(`  -> ${saved} saved/updated`);
+        totalSaved += saved;
+
+      } else if (co.ats === "lever" && co.companySlug) {
+        const jobs = await scrapeLever(co.companySlug);
+        console.log(`${co.name}: ${jobs.length} jobs found`);
+        totalFound += jobs.length;
+        let saved = 0;
+        for (const job of jobs) {
+          const externalId = `lv-${co.companySlug}-${job.id}`;
+          const location = job.categories?.location || "Unknown";
+          const remote = /remote/i.test(location);
+          const region = computeRegion(location);
+          await prisma.job.upsert({
+            where: { externalId_companySlug: { externalId, companySlug: co.slug } },
+            update: {
+              title: job.text, location, remote, region,
+              applyUrl: job.hostedUrl,
+              description: (job.descriptionPlain || "").slice(0, 5000),
+              isActive: true,
+              postedAt: new Date(job.createdAt),
+            },
+            create: {
+              externalId, company: co.name, companySlug: co.slug,
+              title: job.text, location, remote, region,
+              type: job.categories?.commitment || "Full-time",
+              applyUrl: job.hostedUrl,
+              description: (job.descriptionPlain || "").slice(0, 5000),
+              source: "auto-apply", isActive: true,
+              postedAt: new Date(job.createdAt),
               category: "Software Engineering", tags: "[]",
             },
           });

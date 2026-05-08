@@ -371,6 +371,8 @@ const BLOCKED_COMPANIES = new Set([
   // May 7: Workday smoke failures
   "nvidia",       // No standard auth form after Apply Manually — custom SSO
   "tmobile",      // School dropdown selection doesn't register (fixable — ArrowDown+Enter issue)
+  // May 8: Expansion smoke failures
+  "roblox",       // Custom career portal (careers.roblox.com) — form not in Greenhouse iframe
 ]);
 
 // URL patterns with structural failure modes (not fixable by a better form-filler).
