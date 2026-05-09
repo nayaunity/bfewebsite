@@ -1,3 +1,53 @@
+# Session Handoff — May 8, 2026 (Daily-Apply Timeout Fix + Region Misclassification Fix)
+
+## What Was Done May 8 (Late Night Session)
+
+### Daily-Apply Cron Timeout Starving Half the Userbase
+
+**Problem:** The daily-apply cron processed 26 eligible users sequentially. Each user takes ~15s (mostly LLM quality filtering), totaling ~390s. Vercel's 300s limit killed the function after ~14 users. Prisma returns users in insertion order without an `orderBy`, so the same 12 users (lavandolyn.smith through nigelh557) were NEVER reached. They got one session when they signed up and nothing since, sitting at 15-17% pacing.
+
+**Fix:** Rewrote `src/app/api/cron/daily-apply/route.ts` with three-phase architecture:
+1. **Phase 1 (parallel pre-checks):** All 26 users' canApply, active sessions, health checks, and daily cap checks run in parallel via `Promise.all`. This was previously sequential.
+2. **Phase 2 (pacing-priority sort):** Users sorted by pacing status (critical > at_risk > behind > on_track) so the most-behind users get processed first.
+3. **Phase 3 (batched matching):** Users processed in parallel batches of 5 (`BATCH_SIZE = 5`). With 26 users, that's ~6 batches x ~15s = ~90s total, well within 300s.
+4. **Time guard:** Stops gracefully 30s before the limit, marking remaining users as `skipped_timeout` instead of crashing.
+
+**Verification:** Manually triggered the old (sequential) cron, confirmed it processed all 26 users in 152s. After deploying the new parallel version, all users will be covered every night.
+
+**Immediate remediation:** Triggered the cron manually to create sessions for the 12 starved users. 8 got new sessions (brittneyball: 90 jobs, eliastave: 42, patrickmwa81: 16, dpnegron: 14, ruthnehi: 13, abazidml: 10, nigelh557: 2, theblackfemaleengineer: 1). The other 4 skipped legitimately (monthly limit, already had active sessions).
+
+### Region Misclassification: 1,153 International Jobs Served to US Users
+
+**Problem:** User c.wright-galloway (South Carolina) was getting applied to "GitLab: Program Manager - Dubai". The job's location was "Remote, United Arab Emirates" but its `region` was `us`. The `NON_US_INDICATORS` list in `src/lib/job-region.ts` only had 30 entries and was missing UAE, Dubai, EMEA, APAC, and dozens of other countries/regions.
+
+**Fix:**
+1. Expanded `NON_US_INDICATORS` from 30 to 90+ entries covering: Middle East (UAE, Dubai, Abu Dhabi, Qatar, Saudi Arabia, etc.), regional markers (EMEA, APAC, LATAM, EUROPE, ASIA), all major international cities, and countries across Africa, South America, and Asia-Pacific.
+2. Ran a one-time reclassification of all 20,924 `region=us` auto-apply jobs against the fixed classifier. **1,153 jobs** were misclassified: 1,120 moved to `international`, 33 moved to `both`.
+
+Future scrapes will classify correctly because `computeRegion()` is called at write time.
+
+### Schema Migration Applied to Production
+
+The HealthCheck and MatchQualityAudit tables (from the health oversight system) and the two new BrowseSession fields were in the Prisma schema but had no migration, causing `/admin/auto-apply` to 500. Created `prisma/migrations/20260508_health_oversight/migration.sql` and applied it directly to production Turso.
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `src/app/api/cron/daily-apply/route.ts` | Rewrote: parallel pre-checks, pacing-priority sort, batched matching, time guard |
+| `src/lib/job-region.ts` | Expanded NON_US_INDICATORS from 30 to 90+ entries |
+| `prisma/migrations/20260508_health_oversight/migration.sql` | **NEW**: migration for HealthCheck, MatchQualityAudit tables + BrowseSession fields |
+
+### Known Issues / Next Steps
+
+1. **Monitor tomorrow's cron run.** The parallel daily-apply deploys tonight. Check the Vercel function logs for the 06:00 UTC run to confirm all 26 users are processed and the duration is well under 300s.
+
+2. **demisodimu and gerardomartelly hit monthly limit.** These two users were skipped with `skipped_monthly_limit`. They may have legitimate cap issues or stale `monthlyAppCount` values. Worth checking if their period apps from BrowseSession match the stored count.
+
+3. **brianqmclaren, knightkimosop1, udvlenkhtaivan got no_matches.** The matcher returned 0 jobs for these users. Could be that all available jobs were already attempted (excluded URLs). May need more companies added for their roles (Frontend Engineer, Product Manager).
+
+---
+
 # Session Handoff — May 8, 2026 (Application Health Oversight System + Cron Schedule Shift to Midnight MT)
 
 ## What Was Done May 8 (Evening Session)
