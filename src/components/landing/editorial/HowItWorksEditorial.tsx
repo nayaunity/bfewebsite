@@ -76,7 +76,7 @@ const STEPS = [
   },
   {
     n: "02",
-    t: "We match, you approve.",
+    t: "We find your best fits.",
     d: "Every morning, fresh roles from 200+ top companies matched to your skills and preferences.",
     accent: "#1a1a1a",
     fig: <MatchPreview />,

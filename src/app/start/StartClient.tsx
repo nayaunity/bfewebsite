@@ -33,15 +33,19 @@ function trackStep(step: number, tempId: string | null, extra: Record<string, un
   }).catch(() => {});
 }
 
-export default function StartClient() {
+export default function StartClient({ initialTempId }: { initialTempId?: string }) {
   const router = useRouter();
-  const [phase, setPhase] = useState<Phase>("upload");
-  const [tempId, setTempId] = useState<string | null>(null);
+  const [phase, setPhase] = useState<Phase>(initialTempId ? "extracting" : "upload");
+  const [tempId, setTempId] = useState<string | null>(initialTempId ?? null);
   const [extraction, setExtraction] = useState<ResumeExtraction | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    trackStep(0, null);
+    trackStep(0, initialTempId ?? null);
+    if (initialTempId) {
+      handleUploadComplete(initialTempId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUploadComplete = useCallback(async (newTempId: string) => {
