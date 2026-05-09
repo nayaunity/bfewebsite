@@ -11,6 +11,23 @@ export const maxDuration = 300;
 
 const DEFAULT_DAILY_CAP = 10;
 const CATCHUP_DAILY_CAP = 30;
+const BATCH_SIZE = 5;
+const TIME_RESERVE_MS = 30_000;
+
+const PACING_PRIORITY: Record<string, number> = {
+  critical: 0,
+  at_risk: 1,
+  behind: 2,
+  on_track: 3,
+};
+
+type UserResult = {
+  userId: string;
+  email: string;
+  status: string;
+  matchedJobs: number;
+  sessionId?: string;
+};
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -24,11 +41,6 @@ export async function GET(request: NextRequest) {
     console.log("[Daily Apply] Starting automated job matching...");
     const startTime = Date.now();
 
-    // Find eligible users: paying users (starter/pro, active or trialing)
-    // with a complete profile and at least one resume. Free / past_due /
-    // canceled users are skipped by canApply() anyway, so excluding them at
-    // the query level keeps the 5-minute Vercel budget focused on users who
-    // will actually create sessions.
     const eligibleUsers = await prisma.user.findMany({
       where: {
         subscriptionTier: { in: ["starter", "pro"] },
@@ -39,7 +51,7 @@ export async function GET(request: NextRequest) {
         workAuthorized: { not: null },
         countryOfResidence: { not: null },
         targetRole: { not: null },
-        resumes: { some: {} }, // Has at least one resume
+        resumes: { some: {} },
       },
       select: {
         id: true,
@@ -58,64 +70,44 @@ export async function GET(request: NextRequest) {
 
     console.log(`[Daily Apply] Found ${eligibleUsers.length} eligible users`);
 
-    const results: Array<{
-      userId: string;
-      email: string;
-      status: string;
-      matchedJobs: number;
-      sessionId?: string;
-    }> = [];
-
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
-    for (const user of eligibleUsers) {
-      try {
-        // Check tier limits
-        const usage = await canApply(user.id);
-        if (!usage.allowed) {
-          results.push({
-            userId: user.id,
-            email: user.email,
-            status: "skipped_monthly_limit",
-            matchedJobs: 0,
-          });
-          continue;
-        }
-
-        // Check no existing active session
-        const activeSession = await prisma.browseSession.findFirst({
-          where: {
-            userId: user.id,
-            status: { in: ["queued", "processing"] },
-          },
-        });
-
-        if (activeSession) {
-          results.push({
-            userId: user.id,
-            email: user.email,
-            status: "skipped_active_session",
-            matchedJobs: 0,
-          });
-          continue;
-        }
-
-        // Read today's health check for adaptive strategy, fall back to
-        // existing binary logic if the health check cron didn't run.
-        const healthCheck = await prisma.healthCheck.findFirst({
-          where: { userId: user.id, runDate: { gte: todayStart } },
-          orderBy: { runDate: "desc" },
-        });
+    // Phase 1: Run fast pre-checks in parallel for all users
+    const preChecks = await Promise.all(
+      eligibleUsers.map(async (user) => {
+        const [usage, activeSession, healthCheck, todayApplied] =
+          await Promise.all([
+            canApply(user.id),
+            prisma.browseSession.findFirst({
+              where: {
+                userId: user.id,
+                status: { in: ["queued", "processing"] },
+              },
+            }),
+            prisma.healthCheck.findFirst({
+              where: { userId: user.id, runDate: { gte: todayStart } },
+              orderBy: { runDate: "desc" },
+            }),
+            prisma.browseDiscovery.count({
+              where: {
+                session: { userId: user.id },
+                status: "applied",
+                createdAt: { gte: todayStart },
+              },
+            }),
+          ]);
 
         let dailyCap: number;
         let qualityThreshold: number | undefined;
         let matchMultiplier: number;
+        let pacingStatus = "on_track";
 
         if (healthCheck) {
           dailyCap = healthCheck.dailyCapAssigned;
           qualityThreshold = healthCheck.qualityThreshold ?? undefined;
           matchMultiplier = healthCheck.matchMultiplier;
+          pacingStatus = healthCheck.pacingStatus;
         } else {
           const pacing = calculatePacing({
             subscribedAt: user.subscribedAt,
@@ -125,132 +117,89 @@ export async function GET(request: NextRequest) {
             subscriptionStatus: user.subscriptionStatus || "active",
             monthlyAppCount: user.monthlyAppCount,
           });
-          dailyCap = pacing.status === "on_track"
-            ? DEFAULT_DAILY_CAP
-            : CATCHUP_DAILY_CAP;
+          dailyCap =
+            pacing.status === "on_track"
+              ? DEFAULT_DAILY_CAP
+              : CATCHUP_DAILY_CAP;
           qualityThreshold = undefined;
           matchMultiplier = 3;
+          pacingStatus = pacing.status;
         }
 
-        const todayApplied = await prisma.browseDiscovery.count({
-          where: {
-            session: { userId: user.id },
-            status: "applied",
-            createdAt: { gte: todayStart },
-          },
-        });
+        let skipReason: string | null = null;
+        if (!usage.allowed) skipReason = "skipped_monthly_limit";
+        else if (activeSession) skipReason = "skipped_active_session";
+        else if (todayApplied >= dailyCap) skipReason = "skipped_daily_cap";
 
-        if (todayApplied >= dailyCap) {
-          results.push({
-            userId: user.id,
-            email: user.email,
-            status: "skipped_daily_cap",
-            matchedJobs: 0,
-          });
-          continue;
-        }
+        const remaining = skipReason
+          ? 0
+          : Math.min(dailyCap - todayApplied, usage.remaining);
 
-        const remaining = Math.min(dailyCap - todayApplied, usage.remaining);
+        return {
+          user,
+          skipReason,
+          remaining,
+          dailyCap,
+          qualityThreshold,
+          matchMultiplier,
+          healthCheckId: healthCheck?.id ?? null,
+          pacingStatus,
+        };
+      })
+    );
 
-        const matchedJobs = await matchJobsForUser(
-          user.id,
-          remaining * matchMultiplier,
-          { qualityThreshold }
-        );
+    const results: UserResult[] = [];
 
-        if (matchedJobs.length === 0) {
-          const [totalActive, attemptedCount] = await Promise.all([
-            prisma.job.count({ where: { isActive: true } }),
-            prisma.browseDiscovery.count({
-              where: {
-                session: { userId: user.id },
-                status: { in: ["applied", "applying", "failed"] },
-              },
-            }),
-          ]);
-          console.log(
-            `[Daily Apply] ${user.email}: no matches. ${totalActive} active jobs, ${attemptedCount} already attempted by user`
-          );
-          results.push({
-            userId: user.id,
-            email: user.email,
-            status: "no_matches",
-            matchedJobs: 0,
-          });
-          continue;
-        }
-
-        // Group matched jobs by company
-        const companiesWithJobs = [
-          ...new Set(matchedJobs.map((j) => j.company)),
-        ];
-
-        // Parse user's roles to find primary role for search terms
-        let primaryRole = "Software Engineer";
-        try {
-          const roles = JSON.parse(user.targetRole || "[]");
-          if (Array.isArray(roles) && roles.length > 0) primaryRole = roles[0];
-        } catch {
-          if (user.targetRole) primaryRole = user.targetRole;
-        }
-
-        // Find best resume for this role
-        const resume = await matchUserResume(user.id, primaryRole, primaryRole);
-        if (!resume) {
-          results.push({
-            userId: user.id,
-            email: user.email,
-            status: "no_resume",
-            matchedJobs: 0,
-          });
-          continue;
-        }
-
-        // Ensure application email exists
-        await ensureApplicationEmail(user.id);
-
-        // Create browse session with pre-matched jobs — worker skips discovery
-        const session = await prisma.browseSession.create({
-          data: {
-            userId: user.id,
-            targetRole: primaryRole,
-            companies: JSON.stringify(companiesWithJobs),
-            matchedJobs: JSON.stringify(
-              matchedJobs.map((j) => ({
-                title: j.title,
-                applyUrl: j.applyUrl,
-                company: j.company,
-              }))
-            ),
-            resumeUrl: resume.blobUrl,
-            resumeName: resume.fileName,
-            totalCompanies: companiesWithJobs.length,
-            seekingInternship: user.seekingInternship === true,
-            qualityThreshold: qualityThreshold ?? null,
-            healthCheckId: healthCheck?.id ?? null,
-          },
-        });
-
+    // Collect skipped users
+    const readyUsers = [];
+    for (const check of preChecks) {
+      if (check.skipReason) {
         results.push({
-          userId: user.id,
-          email: user.email,
-          status: "session_created",
-          matchedJobs: matchedJobs.length,
-          sessionId: session.id,
-        });
-
-        console.log(
-          `[Daily Apply] ${user.email}: ${matchedJobs.length} matches across ${companiesWithJobs.length} companies → session ${session.id}`
-        );
-      } catch (error) {
-        console.error(`[Daily Apply] Error for ${user.email}:`, error);
-        results.push({
-          userId: user.id,
-          email: user.email,
-          status: "error",
+          userId: check.user.id,
+          email: check.user.email,
+          status: check.skipReason,
           matchedJobs: 0,
         });
+      } else {
+        readyUsers.push(check);
       }
+    }
+
+    // Phase 2: Sort by pacing priority (worst-off users first)
+    readyUsers.sort(
+      (a, b) =>
+        (PACING_PRIORITY[a.pacingStatus] ?? 3) -
+        (PACING_PRIORITY[b.pacingStatus] ?? 3)
+    );
+
+    console.log(
+      `[Daily Apply] ${readyUsers.length} users ready for matching (${results.length} skipped in pre-check)`
+    );
+
+    // Phase 3: Process in parallel batches
+    for (let i = 0; i < readyUsers.length; i += BATCH_SIZE) {
+      const elapsed = Date.now() - startTime;
+      if (elapsed > (maxDuration * 1000 - TIME_RESERVE_MS)) {
+        const remaining = readyUsers.slice(i);
+        for (const r of remaining) {
+          results.push({
+            userId: r.user.id,
+            email: r.user.email,
+            status: "skipped_timeout",
+            matchedJobs: 0,
+          });
+        }
+        console.log(
+          `[Daily Apply] Time guard: skipped ${remaining.length} users at ${Math.round(elapsed / 1000)}s`
+        );
+        break;
+      }
+
+      const batch = readyUsers.slice(i, i + BATCH_SIZE);
+      const batchResults = await Promise.all(
+        batch.map((check) => processUser(check, todayStart))
+      );
+      results.push(...batchResults);
     }
 
     const duration = Math.round((Date.now() - startTime) / 1000);
@@ -270,6 +219,8 @@ export async function GET(request: NextRequest) {
       duration: `${duration}s`,
       eligible: eligibleUsers.length,
       sessionsCreated,
+      skippedTimeout: results.filter((r) => r.status === "skipped_timeout")
+        .length,
     });
 
     return NextResponse.json(summary);
@@ -282,6 +233,106 @@ export async function GET(request: NextRequest) {
       },
       { status: 500 }
     );
+  }
+}
+
+async function processUser(
+  check: {
+    user: {
+      id: string;
+      email: string;
+      targetRole: string | null;
+      seekingInternship: boolean | null;
+    };
+    remaining: number;
+    matchMultiplier: number;
+    qualityThreshold: number | undefined;
+    healthCheckId: string | null;
+  },
+  todayStart: Date
+): Promise<UserResult> {
+  const { user } = check;
+  try {
+    const matchedJobs = await matchJobsForUser(
+      user.id,
+      check.remaining * check.matchMultiplier,
+      { qualityThreshold: check.qualityThreshold }
+    );
+
+    if (matchedJobs.length === 0) {
+      console.log(`[Daily Apply] ${user.email}: no matches`);
+      return {
+        userId: user.id,
+        email: user.email,
+        status: "no_matches",
+        matchedJobs: 0,
+      };
+    }
+
+    const companiesWithJobs = [
+      ...new Set(matchedJobs.map((j) => j.company)),
+    ];
+
+    let primaryRole = "Software Engineer";
+    try {
+      const roles = JSON.parse(user.targetRole || "[]");
+      if (Array.isArray(roles) && roles.length > 0) primaryRole = roles[0];
+    } catch {
+      if (user.targetRole) primaryRole = user.targetRole;
+    }
+
+    const resume = await matchUserResume(user.id, primaryRole, primaryRole);
+    if (!resume) {
+      return {
+        userId: user.id,
+        email: user.email,
+        status: "no_resume",
+        matchedJobs: 0,
+      };
+    }
+
+    await ensureApplicationEmail(user.id);
+
+    const session = await prisma.browseSession.create({
+      data: {
+        userId: user.id,
+        targetRole: primaryRole,
+        companies: JSON.stringify(companiesWithJobs),
+        matchedJobs: JSON.stringify(
+          matchedJobs.map((j) => ({
+            title: j.title,
+            applyUrl: j.applyUrl,
+            company: j.company,
+          }))
+        ),
+        resumeUrl: resume.blobUrl,
+        resumeName: resume.fileName,
+        totalCompanies: companiesWithJobs.length,
+        seekingInternship: user.seekingInternship === true,
+        qualityThreshold: check.qualityThreshold ?? null,
+        healthCheckId: check.healthCheckId,
+      },
+    });
+
+    console.log(
+      `[Daily Apply] ${user.email}: ${matchedJobs.length} matches across ${companiesWithJobs.length} companies → session ${session.id}`
+    );
+
+    return {
+      userId: user.id,
+      email: user.email,
+      status: "session_created",
+      matchedJobs: matchedJobs.length,
+      sessionId: session.id,
+    };
+  } catch (error) {
+    console.error(`[Daily Apply] Error for ${user.email}:`, error);
+    return {
+      userId: user.id,
+      email: user.email,
+      status: "error",
+      matchedJobs: 0,
+    };
   }
 }
 
