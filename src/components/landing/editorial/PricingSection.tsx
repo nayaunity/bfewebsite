@@ -56,7 +56,7 @@ export default function PricingSection() {
               <li>Priority queue + daily auto-apply</li>
             </ul>
             <Link
-              href="/auto-apply/get-started"
+              href="/pricing"
               className="block text-center bg-white text-[#1a1a1a] py-3.5 px-6 rounded-full font-semibold text-[15px] border-[1.5px] border-[#1a1a1a] hover:bg-[#f5f5f5] transition-colors"
             >
               Get Pro
