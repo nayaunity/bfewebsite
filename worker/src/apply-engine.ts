@@ -1189,6 +1189,23 @@ async function selectStaticDropdownSafe(
     if (!(await combobox.isVisible({ timeout: 500 }).catch(() => false))) {
       return false;
     }
+
+    const tagName = await combobox.evaluate(el => el.tagName).catch(() => "");
+    if (tagName === "SELECT") {
+      const optionTexts = await combobox.locator("option").allTextContents();
+      const pattern = typeof optionName === "string"
+        ? new RegExp(optionName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+        : optionName;
+      const match = optionTexts.find(o => pattern.test(o));
+      if (match) {
+        await combobox.selectOption({ label: match }, { timeout: 3000 });
+        steps.push(`Native select ${String(comboboxNamePattern)}: "${match}"`);
+        return true;
+      }
+      steps.push(`Native select ${String(comboboxNamePattern)}: no option matching ${String(optionName)}`);
+      return false;
+    }
+
     let timer: ReturnType<typeof setTimeout>;
     await Promise.race([
       selectStaticDropdown(frame, comboboxNamePattern, optionName, steps),
@@ -1809,7 +1826,7 @@ async function greenhouseDeterministicFill(
   // Ethnicity multi-select (Reddit-style)
   const earlyRacePattern = applicant.race
     ? new RegExp(applicant.race.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
-    : /Black|decline|prefer not/i;
+    : /decline|don.*wish|prefer not/i;
   await selectStaticDropdownSafe(frame, /ethnicities.*identify/i, earlyRacePattern, steps);
   // LGBTQ+ community (Discord)
   await selectStaticDropdownSafe(frame, /LGBTQ|member of the.*community/i, /decline|don.*wish|prefer not|No/i, steps);
@@ -1962,10 +1979,10 @@ async function greenhouseDeterministicFill(
   // Phase 8: EEO fields — use applicant profile data
   const genderPattern = applicant.gender
     ? new RegExp(applicant.gender.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
-    : /Female|Woman|decline|prefer not|Not Specified/i;
+    : /decline|don.*wish|prefer not|Not Specified/i;
   const racePattern = applicant.race
     ? new RegExp(applicant.race.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
-    : /Black|decline|prefer not|Not Specified/i;
+    : /decline|don.*wish|prefer not|Not Specified/i;
   const hispanicPattern = applicant.hispanicOrLatino === "Yes" ? /^Yes/i
     : applicant.hispanicOrLatino === "No" ? /^No/i
     : /^No|decline|prefer not|Not Specified/i;
@@ -2544,6 +2561,27 @@ async function _applyToJobInner(
     await page.waitForTimeout(2000);
     await dismissCookieBanners(page, steps);
     steps.push(`Navigated to: ${page.url()}`);
+
+    // Expired job detection: Greenhouse redirects to /company?error=true
+    // when a job posting is removed. Bail immediately instead of wasting
+    // 12 minutes searching for a form on the listings page.
+    const landedUrl = page.url();
+    if (landedUrl.includes("?error=true") || landedUrl.includes("&error=true")) {
+      return { success: false, error: "Job posting no longer available (expired or removed)", steps };
+    }
+    // Greenhouse board redirect: if we asked for /jobs/12345 but landed
+    // on a bare /company page (no /jobs/ in the path), the job was removed.
+    if (applyUrl.includes("/jobs/") && landedUrl.includes("greenhouse.io")) {
+      const landedPath = new URL(landedUrl).pathname;
+      if (!landedPath.includes("/jobs/")) {
+        return { success: false, error: "Job posting no longer available (redirected to company board)", steps };
+      }
+    }
+    // Also detect 404 pages
+    const pageTitle = await page.title().catch(() => "");
+    if (/404|not found|page.*removed/i.test(pageTitle)) {
+      return { success: false, error: "Job posting not found (404)", steps };
+    }
 
     // Early login detection
     if (await isLoginPage(page)) {
