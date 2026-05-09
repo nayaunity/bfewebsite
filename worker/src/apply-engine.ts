@@ -527,7 +527,7 @@ interface RoleAction {
   message?: string;
 }
 
-const MAX_STEPS = 25;
+const MAX_STEPS = 35;
 // BB adds ~200-500ms per Playwright action; a form with 100-300 actions can
 // eat 30-150s of pure network overhead. Give the agent more headroom.
 const APPLICATION_TIMEOUT_MS = process.env.USE_BROWSERBASE === "true"
@@ -1209,8 +1209,7 @@ async function selectStaticDropdownSafe(
 // ============================================================================
 
 async function checkThankYou(frame: Frame, page: Page): Promise<boolean> {
-  // Check for various confirmation text patterns across frame and main page
-  const patterns = [/thank you/i, /thanks for applying/i, /application.*received/i, /application.*submitted/i, /successfully.*submitted/i, /application complete/i, /we received your/i, /apply.*again/i, /your information has been/i];
+  const patterns = [/thank you/i, /thanks for applying/i, /application.*received/i, /application.*submitted/i, /successfully.*submitted/i, /application complete/i, /we received your/i, /apply.*again/i, /your information has been/i, /your application has been/i, /we.ll be in touch/i, /we will review/i];
   for (const pattern of patterns) {
     const frameCheck = await frame.getByText(pattern).first()
       .isVisible({ timeout: 500 }).catch(() => false);
@@ -1336,27 +1335,38 @@ async function handleVerificationCode(
     const urlBefore = page.url();
     await submitButton.click({ timeout: 5000 });
     steps.push("Clicked Submit after verification code");
-    await page.waitForTimeout(5000);
 
-    if (await checkThankYou(frame, page)) {
-      steps.push("Application submitted successfully after verification");
-      return { success: true, steps, verificationTelemetry: telemetry };
-    }
+    // Wait with progressive checks: Greenhouse can take several seconds to
+    // process the submission and redirect/update the page.
+    for (const delay of [3000, 3000, 4000]) {
+      await page.waitForTimeout(delay);
 
-    // Also check: if the URL changed or the submit button disappeared, submission likely succeeded
-    const urlAfter = page.url();
-    const submitStillVisible = await frame.getByRole("button", { name: /Submit application/i }).first()
-      .isVisible({ timeout: 500 }).catch(() => false);
-    if (urlAfter !== urlBefore || !submitStillVisible) {
-      steps.push("Application likely submitted (URL changed or submit button gone)");
-      return { success: true, steps, verificationTelemetry: telemetry };
-    }
+      if (await checkThankYou(frame, page)) {
+        steps.push("Application submitted successfully after verification");
+        return { success: true, steps, verificationTelemetry: telemetry };
+      }
 
-    // One more check: look for confirmation text on the MAIN page (not frame)
-    const mainText = await page.locator("body").innerText().catch(() => "");
-    if (/thank|submitted|received|applied|application complete/i.test(mainText.slice(0, 2000))) {
-      steps.push("Application submitted (confirmation text on main page)");
-      return { success: true, steps, verificationTelemetry: telemetry };
+      const urlAfter = page.url();
+      const submitStillVisible = await frame.getByRole("button", { name: /Submit application/i }).first()
+        .isVisible({ timeout: 500 }).catch(() => false);
+      if (urlAfter !== urlBefore || !submitStillVisible) {
+        steps.push("Application likely submitted (URL changed or submit button gone)");
+        return { success: true, steps, verificationTelemetry: telemetry };
+      }
+
+      const mainText = await page.locator("body").innerText({ timeout: 2000 }).catch(() => "");
+      if (/thank|submitted|received|applied|application complete/i.test(mainText.slice(0, 3000))) {
+        steps.push("Application submitted (confirmation text on main page)");
+        return { success: true, steps, verificationTelemetry: telemetry };
+      }
+
+      // Check for validation errors that indicate the form wasn't submitted
+      const hasErrors = await frame.locator('[class*="error"], [class*="invalid"], [role="alert"]')
+        .first().isVisible({ timeout: 500 }).catch(() => false);
+      if (hasErrors) {
+        steps.push("Validation errors visible after verification submit");
+        break;
+      }
     }
 
     steps.push("Thank you page not found after verification submit");
@@ -2257,6 +2267,7 @@ CRITICAL RULES:
 - BEFORE clicking Submit: scan the page for any required fields (marked with *) that are still empty or show placeholder text. If you find any, fill them FIRST. Do NOT click Submit until all required fields have values.
 - For date fields ("Pick date...", "Start date"): use format MM/DD/YYYY. If the applicant says "Immediately", use today's date.
 - For location autocomplete comboboxes ("Start typing..."): use type_slowly with the city name, then click the matching option.
+- For demographic fields (Gender, Race/Ethnicity, Veteran, Disability, Transgender, Sexual Orientation): when the applicant data says "Prefer not to say", DO NOT error out. Instead, use select_dropdown with a short keyword like "Decline" or "prefer not" or "I don't wish" to find the decline/opt-out option. These dropdown options vary by form: "Decline to self-identify", "I don't wish to answer", "Prefer not to disclose", etc. Search with a short keyword and select whatever decline option is available. NEVER return an error for these fields.
 
 PREVIOUS STEPS:
 ${recentSteps || "(first step)"}
@@ -2349,15 +2360,40 @@ async function executeRoleAction(page: Page, action: RoleAction, resumePath: str
       if (action.name && action.value) {
         const keywords = action.name!.split(/\s+/).filter(w => w.length > 2);
         const namePattern = new RegExp(keywords.map(w => escapeRegex(w)).join(".*"), "i");
-        let ddTimer: ReturnType<typeof setTimeout>;
+        // Try native <select> first — much faster and more reliable than
+        // the react-select cascade. Falls through to react-select if not found.
+        let nativeHandled = false;
         await withFrameFallback(page, async (frame) => {
-          await Promise.race([
-            selectStaticDropdown(frame, namePattern, action.value!, steps),
-            new Promise<never>((_, reject) => {
-              ddTimer = setTimeout(() => reject(new Error("Dropdown timeout (15s)")), 15_000);
-            }),
-          ]).finally(() => clearTimeout(ddTimer!));
+          try {
+            const combobox = frame.getByRole("combobox", { name: namePattern }).first();
+            const tagName = await combobox.evaluate(el => el.tagName).catch(() => "");
+            if (tagName === "SELECT") {
+              await combobox.selectOption({ label: action.value! }, { timeout: 3000 }).catch(async () => {
+                // Label didn't match exactly — try partial match
+                const options = await combobox.locator("option").allTextContents();
+                const match = options.find(o => o.toLowerCase().includes(action.value!.toLowerCase()));
+                if (match) {
+                  await combobox.selectOption({ label: match }, { timeout: 3000 });
+                } else {
+                  throw new Error(`No option matching "${action.value}" in native select`);
+                }
+              });
+              nativeHandled = true;
+              return;
+            }
+          } catch {}
         });
+        if (!nativeHandled) {
+          let ddTimer: ReturnType<typeof setTimeout>;
+          await withFrameFallback(page, async (frame) => {
+            await Promise.race([
+              selectStaticDropdown(frame, namePattern, action.value!, steps),
+              new Promise<never>((_, reject) => {
+                ddTimer = setTimeout(() => reject(new Error("Dropdown timeout (15s)")), 15_000);
+              }),
+            ]).finally(() => clearTimeout(ddTimer!));
+          });
+        }
       }
       break;
     case "upload":
@@ -2537,9 +2573,11 @@ async function _applyToJobInner(
       }
     }
 
-    // If we're on a page without a visible form, try clicking an "Apply" button
+    // If we're on a page without a visible form, try clicking an "Apply" button.
+    // Custom career pages (Waymo, Upstart, SoFi, etc.) show job descriptions
+    // with an "Apply" CTA that either scrolls to an embedded form or opens one.
     const hasFormIndicators = await page.evaluate(() => {
-      const text = document.body.innerText?.slice(0, 5000) || "";
+      const text = document.body.innerText?.slice(0, 8000) || "";
       const hasForm = document.querySelector('form, iframe[src*="greenhouse"], iframe[src*="lever"]');
       const hasFormText = /resume|cover letter|first.?name|last.?name|upload.*file/i.test(text);
       return !!(hasForm || hasFormText);
@@ -2551,10 +2589,14 @@ async function _applyToJobInner(
         'button:has-text("Apply for this job")',
         'a:has-text("Apply Now")',
         'button:has-text("Apply Now")',
+        'a:has-text("Apply for this position")',
+        'button:has-text("Apply for this position")',
         'a:has-text("Apply")',
         'button:has-text("Apply")',
         '[data-qa="apply-button"]',
         'a[href*="/apply"]',
+        'a:has-text("Ready to Apply")',
+        'button:has-text("Ready to Apply")',
       ];
       for (const sel of applyBtnSelectors) {
         try {
@@ -2568,6 +2610,14 @@ async function _applyToJobInner(
           }
         } catch {}
       }
+    } else {
+      // Form indicators found — but on long pages (Upstart, Waymo) the form
+      // is below the fold. Scroll to the first form element so it's in view.
+      await page.evaluate(() => {
+        const form = document.querySelector('form, iframe[src*="greenhouse"], iframe[src*="lever"]');
+        if (form) form.scrollIntoView({ behavior: "auto", block: "start" });
+      }).catch(() => {});
+      await page.waitForTimeout(500);
     }
 
     // Wait for ATS iframes to load (Greenhouse forms in embedded pages can be slow)
@@ -2665,17 +2715,43 @@ async function _applyToJobInner(
     for (let step = 0; step < MAX_STEPS; step++) {
       const snapshot = await getAccessibilitySnapshot(page);
 
-      // Stuck detection
+      // Stuck detection — progressive recovery before giving up
       if (snapshot === previousSnapshot) {
         stuckCount++;
         if (stuckCount === 4) {
-          // Recovery attempt: scroll down to reveal obscured elements
-          await page.evaluate(() => window.scrollBy(0, 300)).catch(() => {});
+          await page.evaluate(() => window.scrollBy(0, 400)).catch(() => {});
           await page.waitForTimeout(500);
-          steps.push("Stuck recovery: scrolled down 300px");
+          steps.push("Stuck recovery 1: scrolled down 400px");
           continue;
         }
-        if (stuckCount >= 5) {
+        if (stuckCount === 5) {
+          await page.keyboard.press("Escape").catch(() => {});
+          await page.waitForTimeout(300);
+          await page.keyboard.press("Tab").catch(() => {});
+          await page.waitForTimeout(500);
+          steps.push("Stuck recovery 2: Escape + Tab");
+          continue;
+        }
+        if (stuckCount === 6) {
+          const ghFrame = getGreenhouseFrame(page);
+          const target = ghFrame && ghFrame !== page.mainFrame() ? ghFrame : page.mainFrame();
+          await target.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+          await page.waitForTimeout(500);
+          await target.evaluate(() => window.scrollBy(0, 600)).catch(() => {});
+          await page.waitForTimeout(500);
+          steps.push("Stuck recovery 3: scroll to top then 600px down");
+          continue;
+        }
+        if (stuckCount === 7) {
+          await page.evaluate(() => {
+            (document.activeElement as HTMLElement)?.blur?.();
+          }).catch(() => {});
+          await page.mouse.click(400, 300).catch(() => {});
+          await page.waitForTimeout(500);
+          steps.push("Stuck recovery 4: blur + click body");
+          continue;
+        }
+        if (stuckCount >= 8) {
           const snap = await captureFailureSnapshot(page, `stuck-${new URL(applyUrl).hostname}`);
           const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
           return { success: false, error: `Stuck: page state unchanged after multiple actions${suffix}`, steps };
