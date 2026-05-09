@@ -505,8 +505,7 @@ export interface ApplyResult {
   steps?: string[];
   tailored?: boolean;
   tailoredResumeUrl?: string;
-  // Populated on verification-code paths (success or failure) so browse-loop
-  // can attach structured metadata to ErrorLog for /admin/errors visibility.
+  failedEeoKeys?: string[];
   verificationTelemetry?: {
     applicationEmail: string;
     waitedMs: number;
@@ -920,18 +919,14 @@ async function selectViaKeyboard(
   combobox: Locator,
   optionName: string | RegExp
 ): Promise<void> {
-  // Extract a short search string from the option pattern
   let searchStr: string;
   if (typeof optionName === "string") {
-    searchStr = optionName;
+    searchStr = optionName.slice(0, 8);
   } else {
-    // Strip regex metacharacters to get plain text
-    searchStr = optionName.source
-      .replace(/\\/g, "")
-      .replace(/[\\^$.*+?()[\]{}|]/g, "")
-      .split("|")[0]; // Take first alternative from patterns like "Yes|No"
+    const firstAlt = optionName.source.split("|")[0];
+    const literalMatch = firstAlt.match(/^\^?([a-zA-Z0-9][a-zA-Z0-9 ]*)/);
+    searchStr = (literalMatch?.[1] || "").trim().slice(0, 8);
   }
-  searchStr = searchStr.slice(0, 8); // Keep it short for filtering
 
   // Open the flyout
   await openFlyout(frame, combobox);
@@ -979,11 +974,19 @@ async function selectStaticDropdown(
 
   const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
 
-  // Extract a short search string for typing
-  const valueText = typeof optionName === "string"
-    ? optionName
-    : optionName.source.replace(/\\/g, "").replace(/[\\^$.*+?()[\]{}|]/g, "").split("|")[0];
-  const searchStr = valueText.slice(0, 12);
+  // Extract a short search string for typing into the react-select filter.
+  // Takes the leading literal text from the first regex alternative, stopping
+  // at the first metacharacter. This avoids garbled strings: /^No,?\s*I don.t/
+  // extracts just "No" (stops at comma-question), which react-select matches
+  // against "No, I don't have a disability" via substring search.
+  let searchStr: string;
+  if (typeof optionName === "string") {
+    searchStr = optionName.slice(0, 12);
+  } else {
+    const firstAlt = optionName.source.split("|")[0];
+    const literalMatch = firstAlt.match(/^\^?([a-zA-Z0-9][a-zA-Z0-9 ]*)/);
+    searchStr = (literalMatch?.[1] || "").trim().slice(0, 12);
+  }
 
   // --- Strategy A (PRIMARY): keyboard pattern with DOM-level focus ---
   // Focus → clear → type to filter → wait for menu → Enter.
@@ -1180,16 +1183,24 @@ async function selectStaticDropdownSafe(
   comboboxNamePattern: string | RegExp,
   optionName: string | RegExp,
   steps: string[]
-): Promise<void> {
+): Promise<boolean> {
   try {
     const combobox = frame.getByRole("combobox", { name: comboboxNamePattern }).first();
     if (!(await combobox.isVisible({ timeout: 500 }).catch(() => false))) {
-      return; // Field not present on this form — skip silently
+      return false;
     }
-    await selectStaticDropdown(frame, comboboxNamePattern, optionName, steps);
+    let timer: ReturnType<typeof setTimeout>;
+    await Promise.race([
+      selectStaticDropdown(frame, comboboxNamePattern, optionName, steps),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`Dropdown timeout (12s): ${String(comboboxNamePattern)}`)), 12_000);
+      }),
+    ]).finally(() => clearTimeout(timer!));
     steps.push(`Selected dropdown ${String(comboboxNamePattern)}: ${String(optionName)}`);
+    return true;
   } catch (e) {
     steps.push(`Dropdown failed ${String(comboboxNamePattern)}: ${e instanceof Error ? e.message : String(e)}`);
+    return false;
   }
 }
 
@@ -1964,28 +1975,57 @@ async function greenhouseDeterministicFill(
     && /prefer not|don.t.*want|don.t.*wish|decline|not specified/i.test(applicant.disabilityStatus);
   const disabilityPattern = applicant.disabilityStatus && !wantsToDecline
     ? new RegExp(applicant.disabilityStatus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").slice(0, 30), "i")
-    : /^No,?\s*I do not have|^No,?\s*I don.t have|^No,?\s+I have not|^No$/i;
+    : /^No,?\s*I don.t have|^No,?\s*I do not have|^No,?\s+I have not|^No$/i;
 
-  await selectStaticDropdownSafe(frame, /gender/i, genderPattern, steps);
-  await selectStaticDropdownSafe(frame, /hispanic/i, hispanicPattern, steps);
-  await frame.waitForTimeout(1000); // Wait for conditional "Race" field
-  await selectStaticDropdownSafe(frame, /race|ethnicity/i, racePattern, steps);
-  await selectStaticDropdownSafe(frame, /veteran/i, veteranPattern, steps);
-  await selectStaticDropdownSafe(frame, /disability/i, disabilityPattern, steps);
-  // Sexual orientation (Twilio, Reddit, Amplitude, etc.)
-  await selectStaticDropdownSafe(frame, /sexual orientation/i, /don.*wish|decline|prefer not|Heterosexual/i, steps);
-  // Transgender experience (Reddit)
-  await selectStaticDropdownSafe(frame, /transgender/i, /No|don.*wish|decline/i, steps);
+  const eeoFields: Array<{ pattern: RegExp; option: string | RegExp; key: string }> = [
+    { pattern: /gender/i, option: genderPattern, key: "gender" },
+    { pattern: /hispanic/i, option: hispanicPattern, key: "hispanic" },
+  ];
+  const failedEeoKeys: string[] = [];
 
-  // Second pass: if company has BOTH custom EEO + standard Greenhouse EEO,
-  // the first pass may have matched custom fields with wrong option text.
-  // Try standard EEO field names specifically (these are at the very bottom).
-  await selectStaticDropdownSafe(frame, /^Gender\*?$/i, genderPattern, steps);
-  await selectStaticDropdownSafe(frame, /^Are you Hispanic/i, hispanicPattern, steps);
-  await frame.waitForTimeout(1000); // Wait for conditional Race field
-  await selectStaticDropdownSafe(frame, /^Race$/i, racePattern, steps);
-  await selectStaticDropdownSafe(frame, /^Veteran Status/i, veteranPattern, steps);
-  await selectStaticDropdownSafe(frame, /^Disability Status/i, disabilityPattern, steps);
+  for (const f of eeoFields) {
+    if (!(await selectStaticDropdownSafe(frame, f.pattern, f.option, steps))) {
+      failedEeoKeys.push(f.key);
+    }
+  }
+  await frame.waitForTimeout(1000);
+  const raceEeoFields: Array<{ pattern: RegExp; option: string | RegExp; key: string }> = [
+    { pattern: /race|ethnicity/i, option: racePattern, key: "race" },
+    { pattern: /veteran/i, option: veteranPattern, key: "veteran" },
+    { pattern: /disability/i, option: disabilityPattern, key: "disability" },
+    { pattern: /sexual orientation/i, option: /prefer not|decline|Heterosexual|don.*wish/i, key: "sexual-orientation" },
+    { pattern: /transgender/i, option: /No|don.*wish|decline/i, key: "transgender" },
+  ];
+  for (const f of raceEeoFields) {
+    if (!(await selectStaticDropdownSafe(frame, f.pattern, f.option, steps))) {
+      failedEeoKeys.push(f.key);
+    }
+  }
+
+  const secondPassFields: Array<{ pattern: RegExp; option: string | RegExp; key: string }> = [
+    { pattern: /^Gender\*?$/i, option: genderPattern, key: "gender" },
+    { pattern: /^Are you Hispanic/i, option: hispanicPattern, key: "hispanic" },
+  ];
+  for (const f of secondPassFields) {
+    if (failedEeoKeys.includes(f.key)) {
+      if (await selectStaticDropdownSafe(frame, f.pattern, f.option, steps)) {
+        failedEeoKeys.splice(failedEeoKeys.indexOf(f.key), 1);
+      }
+    }
+  }
+  await frame.waitForTimeout(1000);
+  const secondPassRace: Array<{ pattern: RegExp; option: string | RegExp; key: string }> = [
+    { pattern: /^Race$/i, option: racePattern, key: "race" },
+    { pattern: /^Veteran Status/i, option: veteranPattern, key: "veteran" },
+    { pattern: /^Disability Status/i, option: disabilityPattern, key: "disability" },
+  ];
+  for (const f of secondPassRace) {
+    if (failedEeoKeys.includes(f.key)) {
+      if (await selectStaticDropdownSafe(frame, f.pattern, f.option, steps)) {
+        failedEeoKeys.splice(failedEeoKeys.indexOf(f.key), 1);
+      }
+    }
+  }
 
   // Phase 8b: GDPR demographic consent checkbox (no ARIA label — find by ID or parent text)
   try {
@@ -2058,7 +2098,7 @@ async function greenhouseDeterministicFill(
     steps.push(`Submit failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  return { success: false, error: "Greenhouse deterministic fill did not complete — falling back to Claude", steps };
+  return { success: false, error: "Greenhouse deterministic fill did not complete — falling back to Claude", steps, failedEeoKeys };
 }
 
 // ============================================================================
@@ -2307,18 +2347,16 @@ async function executeRoleAction(page: Page, action: RoleAction, resumePath: str
       break;
     case "select_dropdown":
       if (action.name && action.value) {
-        // Use selectStaticDropdown which correctly finds the Toggle flyout
-        // button adjacent to the target combobox.
-        // Build forgiving regex: split name into keywords, match any combobox
-        // whose accessible name contains all keywords (case-insensitive).
         const keywords = action.name!.split(/\s+/).filter(w => w.length > 2);
         const namePattern = new RegExp(keywords.map(w => escapeRegex(w)).join(".*"), "i");
-        // Pass action.value as a string (not pre-built regex) so findOption()
-        // can try exact → starts-with → word-boundary in that order. Building
-        // a fuzzy regex here would defeat the exact-match attempt and reproduce
-        // the "United States" → "United States Minor Outlying Islands" bug.
+        let ddTimer: ReturnType<typeof setTimeout>;
         await withFrameFallback(page, async (frame) => {
-          await selectStaticDropdown(frame, namePattern, action.value!, steps);
+          await Promise.race([
+            selectStaticDropdown(frame, namePattern, action.value!, steps),
+            new Promise<never>((_, reject) => {
+              ddTimer = setTimeout(() => reject(new Error("Dropdown timeout (15s)")), 15_000);
+            }),
+          ]).finally(() => clearTimeout(ddTimer!));
         });
       }
       break;
@@ -2583,6 +2621,13 @@ async function _applyToJobInner(
       steps.push("Workday handler opted out — falling back to Claude agent loop");
     }
 
+    // GENERIC PATH state — declared early so Greenhouse can pre-seed skipped fields
+    let previousSnapshot = "";
+    let stuckCount = 0;
+    const fieldAttempts: Record<string, number> = {};
+    const skippedFields: string[] = [];
+    let preSeededSkipCount = 0;
+
     // FAST PATH: Greenhouse deterministic handler
     if (ats === "Greenhouse") {
       steps.push("Using Greenhouse deterministic handler");
@@ -2592,16 +2637,21 @@ async function _applyToJobInner(
       if (ghResult.success) {
         return { success: true, steps, tailored, tailoredResumeUrl };
       }
+      // Pre-seed skipped fields so the Claude loop doesn't re-try dropdowns
+      // that the deterministic handler already failed on (each retry burns
+      // ~15s of timeout budget for zero chance of success).
+      if (ghResult.failedEeoKeys?.length) {
+        for (const key of ghResult.failedEeoKeys) {
+          const fieldKey = `combobox:${key}`;
+          skippedFields.push(fieldKey);
+          fieldAttempts[fieldKey] = 99;
+        }
+        preSeededSkipCount = ghResult.failedEeoKeys.length;
+        steps.push(`Pre-skipped ${ghResult.failedEeoKeys.length} EEO fields from deterministic handler: ${ghResult.failedEeoKeys.join(", ")}`);
+      }
       steps.push("Deterministic handler did not complete — falling back to Claude agent loop");
     }
 
-    // Pre-pass: run common gate handlers for non-Greenhouse paths BEFORE the
-    // Claude loop. Answers work-auth, sponsorship, in-office acknowledgements,
-    // cert checkboxes, race/ethnicity decline-to-answer, and other stable
-    // gates deterministically. Silent no-op on fields that aren't present.
-    // Greenhouse has its own extensive filler (greenhouseDeterministicFill)
-    // that covers the same ground; skip this pre-pass there to avoid double-
-    // filling.
     if (ats !== "Greenhouse") {
       if (ats === "Ashby") {
         await ashbyIdentityFill(page, applicant, steps).catch(() => {});
@@ -2611,12 +2661,6 @@ async function _applyToJobInner(
       await fillCommonGates(page, applicant, steps).catch(() => {});
       await page.waitForTimeout(500);
     }
-
-    // GENERIC PATH: Claude agent loop with accessibility snapshots
-    let previousSnapshot = "";
-    let stuckCount = 0;
-    const fieldAttempts: Record<string, number> = {};
-    const skippedFields: string[] = [];
 
     for (let step = 0; step < MAX_STEPS; step++) {
       const snapshot = await getAccessibilitySnapshot(page);
@@ -2687,19 +2731,30 @@ async function _applyToJobInner(
         : `${action.role}:${normalizeKey(action.name)}`;
 
       if (action.action === "fill" || action.action === "type_slowly" || action.action === "select_dropdown") {
+        // Check if this field was pre-skipped by the deterministic handler
+        // (fuzzy: "combobox:gender" matches "combobox:gender-identity", etc.)
+        if (action.action === "select_dropdown" && !skippedFields.includes(fieldKey)) {
+          const fkCore = fieldKey.replace(/^combobox:/, "");
+          const preSkipped = skippedFields.some(sk => {
+            const skCore = sk.replace(/^combobox:/, "");
+            return fkCore.includes(skCore) || skCore.includes(fkCore);
+          });
+          if (preSkipped) {
+            skippedFields.push(fieldKey);
+            fieldAttempts[fieldKey] = 99;
+            steps.push(`SKIPPING field "${fieldKey}" (deterministic handler already failed on this)`);
+            continue;
+          }
+        }
         fieldAttempts[fieldKey] = (fieldAttempts[fieldKey] || 0) + 1;
-        // Dropdowns get a tighter cap (2) than text fields (3). When a dropdown
-        // is structurally broken (filter mismatch, portal-rendered menu, etc.)
-        // additional attempts cost ~1 min of Claude+Playwright each and never
-        // resolve. Text fields are usually salvageable with a different value.
-        const cap = action.action === "select_dropdown" ? 3 : 4;
+        const cap = action.action === "select_dropdown" ? 2 : 4;
         if (fieldAttempts[fieldKey] >= cap && !skippedFields.includes(fieldKey)) {
           skippedFields.push(fieldKey);
           steps.push(`SKIPPING field "${fieldKey}" after ${fieldAttempts[fieldKey]} failed attempts (cap=${cap})`);
-          // Cascade bailout: if we've already skipped 3+ fields the form is
-          // structurally broken for us — don't burn 20 more steps hoping Claude
-          // will route around it.
-          if (skippedFields.length >= 5) {
+          // Cascade bailout: if we've skipped 5+ fields during the Claude loop
+          // (not counting pre-seeded EEO skips from the deterministic handler),
+          // the form is structurally broken for us.
+          if (skippedFields.length - preSeededSkipCount >= 5) {
             const snap = await captureFailureSnapshot(page, `stuck-cascade-${new URL(applyUrl).hostname}`);
             const suffix = snap?.screenshotUrl ? ` | snapshot: ${snap.screenshotUrl}` : "";
             return {
