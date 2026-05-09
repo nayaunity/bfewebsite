@@ -130,6 +130,22 @@ html {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Editorial landing page */
+.editorial-landing main {
+  padding-bottom: 0 !important;
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.animate-marquee-editorial {
+  animation: marquee-editorial 40s linear infinite;
+}
+@keyframes marquee-editorial {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 /* Ensure proper viewport on iOS Safari */
 @supports (-webkit-touch-callout: none) {
   html {
