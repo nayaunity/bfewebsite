@@ -31,13 +31,25 @@ export interface JobInfo {
 export async function pollQueue(): Promise<(QueueItem & { job: JobInfo }) | null> {
   const db = getDb();
 
-  // Atomically claim the next queued item
-  const result = await db.execute({
-    sql: `UPDATE ApplyQueue SET status = 'processing', startedAt = datetime('now')
-          WHERE id = (SELECT id FROM ApplyQueue WHERE status = 'queued' ORDER BY priority DESC, createdAt ASC LIMIT 1)
-          RETURNING id, userId, jobId, resumeUrl, resumeName, applicantData`,
-    args: [],
-  });
+  // Claim next queued item with compare-and-swap to prevent race conditions
+  // across multiple worker replicas.
+  let result: { rows: any[] } = { rows: [] };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const candidate = await db.execute({
+      sql: `SELECT id FROM ApplyQueue WHERE status = 'queued' ORDER BY priority DESC, createdAt ASC LIMIT 1`,
+      args: [],
+    });
+    if (candidate.rows.length === 0) break;
+
+    const candidateId = candidate.rows[0].id as string;
+    result = await db.execute({
+      sql: `UPDATE ApplyQueue SET status = 'processing', startedAt = datetime('now')
+            WHERE id = ? AND status = 'queued'
+            RETURNING id, userId, jobId, resumeUrl, resumeName, applicantData`,
+      args: [candidateId],
+    });
+    if (result.rows.length > 0) break;
+  }
 
   if (result.rows.length === 0) return null;
 

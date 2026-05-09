@@ -227,25 +227,38 @@ export async function processNextBrowseSession(): Promise<boolean> {
     }
   } catch {}
 
-  // Atomically claim next queued session — set lastHeartbeatAt now so the
-  // watchdog has an immediate liveness signal before the first apply lands.
-  // lastHeartbeatAt uses ISO format (Prisma 6 requirement); startedAt stays
-  // on SQLite's datetime('now') for backwards-compat with existing rows and
-  // the watchdog's legacy startedAt comparison branch.
-  const result = await db.execute({
-    sql: `UPDATE BrowseSession SET status = 'processing',
-          startedAt = datetime('now'),
-          lastHeartbeatAt = ?
-          WHERE id = (SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1)
-          RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName, seekingInternship`,
-    args: [new Date().toISOString()],
-  });
+  // Claim next queued session with compare-and-swap to prevent race conditions
+  // across multiple worker replicas. Step 1: read a candidate. Step 2: UPDATE
+  // only if it's still 'queued' (another replica may have claimed it between
+  // the two queries). Retry up to 3 times in case of contention.
+  let session: BrowseSessionRow | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const candidate = await db.execute({
+      sql: `SELECT id FROM BrowseSession WHERE status = 'queued' ORDER BY createdAt ASC LIMIT 1`,
+      args: [],
+    });
+    if (!candidate.rows || candidate.rows.length === 0) break;
 
-  if (!result.rows || result.rows.length === 0) {
-    return false;
+    const candidateId = candidate.rows[0].id as string;
+    const claimed = await db.execute({
+      sql: `UPDATE BrowseSession SET status = 'processing',
+            startedAt = datetime('now'),
+            lastHeartbeatAt = ?
+            WHERE id = ? AND status = 'queued'
+            RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName, seekingInternship`,
+      args: [new Date().toISOString(), candidateId],
+    });
+
+    if (claimed.rows && claimed.rows.length > 0) {
+      session = claimed.rows[0] as unknown as BrowseSessionRow;
+      break;
+    }
+    // Another replica claimed it first — retry with next in queue
   }
 
-  const session = result.rows[0] as unknown as BrowseSessionRow;
+  if (!session) {
+    return false;
+  }
 
   // Browserbase A/B: enable for a hashed percentage of userIds when a rollout
   // percentage is configured. Session-scoped so concurrent sessions stay
