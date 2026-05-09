@@ -241,7 +241,7 @@ export function usageErrorMessage(usage: {
     case "payment-failed":
       return "Auto-apply is paused. We couldn't process your last payment. Update your card in account settings and applications will resume automatically.";
     case "trial-required":
-      return "Upgrade to Starter to keep applying. Your first 7 days are free.";
+      return "Upgrade to Starter to start applying. Your first 7 days are free.";
     default:
       return `Monthly limit reached (${usage.used}/${usage.limit}). Upgrade for more.`;
   }
