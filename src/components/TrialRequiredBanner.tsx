@@ -3,16 +3,9 @@
 import { useState } from "react";
 
 /**
- * Renders for free-tier users with a freeTierEndsAt set:
- *   - in the future: amber "your free month ends in N days" warning
- *   - past:           red "your free tier has ended" wall
- *
- * The button POSTs to /api/stripe/checkout (Starter, 7-day trial) and
- * redirects to Stripe Checkout.
- *
- * Caller must only render this when subscriptionTier === "free" AND
- * freeTierEndsAt is set. We do not gate inside this component because the
- * caller already has the data.
+ * Prompts users without a paid subscription to upgrade to Starter.
+ * The button POSTs to /api/stripe/checkout (Starter, 7-day trial)
+ * and redirects to Stripe Checkout.
  */
 export function TrialRequiredBanner({
   freeTierEndsAt,
@@ -51,12 +44,12 @@ export function TrialRequiredBanner({
   };
 
   const headline = past
-    ? "Your free tier has ended"
-    : `Your free month ends in ${daysRemaining} day${daysRemaining === 1 ? "" : "s"}`;
+    ? "Upgrade to Starter"
+    : `Your trial window closes in ${daysRemaining} day${daysRemaining === 1 ? "" : "s"}`;
 
   const subline = past
-    ? "Start your 7-day free trial to keep your job pipeline running. $0 today, $29/mo after the trial. Cancel anytime."
-    : "Start your 7-day free trial now to keep applying without a gap. $0 today, $29/mo after the trial. Cancel anytime.";
+    ? "Get 100 tailored applications per month with a 7-day free trial. $0 today, $29/mo after. Cancel anytime."
+    : "Lock in your 7-day free trial before it expires. $0 today, $29/mo after. Cancel anytime.";
 
   const accentColor = past ? "var(--accent-red-bg, #fee2e2)" : "var(--accent-amber-bg, #fef3c7)";
   const accentBorder = past ? "var(--accent-red-border, #fca5a5)" : "var(--accent-amber-border, #fcd34d)";

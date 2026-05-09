@@ -44,7 +44,7 @@ html[data-theme="dark"] {
   --gray-100: #262626;
   --gray-200: #404040;
   --gray-600: #a3a3a3;
-  --gray-800: #262626;
+  --gray-800: #e5e5e5;
   --card-bg: #1a1a1a;
   --card-border: #404040;
   --cta-bg: #1a1a1a;
@@ -61,6 +61,10 @@ html[data-theme="dark"] {
   --accent-orange-text: #fdba74;
   --accent-purple-bg: #3b0764;
   --accent-purple-text: #d8b4fe;
+  --accent-red-bg: #451a03;
+  --accent-red-border: #7f1d1d;
+  --accent-amber-bg: #422006;
+  --accent-amber-border: #92400e;
   /* Blockquote styling - dark mode */
   --blockquote-bg: #292524;
   --blockquote-text: #fdba74;
@@ -129,6 +133,22 @@ html {
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Editorial landing page */
+.editorial-landing main {
+  padding-bottom: 0 !important;
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.animate-marquee-editorial {
+  animation: marquee-editorial 40s linear infinite;
+}
+@keyframes marquee-editorial {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 /* Ensure proper viewport on iOS Safari */
 @supports (-webkit-touch-callout: none) {

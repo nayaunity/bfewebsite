@@ -8,7 +8,12 @@ export const metadata = {
   description: "Upload your resume. We'll find jobs for you in 10 seconds.",
 };
 
-export default async function StartPage() {
+export default async function StartPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tempId?: string }>;
+}) {
+  const { tempId } = await searchParams;
   const session = await auth();
 
   if (session?.user?.id) {
@@ -21,5 +26,5 @@ export default async function StartPage() {
     }
   }
 
-  return <StartClient />;
+  return <StartClient initialTempId={tempId} />;
 }

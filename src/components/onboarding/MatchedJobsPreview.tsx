@@ -112,7 +112,7 @@ export default function MatchedJobsPreview({ onApply }: Props) {
         jobs matched to your resume
       </p>
       <p className="mt-3 text-[var(--gray-600)]">
-        We apply to every role that matches your background — starting today.
+        We apply to every role that matches your background. Starting today.
       </p>
 
       <div className="mt-10 flex flex-wrap justify-center gap-2">
