@@ -3,38 +3,13 @@
 import { useState } from "react";
 import { ProfileSection } from "./ProfileSection";
 import { selectClass, labelClass, saveProfileFields } from "./form-utils";
-
-const GENDER_OPTIONS = [
-  "Male",
-  "Female",
-  "Non-binary",
-  "Prefer not to say",
-];
-
-const RACE_OPTIONS = [
-  "American Indian or Alaska Native",
-  "Asian",
-  "Black or African American",
-  "Hispanic or Latino",
-  "Native Hawaiian or Other Pacific Islander",
-  "White",
-  "Two or More Races",
-  "Prefer not to say",
-];
-
-const YES_NO_DECLINE = ["Yes", "No", "Prefer not to say"];
-
-const VETERAN_OPTIONS = [
-  "I am not a protected veteran",
-  "I identify as one or more of the classifications of a protected veteran",
-  "Prefer not to say",
-];
-
-const DISABILITY_OPTIONS = [
-  "Yes, I have a disability (or previously had a disability)",
-  "No, I do not have a disability",
-  "Prefer not to say",
-];
+import {
+  GENDER_OPTIONS,
+  RACE_OPTIONS,
+  YES_NO_DECLINE,
+  VETERAN_OPTIONS,
+  DISABILITY_OPTIONS,
+} from "@/lib/eeo-options";
 
 interface Props {
   initialData: {

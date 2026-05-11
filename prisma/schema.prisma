@@ -67,6 +67,7 @@ model User {
   freeTierSunsetEmailAt     DateTime?
   trialEndReminderSentAt    DateTime?
   detailsReviewedAt     DateTime?
+  selfIdCompletedAt     DateTime?
   seekingInternship           Boolean? @default(false)
   visitorId                   String?
   utmSource                   String?
