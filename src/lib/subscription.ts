@@ -117,6 +117,7 @@ export async function getUserTier(userId: string) {
       freeTierEndsAt: true,
       subscribedAt: true,
       createdAt: true,
+      appLimitOverride: true,
     },
   });
 
@@ -178,7 +179,8 @@ export async function canApply(userId: string): Promise<{
   // before paying. After the trial converts (status = "active"), the full
   // TIER_LIMITS.starter unlocks.
   const isTrialing = user.subscriptionStatus === "trialing";
-  const effectiveLimit = isTrialing ? 5 : limits.appsPerMonth;
+  const baseLimit = isTrialing ? 5 : limits.appsPerMonth;
+  const effectiveLimit = user.appLimitOverride ?? baseLimit;
   const remaining = Math.max(0, effectiveLimit - used);
 
   // Payment-failed wall: once Stripe marks the subscription past_due or
