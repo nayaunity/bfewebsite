@@ -1,3 +1,75 @@
+# Session Handoff — May 10, 2026 (Resume archive layer + upload-failure visibility; Kimberly resume recovery)
+
+## What Was Done May 10 (Late Evening Session)
+
+### Resume archive layer + upload-failure visibility (commit `aa2a632`)
+
+**Background:** On May 7, Kimberly Bone (paying starter, May 1 Stripe HackerRank interview) lost her resume to a bug. The legacy `/api/profile/resume` POST endpoint deleted her old blob first, then attempted to upload a new one. The upload failed silently. She was left with `User.resumeUrl` pointing at a 404 blob, `resumeName: null`, `resumeUpdatedAt: null`. The worker (`worker/src/browse-loop.ts:304`) then `fetch()`ed the dead URL on her May 8 + May 9 sessions, did NOT check `res.ok`, wrote 15 bytes of "Blob not found" text to `/tmp/resume-*.pdf`, and Playwright uploaded those 15 bytes as her resume to several companies. Both sessions reported `applied=1` but the submissions were almost certainly junk.
+
+**Three changes shipped in one PR:**
+
+1. **30-day archive layer for blob deletes**
+   - New `ArchivedBlob` model + migration `20260510_archive_layer`. Already applied to prod Turso.
+   - `src/lib/blob-archive.ts` — `archiveBlob(url, ctx)` and `restoreBlob(url)` helpers. Upserts a row with `scheduledPurgeAt = now + 30d`. The blob itself stays live until the deadline.
+   - `src/app/api/cron/purge-archived-blobs/route.ts` — daily cron at 16:00 UTC (added to `vercel.json`) that calls the real `@vercel/blob` `del()` for any row past its `scheduledPurgeAt`.
+   - **Every** `del()` call site migrated to `archiveBlob()`: `/api/profile/resume` POST + DELETE, `/api/profile/resumes` DELETE, `/api/cron/cleanup-anonymous-blobs`, `/api/admin/blog/upload`. Verified via `grep -rn "del(" src/ worker/` — only the purge cron itself remains.
+
+2. **Reorder `/api/profile/resume` POST + DELETE to be commit-safe**
+   - POST now: upload new blob FIRST → commit DB SECOND → archive old blob LAST. If `put()` or `update()` throws, the old blob is still live and the user can keep working. This is the order that would have prevented Kimberly's loss.
+   - DELETE now: null DB row FIRST → archive blob LAST. If archive fails, the user is already correctly in the "no resume" state.
+   - Both endpoints now `logError()` on every failure path (previously only `console.error`'d, which was invisible in `/admin/errors`).
+
+3. **Upload-failure visibility (user + operator + worker)**
+   - `src/components/profile/ResumeHealthBanner.tsx` — server component HEAD-checks the user's resume URLs. Mounted at the top of `/profile` (next to `PaymentFailedBanner` / `TrialRequiredBanner`) and on `/profile/applications`. Renders a red "your resume isn't loading; please re-upload" banner if every URL is dead.
+   - `/admin/broken-resumes` — new admin page (added to AdminSidebar) listing paying users whose resume blob URLs all return 404. Each row has a "Send nudge" button that calls `/api/admin/broken-resumes/nudge` and fires the new Resend template `src/lib/dead-resume-notice.ts`.
+   - `/api/cron/daily-apply` — pre-flight HEAD check on `resume.blobUrl` before creating a `BrowseSession`. If 404: deletes the dead `UserResume` row, nulls `User.resumeUrl/resumeName/resumeUpdatedAt`, calls `logError()` with severity high, sends the re-upload Resend email, returns `status: "skipped_dead_resume"`. The eligibility query's `resumes: { some: {} }` filter then excludes the user from future runs until they re-upload.
+   - `worker/src/browse-loop.ts:300-340` — added `res.ok` check AND PDF magic-byte validation (`buffer.subarray(0, 5).toString() === "%PDF-"`) before writing to `/tmp`. Either failure now calls `markSessionFailed(session.id, "...please re-upload at /profile")` and bails. The May 8 / May 9 silent-junk failure mode can no longer recur.
+
+### Kimberly's account recovered (D)
+
+- Manual one-off prod DB write: deleted her orphan `UserResume` row + nulled her `User.resumeUrl`/`resumeName`/`resumeUpdatedAt`. Verified via re-audit: 0 paying users with dead URLs.
+- Re-upload email sent via Resend. Lands in her inbox at midnight ET; she'll see it in the morning.
+
+### Interview audit (no new interviews)
+
+Re-ran the InboundEmail interview-signal scan. 4,423 total inbound emails (933 new since May 7). Still only 1 confirmed forward-progress interview on record: Kimberly's Stripe HackerRank invite from May 1. Caveat unchanged — `InboundEmail` only catches mail to `apply.theblackfemaleengineer.com` addresses; recruiter outreach via the personal email on the resume is invisible.
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `prisma/schema.prisma` + `prisma/migrations/20260510_archive_layer/migration.sql` | New `ArchivedBlob` model |
+| `src/lib/blob-archive.ts` (new) | `archiveBlob()` + `restoreBlob()` helpers, 30-day window |
+| `src/lib/dead-resume-notice.ts` (new) | Resend template for "please re-upload your resume" |
+| `src/app/api/cron/purge-archived-blobs/route.ts` (new) | Daily 16:00 UTC purge cron |
+| `vercel.json` | Added purge cron entry |
+| `src/components/profile/ResumeHealthBanner.tsx` (new) | Red banner for dead-resume state |
+| `src/app/profile/page.tsx` + `src/app/profile/applications/page.tsx` | Mount the banner |
+| `src/app/admin/broken-resumes/page.tsx` + `NudgeButton.tsx` (new) | Admin view for broken-resume users |
+| `src/app/api/admin/broken-resumes/nudge/route.ts` (new) | "Send nudge" endpoint |
+| `src/app/admin/components/AdminSidebar.tsx` | Sidebar link to /admin/broken-resumes |
+| `src/app/api/profile/resume/route.ts` | Reorder POST + DELETE; replace `del()` with `archiveBlob()`; add `logError()` |
+| `src/app/api/profile/resumes/route.ts` | DELETE: row first, archive last; replace `del()` |
+| `src/app/api/cron/cleanup-anonymous-blobs/route.ts` | Replace `del()` with `archiveBlob()` |
+| `src/app/api/admin/blog/upload/route.ts` | Replace `del()` with `archiveBlob()` |
+| `src/app/api/cron/daily-apply/route.ts` | Pre-flight HEAD check + auto-cleanup + Resend nudge |
+| `worker/src/browse-loop.ts` | `res.ok` check + PDF magic-byte validation |
+
+### Known Issues / Next Steps
+
+1. **Stripe interview case study (E) deferred until Kimberly re-uploads.** Plan in `~/.claude/plans/investigate-her-resume-compared-composed-cray.md`. Once her new resume is on file:
+   - Pull text via `extractResumeText()` (`src/lib/resume-extraction.ts:209`)
+   - Fetch the 2 surviving Stripe JDs from Greenhouse (`gh_jid=7403151` Ecosystem, `gh_jid=7737239` Billing; the 3rd, `gh_jid=7531158` Expansion, is now 404)
+   - Run a Sonnet 4.6 structured analysis comparing resume to JDs
+   - Save report to `docs/case-studies/kimberly-stripe-interview.md`
+   - Investigate whether her May 8 ("Senior Software Engineer, Frontend Engineering" applied) and May 9 (Kalshi "Software Engineer, Product" applied) sessions actually submitted 15 bytes of garbage to those companies. If so, consider proactively flagging it to her so she can follow up directly.
+
+2. **Resume features integration (F) — separate later PR.** Wire `worker/src/tailor-resume.ts` to the user dashboard (the function exists but `BrowseDiscovery.tailoredResumeUrl` is never populated). Update `/api/profile/resume-quiz/generate` and `/api/profile/resume-quiz/rewrite` prompts with case-study-derived patterns.
+
+3. **Worker on Railway autodeploys from `auto-apply-saas`.** The `res.ok` + PDF magic-byte check landed via the deploy push, so the worker fix is live there too.
+
+---
+
 # Session Handoff — May 9-10, 2026 (Strict Location Filtering + Kimberly Bone Credit)
 
 ## What Was Done May 9-10
