@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { canApply } from "@/lib/subscription";
-import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
+import {
+  matchJobsForUser,
+  loadJobCatalog,
+  type CatalogJob,
+} from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 import { calculatePacing } from "@/lib/pacing";
@@ -179,6 +183,14 @@ export async function GET(request: NextRequest) {
       `[Daily Apply] ${readyUsers.length} users ready for matching (${results.length} skipped in pre-check)`
     );
 
+    // Load the job catalog ONCE (sans descriptions, ~5s) and share it across
+    // all users instead of re-querying ~21k rows per user. The old per-user
+    // `select: { description: true }` was ~131MB / ~35s a call, which blew the
+    // 300s function limit and starved everyone past the first batch.
+    const catalog: CatalogJob[] =
+      readyUsers.length > 0 ? await loadJobCatalog() : [];
+    console.log(`[Daily Apply] Catalog loaded: ${catalog.length} jobs`);
+
     // Phase 3: Process in parallel batches
     for (let i = 0; i < readyUsers.length; i += BATCH_SIZE) {
       const elapsed = Date.now() - startTime;
@@ -200,7 +212,7 @@ export async function GET(request: NextRequest) {
 
       const batch = readyUsers.slice(i, i + BATCH_SIZE);
       const batchResults = await Promise.all(
-        batch.map((check) => processUser(check, todayStart))
+        batch.map((check) => processUser(check, todayStart, catalog))
       );
       results.push(...batchResults);
     }
@@ -252,14 +264,15 @@ async function processUser(
     qualityThreshold: number | undefined;
     healthCheckId: string | null;
   },
-  todayStart: Date
+  todayStart: Date,
+  catalog: CatalogJob[]
 ): Promise<UserResult> {
   const { user } = check;
   try {
     const matchedJobs = await matchJobsForUser(
       user.id,
       check.remaining * check.matchMultiplier,
-      { qualityThreshold: check.qualityThreshold }
+      { qualityThreshold: check.qualityThreshold, catalog }
     );
 
     if (matchedJobs.length === 0) {
