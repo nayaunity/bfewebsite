@@ -239,6 +239,13 @@ function seniorityMatchScore(
 // LLM QUALITY GATE
 // ============================================================================
 
+// Hard ceiling on how many candidates we send to the LLM relevance check per
+// user, regardless of maxJobs / matchMultiplier. Keeps the Haiku prompt small
+// (a ×5 catch-up multiplier would otherwise produce a ~450-job prompt) and the
+// session still ends up with far more matched jobs than the worker's 30/day
+// apply cap can use.
+const MAX_LLM_CANDIDATES = 60;
+
 async function llmQualityFilter(
   candidates: MatchedJob[],
   userProfile: {
@@ -315,7 +322,9 @@ Respond in this exact format, one per line:
   try {
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: Math.max(512, candidates.length * 4),
+      // One verdict line per job is ~6-9 tokens; budget generously so the
+      // response can't truncate and silently drop the tail jobs as implicit NOs.
+      max_tokens: Math.max(1024, candidates.length * 8),
       messages: [{ role: "user", content: prompt }],
     });
 
@@ -456,10 +465,60 @@ export interface MatchProfile {
   seekingInternship?: boolean | null;
 }
 
+// Catalog row shape used for scoring. Deliberately omits `description` — that
+// field is ~6KB/row and only needed for the LLM gate's 300-char snippet, so it
+// is fetched separately for the handful of finalist candidates instead of being
+// hauled across the wire for all ~21k rows on every user (the prod cron-timeout
+// bug: that select was ~131MB / ~35s per call, ×24 users / 5 per batch → blew
+// the 300s function limit).
+export type CatalogJob = {
+  id: string;
+  title: string;
+  applyUrl: string;
+  company: string;
+  companySlug: string;
+  location: string;
+  remote: boolean;
+  region: string;
+  type: string;
+  source: string;
+};
+
+const CATALOG_SELECT = {
+  id: true,
+  title: true,
+  applyUrl: true,
+  company: true,
+  companySlug: true,
+  location: true,
+  remote: true,
+  region: true,
+  type: true,
+  source: true,
+} as const;
+
+/**
+ * Loads the auto-apply + manual job catalog once (sans descriptions). Callers
+ * that match many profiles in one go (the daily-apply cron) should call this
+ * once and pass the result via `opts.catalog` so N users share one ~5s query
+ * instead of issuing N of them. Single-profile callers can ignore it.
+ */
+export async function loadJobCatalog(): Promise<CatalogJob[]> {
+  return prisma.job.findMany({
+    where: { isActive: true, source: { in: ["auto-apply", "manual"] } },
+    select: CATALOG_SELECT,
+  });
+}
+
 export async function matchJobsForProfile(
   profile: MatchProfile,
   maxJobs: number = 10,
-  opts: { excludeUrls?: Set<string>; userBlockedCompanies?: Set<string>; qualityThreshold?: number } = {}
+  opts: {
+    excludeUrls?: Set<string>;
+    userBlockedCompanies?: Set<string>;
+    qualityThreshold?: number;
+    catalog?: CatalogJob[];
+  } = {}
 ): Promise<MatchedJob[]> {
   if (!profile.targetRole) return [];
 
@@ -495,44 +554,44 @@ export async function matchJobsForProfile(
     );
   }
 
-  // DB-level region filter: US users only see "us" or "both" jobs
+  // Region filter: US users only see "us" or "both" jobs. Source filter:
+  // auto-apply only, plus `manual` for internship-seekers (hand-seeded
+  // internships). Internship title/type filtering is handled by the post-filter
+  // loop below, so it's not replicated here.
   const userUS = isUserUS(profile.countryOfResidence);
+  const allowedSources = seekingInternship
+    ? new Set(["auto-apply", "manual"])
+    : new Set(["auto-apply"]);
 
-  const catalogWhere: Record<string, unknown> = {
-    isActive: true,
-    ...(userUS ? { region: { in: ["us", "both"] } } : {}),
-  };
-  if (seekingInternship) {
-    // Allow `manual` source so hand-seeded internships surface alongside
-    // the scraped catalog. Also OR against title-contains-intern to catch
-    // any rows the reclassifier hasn't flipped yet (defense in depth).
-    catalogWhere.source = { in: ["auto-apply", "manual"] };
-    catalogWhere.OR = [
-      { type: "Internship" },
-      { title: { contains: "intern" } },
-      { title: { contains: "Intern" } },
-      { title: { contains: "co-op" } },
-      { title: { contains: "Co-op" } },
-    ];
+  let catalogJobs: CatalogJob[];
+  if (opts.catalog) {
+    catalogJobs = opts.catalog.filter(
+      (j) =>
+        allowedSources.has(j.source) &&
+        (!userUS || j.region === "us" || j.region === "both")
+    );
   } else {
-    catalogWhere.source = "auto-apply";
+    const catalogWhere: Record<string, unknown> = {
+      isActive: true,
+      source: seekingInternship ? { in: ["auto-apply", "manual"] } : "auto-apply",
+      ...(userUS ? { region: { in: ["us", "both"] } } : {}),
+    };
+    if (seekingInternship) {
+      // OR against title-contains-intern to catch rows the reclassifier hasn't
+      // flipped to type=Internship yet (defense in depth).
+      catalogWhere.OR = [
+        { type: "Internship" },
+        { title: { contains: "intern" } },
+        { title: { contains: "Intern" } },
+        { title: { contains: "co-op" } },
+        { title: { contains: "Co-op" } },
+      ];
+    }
+    catalogJobs = await prisma.job.findMany({
+      where: catalogWhere,
+      select: CATALOG_SELECT,
+    });
   }
-
-  const catalogJobs = await prisma.job.findMany({
-    where: catalogWhere,
-    select: {
-      id: true,
-      title: true,
-      applyUrl: true,
-      company: true,
-      companySlug: true,
-      location: true,
-      remote: true,
-      region: true,
-      description: true,
-      type: true,
-    },
-  });
 
   const excludeUrls = opts.excludeUrls ?? new Set<string>();
 
@@ -545,7 +604,6 @@ export async function matchJobsForProfile(
   const cooldownSlugs = new Set(cooldowns.map((c) => c.companySlug));
 
   const scored: MatchedJob[] = [];
-  const jobDescriptions = new Map<string, string>();
 
   for (const job of catalogJobs) {
     if (BLOCKED_COMPANIES.has(job.companySlug)) continue;
@@ -605,10 +663,6 @@ export async function matchJobsForProfile(
       score,
       matchReason: reasons.join(" · ") || "General match",
     });
-
-    if (job.description) {
-      jobDescriptions.set(job.id, job.description);
-    }
   }
 
   scored.sort((a, b) => b.score - a.score);
@@ -632,8 +686,23 @@ export async function matchJobsForProfile(
     if (candidates.length >= maxJobs * 3) break;
   }
 
+  const finalCandidates = candidates.slice(0, MAX_LLM_CANDIDATES);
+
+  // Fetch descriptions only for the finalists that actually go to the LLM gate
+  // (a few dozen rows), not the whole catalog.
+  const jobDescriptions = new Map<string, string>();
+  if (finalCandidates.length > 0) {
+    const descRows = await prisma.job.findMany({
+      where: { id: { in: finalCandidates.map((c) => c.id) } },
+      select: { id: true, description: true },
+    });
+    for (const r of descRows) {
+      if (r.description) jobDescriptions.set(r.id, r.description);
+    }
+  }
+
   const verified = await llmQualityFilter(
-    candidates,
+    finalCandidates,
     {
       roles: roleLabels,
       experience: profile.yearsOfExperience,
@@ -652,7 +721,7 @@ export async function matchJobsForProfile(
 export async function matchJobsForUser(
   userId: string,
   maxJobs: number = 10,
-  opts: { qualityThreshold?: number } = {}
+  opts: { qualityThreshold?: number; catalog?: CatalogJob[] } = {}
 ): Promise<MatchedJob[]> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -714,5 +783,10 @@ export async function matchJobsForUser(
     }
   }
 
-  return matchJobsForProfile(user, maxJobs, { excludeUrls, userBlockedCompanies, qualityThreshold: opts.qualityThreshold });
+  return matchJobsForProfile(user, maxJobs, {
+    excludeUrls,
+    userBlockedCompanies,
+    qualityThreshold: opts.qualityThreshold,
+    catalog: opts.catalog,
+  });
 }
