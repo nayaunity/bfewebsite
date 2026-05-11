@@ -1,3 +1,66 @@
+# Session Handoff — May 9-10, 2026 (Strict Location Filtering + Kimberly Bone Credit)
+
+## What Was Done May 9-10
+
+### Strict Location Filtering for Hybrid/On-site Users (Kimberly Bone Ticket)
+
+**Problem:** Kimberly Bone (bone.kimberlyd@gmail.com, Starter tier, NYC) submitted a ticket on Apr 29 reporting that she was getting auto-applied to remote roles in European countries, hybrid roles in other US cities (Austin), and roles above her level despite selecting Hybrid + NYC. Audit confirmed 45 of her 53 total applications went to roles outside NYC (London, Toronto, Brazil, San Francisco, Seattle, Boston, Palo Alto, etc.).
+
+**Root cause:** Two issues compounding:
+1. `locationMatchScore()` in `job-matcher.ts` was too permissive for non-remote users. Remote jobs got 0.6 and out-of-city on-site jobs got 0.3. With location only weighted 30% of the composite score, a strong role match (50% weight) easily overrode poor location fit.
+2. Kimberly's `remotePreference` was null (not saved during onboarding despite her selecting Hybrid), so the matcher treated her as "no preference" and gave all jobs a 0.5 location score.
+
+**Fixes deployed (both Vercel and Railway):**
+
+1. **Strict geo-filtering** in `locationMatchScore()` (`src/lib/auto-apply/job-matcher.ts` lines 170-186): For Hybrid/On-site users with a specific city set, remote jobs outside their state and on-site jobs outside their state are now hard-blocked (-1). Remote jobs in their city get 0.5, same state get 0.3. Users without a city set or who prefer Remote/Remote-or-Hybrid are unaffected (old behavior preserved). Only 5 active auto-apply users (all On-site) are impacted.
+
+2. **LLM location guardrail** added to quality gate prompt (line 302): The Claude Haiku quality filter now also rejects location-mismatched jobs as a second defense layer.
+
+3. **Default quality threshold of 0.5** (line 586): Previously `qualityThreshold` defaulted to undefined (no floor). Now marginal composite scores below 0.5 are filtered even when no health check sets a threshold.
+
+4. **Per-user `appLimitOverride`** (`prisma/schema.prisma`, `src/lib/subscription.ts`): New nullable Int column that overrides `TIER_LIMITS.appsPerMonth` when set. `canApply()` reads it. Used to give Kimberly 150 apps (instead of 100) for this billing cycle.
+
+**Kimberly remediation:**
+- Fixed `remotePreference`: null -> "Remote or Hybrid"
+- Set `appLimitOverride` = 150 (48 used, 102 remaining)
+- Emailed her with details of the fix and the credit
+- Ticket marked resolved
+
+### Previous Session Apply-Engine Fixes (deployed earlier May 9)
+
+- Native `<select>` support in `selectStaticDropdownSafe` (apply-engine.ts)
+- Fixed EEO default patterns selecting demographic-specific values instead of decline options
+- Expired Greenhouse job detection (`?error=true` redirect, board redirect, 404 title)
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `src/lib/auto-apply/job-matcher.ts` | Strict location filtering, LLM location guardrail, default 0.5 quality threshold |
+| `src/lib/subscription.ts` | Read `appLimitOverride` in `getUserTier`/`canApply` |
+| `prisma/schema.prisma` | Added `appLimitOverride Int?` to User model |
+| `worker/src/apply-engine.ts` | Native select handling, EEO defaults fix, expired job detection |
+
+### Production DB Changes
+
+- Added `appLimitOverride` column to User table (nullable Int)
+- Set `appLimitOverride = 150` for Kimberly Bone (f555e2e6-10ed-4c60-a3eb-accdf92aaadf)
+- Set `remotePreference = 'Remote or Hybrid'` for Kimberly Bone
+
+### Known Issues / Next Steps
+
+1. **Washington DC false positives:** Jessica (On-site + DC) has city="Washington" which substring-matches "Washington" state references (e.g., "Seattle, Washington"). The LLM quality gate should catch these, but a proper metro-area matching system would be more robust.
+
+2. **Kimberly's remotePreference was null:** Investigate why onboarding didn't save her remote preference. Could be a bug in the confirm-extraction or promote flow where "Hybrid" -> "Remote or Hybrid" conversion fails silently.
+
+3. **`appLimitOverride` resets:** The override persists across billing periods. After Kimberly's current period ends (May 28), decide whether to clear it back to null (so she returns to the standard 100) or leave it. Could add a `appLimitOverrideExpiresAt` field if this becomes a recurring pattern.
+
+4. **NO-CATALOG jobs:** 23 of Kimberly's 45 mismatched applications were to jobs no longer in the catalog (deactivated). These couldn't be location-verified but are likely mismatched too given the pattern.
+
+5. **Monitor Brian's session** (cmoyygfox00011156xb9bkvsp) from earlier today to check if the apply-engine fixes improved success rate.
+
+---
+
 # Session Handoff — May 8, 2026 (Daily-Apply Timeout Fix + Region Misclassification Fix)
 
 ## What Was Done May 8 (Late Night Session)
