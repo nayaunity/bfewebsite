@@ -27,7 +27,7 @@ export default async function ApplicationsPage() {
   const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true },
+      select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true, selfIdCompletedAt: true },
     }),
     prisma.jobApplication.findMany({
       where: { userId: session.user.id },
@@ -96,6 +96,15 @@ export default async function ApplicationsPage() {
       where: { source: "auto-apply", isActive: true, region: { in: ["us", "both"] } },
     }),
   ]);
+
+  // Mandatory self-identification gate. Catches paying users who closed the
+  // tab on /onboarding/self-identification and re-entered via the dashboard.
+  if (user) {
+    const isPayingStatus = ["trialing", "active", "past_due"].includes(user.subscriptionStatus);
+    if (isPayingStatus && !user.selfIdCompletedAt) {
+      redirect("/onboarding/self-identification");
+    }
+  }
 
   const discoveryAsApplications = browseDiscoveries.map((d) => ({
     id: d.id,

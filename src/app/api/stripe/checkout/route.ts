@@ -56,14 +56,16 @@ export async function POST(request: NextRequest) {
             payment_method_collection: "always",
           }
         : {}),
-      // Trial-start checkout returns to /onboarding/review so the user can
-      // verify the resume-extracted fields (YOE, title, school, etc.) before
-      // the worker starts auto-applying with potentially wrong data. Pro
-      // subscribers (no trial) skip the review page since they're typically
-      // existing users upgrading, not new signups.
+      // Both flows land first on /onboarding/self-identification, which
+      // captures the mandatory EEO + work-auth answers the worker needs to
+      // fill on Greenhouse/Lever/Ashby/Workday applications. From there:
+      //   - Trial users → /onboarding/review (resume-field verification)
+      //   - Pro users   → /profile?subscription=success (existing landing)
+      // The self-id page handles the Stripe sync itself, and auto-redirects
+      // returning Pro users who already filled the fields previously.
       success_url: isTrial
-        ? `${request.nextUrl.origin}/onboarding/review?session_id={CHECKOUT_SESSION_ID}`
-        : `${request.nextUrl.origin}/profile?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
+        ? `${request.nextUrl.origin}/onboarding/self-identification?session_id={CHECKOUT_SESSION_ID}&next=${encodeURIComponent("/onboarding/review")}`
+        : `${request.nextUrl.origin}/onboarding/self-identification?session_id={CHECKOUT_SESSION_ID}&next=${encodeURIComponent("/profile?subscription=success")}`,
       cancel_url: `${request.nextUrl.origin}/profile/applications`,
       metadata: { userId: session.user.id, tier, trial: isTrial ? "true" : "false" },
     });

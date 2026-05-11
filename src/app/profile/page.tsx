@@ -39,6 +39,7 @@ async function getUserData(userId: string) {
       createdAt: true,
       emailVerified: true,
       onboardingCompletedAt: true,
+      selfIdCompletedAt: true,
       role: true,
       firstName: true,
       lastName: true,
@@ -216,6 +217,14 @@ export default async function ProfilePage({
   // New users who haven't completed onboarding → send to wizard
   if (!user.onboardingCompletedAt) {
     redirect("/auto-apply/get-started");
+  }
+
+  // Mandatory self-identification gate for paying users. Captures EEO +
+  // work-auth answers the worker needs; null fields would otherwise force
+  // decline-defaults on every Greenhouse/Lever/Workday submission.
+  const isPayingStatus = ["trialing", "active", "past_due"].includes(user.subscriptionStatus);
+  if (isPayingStatus && !user.selfIdCompletedAt) {
+    redirect("/onboarding/self-identification");
   }
 
   // Backfill any missing profile fields from onboarding data
