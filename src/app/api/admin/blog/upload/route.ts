@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkContentAdmin } from "@/lib/admin";
-import { put, del } from "@vercel/blob";
+import { put } from "@vercel/blob";
+import { archiveBlob } from "@/lib/blob-archive";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -62,7 +63,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
-    await del(url);
+    await archiveBlob(url, { reason: "blog_image_replaced", type: "blog_image" });
 
     return NextResponse.json({ success: true });
   } catch (error) {

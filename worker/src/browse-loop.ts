@@ -310,12 +310,36 @@ export async function processNextBrowseSession(): Promise<boolean> {
     return true;
   }
 
-  // Download resume once for the whole session
+  // Download resume once for the whole session.
+  //
+  // Validate aggressively: a 404 response body is still ~15 bytes of text
+  // that fetch() does NOT throw on. Without these checks, the worker writes
+  // that text to /tmp and Playwright uploads it as the user's "resume" to
+  // every company in the session. That's how Kimberly's May 8 and May 9
+  // sessions marked applications as "applied" while actually submitting
+  // 15 bytes of garbage. See HANDOFF + the May 7 archive-layer postmortem.
   let resumePath: string | null = null;
   try {
-    resumePath = join(tmpdir(), `resume-${Date.now()}.pdf`);
     const res = await fetch(session.resumeUrl);
+    if (!res.ok) {
+      await markSessionFailed(
+        session.id,
+        `Resume URL returned ${res.status} — please re-upload at /profile`,
+      );
+      return true;
+    }
     const buffer = Buffer.from(await res.arrayBuffer());
+    // PDF magic bytes: every valid PDF starts with `%PDF-`. Catches 404 HTML
+    // pages, 500 error bodies, and any non-PDF blob that snuck through.
+    const head = buffer.subarray(0, 5).toString("latin1");
+    if (head !== "%PDF-") {
+      await markSessionFailed(
+        session.id,
+        `Resume bytes are not a valid PDF (got ${buffer.length} bytes starting with ${JSON.stringify(head)}) — please re-upload at /profile`,
+      );
+      return true;
+    }
+    resumePath = join(tmpdir(), `resume-${Date.now()}.pdf`);
     writeFileSync(resumePath, buffer);
   } catch (err) {
     await markSessionFailed(session.id, "Failed to download resume");

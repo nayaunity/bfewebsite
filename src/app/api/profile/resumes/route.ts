@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { put, del } from "@vercel/blob";
+import { put } from "@vercel/blob";
+import { archiveBlob } from "@/lib/blob-archive";
 import { getMaxResumes } from "@/lib/subscription";
 import { logError } from "@/lib/error-logger";
 
@@ -119,13 +120,28 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Resume not found" }, { status: 404 });
   }
 
-  try {
-    await del(resume.blobUrl);
-  } catch {
-    // Blob may already be deleted
-  }
-
+  // Drop the DB row first so the user immediately sees the resume gone.
   await prisma.userResume.delete({ where: { id } });
+
+  // Archive the blob last. Failure here just orphans a blob for the future
+  // sweep; the DB state is already correct.
+  try {
+    await archiveBlob(resume.blobUrl, {
+      reason: "user_deleted_resume_alt",
+      userId: session.user.id,
+      type: "user_resume_alt",
+    });
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    await logError({
+      userId: session.user.id,
+      endpoint: "/api/profile/resumes",
+      method: "DELETE",
+      status: 200,
+      error: "Failed to archive deleted resume blob (DB row already removed)",
+      detail,
+    });
+  }
 
   return NextResponse.json({ success: true });
 }

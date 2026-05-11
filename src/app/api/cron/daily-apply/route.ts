@@ -5,6 +5,9 @@ import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 import { calculatePacing } from "@/lib/pacing";
+import { logError } from "@/lib/error-logger";
+import { buildDeadResumeDraft } from "@/lib/dead-resume-notice";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -291,6 +294,20 @@ async function processUser(
       };
     }
 
+    // Pre-flight: HEAD-check the resume URL. If 404 (blob was deleted but DB
+    // wasn't updated — the May 7 Kimberly bug), don't queue a session that
+    // will silently submit garbage. Clear the dead row, email the user, skip.
+    const resumeAlive = await isUrlAlive(resume.blobUrl);
+    if (!resumeAlive) {
+      await handleDeadResume(user.id, user.email, resume.id, resume.blobUrl);
+      return {
+        userId: user.id,
+        email: user.email,
+        status: "skipped_dead_resume",
+        matchedJobs: 0,
+      };
+    }
+
     await ensureApplicationEmail(user.id);
 
     const session = await prisma.browseSession.create({
@@ -333,6 +350,94 @@ async function processUser(
       status: "error",
       matchedJobs: 0,
     };
+  }
+}
+
+async function isUrlAlive(url: string): Promise<boolean> {
+  try {
+    const r = await fetch(url, {
+      method: "HEAD",
+      signal: AbortSignal.timeout(5000),
+      cache: "no-store",
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Called when the daily-apply CRON detects a user whose selected resume's
+ * blob URL is 404. Clears the dead row from UserResume; if it was also the
+ * legacy User.resumeUrl, nulls that too. Logs to ErrorLog with high
+ * severity. Sends the user the re-upload email (once — once the rows are
+ * cleared, the eligibility query filters them out of the next CRON loop, so
+ * this won't re-fire daily).
+ */
+async function handleDeadResume(
+  userId: string,
+  email: string,
+  resumeId: string,
+  deadUrl: string,
+): Promise<void> {
+  // Drop the dead UserResume row so the user falls out of the eligibility
+  // gate (`resumes: { some: {} }`) until they re-upload.
+  try {
+    await prisma.userResume.delete({ where: { id: resumeId } });
+  } catch {
+    // Row may have been removed concurrently — fine.
+  }
+
+  // If legacy User.resumeUrl pointed at the same dead blob, null it too so
+  // the dashboard's ResumeHealthBanner stops checking it.
+  await prisma.user
+    .updateMany({
+      where: { id: userId, resumeUrl: deadUrl },
+      data: { resumeUrl: null, resumeName: null, resumeUpdatedAt: null },
+    })
+    .catch(() => {});
+
+  await logError({
+    userId,
+    endpoint: "cron/daily-apply",
+    method: "GET",
+    status: 200,
+    error: "Detected dead resume blob; cleared user resume state",
+    detail: `deadUrl=${deadUrl} resumeId=${resumeId}`,
+  });
+
+  // Send the re-upload nudge.
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(
+      `[Daily Apply] dead resume for ${email} but RESEND_API_KEY unset; skipping email`,
+    );
+    return;
+  }
+  try {
+    const draft = await buildDeadResumeDraft(email);
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: "Naya <naya@theblackfemaleengineer.com>",
+      to: draft.email,
+      replyTo: "theblackfemaleengineer@gmail.com",
+      subject: draft.subject,
+      text: draft.text,
+      html: draft.html,
+    });
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error(
+      `[Daily Apply] failed to send dead-resume email to ${email}: ${detail}`,
+    );
+    await logError({
+      userId,
+      endpoint: "cron/daily-apply",
+      method: "GET",
+      status: 500,
+      error: "Failed to send dead-resume email",
+      detail,
+    });
   }
 }
 

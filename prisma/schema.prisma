@@ -59,6 +59,7 @@ model User {
   subscribedAt        DateTime?
   monthlyAppCount     Int              @default(0)
   monthlyTailorCount  Int              @default(0)
+  appLimitOverride    Int?
   resumeBuilderUsed   Boolean          @default(false)
   workLocations       String?
   conversionEmailSentAt DateTime?
@@ -710,4 +711,25 @@ model MatchQualityAudit {
   @@index([userId, createdAt])
   @@index([sessionId])
   @@index([qualityVerdict, createdAt])
+}
+
+// Soft-delete buffer for Vercel Blob URLs. Any code path that wants to delete
+// a blob calls archiveBlob() (src/lib/blob-archive.ts) which inserts a row
+// here with scheduledPurgeAt = now + 30d. The blob stays live at its URL
+// until the daily purge cron (src/app/api/cron/purge-archived-blobs/route.ts)
+// reaches the deadline, at which point it calls @vercel/blob `del()` for real.
+//
+// Recovery window: 30 days. Anything wrongly archived can be reversed by
+// calling restoreBlob(url), which just removes the row before purge runs.
+model ArchivedBlob {
+  id               String   @id @default(cuid())
+  url              String   @unique
+  archivedAt       DateTime @default(now())
+  scheduledPurgeAt DateTime
+  reason           String?
+  contextUserId    String?
+  contextType      String?
+
+  @@index([scheduledPurgeAt])
+  @@index([contextUserId])
 }

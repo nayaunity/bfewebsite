@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { del } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
+import { archiveBlob } from "@/lib/blob-archive";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -25,36 +25,39 @@ export async function GET(request: NextRequest) {
     select: { id: true, resumeBlobUrl: true },
   });
 
-  let deletedBlobs = 0;
-  let deletedRows = 0;
+  let blobsArchived = 0;
+  let rowsDeleted = 0;
   let blobErrors = 0;
 
   for (const temp of stale) {
     if (temp.resumeBlobUrl) {
       try {
-        await del(temp.resumeBlobUrl);
-        deletedBlobs++;
+        await archiveBlob(temp.resumeBlobUrl, {
+          reason: "anonymous_onboarding_stale",
+          type: "anonymous_resume",
+        });
+        blobsArchived++;
       } catch (err) {
-        console.error("cleanup-anonymous-blobs del failed", temp.id, err);
+        console.error("cleanup-anonymous-blobs archive failed", temp.id, err);
         blobErrors++;
       }
     }
     try {
       await prisma.tempOnboarding.delete({ where: { id: temp.id } });
-      deletedRows++;
+      rowsDeleted++;
     } catch {
       // Ignore — row may have been linked concurrently.
     }
   }
 
   console.log(
-    `[cleanup-anonymous-blobs] candidates=${stale.length} blobsDeleted=${deletedBlobs} rowsDeleted=${deletedRows} errors=${blobErrors}`,
+    `[cleanup-anonymous-blobs] candidates=${stale.length} blobsArchived=${blobsArchived} rowsDeleted=${rowsDeleted} errors=${blobErrors}`,
   );
 
   return NextResponse.json({
     candidates: stale.length,
-    blobsDeleted: deletedBlobs,
-    rowsDeleted: deletedRows,
+    blobsArchived,
+    rowsDeleted,
     blobErrors,
   });
 }

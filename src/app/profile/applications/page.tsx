@@ -5,6 +5,8 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
+import { ResumeHealthBanner } from "@/components/profile/ResumeHealthBanner";
+import { Suspense } from "react";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import { TicketWidget } from "@/components/TicketWidget";
 import { SupportEmail } from "@/components/SupportEmail";
@@ -178,6 +180,7 @@ export default async function ApplicationsPage() {
       <main className="min-h-screen bg-[var(--background)] pt-[88px] md:pt-[120px] pb-20 md:pb-0">
         <PagePresenceTracker page="applications" />
         <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20 py-8 md:py-12">
+          <Suspense><ResumeHealthBanner userId={session.user.id} /></Suspense>
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>

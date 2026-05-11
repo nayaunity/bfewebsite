@@ -39,6 +39,10 @@
     {
       "path": "/api/cron/trial-ending-reminder",
       "schedule": "30 15 * * *"
+    },
+    {
+      "path": "/api/cron/purge-archived-blobs",
+      "schedule": "0 16 * * *"
     }
   ]
 }

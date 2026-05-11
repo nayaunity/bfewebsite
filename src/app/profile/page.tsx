@@ -21,6 +21,7 @@ import { ProfessionalSection } from "@/components/profile/ProfessionalSection";
 import { EducationSection } from "@/components/profile/EducationSection";
 import { OnlinePresenceSection } from "@/components/profile/OnlinePresenceSection";
 import { RolesAndResumesSection } from "@/components/profile/RolesAndResumesSection";
+import { ResumeHealthBanner } from "@/components/profile/ResumeHealthBanner";
 import { JobPreferencesSection } from "@/components/profile/JobPreferencesSection";
 import { DemographicsSection } from "@/components/profile/DemographicsSection";
 import { ApplicationAnswersSection } from "@/components/profile/ApplicationAnswersSection";
@@ -242,6 +243,7 @@ export default async function ProfilePage({
           {user.subscriptionTier === "free" && user.freeTierEndsAt && (
             <TrialRequiredBanner freeTierEndsAt={user.freeTierEndsAt.toISOString()} />
           )}
+          <Suspense><ResumeHealthBanner userId={user.id} /></Suspense>
           {/* Back link */}
           <Link
             href="/"
