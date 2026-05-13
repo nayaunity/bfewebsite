@@ -147,7 +147,7 @@ export default function DEICompaniesPage() {
                 making real strides in diversity, equity, and inclusion.
               </p>
               <a
-                href="mailto:hello@bfepartnerships.com?subject=DEI Company Suggestion"
+                href="mailto:naya@bfepartnerships.com?subject=DEI Company Suggestion"
                 className="inline-flex items-center gap-2 mt-8 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
               >
                 Suggest a Company

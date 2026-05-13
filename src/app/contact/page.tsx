@@ -55,10 +55,10 @@ export default function ContactPage() {
                   For general inquiries, questions, or to start a conversation, reach out via email.
                 </p>
                 <a
-                  href="mailto:hello@bfepartnerships.com"
+                  href="mailto:naya@bfepartnerships.com"
                   className="inline-flex items-center gap-2 text-[#ef562a] hover:underline text-lg font-medium"
                 >
-                  hello@bfepartnerships.com
+                  naya@bfepartnerships.com
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
