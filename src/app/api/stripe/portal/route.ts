@@ -22,9 +22,21 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // STRIPE_PORTAL_CONFIG_ID points at our custom billing-portal configuration
+    // (see scripts/create-stripe-portal-config.ts). The custom config disables
+    // subscription_cancel + subscription_pause + subscription_update so the
+    // only cancellation path is OUR /profile/account button → POST
+    // /api/stripe/cancel. The Stripe portal's default config exposes a
+    // multi-step cancel flow that, in failed-payment states, can record a
+    // cancellation reason without actually scheduling the cancellation —
+    // eleven paying users (incl. Sheerika Lacy) ended up in that drift state
+    // and were charged after they thought they canceled. This is the fix.
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: `${request.nextUrl.origin}/profile`,
+      return_url: `${request.nextUrl.origin}/profile/account`,
+      ...(process.env.STRIPE_PORTAL_CONFIG_ID
+        ? { configuration: process.env.STRIPE_PORTAL_CONFIG_ID }
+        : {}),
     });
 
     return NextResponse.json({ url: portalSession.url });

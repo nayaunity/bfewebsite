@@ -73,6 +73,15 @@ export async function POST() {
       cancel_at_period_end: true,
     });
 
+    // Mirror Stripe's cancel_at_period_end locally so the Account page can
+    // render "Cancellation scheduled" deterministically on refresh, without
+    // waiting on the webhook or hitting Stripe per render. Webhook will sync
+    // this column too; either path leaves the same value.
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { cancelAtPeriodEnd: true },
+    });
+
     return NextResponse.json({
       ok: true,
       mode: "at_period_end",

@@ -61,6 +61,7 @@ export default async function AccountPage() {
       stripeCustomerId: true,
       stripeSubscriptionId: true,
       currentPeriodEnd: true,
+      cancelAtPeriodEnd: true,
       freeTierEndsAt: true,
     },
   });
@@ -201,14 +202,39 @@ export default async function AccountPage() {
                 />
               )}
 
-              {cancelable && (
+              {cancelable && !user.cancelAtPeriodEnd && (
                 <CancelSubscriptionButton
                   subscriptionStatus={status as "trialing" | "active" | "past_due" | "unpaid"}
                   periodEnd={user.currentPeriodEnd?.toISOString() ?? null}
                 />
               )}
             </div>
-            {cancelable && (status === "active" || status === "trialing") && (
+            {cancelable && user.cancelAtPeriodEnd && (
+              <div
+                className="mt-4 rounded-xl border p-4"
+                style={{
+                  background: "var(--accent-blue-bg, #eff6ff)",
+                  borderColor: "var(--card-border)",
+                }}
+              >
+                <p className="text-sm font-medium text-[var(--foreground)]">
+                  Cancellation scheduled.
+                </p>
+                <p className="text-xs text-[var(--gray-600)] mt-1">
+                  You&apos;ll keep paid access
+                  {user.currentPeriodEnd ? (
+                    <>
+                      {" "}
+                      until <span className="font-medium">{formatDate(user.currentPeriodEnd)}</span>
+                    </>
+                  ) : (
+                    " until the end of your current billing period"
+                  )}
+                  . You won&apos;t be charged again.
+                </p>
+              </div>
+            )}
+            {cancelable && !user.cancelAtPeriodEnd && (status === "active" || status === "trialing") && (
               <p className="text-xs text-[var(--gray-600)] mt-4">
                 Canceling keeps your paid access until{" "}
                 {user.currentPeriodEnd
@@ -217,7 +243,7 @@ export default async function AccountPage() {
                 . You won&apos;t be charged again.
               </p>
             )}
-            {cancelable && (status === "past_due" || status === "unpaid") && (
+            {cancelable && !user.cancelAtPeriodEnd && (status === "past_due" || status === "unpaid") && (
               <p className="text-xs text-[var(--gray-600)] mt-4">
                 Your last payment didn&apos;t go through. Canceling stops the
                 retries and moves you to the free tier with no charge.

@@ -51,6 +51,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  // Idempotency: Stripe retries failed deliveries (timeouts, 5xx, network
+  // blips). Replaying customer.subscription.deleted on an already-processed
+  // event could clobber state if the user has since re-subscribed. Look up
+  // event.id; if we've handled it before, return 200 without re-processing.
+  const already = await prisma.stripeWebhookEvent.findUnique({
+    where: { id: event.id },
+    select: { id: true },
+  });
+  if (already) {
+    return NextResponse.json({ received: true, deduped: true });
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -174,9 +186,63 @@ export async function POST(request: NextRequest) {
               { stripeCustomerId: customerId },
             ],
           },
-          select: { id: true },
+          select: { id: true, subscriptionStatus: true, stripeSubscriptionId: true },
         });
         if (!user) break;
+
+        // Out-of-order guard: if a deletion webhook already arrived (row is
+        // canceled with the sub id nulled), refuse to reactivate the row
+        // from a stale customer.subscription.updated event.
+        if (
+          user.subscriptionStatus === "canceled" &&
+          user.stripeSubscriptionId === null
+        ) {
+          console.warn("[webhook] subscription.updated received after deletion — ignoring", {
+            userId: user.id,
+            subscriptionId: subscription.id,
+            eventId: event.id,
+          });
+          break;
+        }
+
+        // Partial-cancel auto-finalize. The "Sheerika pattern": Stripe portal
+        // recorded cancellation_details.reason but cancel_at_period_end is
+        // still false, so the subscription will keep billing. Detect it,
+        // finalize the cancel via Stripe API, and let the resulting webhook
+        // sync the DB. Belt-and-suspenders: also store cancelAtPeriodEnd=true
+        // immediately so the UI doesn't lag.
+        const cd = subscription.cancellation_details;
+        const isPartialCancelDrift =
+          cd?.reason === "cancellation_requested" &&
+          subscription.cancel_at_period_end === false &&
+          (subscription.status === "active" ||
+            subscription.status === "trialing" ||
+            subscription.status === "past_due");
+
+        if (isPartialCancelDrift) {
+          console.warn("[webhook] partial-cancel drift detected — auto-finalizing", {
+            userId: user.id,
+            subscriptionId: subscription.id,
+            feedback: cd?.feedback,
+            comment: cd?.comment,
+          });
+          try {
+            await stripe.subscriptions.update(subscription.id, {
+              cancel_at_period_end: true,
+            });
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { cancelAtPeriodEnd: true },
+            });
+          } catch (finalizeErr) {
+            console.error("[webhook] auto-finalize failed:", finalizeErr);
+            // Don't swallow — re-throw so Stripe retries this event.
+            throw finalizeErr;
+          }
+          // Don't fall through to activateSubscription; the next event will
+          // sync state with cancel_at_period_end set.
+          break;
+        }
 
         const tier = tierFromPriceId(subscription.items.data[0]?.price?.id);
         if (!tier) {
@@ -190,12 +256,19 @@ export async function POST(request: NextRequest) {
               subscriptionStatus:
                 subscription.status === "active" ? "active" : subscription.status,
               currentPeriodEnd: cpe ? new Date(cpe * 1000) : null,
+              cancelAtPeriodEnd: subscription.cancel_at_period_end === true,
             },
           });
           break;
         }
 
         await activateSubscription({ userId: user.id, subscription, tier });
+        // Sync the local cancelAtPeriodEnd flag whichever direction Stripe
+        // moved it (user un-canceled in our flow, or the schedule changed).
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { cancelAtPeriodEnd: subscription.cancel_at_period_end === true },
+        });
         break;
       }
 
@@ -214,6 +287,7 @@ export async function POST(request: NextRequest) {
             subscriptionStatus: "canceled",
             stripeSubscriptionId: null,
             currentPeriodEnd: null,
+            cancelAtPeriodEnd: false,
           },
         });
         break;
@@ -239,6 +313,19 @@ export async function POST(request: NextRequest) {
         break;
       }
     }
+
+    // Record the event id so retries of the same event are dropped on the
+    // dedup check at the top. We only get here if no case threw — failed
+    // events stay un-recorded so Stripe can retry them.
+    await prisma.stripeWebhookEvent
+      .create({ data: { id: event.id, type: event.type } })
+      .catch((err) => {
+        // Unique-constraint violation = a concurrent delivery beat us to the
+        // insert. Safe to ignore; idempotency held either way.
+        if (!/UNIQUE constraint failed|already exists/i.test(String(err?.message))) {
+          console.error("[webhook] failed to record event id:", err);
+        }
+      });
 
     return NextResponse.json({ received: true });
   } catch (error) {
