@@ -34,6 +34,17 @@ function getCountryName(code: string): string {
   return countryNames[code] || code;
 }
 
+// Slugs that hit /api/blog/view but aren't blog posts — non-blog pages that
+// reuse the BlogView table for analytics. Exclude from blog metrics so the
+// numbers reflect actual blog content.
+const NON_BLOG_SLUGS = [
+  "claudecode",
+  "auto-apply",
+  "onboarding-review",
+  "building-a-tech-audience",
+  "profile-account",
+];
+
 // Get start of today in Denver timezone (Mountain Time)
 function getTodayStartDenver(): Date {
   const now = new Date();
@@ -107,6 +118,14 @@ async function getAnalytics() {
     btaCtaWeek,
     btaCtaAllTime,
     btaByCountry,
+    // Account page (settings) metrics — low-signal, but tracked so the page
+    // shows up in analytics like every other tracked route.
+    paUniqueToday,
+    paUniqueWeek,
+    paUniqueAllTime,
+    paViewsToday,
+    paViewsWeek,
+    paViewsAllTime,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -157,13 +176,13 @@ async function getAnalytics() {
       orderBy: { _count: { visitorId: "desc" } },
       take: 15,
     }),
-    // Blog metrics (exclude claudecode and auto-apply page views)
-    prisma.blogView.count({ where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
-    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } } }),
+    // Blog metrics (exclude non-blog page slugs that reuse this table)
+    prisma.blogView.count({ where: { slug: { notIn: NON_BLOG_SLUGS } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: todayStart }, slug: { notIn: NON_BLOG_SLUGS } } }),
+    prisma.blogView.count({ where: { viewedAt: { gte: weekStart }, slug: { notIn: NON_BLOG_SLUGS } } }),
     prisma.blogView.groupBy({
       by: ["slug", "title"],
-      where: { slug: { notIn: ["claudecode", "auto-apply", "onboarding-review", "building-a-tech-audience"] } },
+      where: { slug: { notIn: NON_BLOG_SLUGS } },
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
       take: 10,
@@ -275,6 +294,25 @@ async function getAnalytics() {
       orderBy: { _count: { visitorId: "desc" } },
       take: 10,
     }),
+    // Account page (settings) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "profile-account", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "profile-account", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "profile-account" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "profile-account" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -409,6 +447,14 @@ async function getAnalytics() {
           countryName: getCountryName(c.country as string),
           visitors: c._count.visitorId,
         })),
+    },
+    profileAccount: {
+      uniqueToday: paUniqueToday,
+      uniqueWeek: paUniqueWeek,
+      uniqueAllTime: paUniqueAllTime,
+      viewsToday: paViewsToday,
+      viewsWeek: paViewsWeek,
+      viewsAllTime: paViewsAllTime,
     },
   };
 }
@@ -672,6 +718,54 @@ export default async function AnalyticsPage() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Account page (/profile/account) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Account Page
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /profile/account
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

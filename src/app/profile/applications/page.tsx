@@ -1,11 +1,11 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { ResumeHealthBanner } from "@/components/profile/ResumeHealthBanner";
+import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { Suspense } from "react";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import { TicketWidget } from "@/components/TicketWidget";
@@ -191,23 +191,16 @@ export default async function ApplicationsPage() {
         <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20 py-8 md:py-12">
           <Suspense><ResumeHealthBanner userId={session.user.id} /></Suspense>
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-[var(--gray-600)] mb-2">
-                <Link href="/" className="hover:text-[var(--foreground)] transition-colors">Home</Link>
-                <span>/</span>
-                <Link href="/profile" className="hover:text-[var(--foreground)] transition-colors">Profile</Link>
-                <span>/</span>
-                <span className="text-[var(--foreground)]">Applications</span>
-              </div>
-              <h1 className="font-serif text-2xl md:text-3xl text-[var(--foreground)]">
-                {user?.firstName ? `Welcome back, ${user.firstName}` : "Your Dashboard"}
-              </h1>
-              <p className="mt-1 text-sm text-[var(--gray-600)]">
-                Track and manage your auto-applied job applications
-              </p>
-            </div>
+          <div className="mb-4">
+            <h1 className="font-serif text-2xl md:text-3xl text-[var(--foreground)]">
+              {user?.firstName ? `Welcome back, ${user.firstName}` : "Your Dashboard"}
+            </h1>
+            <p className="mt-1 text-sm text-[var(--gray-600)]">
+              Track and manage your auto-applied job applications
+            </p>
           </div>
+
+          <ProfileTabs />
 
           {/* Main Dashboard */}
           <ApplicationsDashboard

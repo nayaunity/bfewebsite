@@ -26,7 +26,7 @@ import { JobPreferencesSection } from "@/components/profile/JobPreferencesSectio
 import { DemographicsSection } from "@/components/profile/DemographicsSection";
 import { ApplicationAnswersSection } from "@/components/profile/ApplicationAnswersSection";
 import { AutoApplySettingsSection } from "@/components/profile/AutoApplySettingsSection";
-import { AccountSection } from "@/components/profile/AccountSection";
+import { ProfileTabs } from "@/components/profile/ProfileTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -306,19 +306,7 @@ export default async function ProfilePage({
             <ProfileCompletionBar filled={completion.filled} total={completion.total} />
           </div>
 
-          {/* Applications CTA */}
-          <Link
-            href="/profile/applications"
-            className="flex items-center justify-between w-full mb-8 px-6 py-4 bg-gradient-to-r from-[#ef562a] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
-          >
-            <div>
-              <span className="text-lg font-serif">Start Applying to Jobs</span>
-              <p className="text-sm text-white/80 mt-0.5">Select companies, choose a role, and let BFE apply for you</p>
-            </div>
-            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          <ProfileTabs />
 
           {/* Sections */}
           <div className="space-y-4">
@@ -417,20 +405,6 @@ export default async function ProfilePage({
                 hasResume: !!user.resumeUrl,
               }}
               usage={usage}
-            />
-
-            <AccountSection
-              user={{
-                createdAt: user.createdAt.toISOString(),
-                role: user.role,
-                emailVerified: !!user.emailVerified,
-                stripeCustomerId: user.stripeCustomerId,
-                subscriptionStatus: user.subscriptionStatus,
-                currentPeriodEnd: user.currentPeriodEnd?.toISOString() ?? null,
-                lessonsCompleted: user._count.progress,
-                winsShared: user._count.microWins,
-              }}
-              tier={tier}
             />
           </div>
         </div>
