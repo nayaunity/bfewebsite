@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 /**
@@ -48,18 +49,26 @@ export function PaymentFailedBanner() {
             Your last payment didn&apos;t go through
           </p>
           <p className="text-sm text-[var(--gray-600)] mt-1">
-            Applications are paused until your card is updated. Update your payment method to resume where you left off.
+            Applications are paused until your card is updated. Update your payment method to resume where you left off, or cancel your subscription.
           </p>
           {error && <p className="text-sm text-red-700 mt-2">{error}</p>}
         </div>
-        <button
-          onClick={handleUpdateCard}
-          disabled={loading}
-          className="px-5 py-2.5 rounded-lg font-medium text-white whitespace-nowrap disabled:opacity-50"
-          style={{ background: "#ef562a" }}
-        >
-          {loading ? "Opening..." : "Update payment method"}
-        </button>
+        <div className="flex flex-col sm:items-end gap-2 whitespace-nowrap">
+          <button
+            onClick={handleUpdateCard}
+            disabled={loading}
+            className="px-5 py-2.5 rounded-lg font-medium text-white disabled:opacity-50"
+            style={{ background: "#ef562a" }}
+          >
+            {loading ? "Opening..." : "Update payment method"}
+          </button>
+          <Link
+            href="/profile/account"
+            className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] underline-offset-2 hover:underline transition-colors"
+          >
+            Cancel subscription instead
+          </Link>
+        </div>
       </div>
     </div>
   );
