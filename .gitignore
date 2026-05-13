@@ -73,3 +73,10 @@ NBere_Resume.pdf
 /worker/test/integration/recon-*.json
 /worker/test/integration/smoke-results-*.json
 /worker/test/integration/wd-debug-*.png
+
+# Root-level scratch: screenshots from local Playwright runs, Playwright YAML
+# snapshots, and ad-hoc audit scripts. Anything genuinely worth keeping should
+# live under scripts/ or src/ where this rule can't sweep it.
+/*.png
+/portfolio-snapshot.md
+/audit-resume-blobs.ts
