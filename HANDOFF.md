@@ -1,3 +1,97 @@
+# Session Handoff — May 13, 2026 (Bulletproof subscription cancel + 11-user remediation)
+
+## Headline
+
+Two paying users emailed in same-day about cancellations that didn't work. Sheerika Lacy was billed $29 on May 9 after she had "canceled" in late April; Mameni Gbarbea was past-due and couldn't find a cancel option. Investigation surfaced a **systemic Stripe portal failure mode affecting 12 users total**. All 12 are now resolved: Sheerika + Dinah Karia refunded $29 each + immediate cancel; 9 others scheduled cancel_at_period_end; Mameni canceled (no charge ever cleared). The portal cancel path is now disabled platform-wide; the only cancel route is our own `/profile/account` button.
+
+## What Was Done May 13 (Active session — commits `9a94dc2`, `1a5ce50`, `8ae4d97`)
+
+### 1. Daily-apply cron fix — `9a94dc2`
+
+`/admin/auto-apply` showed two users at 0% and 26%. Investigation found the daily-apply cron creating 0 sessions on May 10 and 5 on May 11 (vs 23-40/day historically). Root cause measured against prod: `matchJobsForProfile()` in `src/lib/auto-apply/job-matcher.ts:521` loaded 21,027 rows × ~6 KB descriptions per call (~131 MB / ~35 s) on every eligible user. With BATCH_SIZE=5 in parallel, batch 1 ate the entire 300 s function budget; remaining users skipped or function killed mid-batch.
+
+Fix: drop `description` from the bulk select; fetch descriptions only for the ≤60 finalist `candidates` before the Haiku gate; hoist the catalog load to once-per-cron via new `loadJobCatalog()`; cap LLM candidates at 60. **Output is byte-identical** between old and new paths (Patrick 56=56, Gerard 60=60 jobs in cross-check). Per-user match time dropped from ~35 s to ~1.4-2.5 s. Live smoke test after deploy: cron finished in 64 s, 20/24 eligible users got `session_created`.
+
+### 2. Account tab + cancel button — `1a5ce50`
+
+Mameni's complaint ("don't see the option on the website") turned out to be real UX: the past-due banner offered only "Update payment method" with no cancel affordance, and the Stripe-portal-backed "Manage Billing" link was buried below it.
+
+Shipped:
+- New `/profile/account` route with subscription details + a primary "Cancel subscription" button.
+- Shared `ProfileTabs` nav (Profile / Applications / Account) on all three pages with active-state highlighting.
+- `POST /api/stripe/cancel`: cancel-at-period-end for active/trialing, immediate for past_due/unpaid; idempotent.
+- `CancelSubscriptionButton` confirmation modal whose copy adapts to state.
+- "Cancel subscription instead" link added to `PaymentFailedBanner`.
+- Removed `AccountSection` from `/profile` (content moved to the new tab).
+- Page tracking wired (`PagePresenceTracker` + `PageViewTracker`); slug filtered out of blog metrics; dedicated stat card in `/admin/analytics`.
+
+### 3. The Sheerika investigation + bulletproof subscription cancel — `8ae4d97`
+
+Sheerika emailed at 3:04 AM: she canceled in late April, was billed $29 on May 9 anyway, account still active. Stripe event timeline confirmed the failure mode: on Apr 23 the portal recorded `cancellation_details.reason = "cancellation_requested"` and her feedback comment ("Will join again soon.") but **did not set `cancel_at_period_end = true`**. Stripe kept the subscription active, kept retrying the failed Apr 22 charge, and finally settled it on May 9.
+
+Scan turned up **11 live subscriptions in the same partial-cancel state**, ranging from new trials to past-due to actively billing. Cancellation reasons: `too_expensive` (5), `unused` (4), `other` (Sheerika's "Will join again soon"), one detailed complaint from Kimberly Bone about poor job matches.
+
+Shipped (one PR, four layers):
+
+- **3a — Portal lockdown.** New `scripts/create-stripe-portal-config.ts` creates a billing-portal configuration with `subscription_cancel`, `subscription_pause`, `subscription_update` all disabled. `payment_method_update` + `invoice_history` kept. Configuration id `bpc_1TWZ4aAbS888QtQNEl3D63ZC` stored in Vercel env `STRIPE_PORTAL_CONFIG_ID`. `/api/stripe/portal/route.ts` passes that configuration so the Stripe portal can never show a cancel UI again. Return URL changed to `/profile/account`.
+- **3b — Webhook hardening (`src/app/api/stripe/webhook/route.ts`).** New `StripeWebhookEvent` table for idempotency keyed on `event.id` (dedup at top, insert at end). Partial-cancel auto-finalize on `customer.subscription.updated`: when `cancellation_details.reason === "cancellation_requested"` AND `cancel_at_period_end === false` AND status live, the handler calls `stripe.subscriptions.update({ cancel_at_period_end: true })` itself and writes `cancelAtPeriodEnd=true` locally. Out-of-order guard: refuses to overwrite an already-`canceled`/`stripeSubscriptionId=null` row.
+- **3c — `User.cancelAtPeriodEnd Boolean @default(false)`.** Migration `20260513_cancel_state_and_webhook_idempotency` (applied to prod Turso). `/api/stripe/cancel` writes it on the at_period_end path. `/profile/account` reads it; the button is replaced by a "Cancellation scheduled" info card persistently on refresh. Webhook syncs the column on every `subscription.updated` and clears it on `subscription.deleted`.
+- **3d — Daily reconcile cron** `/api/cron/stripe-reconcile` at `0 17 * * *`. Walks every live Stripe sub + every DB-active user, classifies drift into three buckets (Stripe-active vs DB-inactive, DB-active vs Stripe-canceled, partial-cancel-drift) and auto-fixes each. Emails admin a digest when drift is found. First live run (right after deploy) auto-fixed all 10 drift subs in 10 seconds.
+
+### 4. Triage of every affected user
+
+| Action | Users |
+|---|---|
+| Refund + immediate cancel | Sheerika Lacy ($29), Dinah Karia ($29) |
+| `cancel_at_period_end = true` (cron auto-applied; they keep paid access through period_end) | Nigel H, Kimberly Bone, Kasey Arnold, Ebun A, Destiny Keel, Daniel Cooke, Olivia Williams, OLUWADEMILADE, Aryannah Harlston |
+| Stripe-portal manual case (no auto-renewal, never charged $) | Mameni Gbarbea |
+| Apology email sent (Resend) | All 11 above |
+
+Resend message ids logged in commit message and in the Layer 11 task description.
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `src/lib/auto-apply/job-matcher.ts` | Drop `description` from bulk select; targeted re-fetch for ≤60 candidates; `loadJobCatalog()` for cron-side hoisting; `MAX_LLM_CANDIDATES = 60`; bump Haiku `max_tokens`. |
+| `src/app/api/cron/daily-apply/route.ts` | Load shared catalog once; pass to `matchJobsForUser({ catalog })`. |
+| `src/app/profile/account/page.tsx` (new) | Account tab with subscription details + cancel button. |
+| `src/app/profile/account/PageViewTracker.tsx` (new) | Page-view analytics. |
+| `src/components/profile/ProfileTabs.tsx` (new) | Shared 3-tab nav. |
+| `src/components/profile/CancelSubscriptionButton.tsx` (new) | Confirmation modal + state-aware copy. |
+| `src/app/api/stripe/cancel/route.ts` (new) | POST endpoint; cancel-at-period-end or immediate depending on `subscriptionStatus`; idempotent; writes `cancelAtPeriodEnd` locally. |
+| `src/app/profile/page.tsx` | Mount ProfileTabs; drop AccountSection and the gradient "Start Applying" CTA. |
+| `src/app/profile/applications/page.tsx` | Replace breadcrumb with ProfileTabs. |
+| `src/components/PaymentFailedBanner.tsx` | Add "Cancel subscription instead" link. |
+| `src/app/admin/analytics/page.tsx` | Filter `profile-account` from blog metrics; dedicated stat card. |
+| `src/components/profile/AccountSection.tsx` | Deleted (content moved to `/profile/account`). |
+| `src/app/api/stripe/portal/route.ts` | Pass `configuration: STRIPE_PORTAL_CONFIG_ID`; return to `/profile/account`. |
+| `src/app/api/stripe/webhook/route.ts` | Idempotency, partial-cancel auto-finalize, out-of-order guard, `cancelAtPeriodEnd` sync. |
+| `src/app/api/cron/stripe-reconcile/route.ts` (new) | Daily drift detector. |
+| `prisma/schema.prisma` + `prisma/migrations/20260513_cancel_state_and_webhook_idempotency/` | `User.cancelAtPeriodEnd` + `StripeWebhookEvent` table. |
+| `scripts/create-stripe-portal-config.ts` (new) | One-off; created `bpc_1TWZ4aAbS888QtQNEl3D63ZC`. |
+| `scripts/audit-partial-cancel-drift.ts` (new) | Dry-run / `--apply` for historical drift; ran dry-run for visibility, cron + manual Dinah refund did the actual fixes. |
+| `vercel.json` | Added `/api/cron/stripe-reconcile` at `0 17 * * *`. |
+
+### Mameni Gbarbea (earlier in the day, not in the above commits)
+
+Separate cancel ticket via email. Past-due, never successfully charged. Canceled `sub_1TRBteAbS888QtQNV2eBzOGyx` immediately, voided open invoice `in_1TTjEqAbS888QtQNC8AxN9fC` ($29), DB synced via webhook. Apology email sent (Resend id `cd96f92a-e201-4146-a5ab-f6dd1a2161f4`).
+
+### Known Issues / Next Steps
+
+1. **Webhook env on preview.** `STRIPE_PORTAL_CONFIG_ID` is set on Vercel `production` + `development` but not `preview` — preview deploys will fall through to Stripe's default portal config (with cancel enabled). Low risk (preview is internal) but worth fixing when convenient.
+2. **At-period-end users may reply to undo.** The 9 emails explicitly offer "reply and I'll undo the cancellation." Monitor `theblackfemaleengineer@gmail.com` over the next few days for any "wait, keep me on" replies and reverse the schedule via `/api/stripe/cancel` rerun or manual Stripe call.
+3. **The new daily reconcile cron is live.** First run was triggered manually during deploy; the scheduled `0 17 * * *` invocation hasn't run yet (first auto run will be tonight). If something's wrong with the cron schedule, tomorrow's admin digest email (or lack of it) is the canary.
+4. **Stripe events retention is 30 days.** The audit script's intent-timestamp lookup falls back to `current_period_start` if the original `customer.subscription.updated` event is older than 30 days. All 10 drift cases resolved cleanly today via real event timestamps; if any future drift is older than 30 days the audit will still work but with less-precise "intent" timestamps.
+5. **Reconsider trial-cap UX.** A few of the partial-cancel users left feedback that maps directly to product issues (Kimberly: out-of-region matches, level mismatch; Olivia/Aryannah/OLUWADEMILADE: `too_expensive` on trial). Separate followup.
+
+### Memory updates this session
+
+- `feedback_emails_lead_with_context.md` — customer emails must open with the framing line (what the email is *about*) before any apology or action.
+- `feedback_emails_leave_door_open.md` — cancellation / refund emails must include a "you can come back at /pricing" line.
+
+---
+
 # Session Handoff — May 13, 2026 (Status check on archive layer + Kimberly; Naya's intervening work)
 
 ## What Was Done May 13 (Status check session)
