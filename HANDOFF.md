@@ -1,3 +1,48 @@
+# Session Handoff — May 13, 2026 (Status check on archive layer + Kimberly; Naya's intervening work)
+
+## What Was Done May 13 (Status check session)
+
+No code changes this session. Read-only audit and handoff refresh.
+
+### Archive layer is operational
+
+- `ArchivedBlob` table has 8 rows, all `reason: anonymous_onboarding_stale` from the daily `cleanup-anonymous-blobs` cron (dated May 12 + May 13 at 15:00 UTC). Each scheduled to purge 30 days out via the new `purge-archived-blobs` cron at 16:00 UTC.
+- No `user_replaced_resume`, `user_deleted_resume`, or `user_deleted_resume_alt` entries yet — meaning no user has re-uploaded or deleted a resume through the legacy or new endpoints in the 3 days since the archive layer shipped.
+- **0 paying users with dead resume URLs** (27 alive, 3 with no URL on file: Logan Barnes, Samuel Ekpe, Kimberly Bone). Confirms the May 10 fix held and no new Kimberly-class failures have happened.
+
+### Kimberly still hasn't re-uploaded
+
+- `User.resumeUrl: null`, `resumes: []`, no sessions since May 9.
+- Stripe sent her a HackerRank reminder today (May 13): subject `"Your invite to Stripe Industry Screen expires in 9 days"`. So she hasn't taken the assessment yet. Test expires ~May 22.
+- The re-upload email sent May 11 04:02 UTC (midnight ET in her zone) has not produced a re-upload. Worth a follow-up nudge: either resend the email at a daytime hour or surface the broken-resumes view in `/admin/broken-resumes` for a manual ping.
+
+### Interview audit refresh
+
+- 5,035 total InboundEmail rows (612 new since May 10).
+- 1 new forward-progress signal in that window: the Stripe HackerRank reminder to Kimberly. Same in-flight interview, no new ones.
+- Still 1 confirmed active interview on record (Kimberly + Stripe). Daniel Cooke's SingleStore from April remains the only other historical interview, ended in rejection.
+
+### Naya's intervening commits (May 11-13) — listed for awareness, not authored by me
+
+These shipped between the May 10 archive-layer commit and today:
+
+- `9ea7739` — Mandatory self-identification step after Stripe checkout
+- `9a94dc2` — Fix daily-apply cron timeout: stop loading 131MB of job descriptions per user
+- `1a5ce50` — Add /profile/account tab with prominent Cancel Subscription flow
+- `c87e0c7` — Replace hello@bfepartnerships.com with naya@bfepartnerships.com sitewide
+- `8ae4d97` — Bulletproof subscription cancel: lock down Stripe portal, audit drift, harden webhook
+
+(Details of these are not captured here since I didn't write them; whoever ran those sessions has the context.)
+
+### Known Issues / Next Steps
+
+1. **Stripe case study (E) still blocked** on Kimberly re-uploading. Her HackerRank assessment expires May 22, so there's a natural deadline approaching for her to engage with the product again. If she ignores the re-upload email until after May 22, we lose the case-study opportunity entirely.
+2. **Consider re-sending the re-upload email at a daytime hour.** The May 11 send landed at midnight ET. A morning resend might land better.
+3. **Consider proactively flagging the May 8 / May 9 junk submissions to Kimberly.** Two companies (one Senior Software Engineer, Frontend Engineering role and Kalshi Software Engineer, Product) received 15-byte garbage as her resume. If she cares about either, she should follow up directly with a real resume.
+4. **Archive recovery never tested in prod.** `restoreBlob(url)` works in theory but no one's exercised it. If we ever need it for a real incident, a quick smoke test would be wise.
+
+---
+
 # Session Handoff — May 10, 2026 (Resume archive layer + upload-failure visibility; Kimberly resume recovery)
 
 ## What Was Done May 10 (Late Evening Session)
