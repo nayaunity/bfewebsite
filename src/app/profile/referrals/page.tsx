@@ -127,6 +127,30 @@ export default async function ReferralsPage() {
           }),
         ]);
 
+        const connections = await prisma.linkedInConnection.findMany({
+          where: {
+            userId: session.user.id,
+            status: "active",
+          },
+          orderBy: [
+            { lastSyncedAt: "desc" },
+            { fullName: "asc" },
+          ],
+          take: 24,
+          select: {
+            id: true,
+            fullName: true,
+            headline: true,
+            currentCompany: true,
+            companySlug: true,
+            location: true,
+            profileUrl: true,
+            avatarUrl: true,
+            status: true,
+            lastSyncedAt: true,
+          },
+        });
+
         const warmMatches = access.canPreview
           ? await getWarmMatchesForUser(session.user.id)
           : [];
@@ -134,6 +158,7 @@ export default async function ReferralsPage() {
         return {
           access,
           linkedInStatus,
+          connections,
           requests,
           warmMatches,
         };
@@ -145,6 +170,7 @@ export default async function ReferralsPage() {
           activeConnections: 0,
           lastRun: null,
         },
+        connections: [],
         requests: [],
         warmMatches: [],
       };
@@ -177,6 +203,10 @@ export default async function ReferralsPage() {
           <ReferralsDashboard
             initialAccess={referralData.access}
             initialWarmMatches={referralData.warmMatches}
+            initialConnections={referralData.connections.map((connection) => ({
+              ...connection,
+              lastSyncedAt: connection.lastSyncedAt.toISOString(),
+            }))}
             initialRequests={referralData.requests.map((request) => ({
               ...request,
               submittedAt: request.submittedAt?.toISOString() || null,

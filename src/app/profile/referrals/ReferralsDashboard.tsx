@@ -54,6 +54,19 @@ interface WarmMatch {
   };
 }
 
+interface SyncedConnectionRecord {
+  id: string;
+  fullName: string;
+  headline: string | null;
+  currentCompany: string | null;
+  companySlug: string | null;
+  location: string | null;
+  profileUrl: string;
+  avatarUrl: string | null;
+  status: string;
+  lastSyncedAt: string;
+}
+
 interface ReferralRequestRecord {
   id: string;
   status: string;
@@ -227,6 +240,7 @@ const STATUS_OPTIONS: ReferralStatus[] = [
 export default function ReferralsDashboard({
   initialAccess,
   initialWarmMatches,
+  initialConnections,
   initialRequests,
   connectionsTotal,
   activeConnections,
@@ -237,6 +251,7 @@ export default function ReferralsDashboard({
 }: {
   initialAccess: AccessSummary;
   initialWarmMatches: WarmMatch[];
+  initialConnections: SyncedConnectionRecord[];
   initialRequests: ReferralRequestRecord[];
   connectionsTotal: number;
   activeConnections: number;
@@ -254,6 +269,7 @@ export default function ReferralsDashboard({
   const [access, setAccess] = useState(initialAccess);
   const [requests, setRequests] = useState(initialRequests);
   const [warmMatches] = useState(initialWarmMatches);
+  const [connections] = useState(initialConnections);
   const [selectedId, setSelectedId] = useState<string | null>(initialRequests[0]?.id ?? null);
   const [tokenInfo, setTokenInfo] = useState<{
     token: string;
@@ -540,6 +556,66 @@ export default function ReferralsDashboard({
         <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
+              <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">Synced connections</p>
+              <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">The people you just brought in.</h2>
+            </div>
+            <p className="text-sm text-[var(--gray-600)]">
+              Showing {connections.length} of {connectionsTotal}
+            </p>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {connections.length === 0 ? (
+              <div className="rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
+                {backendReady
+                  ? "Sync LinkedIn first and your captured connections will show up here."
+                  : backendMessage || "Referral Assist is still provisioning."}
+              </div>
+            ) : (
+              connections.map((connection) => (
+                <div key={connection.id} className="rounded-2xl border border-[var(--card-border)] p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ffe500] text-sm font-semibold text-black">
+                      {initials(connection.fullName)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-medium text-[var(--foreground)]">{connection.fullName}</p>
+                        <span className="rounded-full bg-[var(--gray-50)] px-2 py-1 text-[11px] text-[var(--gray-700)]">
+                          {connection.currentCompany || "No company detected"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-[var(--gray-600)]">
+                        {connection.headline || "LinkedIn connection"}
+                        {connection.location ? ` · ${connection.location}` : ""}
+                      </p>
+                      <p className="mt-2 text-[11px] text-[var(--gray-600)]">
+                        Synced {formatDate(connection.lastSyncedAt)}
+                      </p>
+                    </div>
+                    <a
+                      href={connection.profileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="shrink-0 text-xs font-medium text-[#ef562a] hover:underline"
+                    >
+                      LinkedIn
+                    </a>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {connections.length > 0 && warmMatches.length === 0 && (
+            <p className="mt-4 text-sm text-[var(--gray-600)]">
+              Your sync worked. We just do not have an active BFE job-company overlap yet, or LinkedIn did not expose a current company on those cards.
+            </p>
+          )}
+        </section>
+
+        <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
               <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">Warm matches</p>
               <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Jobs where you know someone.</h2>
             </div>
@@ -547,12 +623,11 @@ export default function ReferralsDashboard({
               Back to applications
             </Link>
           </div>
-
           <div className="mt-5 space-y-3">
             {warmMatches.length === 0 ? (
               <div className="rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
                 {backendReady
-                  ? "Sync LinkedIn first and we’ll surface jobs where your network and our catalog overlap."
+                  ? "No warm matches yet. Once one of your synced companies overlaps with an active BFE job, it will show up here."
                   : backendMessage || "Referral Assist is still provisioning."}
               </div>
             ) : (
@@ -604,11 +679,10 @@ export default function ReferralsDashboard({
               ))
             )}
           </div>
-          {!access.canPreview && access.previewReason && (
-            <p className="mt-4 text-sm text-[var(--gray-600)]">{access.previewReason}</p>
-          )}
         </section>
+      </div>
 
+      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
           <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">Packet builder</p>
           <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Your ask, prepped and tracked.</h2>
@@ -736,59 +810,59 @@ export default function ReferralsDashboard({
             </div>
           )}
         </section>
-      </div>
 
-      <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">Request board</p>
-            <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Everything in motion.</h2>
-          </div>
-          <p className="text-sm text-[var(--gray-600)]">
-            {activeRequests.length} live · {previewRequests.length} preview
-          </p>
-        </div>
-
-        <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          {[...activeRequests, ...previewRequests].map((request) => (
-            <button
-              key={request.id}
-              type="button"
-              onClick={() => setSelectedId(request.id)}
-              className={`rounded-2xl border p-4 text-left transition-colors ${
-                  selectedId === request.id
-                    ? "border-[#ef562a] bg-[#ef562a]/5"
-                    : "border-[var(--card-border)] hover:bg-[var(--gray-50)]"
-                }`}
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${STATUS_STYLES[coerceStatus(request.status)]}`}>
-                      {STATUS_LABELS[coerceStatus(request.status)]}
-                    </div>
-                  <h3 className="mt-2 text-base font-semibold text-[var(--foreground)]">
-                    {request.job.company} · {request.job.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-[var(--gray-600)]">
-                    {request.connection.fullName}{request.connection.headline ? ` · ${request.connection.headline}` : ""}
-                  </p>
-                </div>
-                <span className="text-xs text-[var(--gray-600)]">{formatShortDate(request.updatedAt)}</span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--gray-600)]">
-                <span>Priority {request.priority}</span>
-                <span>Submitted {formatShortDate(request.submittedAt)}</span>
-                <span>Follow-up {formatShortDate(request.followUpDueAt)}</span>
-              </div>
-            </button>
-          ))}
-          {requests.length === 0 && (
-            <div className="rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
-              No referral requests yet. Generate a packet from a warm match to start your board.
+        <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">Request board</p>
+              <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Everything in motion.</h2>
             </div>
-          )}
-        </div>
-      </section>
+            <p className="text-sm text-[var(--gray-600)]">
+              {activeRequests.length} live · {previewRequests.length} preview
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-4">
+            {[...activeRequests, ...previewRequests].map((request) => (
+              <button
+                key={request.id}
+                type="button"
+                onClick={() => setSelectedId(request.id)}
+                className={`rounded-2xl border p-4 text-left transition-colors ${
+                    selectedId === request.id
+                      ? "border-[#ef562a] bg-[#ef562a]/5"
+                      : "border-[var(--card-border)] hover:bg-[var(--gray-50)]"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${STATUS_STYLES[coerceStatus(request.status)]}`}>
+                        {STATUS_LABELS[coerceStatus(request.status)]}
+                      </div>
+                    <h3 className="mt-2 text-base font-semibold text-[var(--foreground)]">
+                      {request.job.company} · {request.job.title}
+                    </h3>
+                    <p className="mt-1 text-sm text-[var(--gray-600)]">
+                      {request.connection.fullName}{request.connection.headline ? ` · ${request.connection.headline}` : ""}
+                    </p>
+                  </div>
+                  <span className="text-xs text-[var(--gray-600)]">{formatShortDate(request.updatedAt)}</span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--gray-600)]">
+                  <span>Priority {request.priority}</span>
+                  <span>Submitted {formatShortDate(request.submittedAt)}</span>
+                  <span>Follow-up {formatShortDate(request.followUpDueAt)}</span>
+                </div>
+              </button>
+            ))}
+            {requests.length === 0 && (
+              <div className="rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
+                No referral requests yet. Generate a packet from a warm match to start your board.
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
