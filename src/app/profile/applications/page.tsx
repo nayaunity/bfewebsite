@@ -27,7 +27,7 @@ export default async function ApplicationsPage() {
   todayStart.setHours(0, 0, 0, 0);
   const showReferrals = isReferralAssistEnabledForEmail(session.user.email);
 
-  const [user, applications, browseDiscoveries, usageData, todaySession, totalActiveJobs] = await Promise.all([
+  const [user, applications, browseDiscoveries, usageData, todaySession, totalActiveJobs, referralConnectionCount] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true, selfIdCompletedAt: true },
@@ -80,6 +80,9 @@ export default async function ApplicationsPage() {
     }),
     prisma.job.count({
       where: { source: "auto-apply", isActive: true, region: { in: ["us", "both"] } },
+    }),
+    prisma.linkedInConnection.count({
+      where: { userId: session.user.id, status: "active" },
     }),
   ]);
 
@@ -192,17 +195,25 @@ export default async function ApplicationsPage() {
             <section className="mb-6 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">High-signal lane</p>
-                  <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Use referrals for the roles you care about most.</h2>
+                  <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">
+                    {referralConnectionCount > 0 ? "Referral network active" : "High-signal lane"}
+                  </p>
+                  <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">
+                    {referralConnectionCount > 0
+                      ? `${referralConnectionCount} connection${referralConnectionCount !== 1 ? "s" : ""} synced. Use them.`
+                      : "Sync your LinkedIn to unlock warm referrals."}
+                  </h2>
                   <p className="mt-2 max-w-2xl text-sm text-[var(--gray-600)]">
-                    Auto-apply keeps volume moving. Referrals help you focus your strongest network leverage on the jobs where an intro can change the outcome.
+                    {referralConnectionCount > 0
+                      ? "We matched your connections to companies with open roles. Get referred instead of cold applying."
+                      : "Upload your LinkedIn connections CSV and we will surface jobs where you already know someone on the inside."}
                   </p>
                 </div>
                 <Link
                   href="/profile/referrals"
                   className="inline-flex items-center justify-center rounded-full bg-[#ef562a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
                 >
-                  Open referrals
+                  {referralConnectionCount > 0 ? "View referrals" : "Sync LinkedIn"}
                 </Link>
               </div>
             </section>

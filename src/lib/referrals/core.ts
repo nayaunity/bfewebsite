@@ -379,11 +379,11 @@ export function buildReferralPacket(input: ReferralPacketInput): ReferralPacket 
       : `I’ve been focused on roles like ${roleSummary}.`;
 
   const whyMeBullets = [
-    `I’m actively targeting ${roleSummary} roles, and this ${input.jobTitle} opening is a close match.`,
     experienceLine,
+    `Targeting ${roleSummary} roles. The ${input.jobTitle} opening is a strong fit.`,
     input.city
-      ? `I’m based in ${input.city} and can move quickly on interview scheduling and follow-up.`
-      : `I already have a polished application packet ready to send quickly.`,
+      ? `Based in ${input.city}. Flexible on scheduling.`
+      : `Application materials are ready to go.`,
   ];
 
   const connectionContext = input.connectionHeadline
@@ -393,17 +393,11 @@ export function buildReferralPacket(input: ReferralPacketInput): ReferralPacket 
   const suggestedMessage = [
     `Hi ${input.connectionFirstName},`,
     "",
-    `I hope you’re doing well. I came across the ${input.jobTitle} role at ${input.company} and noticed that you’re there now.`,
+    `I saw you’re at ${input.company} now. That’s really cool. I’ve been following the team’s work and the ${input.jobTitle} opening caught my eye.`,
     "",
-    `I’m currently exploring ${roleSummary} opportunities, and this one looks especially aligned with my background. ${experienceLine}`,
+    `${experienceLine} I’d love to hear what the team culture is like and whether you think the role would be a good fit from your perspective.`,
     "",
-    `If you feel comfortable, would you be open to referring me for the role or pointing me to the best person to speak with? I pulled together a quick packet so it’s easy to review: ${input.applyUrl}`,
-    "",
-    input.resumeName
-      ? `I’d send over my ${input.resumeName} plus a few short points on why I’m a fit.`
-      : "I’d send over my resume plus a few short points on why I’m a fit.",
-    "",
-    "Thank you either way. I appreciate your time.",
+    `Would you be open to a quick chat sometime this week? Happy to work around your schedule. No pressure at all.`,
     "",
     `Best,`,
     senderName,
@@ -413,13 +407,14 @@ export function buildReferralPacket(input: ReferralPacketInput): ReferralPacket 
     .join("\n");
 
   return {
-    subjectLine: `${senderFirstName} -> ${input.company} ${input.jobTitle} referral ask`,
+    subjectLine: `${input.company} - quick question about the ${input.jobTitle} role`,
     suggestedMessage,
     whyMeBullets,
     followUpChecklist: [
-      "Send the outreach within 24 hours while the role is still fresh.",
-      "If there is no reply after 5 business days, send one short follow-up.",
-      "Once the referral is sent, update the status here so interviews and outcomes are tracked.",
+      "Send the message within 24 hours while the role is still fresh.",
+      "If they respond, ask thoughtful questions about the team before mentioning a referral.",
+      "If no reply after 5 business days, send one short follow-up.",
+      "Only ask about a referral once you've had a real conversation.",
     ],
     connectionContext,
     recommendedResumeName: input.resumeName || null,

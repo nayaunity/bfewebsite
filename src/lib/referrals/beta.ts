@@ -28,21 +28,12 @@ export function isReferralAssistEnabledForEmail(
 ): boolean {
   const normalized = normalizeEmail(email);
   if (!normalized) return false;
-
-  if (process.env.NODE_ENV !== "production") {
-    return true;
-  }
-
-  return getReferralAssistAllowedEmails().includes(normalized);
+  return true;
 }
 
 export async function isReferralAssistEnabledForUserId(
   userId: string
 ): Promise<boolean> {
-  if (process.env.NODE_ENV !== "production") {
-    return true;
-  }
-
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { email: true },

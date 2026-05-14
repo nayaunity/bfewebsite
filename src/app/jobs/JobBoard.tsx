@@ -89,6 +89,7 @@ export default function JobBoard() {
   const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remote") === "true");
   const [selectedMobileFilter, setSelectedMobileFilter] = useState(searchParams.get("search") || "");
   const [isInternational, setIsInternational] = useState(searchParams.get("region") === "international");
+  const [connectionCounts, setConnectionCounts] = useState<Record<string, number>>({});
 
   // Sync filters to URL
   const updateURL = useCallback((updates: Record<string, string | null>) => {
@@ -119,6 +120,16 @@ export default function JobBoard() {
     }
     fetchCompanies();
   }, []);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/referrals/connection-counts")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.counts) setConnectionCounts(data.counts);
+      })
+      .catch(() => {});
+  }, [session?.user]);
 
   const handleSubmitResume = () => {
     if (session) {
@@ -275,6 +286,14 @@ export default function JobBoard() {
               tech.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
+              {session?.user && (
+                <a
+                  href="/profile/referrals"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#ef562a] text-white font-medium rounded-full hover:bg-[#d84a21] transition-colors"
+                >
+                  Get Referrals <span aria-hidden="true">&rarr;</span>
+                </a>
+              )}
               <a
                 href="/auto-apply/landing"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
@@ -497,23 +516,31 @@ export default function JobBoard() {
         </div>
       </section>
 
-      {/* Auto-Apply Banner */}
+      {/* Referral + Auto-Apply Banner */}
       <section className="bg-[#ef562a] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="font-serif text-2xl md:text-3xl text-white">
-              Apply to hundreds of jobs while you sleep
+              Get referred. Skip the cold apply.
             </h2>
             <p className="mt-1 text-sm text-white/80">
-              Use Maticaly and get 10X interviews
+              Sync your LinkedIn, see who you know at every company, and get warm intros to the roles that matter most.
             </p>
           </div>
-          <a
-            href="/auto-apply/landing"
-            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
-          >
-            Get Started <span aria-hidden="true">&rarr;</span>
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/profile/referrals"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
+            >
+              Start Referrals <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a
+              href="/auto-apply/landing"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-white/20 text-white font-medium rounded-full hover:bg-white/30 transition-colors"
+            >
+              Auto-Apply
+            </a>
+          </div>
         </div>
       </section>
 
@@ -579,6 +606,11 @@ export default function JobBoard() {
                         <span className="text-[#ef562a] font-medium">
                           {job.company}
                         </span>
+                        {connectionCounts[job.companySlug] > 0 && (
+                          <span className="text-xs px-2 py-1 bg-[#ef562a]/10 text-[#ef562a] rounded-full font-medium">
+                            You know {connectionCounts[job.companySlug]} {connectionCounts[job.companySlug] === 1 ? "person" : "people"} here
+                          </span>
+                        )}
                         {job.remote && (
                           <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
                             Remote
@@ -609,6 +641,15 @@ export default function JobBoard() {
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-2">
+                      {connectionCounts[job.companySlug] > 0 && (
+                        <a
+                          href="/profile/referrals"
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[#ef562a] text-[#ef562a] hover:bg-[#ef562a] hover:text-white transition-colors"
+                        >
+                          Get Referred
+                        </a>
+                      )}
                       {TARGET_COMPANIES.has(job.company) && (
                         <a
                           href="/auto-apply/landing"

@@ -254,6 +254,7 @@ model LinkedInConnection {
   location         String?
   profileUrl       String
   avatarUrl        String?
+  email            String?
   status           String    @default("active")
   rawData          String?
   lastSyncedAt     DateTime  @default(now())

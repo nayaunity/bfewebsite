@@ -498,6 +498,94 @@ export async function sendReferralStatusEmail(params: {
   });
 }
 
+export async function upsertConnections(
+  userId: string,
+  normalized: LinkedInConnectionInput[],
+  opts?: { emails?: Map<string, string> }
+): Promise<{ upserted: number; hidden: number }> {
+  let upserted = 0;
+  let hidden = 0;
+
+  const urls = normalized.map((connection) => connection.profileUrl);
+  const publicIds = normalized
+    .map((connection) => connection.linkedinPublicId || extractLinkedInPublicId(connection.profileUrl))
+    .filter((value): value is string => !!value);
+
+  const existing = await prisma.linkedInConnection.findMany({
+    where: {
+      userId,
+      OR: [
+        { profileUrl: { in: urls } },
+        ...(publicIds.length > 0 ? [{ linkedinPublicId: { in: publicIds } }] : []),
+      ],
+    },
+  });
+
+  const existingByUrl = new Map(existing.map((item) => [item.profileUrl, item]));
+  const existingByPublicId = new Map(
+    existing
+      .filter((item) => item.linkedinPublicId)
+      .map((item) => [item.linkedinPublicId as string, item])
+  );
+
+  for (const item of normalized) {
+    const existingRecord =
+      existingByUrl.get(item.profileUrl) ||
+      (item.linkedinPublicId ? existingByPublicId.get(item.linkedinPublicId) : undefined);
+
+    const resolvedCompany = resolveLinkedInConnectionCompany(
+      item.currentCompany,
+      item.headline,
+      item.fullName
+    );
+    const cleanedHeadline = cleanLinkedInConnectionHeadline(item.headline, item.fullName);
+    const companySlug = slugifyCompanyName(resolvedCompany);
+    const status = existingRecord?.status === "hidden" ? "hidden" : "active";
+    if (status === "hidden") hidden += 1;
+    const email = opts?.emails?.get(item.profileUrl) || null;
+
+    if (existingRecord) {
+      await prisma.linkedInConnection.update({
+        where: { id: existingRecord.id },
+        data: {
+          linkedinPublicId: item.linkedinPublicId || existingRecord.linkedinPublicId,
+          fullName: item.fullName,
+          headline: cleanedHeadline,
+          currentCompany: resolvedCompany,
+          companySlug,
+          location: item.location,
+          profileUrl: item.profileUrl,
+          avatarUrl: item.avatarUrl,
+          ...(email ? { email } : {}),
+          rawData: JSON.stringify(item),
+          lastSyncedAt: new Date(),
+          status,
+        },
+      });
+    } else {
+      await prisma.linkedInConnection.create({
+        data: {
+          userId,
+          linkedinPublicId: item.linkedinPublicId,
+          fullName: item.fullName,
+          headline: cleanedHeadline,
+          currentCompany: resolvedCompany,
+          companySlug,
+          location: item.location,
+          profileUrl: item.profileUrl,
+          avatarUrl: item.avatarUrl,
+          email,
+          rawData: JSON.stringify(item),
+        },
+      });
+    }
+
+    upserted += 1;
+  }
+
+  return { upserted, hidden };
+}
+
 export async function syncLinkedInConnections(params: {
   token: string;
   connections: LinkedInConnectionInput[];
@@ -525,83 +613,8 @@ export async function syncLinkedInConnections(params: {
     },
   });
 
-  let upserted = 0;
-  let hidden = 0;
-
   try {
-    const urls = normalized.map((connection) => connection.profileUrl);
-    const publicIds = normalized
-      .map((connection) => connection.linkedinPublicId || extractLinkedInPublicId(connection.profileUrl))
-      .filter((value): value is string => !!value);
-
-    const existing = await prisma.linkedInConnection.findMany({
-      where: {
-        userId: verified.userId,
-        OR: [
-          { profileUrl: { in: urls } },
-          ...(publicIds.length > 0 ? [{ linkedinPublicId: { in: publicIds } }] : []),
-        ],
-      },
-    });
-
-    const existingByUrl = new Map(existing.map((item) => [item.profileUrl, item]));
-    const existingByPublicId = new Map(
-      existing
-        .filter((item) => item.linkedinPublicId)
-        .map((item) => [item.linkedinPublicId as string, item])
-    );
-
-    for (const item of normalized) {
-      const existingRecord =
-        existingByUrl.get(item.profileUrl) ||
-        (item.linkedinPublicId ? existingByPublicId.get(item.linkedinPublicId) : undefined);
-
-      const resolvedCompany = resolveLinkedInConnectionCompany(
-        item.currentCompany,
-        item.headline,
-        item.fullName
-      );
-      const cleanedHeadline = cleanLinkedInConnectionHeadline(item.headline, item.fullName);
-      const companySlug = slugifyCompanyName(resolvedCompany);
-      const status = existingRecord?.status === "hidden" ? "hidden" : "active";
-      if (status === "hidden") hidden += 1;
-
-      if (existingRecord) {
-        await prisma.linkedInConnection.update({
-          where: { id: existingRecord.id },
-          data: {
-            linkedinPublicId: item.linkedinPublicId || existingRecord.linkedinPublicId,
-            fullName: item.fullName,
-            headline: cleanedHeadline,
-            currentCompany: resolvedCompany,
-            companySlug,
-            location: item.location,
-            profileUrl: item.profileUrl,
-            avatarUrl: item.avatarUrl,
-            rawData: JSON.stringify(item),
-            lastSyncedAt: new Date(),
-            status,
-          },
-        });
-      } else {
-        await prisma.linkedInConnection.create({
-          data: {
-            userId: verified.userId,
-            linkedinPublicId: item.linkedinPublicId,
-            fullName: item.fullName,
-            headline: cleanedHeadline,
-            currentCompany: resolvedCompany,
-            companySlug,
-            location: item.location,
-            profileUrl: item.profileUrl,
-            avatarUrl: item.avatarUrl,
-            rawData: JSON.stringify(item),
-          },
-        });
-      }
-
-      upserted += 1;
-    }
+    const { upserted, hidden } = await upsertConnections(verified.userId, normalized);
 
     await prisma.linkedInSyncRun.update({
       where: { id: syncRun.id },

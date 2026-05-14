@@ -72,6 +72,20 @@ function companyColor(name: string): string {
   return COMPANY_PALETTE[hash % COMPANY_PALETTE.length];
 }
 
+function slugifyCompany(name: string): string {
+  return name
+    .trim()
+    .replace(/^the\s+/i, "")
+    .replace(/\b(incorporated|inc|llc|ltd|corp|corporation|company|co|plc|gmbh|ag)\b/gi, "")
+    .replace(/&/g, " and ")
+    .replace(/['".,()/]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function initialsOf(name: string): string {
   return name
     .replace(/[^A-Za-z ]/g, "")
@@ -333,6 +347,16 @@ export default function ApplicationsDashboard({
   const [search, setSearch] = useState("");
   const [starting, setStarting] = useState(false);
   const [startResult, setStartResult] = useState<{ success?: boolean; message?: string; error?: string } | null>(null);
+  const [connectionCounts, setConnectionCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch("/api/referrals/connection-counts")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.counts) setConnectionCounts(data.counts);
+      })
+      .catch(() => {});
+  }, []);
 
   const [liveProgress, setLiveProgress] = useState<{
     status: string;
@@ -575,6 +599,11 @@ export default function ApplicationsDashboard({
             )}
             {stats.matchAvg > 0 && (
               <HeroStat label="Match avg" value={`${stats.matchAvg}%`} />
+            )}
+            {Object.keys(connectionCounts).length > 0 && (
+              <Link href="/profile/referrals">
+                <HeroStat label="Referral cos." value={Object.keys(connectionCounts).length} accent="#ef562a" />
+              </Link>
             )}
           </div>
         </div>
@@ -1010,6 +1039,14 @@ export default function ApplicationsDashboard({
                                   <span className="sm:hidden font-mono mr-2">{fmtClock(ts)}</span>
                                   {app.company}
                                   {app.matchReason ? ` · ${app.matchReason}` : ""}
+                                  {connectionCounts[slugifyCompany(app.company)] > 0 && (
+                                    <Link
+                                      href="/profile/referrals"
+                                      className="ml-2 inline-flex items-center gap-1 text-[#ef562a] font-medium hover:underline"
+                                    >
+                                      You know {connectionCounts[slugifyCompany(app.company)]} {connectionCounts[slugifyCompany(app.company)] === 1 ? "person" : "people"} here
+                                    </Link>
+                                  )}
                                 </p>
                                 {app.status === "skipped" && (
                                   <p className="text-[10px] mt-0.5 text-[var(--gray-600)]">
@@ -1039,12 +1076,20 @@ export default function ApplicationsDashboard({
                                   )}
                                 </div>
                               </div>
-                              {/* Desktop meta column: match bar, stamp, view */}
+                              {/* Desktop meta column: match bar, stamp, referral, view */}
                               <div className="hidden sm:flex items-center gap-3 flex-wrap justify-end">
                                 {typeof app.matchScore === "number" && app.matchScore > 0 && (
                                   <MatchBar score={app.matchScore} />
                                 )}
                                 <Stamp label={stampText} color={stampColor} />
+                                {connectionCounts[slugifyCompany(app.company)] > 0 && (
+                                  <Link
+                                    href="/profile/referrals"
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-[#ef562a] hover:underline"
+                                  >
+                                    Get Referred
+                                  </Link>
+                                )}
                                 {app.applyUrl && (
                                   <a
                                     href={app.applyUrl}

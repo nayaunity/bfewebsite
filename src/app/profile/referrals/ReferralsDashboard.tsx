@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import CsvUploadPanel from "@/components/referrals/CsvUploadPanel";
 
 type ReferralStatus =
   | "preview"
@@ -281,6 +282,9 @@ export default function ReferralsDashboard({
   const [loadingToken, setLoadingToken] = useState(false);
   const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [syncTab, setSyncTab] = useState<"csv" | "extension">("csv");
+  const [aiMessage, setAiMessage] = useState<string | null>(null);
+  const [loadingAi, setLoadingAi] = useState(false);
 
   const sortedRequests = useMemo(
     () => [...requests].sort((left, right) => right.priority - left.priority || right.updatedAt.localeCompare(left.updatedAt)),
@@ -438,23 +442,6 @@ export default function ReferralsDashboard({
                 Sync your first-degree connections, then we’ll surface BFE jobs where you already know someone on the inside.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="/downloads/bfe-linkedin-sync-extension.zip"
-                download
-                className="inline-flex items-center justify-center rounded-full border border-[var(--card-border)] px-4 py-2.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)]"
-              >
-                Download extension
-              </a>
-              <button
-                type="button"
-                onClick={handleGenerateToken}
-                disabled={loadingToken || !access.canPreview || !backendReady}
-                className="rounded-full bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {loadingToken ? "Generating..." : "Generate extension token"}
-              </button>
-            </div>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -479,39 +466,87 @@ export default function ReferralsDashboard({
             </div>
           </div>
 
-          <div className="mt-5 rounded-2xl border border-dashed border-[var(--card-border)] p-4">
-            <p className="text-sm font-medium text-[var(--foreground)]">How to sync</p>
-            <ol className="mt-2 space-y-2 text-sm text-[var(--gray-600)]">
-              <li>1. Click <strong>Download extension</strong> above. After the zip downloads, double-click it so Finder creates an unzipped <code>linkedin-sync</code> folder.</li>
-              <li>2. In Chrome, open <code>chrome://extensions</code>, turn on Developer mode, click <strong>Load unpacked</strong>, and in Finder select that unzipped <code>linkedin-sync</code> folder, usually in Downloads.</li>
-              <li>3. On this page, click <strong>Generate extension token</strong>, then copy the token.</li>
-              <li>4. In LinkedIn, open a page with visible profile cards, like <strong>My Network</strong>, search results, or people results.</li>
-              <li>5. Open the extension, confirm the App URL is <code>https://www.theblackfemaleengineer.com</code>, paste the token, click <strong>Scan page</strong>, then click <strong>Sync captured</strong>.</li>
-              <li>6. Come back here and refresh to see warm matches. Repeat on more LinkedIn pages if you want to capture more connections.</li>
-            </ol>
-            <p className="mt-3 text-xs text-[var(--gray-600)]">
-              The extension only captures the profile cards currently visible on the page, not your full LinkedIn network all at once.
-            </p>
-            {tokenInfo && (
-              <div className="mt-4 rounded-xl bg-[var(--gray-50)] p-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-medium text-[var(--foreground)]">Token expires {formatDate(tokenInfo.expiresAt)}</p>
-                    <p className="mt-1 text-[11px] text-[var(--gray-600)] break-all">{tokenInfo.syncUrl}</p>
-                  </div>
+          <div className="mt-5">
+            <div className="flex gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => setSyncTab("csv")}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  syncTab === "csv"
+                    ? "bg-[#ef562a] text-white"
+                    : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
+                }`}
+              >
+                CSV Upload
+              </button>
+              <button
+                type="button"
+                onClick={() => setSyncTab("extension")}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  syncTab === "extension"
+                    ? "bg-[#ef562a] text-white"
+                    : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
+                }`}
+              >
+                Browser Extension
+              </button>
+            </div>
+
+            {syncTab === "csv" ? (
+              <CsvUploadPanel onComplete={() => window.location.reload()} />
+            ) : (
+              <div className="rounded-2xl border border-dashed border-[var(--card-border)] p-4">
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <a
+                    href="/downloads/bfe-linkedin-sync-extension.zip"
+                    download
+                    className="inline-flex items-center justify-center rounded-full border border-[var(--card-border)] px-4 py-2.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)]"
+                  >
+                    Download extension
+                  </a>
                   <button
                     type="button"
-                    onClick={handleCopyToken}
-                    className="rounded-full border border-[var(--card-border)] px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)]"
+                    onClick={handleGenerateToken}
+                    disabled={loadingToken || !access.canPreview || !backendReady}
+                    className="rounded-full bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Copy token
+                    {loadingToken ? "Generating..." : "Generate extension token"}
                   </button>
                 </div>
-                <textarea
-                  readOnly
-                  value={tokenInfo.token}
-                  className="mt-3 h-24 w-full rounded-xl border border-[var(--card-border)] bg-white px-3 py-2 text-xs text-[var(--foreground)]"
-                />
+                <p className="text-sm font-medium text-[var(--foreground)]">How to sync</p>
+                <ol className="mt-2 space-y-2 text-sm text-[var(--gray-600)]">
+                  <li>1. Click <strong>Download extension</strong> above. After the zip downloads, double-click it so Finder creates an unzipped <code>linkedin-sync</code> folder.</li>
+                  <li>2. In Chrome, open <code>chrome://extensions</code>, turn on Developer mode, click <strong>Load unpacked</strong>, and in Finder select that unzipped <code>linkedin-sync</code> folder, usually in Downloads.</li>
+                  <li>3. On this page, click <strong>Generate extension token</strong>, then copy the token.</li>
+                  <li>4. In LinkedIn, open a page with visible profile cards, like <strong>My Network</strong>, search results, or people results.</li>
+                  <li>5. Open the extension, confirm the App URL is <code>https://www.theblackfemaleengineer.com</code>, paste the token, click <strong>Scan page</strong>, then click <strong>Sync captured</strong>.</li>
+                  <li>6. Come back here and refresh to see warm matches. Repeat on more LinkedIn pages if you want to capture more connections.</li>
+                </ol>
+                <p className="mt-3 text-xs text-[var(--gray-600)]">
+                  The extension only captures the profile cards currently visible on the page, not your full LinkedIn network all at once.
+                </p>
+                {tokenInfo && (
+                  <div className="mt-4 rounded-xl bg-[var(--gray-50)] p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-[var(--foreground)]">Token expires {formatDate(tokenInfo.expiresAt)}</p>
+                        <p className="mt-1 text-[11px] text-[var(--gray-600)] break-all">{tokenInfo.syncUrl}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleCopyToken}
+                        className="rounded-full border border-[var(--card-border)] px-3 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)]"
+                      >
+                        Copy token
+                      </button>
+                    </div>
+                    <textarea
+                      readOnly
+                      value={tokenInfo.token}
+                      className="mt-3 h-24 w-full rounded-xl border border-[var(--card-border)] bg-white px-3 py-2 text-xs text-[var(--foreground)]"
+                    />
+                  </div>
+                )}
               </div>
             )}
             {lastSyncRun && (
@@ -596,14 +631,16 @@ export default function ReferralsDashboard({
                         Synced {formatDate(connection.lastSyncedAt)}
                       </p>
                     </div>
-                    <a
-                      href={connection.profileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="shrink-0 text-xs font-medium text-[#ef562a] hover:underline"
-                    >
-                      LinkedIn
-                    </a>
+                    {!connection.profileUrl.startsWith("csv://") && (
+                      <a
+                        href={connection.profileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="shrink-0 text-xs font-medium text-[#ef562a] hover:underline"
+                      >
+                        LinkedIn
+                      </a>
+                    )}
                   </div>
                 </div>
               ))
@@ -669,14 +706,16 @@ export default function ReferralsDashboard({
                         {match.connection.headline || "LinkedIn connection"}{match.connection.location ? ` · ${match.connection.location}` : ""}
                       </p>
                     </div>
-                    <a
-                      href={match.connection.profileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-medium text-[#ef562a] hover:underline"
-                    >
-                      LinkedIn
-                    </a>
+                    {!match.connection.profileUrl.startsWith("csv://") && (
+                      <a
+                        href={match.connection.profileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-medium text-[#ef562a] hover:underline"
+                      >
+                        LinkedIn
+                      </a>
+                    )}
                   </div>
                 </div>
               ))
@@ -757,17 +796,56 @@ export default function ReferralsDashboard({
                     <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--gray-600)]">Suggested outreach</p>
                     <p className="mt-1 text-sm font-medium text-[var(--foreground)]">{selectedPacket.subjectLine}</p>
                   </div>
-                  {selectedRequest.resumeName && (
-                    <span className="rounded-full bg-[var(--gray-50)] px-3 py-1 text-xs text-[var(--gray-700)]">
-                      {selectedRequest.resumeName}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {selectedRequest.resumeName && (
+                      <span className="rounded-full bg-[var(--gray-50)] px-3 py-1 text-xs text-[var(--gray-700)]">
+                        {selectedRequest.resumeName}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      disabled={loadingAi || !access.canPreview}
+                      onClick={async () => {
+                        setLoadingAi(true);
+                        setAiMessage(null);
+                        try {
+                          const res = await fetch("/api/referrals/outreach/generate", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              connectionId: selectedRequest.connection.id,
+                              jobId: selectedRequest.job.id,
+                            }),
+                          });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.error || "Failed to generate");
+                          setAiMessage(data.message);
+                        } catch (err) {
+                          setError(err instanceof Error ? err.message : "AI generation failed");
+                        } finally {
+                          setLoadingAi(false);
+                        }
+                      }}
+                      className="rounded-full bg-[#ef562a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#d84a21] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {loadingAi ? "Generating..." : "Personalize with AI"}
+                    </button>
+                  </div>
                 </div>
                 <textarea
                   readOnly
-                  value={selectedPacket.suggestedMessage}
+                  value={aiMessage || selectedPacket.suggestedMessage}
                   className="mt-3 h-64 w-full rounded-xl border border-[var(--card-border)] bg-[var(--gray-50)] px-3 py-3 text-sm text-[var(--foreground)]"
                 />
+                {aiMessage && (
+                  <button
+                    type="button"
+                    onClick={() => setAiMessage(null)}
+                    className="mt-2 text-xs text-[var(--gray-600)] hover:underline"
+                  >
+                    Show original template
+                  </button>
+                )}
               </div>
 
               {selectedRequest.adminNotes && (
