@@ -3,9 +3,12 @@ import test from "node:test";
 
 import {
   buildReferralPacket,
+  cleanLinkedInConnectionHeadline,
   dedupeLinkedInConnections,
   getReferralAccessSummary,
+  inferCompanyFromHeadline,
   normalizeLinkedInProfileUrl,
+  resolveLinkedInConnectionCompany,
   scoreWarmMatch,
   slugifyCompanyName,
 } from "./core.ts";
@@ -18,6 +21,41 @@ test("slugifyCompanyName strips corporate suffixes and normalizes punctuation", 
   assert.equal(slugifyCompanyName("OpenAI, Inc."), "openai");
   assert.equal(slugifyCompanyName("The Walt Disney Company"), "walt-disney");
   assert.equal(slugifyCompanyName("Figma, LLC"), "figma");
+});
+
+test("headline cleanup strips full-name prefixes and LinkedIn connection metadata", () => {
+  assert.equal(
+    cleanLinkedInConnectionHeadline(
+      "Kellyne StephensAssociate Software Engineer @NYT Wirecutter Connected on May 6, 2026",
+      "Kellyne Stephens"
+    ),
+    "Associate Software Engineer @NYT Wirecutter"
+  );
+});
+
+test("company inference supports both @Company and at Company patterns", () => {
+  assert.equal(
+    inferCompanyFromHeadline(
+      "Associate Software Engineer @NYT Wirecutter",
+      "Kellyne Stephens"
+    ),
+    "NYT Wirecutter"
+  );
+  assert.equal(
+    inferCompanyFromHeadline(
+      "Senior Recruiter at Figma",
+      "Amara Okonkwo"
+    ),
+    "Figma"
+  );
+  assert.equal(
+    resolveLinkedInConnectionCompany(
+      null,
+      "Associate Software Engineer @NYT Wirecutter Connected on May 6, 2026",
+      "Kellyne Stephens"
+    ),
+    "NYT Wirecutter"
+  );
 });
 
 test("dedupeLinkedInConnections canonicalizes LinkedIn profile URLs", () => {

@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
+  cleanLinkedInConnectionHeadline,
+  resolveLinkedInConnectionCompany,
+} from "@/lib/referrals/core";
+import {
   getLinkedInStatusForUser,
   getReferralAccessForUser,
   getWarmMatchesForUser,
@@ -205,6 +209,12 @@ export default async function ReferralsPage() {
             initialWarmMatches={referralData.warmMatches}
             initialConnections={referralData.connections.map((connection) => ({
               ...connection,
+              headline: cleanLinkedInConnectionHeadline(connection.headline, connection.fullName),
+              currentCompany: resolveLinkedInConnectionCompany(
+                connection.currentCompany,
+                connection.headline,
+                connection.fullName
+              ),
               lastSyncedAt: connection.lastSyncedAt.toISOString(),
             }))}
             initialRequests={referralData.requests.map((request) => ({

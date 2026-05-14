@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BFE LinkedIn Sync",
   "description": "Capture visible first-degree LinkedIn connections and sync them to BFE Referral Assist.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "permissions": ["activeTab", "storage", "tabs"],
   "host_permissions": [
     "https://www.linkedin.com/*",

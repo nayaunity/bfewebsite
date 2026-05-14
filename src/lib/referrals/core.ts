@@ -50,6 +50,10 @@ const GENERIC_WORDS = new Set([
   "staff",
 ]);
 
+function collapseWhitespace(value: string | null | undefined): string {
+  return (value || "").replace(/\s+/g, " ").trim();
+}
+
 export interface LinkedInConnectionInput {
   fullName: string;
   headline?: string | null;
@@ -169,6 +173,61 @@ export function extractLinkedInPublicId(value: string): string | null {
   return match?.[1]?.toLowerCase() ?? null;
 }
 
+export function cleanLinkedInConnectionHeadline(
+  headline: string | null | undefined,
+  fullName?: string | null
+): string | null {
+  let cleaned = collapseWhitespace(headline);
+  if (!cleaned) return null;
+
+  cleaned = cleaned.replace(/\s+Connected on\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}$/i, "").trim();
+  if (!cleaned) return null;
+
+  const normalizedName = collapseWhitespace(fullName);
+  if (normalizedName) {
+    if (cleaned.startsWith(normalizedName)) {
+      cleaned = collapseWhitespace(cleaned.slice(normalizedName.length));
+    } else {
+      const compactName = normalizedName.replace(/\s+/g, "");
+      const compactHeadline = cleaned.replace(/\s+/g, "");
+      if (compactHeadline.startsWith(compactName)) {
+        const suffix = compactHeadline.slice(compactName.length);
+        cleaned = collapseWhitespace(suffix.replace(/([a-z])([A-Z])/g, "$1 $2"));
+      }
+    }
+  }
+
+  return cleaned || null;
+}
+
+export function inferCompanyFromHeadline(
+  headline: string | null | undefined,
+  fullName?: string | null
+): string | null {
+  const cleaned = cleanLinkedInConnectionHeadline(headline, fullName);
+  if (!cleaned) return null;
+
+  const atSymbolMatch = cleaned.match(/@\s*([^|,•·]+)$/);
+  if (atSymbolMatch) {
+    return collapseWhitespace(atSymbolMatch[1]);
+  }
+
+  const atWordMatch = cleaned.match(/\bat\s+([^|,•·]+)$/i);
+  if (atWordMatch) {
+    return collapseWhitespace(atWordMatch[1]);
+  }
+
+  return null;
+}
+
+export function resolveLinkedInConnectionCompany(
+  currentCompany: string | null | undefined,
+  headline: string | null | undefined,
+  fullName?: string | null
+): string | null {
+  return collapseWhitespace(currentCompany) || inferCompanyFromHeadline(headline, fullName);
+}
+
 export function normalizeLinkedInConnection(
   input: LinkedInConnectionInput
 ): LinkedInConnectionInput | null {
@@ -176,10 +235,17 @@ export function normalizeLinkedInConnection(
   const profileUrl = normalizeLinkedInProfileUrl(input.profileUrl);
   if (!fullName || !profileUrl) return null;
 
+  const headline = cleanLinkedInConnectionHeadline(input.headline, fullName);
+  const currentCompany = resolveLinkedInConnectionCompany(
+    input.currentCompany,
+    headline,
+    fullName
+  );
+
   return {
     fullName,
-    headline: input.headline?.trim() || null,
-    currentCompany: input.currentCompany?.trim() || null,
+    headline,
+    currentCompany,
     location: input.location?.trim() || null,
     profileUrl,
     avatarUrl: input.avatarUrl?.trim() || null,

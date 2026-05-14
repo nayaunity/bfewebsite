@@ -6,10 +6,12 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentPeriodStart } from "@/lib/subscription";
 import {
   buildReferralPacket,
+  cleanLinkedInConnectionHeadline,
   dedupeLinkedInConnections,
   extractLinkedInPublicId,
   getReferralAccessSummary,
   LIVE_REFERRAL_STATUSES,
+  resolveLinkedInConnectionCompany,
   scoreWarmMatch,
   slugifyCompanyName,
   type LinkedInConnectionInput,
@@ -179,14 +181,30 @@ export async function getWarmMatchesForUser(userId: string, limit = 18): Promise
     where: {
       userId,
       status: "active",
-      companySlug: { not: null },
     },
     orderBy: { lastSyncedAt: "desc" },
   });
 
   if (connections.length === 0) return [];
 
-  const companySlugs = [...new Set(connections.map((connection) => connection.companySlug).filter(Boolean))] as string[];
+  const resolvedConnections = connections
+    .map((connection) => {
+      const currentCompany = resolveLinkedInConnectionCompany(
+        connection.currentCompany,
+        connection.headline,
+        connection.fullName
+      );
+      const companySlug = connection.companySlug || slugifyCompanyName(currentCompany);
+      return {
+        ...connection,
+        currentCompany,
+        companySlug,
+        headline: cleanLinkedInConnectionHeadline(connection.headline, connection.fullName),
+      };
+    })
+    .filter((connection) => !!connection.companySlug);
+
+  const companySlugs = [...new Set(resolvedConnections.map((connection) => connection.companySlug).filter(Boolean))] as string[];
   if (companySlugs.length === 0) return [];
 
   const jobs = await prisma.job.findMany({
@@ -210,8 +228,8 @@ export async function getWarmMatchesForUser(userId: string, limit = 18): Promise
     },
   });
 
-  const connectionsByCompany = new Map<string, typeof connections>();
-  for (const connection of connections) {
+  const connectionsByCompany = new Map<string, typeof resolvedConnections>();
+  for (const connection of resolvedConnections) {
     if (!connection.companySlug) continue;
     const list = connectionsByCompany.get(connection.companySlug) || [];
     list.push(connection);
@@ -301,6 +319,7 @@ export async function buildReferralPacketForUser(params: {
         fullName: true,
         headline: true,
         currentCompany: true,
+        companySlug: true,
       },
     }),
     params.resumeId
@@ -319,7 +338,14 @@ export async function buildReferralPacketForUser(params: {
   if (!connection) throw new Error("Connection not found");
 
   const normalizedJobCompany = slugifyCompanyName(job.company);
-  if (!normalizedJobCompany || connection.currentCompany && slugifyCompanyName(connection.currentCompany) !== normalizedJobCompany) {
+  const resolvedConnectionCompany = resolveLinkedInConnectionCompany(
+    connection.currentCompany,
+    connection.headline,
+    connection.fullName
+  );
+  const normalizedConnectionCompany =
+    connection.companySlug || slugifyCompanyName(resolvedConnectionCompany);
+  if (!normalizedJobCompany || (normalizedConnectionCompany && normalizedConnectionCompany !== normalizedJobCompany)) {
     throw new Error("Referral requests are limited to jobs tied to synced LinkedIn connections.");
   }
 
@@ -343,6 +369,7 @@ export async function buildReferralPacketForUser(params: {
 
   const targetRoles = getTargetRolesForUser(user.targetRole, user.onboardingData);
   const firstName = connection.fullName.trim().split(/\s+/)[0] || "there";
+  const cleanedHeadline = cleanLinkedInConnectionHeadline(connection.headline, connection.fullName);
 
   const packet = buildReferralPacket({
     userFirstName: user.firstName,
@@ -358,7 +385,7 @@ export async function buildReferralPacketForUser(params: {
     applyUrl: job.applyUrl,
     connectionFirstName: firstName,
     connectionFullName: connection.fullName,
-    connectionHeadline: connection.headline,
+    connectionHeadline: cleanedHeadline,
     resumeName: resumeRecord?.fileName || null,
   });
 
@@ -529,7 +556,13 @@ export async function syncLinkedInConnections(params: {
         existingByUrl.get(item.profileUrl) ||
         (item.linkedinPublicId ? existingByPublicId.get(item.linkedinPublicId) : undefined);
 
-      const companySlug = slugifyCompanyName(item.currentCompany);
+      const resolvedCompany = resolveLinkedInConnectionCompany(
+        item.currentCompany,
+        item.headline,
+        item.fullName
+      );
+      const cleanedHeadline = cleanLinkedInConnectionHeadline(item.headline, item.fullName);
+      const companySlug = slugifyCompanyName(resolvedCompany);
       const status = existingRecord?.status === "hidden" ? "hidden" : "active";
       if (status === "hidden") hidden += 1;
 
@@ -539,8 +572,8 @@ export async function syncLinkedInConnections(params: {
           data: {
             linkedinPublicId: item.linkedinPublicId || existingRecord.linkedinPublicId,
             fullName: item.fullName,
-            headline: item.headline,
-            currentCompany: item.currentCompany,
+            headline: cleanedHeadline,
+            currentCompany: resolvedCompany,
             companySlug,
             location: item.location,
             profileUrl: item.profileUrl,
@@ -556,8 +589,8 @@ export async function syncLinkedInConnections(params: {
             userId: verified.userId,
             linkedinPublicId: item.linkedinPublicId,
             fullName: item.fullName,
-            headline: item.headline,
-            currentCompany: item.currentCompany,
+            headline: cleanedHeadline,
+            currentCompany: resolvedCompany,
             companySlug,
             location: item.location,
             profileUrl: item.profileUrl,
