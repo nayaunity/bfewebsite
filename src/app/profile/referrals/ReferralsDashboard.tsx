@@ -457,11 +457,15 @@ export default function ReferralsDashboard({
           <div className="mt-5 rounded-2xl border border-dashed border-[var(--card-border)] p-4">
             <p className="text-sm font-medium text-[var(--foreground)]">How to sync</p>
             <ol className="mt-2 space-y-2 text-sm text-[var(--gray-600)]">
-              <li>1. Load the unpacked `extension/linkedin-sync` browser extension.</li>
-              <li>2. Click “Generate extension token” here.</li>
-              <li>3. Paste the token into the extension, open LinkedIn connection pages, and run sync.</li>
-              <li>4. Refresh this page to see warm matches and request packets.</li>
+              <li>1. In Chrome, open <code>chrome://extensions</code>, turn on Developer mode, click <strong>Load unpacked</strong>, and select the <code>extension/linkedin-sync</code> folder.</li>
+              <li>2. On this page, click <strong>Generate extension token</strong>, then copy the token.</li>
+              <li>3. In LinkedIn, open a page with visible profile cards, like <strong>My Network</strong>, search results, or people results.</li>
+              <li>4. Open the extension, confirm the App URL is <code>https://www.theblackfemaleengineer.com</code>, paste the token, click <strong>Scan page</strong>, then click <strong>Sync captured</strong>.</li>
+              <li>5. Come back here and refresh to see warm matches. Repeat on more LinkedIn pages if you want to capture more connections.</li>
             </ol>
+            <p className="mt-3 text-xs text-[var(--gray-600)]">
+              The extension only captures the profile cards currently visible on the page, not your full LinkedIn network all at once.
+            </p>
             {tokenInfo && (
               <div className="mt-4 rounded-xl bg-[var(--gray-50)] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
