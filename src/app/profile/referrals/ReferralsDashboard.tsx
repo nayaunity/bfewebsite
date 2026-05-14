@@ -563,6 +563,9 @@ export default function ReferralsDashboard({
               Showing {connections.length} of {connectionsTotal}
             </p>
           </div>
+          <p className="mt-2 text-xs text-[var(--gray-600)]">
+            We only infer employer from the visible text on each scanned LinkedIn card.
+          </p>
 
           <div className="mt-5 space-y-3">
             {connections.length === 0 ? (
@@ -582,7 +585,7 @@ export default function ReferralsDashboard({
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="truncate text-sm font-medium text-[var(--foreground)]">{connection.fullName}</p>
                         <span className="rounded-full bg-[var(--gray-50)] px-2 py-1 text-[11px] text-[var(--gray-700)]">
-                          {connection.currentCompany || "No company detected"}
+                          {connection.currentCompany || "Employer not visible on scanned card"}
                         </span>
                       </div>
                       <p className="mt-1 text-xs text-[var(--gray-600)]">
@@ -608,7 +611,7 @@ export default function ReferralsDashboard({
           </div>
           {connections.length > 0 && warmMatches.length === 0 && (
             <p className="mt-4 text-sm text-[var(--gray-600)]">
-              Your sync worked. We just do not have an active BFE job-company overlap yet, or LinkedIn did not expose a current company on those cards.
+              Your sync worked. We just do not have an active BFE job-company overlap yet, or those LinkedIn cards did not expose an employer we could match.
             </p>
           )}
         </section>
