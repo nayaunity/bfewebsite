@@ -17,6 +17,7 @@ import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { CancelSubscriptionButton } from "@/components/profile/CancelSubscriptionButton";
 import { PageViewTracker } from "./PageViewTracker";
+import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,7 @@ export default async function AccountPage() {
 
   const tier = user.subscriptionTier || "free";
   const status = user.subscriptionStatus;
+  const showReferrals = isReferralAssistEnabledForEmail(session.user.email);
   const cancelable =
     !!user.stripeSubscriptionId &&
     (status === "trialing" ||
@@ -105,7 +107,7 @@ export default async function AccountPage() {
             Subscription, billing, and account details.
           </p>
 
-          <ProfileTabs />
+          <ProfileTabs showReferrals={showReferrals} />
 
           {/* Account details card */}
           <section

@@ -4,11 +4,13 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PricingCards } from "./PricingCards";
 import { SupportEmail } from "@/components/SupportEmail";
+import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 
 export const dynamic = "force-dynamic";
 
 export default async function PricingPage() {
   const session = await auth();
+  const showReferrals = isReferralAssistEnabledForEmail(session?.user?.email);
 
   let currentTier = "free";
   if (session?.user) {
@@ -27,18 +29,27 @@ export default async function PricingPage() {
         {/* Hero */}
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
-            Auto-Apply to <span className="italic text-[#ef562a]">Jobs</span>{" "}
-            While You Sleep
+            Auto-Apply for <span className="italic text-[#ef562a]">Volume</span>.{" "}
+            {showReferrals ? (
+              <>Use Referrals for <span className="italic text-[#ef562a]">Signal</span>.</>
+            ) : (
+              <>Tailor for <span className="italic text-[#ef562a]">Fit</span>.</>
+            )}
           </h1>
           <p className="text-lg text-[var(--gray-600)] max-w-2xl mx-auto">
             Start with a 7-day free trial. No charge today. We auto-apply to
-            matched roles at 30+ top companies. Cancel anytime.
+            matched roles at 30+ top companies
+            {showReferrals
+              ? " and help you turn warm LinkedIn connections into referral-ready packets."
+              : ", tailor your resume for fit, and keep your pipeline moving."}{" "}
+            Cancel anytime.
           </p>
         </div>
 
         <PricingCards
           currentTier={currentTier}
           isSignedIn={!!session?.user}
+          showReferrals={showReferrals}
         />
 
         {/* FAQ */}
@@ -71,6 +82,20 @@ export default async function PricingPage() {
                 submits — all automatically.
               </p>
             </div>
+            {showReferrals && (
+              <div>
+                <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
+                  How do referrals work?
+                </h3>
+                <p className="text-sm text-[var(--gray-600)]">
+                  On paid plans, you can sync your first-degree LinkedIn
+                  connections, see which BFE jobs are warm through your network,
+                  generate a tailored referral packet, and track the ask through
+                  intro, interview, offer, and hire. Trial users can preview the
+                  flow; live requests unlock after conversion.
+                </p>
+              </div>
+            )}
             <div>
               <h3 className="text-sm font-medium text-[var(--foreground)] mb-1">
                 Which companies do you apply to?

@@ -55,6 +55,27 @@ export async function checkAdmin() {
 }
 
 /**
+ * Check if the current user can operate admin queues that are intentionally
+ * limited to admins and operations staff.
+ */
+export async function checkOperationsAdmin() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { allowed: false, session: null, role: null as UserRole };
+  }
+
+  const user = await getUserRole(session.user.id);
+  const role = user?.role as UserRole;
+
+  return {
+    allowed: role === "admin" || role === "operations",
+    session,
+    role,
+  };
+}
+
+/**
  * Check if the current user can edit the three content surfaces
  * (jobs, blog, links). Accepts admin and contributor. Returns
  * { allowed, session } without redirecting. For API routes.

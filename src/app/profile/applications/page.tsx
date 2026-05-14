@@ -7,10 +7,12 @@ import { PagePresenceTracker } from "@/components/PagePresenceTracker";
 import { ResumeHealthBanner } from "@/components/profile/ResumeHealthBanner";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { Suspense } from "react";
+import Link from "next/link";
 import ApplicationsDashboard from "./ApplicationsDashboard";
 import { TicketWidget } from "@/components/TicketWidget";
 import { SupportEmail } from "@/components/SupportEmail";
 import { canApply } from "@/lib/subscription";
+import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +25,9 @@ export default async function ApplicationsPage() {
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
+  const showReferrals = isReferralAssistEnabledForEmail(session.user.email);
 
-  const [user, applications, browseDiscoveries, recentSessions, usageData, todaySession, totalActiveJobs] = await Promise.all([
+  const [user, applications, browseDiscoveries, usageData, todaySession, totalActiveJobs] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true, selfIdCompletedAt: true },
@@ -42,23 +45,6 @@ export default async function ApplicationsPage() {
       take: 200,
       include: {
         session: { select: { targetRole: true, resumeUrl: true, createdAt: true } },
-      },
-    }),
-    prisma.browseSession.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: {
-        id: true,
-        status: true,
-        targetRole: true,
-        totalCompanies: true,
-        companiesDone: true,
-        jobsFound: true,
-        jobsApplied: true,
-        jobsFailed: true,
-        createdAt: true,
-        completedAt: true,
       },
     }),
     canApply(session.user.id),
@@ -134,7 +120,7 @@ export default async function ApplicationsPage() {
 
   // Hero stats for the Mission Log layout. Computed from real data so the
   // server stays the source of truth (no schema change).
-  const oneWeekAgoMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const oneWeekAgoMs = todayStart.getTime() - 6 * 24 * 60 * 60 * 1000;
   const thisWeek = allApplications.filter((a) => {
     if (a.status !== "submitted" && a.status !== "applied") return false;
     const ts = a.submittedAt ?? a.createdAt;
@@ -200,7 +186,27 @@ export default async function ApplicationsPage() {
             </p>
           </div>
 
-          <ProfileTabs />
+          <ProfileTabs showReferrals={showReferrals} />
+
+          {showReferrals && (
+            <section className="mb-6 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[var(--gray-600)]">High-signal lane</p>
+                  <h2 className="mt-1 font-serif text-2xl text-[var(--foreground)]">Use referrals for the roles you care about most.</h2>
+                  <p className="mt-2 max-w-2xl text-sm text-[var(--gray-600)]">
+                    Auto-apply keeps volume moving. Referrals help you focus your strongest network leverage on the jobs where an intro can change the outcome.
+                  </p>
+                </div>
+                <Link
+                  href="/profile/referrals"
+                  className="inline-flex items-center justify-center rounded-full bg-[#ef562a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
+                >
+                  Open referrals
+                </Link>
+              </div>
+            </section>
+          )}
 
           {/* Main Dashboard */}
           <ApplicationsDashboard

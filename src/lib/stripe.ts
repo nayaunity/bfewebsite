@@ -1,5 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
+export { TIER_LIMITS } from "./plan-limits";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_placeholder_for_build");
 
@@ -18,19 +19,4 @@ export const STRIPE_COURSE_PRICES = {
   selfGuided: process.env.STRIPE_BTA_SELF_GUIDED_PRICE_ID!,
   groupCoaching: process.env.STRIPE_BTA_GROUP_PRICE_ID!,
   privateCoaching: process.env.STRIPE_BTA_COACHING_PRICE_ID!,
-};
-
-export const TIER_LIMITS: Record<
-  string,
-  {
-    appsPerMonth: number;
-    maxResumes: number;
-    tailoredPerMonth: number;
-    portfolioEnabled: boolean;
-    portfolioRegenerationsPerMonth: number;
-  }
-> = {
-  free: { appsPerMonth: 5, maxResumes: 3, tailoredPerMonth: 1, portfolioEnabled: false, portfolioRegenerationsPerMonth: 0 },
-  starter: { appsPerMonth: 100, maxResumes: 5, tailoredPerMonth: 9999, portfolioEnabled: true, portfolioRegenerationsPerMonth: 3 },
-  pro: { appsPerMonth: 300, maxResumes: 10, tailoredPerMonth: 9999, portfolioEnabled: true, portfolioRegenerationsPerMonth: 9999 },
 };

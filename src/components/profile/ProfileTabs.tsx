@@ -4,19 +4,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 /**
- * Shared tab bar across the three profile-area pages so users can jump
+ * Shared tab bar across the profile-area pages so users can jump
  * between Profile (editable fields), Applications (auto-apply dashboard),
- * and Account (subscription + cancel). Drop-in: place at the top of the
+ * Referrals (network-assisted lane), and Account (subscription + cancel). Drop-in: place at the top of the
  * page content, below any global banners.
  */
 const TABS = [
   { href: "/profile", label: "Profile" },
   { href: "/profile/applications", label: "Applications" },
+  { href: "/profile/referrals", label: "Referrals" },
   { href: "/profile/account", label: "Account" },
 ] as const;
 
-export function ProfileTabs() {
+export function ProfileTabs({ showReferrals = true }: { showReferrals?: boolean }) {
   const pathname = usePathname() || "";
+  const tabs = showReferrals
+    ? TABS
+    : TABS.filter((tab) => tab.href !== "/profile/referrals");
 
   return (
     <nav
@@ -24,7 +28,7 @@ export function ProfileTabs() {
       className="mb-8 border-b border-[var(--card-border)]"
     >
       <ul className="flex gap-1 sm:gap-2 -mb-px overflow-x-auto">
-        {TABS.map((t) => {
+        {tabs.map((t) => {
           // `/profile` must match exactly so nested routes don't keep it lit
           // alongside the deeper tab. Deeper tabs match by prefix so
           // `/profile/applications/anything` stays on Applications.

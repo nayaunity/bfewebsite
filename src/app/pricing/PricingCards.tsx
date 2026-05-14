@@ -3,55 +3,60 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const tiers = [
-  {
-    name: "Starter",
-    price: "$29",
-    period: "/month",
-    trialBlurb: "7-day free trial, $0 today",
-    key: "starter" as const,
-    features: [
-      "100 applications per month",
-      "Unlimited tailored resumes",
-      "Upload up to 5 resumes to your profile",
-      "30+ companies",
-      "Smart resume matching",
-      "Application tracking",
-      "Priority queue",
-    ],
-    cta: "Start 7-day trial",
-    highlighted: true,
-  },
-  {
-    name: "Pro",
-    price: "$59",
-    period: "/month",
-    trialBlurb: null,
-    key: "pro" as const,
-    features: [
-      "300 applications per month",
-      "Unlimited tailored resumes",
-      "Upload up to 10 resumes to your profile",
-      "30+ companies",
-      "Smart resume matching",
-      "Application tracking",
-      "Priority queue",
-      "Daily auto-apply",
-    ],
-    cta: "Subscribe",
-    highlighted: false,
-  },
-];
-
 export function PricingCards({
   currentTier,
   isSignedIn,
+  showReferrals,
 }: {
   currentTier: string;
   isSignedIn: boolean;
+  showReferrals: boolean;
 }) {
   const [loading, setLoading] = useState<string | null>(null);
   const router = useRouter();
+  const tiers = [
+    {
+      name: "Starter",
+      price: "$29",
+      period: "/month",
+      trialBlurb: "7-day free trial, $0 today",
+      key: "starter" as const,
+      features: [
+        "100 applications per month",
+        ...(showReferrals ? ["2 live referral requests per month"] : []),
+        "Unlimited tailored resumes",
+        "Upload up to 5 resumes to your profile",
+        "30+ companies",
+        "Smart resume matching",
+        "Application tracking",
+        ...(showReferrals ? ["LinkedIn warm-match previews + referral packets"] : []),
+        "Priority queue",
+      ],
+      cta: "Start 7-day trial",
+      highlighted: true,
+    },
+    {
+      name: "Pro",
+      price: "$59",
+      period: "/month",
+      trialBlurb: null,
+      key: "pro" as const,
+      features: [
+        "300 applications per month",
+        ...(showReferrals ? ["5 live referral requests per month"] : []),
+        "Unlimited tailored resumes",
+        "Upload up to 10 resumes to your profile",
+        "30+ companies",
+        "Smart resume matching",
+        "Application tracking",
+        ...(showReferrals ? ["LinkedIn warm-match previews + referral packets"] : []),
+        "Priority queue",
+        "Daily auto-apply",
+      ],
+      cta: "Subscribe",
+      highlighted: false,
+    },
+  ];
 
   const handleSubscribe = async (tier: "starter" | "pro") => {
     if (!isSignedIn) {

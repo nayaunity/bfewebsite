@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserRole } from "@/lib/admin";
 
-const OPERATIONS_PAGES = new Set(["/admin/onboarding", "/admin/auto-apply", "/admin/errors", "/admin/tickets"]);
+const OPERATIONS_PAGES = new Set(["/admin/onboarding", "/admin/auto-apply", "/admin/referrals", "/admin/errors", "/admin/tickets"]);
 
 const navigation = [
   {
@@ -88,6 +88,16 @@ const navigation = [
     ),
   },
   {
+    name: "Referrals",
+    href: "/admin/referrals",
+    adminOnly: true,
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h8m-8 5h5m-8 7l3-3h9a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v8a2 2 0 002 2h1v3z" />
+      </svg>
+    ),
+  },
+  {
     name: "Errors",
     href: "/admin/errors",
     adminOnly: true,
@@ -129,11 +139,18 @@ const navigation = [
   },
 ];
 
-export default function AdminSidebar({ role }: { role: UserRole }) {
+export default function AdminSidebar({
+  role,
+  showReferrals = true,
+}: {
+  role: UserRole;
+  showReferrals?: boolean;
+}) {
   const pathname = usePathname();
 
   // Filter navigation based on role
   const filteredNavigation = navigation.filter(item => {
+    if (!showReferrals && item.href === "/admin/referrals") return false;
     if (role === "admin") return true;
     if (role === "operations") return OPERATIONS_PAGES.has(item.href);
     if (role === "contributor") return !item.adminOnly;

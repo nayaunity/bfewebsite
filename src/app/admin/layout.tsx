@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminHeader from "./components/AdminHeader";
+import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 
 export const metadata = {
   title: "Admin Dashboard | The Black Female Engineer",
@@ -13,10 +14,11 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const { user, role } = await requireAdmin();
+  const showReferrals = isReferralAssistEnabledForEmail(user.email);
 
   return (
     <div className="min-h-screen bg-[var(--gray-50)]">
-      <AdminSidebar role={role} />
+      <AdminSidebar role={role} showReferrals={showReferrals} />
       <div className="lg:pl-64">
         <AdminHeader user={user} />
         <main className="py-6 px-4 sm:px-6 lg:px-8">{children}</main>

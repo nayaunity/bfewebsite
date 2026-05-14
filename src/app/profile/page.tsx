@@ -27,6 +27,7 @@ import { DemographicsSection } from "@/components/profile/DemographicsSection";
 import { ApplicationAnswersSection } from "@/components/profile/ApplicationAnswersSection";
 import { AutoApplySettingsSection } from "@/components/profile/AutoApplySettingsSection";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
+import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 
 export const dynamic = "force-dynamic";
 
@@ -219,6 +220,8 @@ export default async function ProfilePage({
     redirect("/auto-apply/get-started");
   }
 
+  const showReferrals = isReferralAssistEnabledForEmail(session.user.email);
+
   // Mandatory self-identification gate for paying users. Captures EEO +
   // work-auth answers the worker needs; null fields would otherwise force
   // decline-defaults on every Greenhouse/Lever/Workday submission.
@@ -306,7 +309,7 @@ export default async function ProfilePage({
             <ProfileCompletionBar filled={completion.filled} total={completion.total} />
           </div>
 
-          <ProfileTabs />
+          <ProfileTabs showReferrals={showReferrals} />
 
           {/* Sections */}
           <div className="space-y-4">

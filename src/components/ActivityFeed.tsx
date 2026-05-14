@@ -38,6 +38,7 @@ const ACTIVITY_ICONS: Record<string, { icon: string; color: string }> = {
   lesson_completed: { icon: "📖", color: "bg-blue-100 text-blue-600" },
   micro_win: { icon: "✨", color: "bg-yellow-100 text-yellow-600" },
   job_click: { icon: "💼", color: "bg-purple-100 text-purple-600" },
+  referral_update: { icon: "🤝", color: "bg-orange-100 text-orange-600" },
   presence: { icon: "●", color: "bg-emerald-100 text-emerald-600" },
   location: { icon: "🌍", color: "bg-sky-100 text-sky-600" },
   stat: { icon: "📊", color: "bg-orange-100 text-orange-600" },

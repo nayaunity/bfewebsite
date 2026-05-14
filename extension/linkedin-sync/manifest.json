@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "BFE LinkedIn Sync",
+  "description": "Capture visible first-degree LinkedIn connections and sync them to BFE Referral Assist.",
+  "version": "0.1.0",
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://www.theblackfemaleengineer.com/*",
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "action": {
+    "default_title": "BFE LinkedIn Sync",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
