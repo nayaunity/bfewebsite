@@ -422,14 +422,23 @@ export default function ReferralsDashboard({
                 Sync your first-degree connections, then we’ll surface BFE jobs where you already know someone on the inside.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={handleGenerateToken}
-              disabled={loadingToken || !access.canPreview || !backendReady}
-              className="rounded-full bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loadingToken ? "Generating..." : "Generate extension token"}
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/downloads/bfe-linkedin-sync-extension.zip"
+                download
+                className="inline-flex items-center justify-center rounded-full border border-[var(--card-border)] px-4 py-2.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--gray-50)]"
+              >
+                Download extension
+              </a>
+              <button
+                type="button"
+                onClick={handleGenerateToken}
+                disabled={loadingToken || !access.canPreview || !backendReady}
+                className="rounded-full bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loadingToken ? "Generating..." : "Generate extension token"}
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -457,11 +466,12 @@ export default function ReferralsDashboard({
           <div className="mt-5 rounded-2xl border border-dashed border-[var(--card-border)] p-4">
             <p className="text-sm font-medium text-[var(--foreground)]">How to sync</p>
             <ol className="mt-2 space-y-2 text-sm text-[var(--gray-600)]">
-              <li>1. In Chrome, open <code>chrome://extensions</code>, turn on Developer mode, click <strong>Load unpacked</strong>, and select the <code>extension/linkedin-sync</code> folder.</li>
-              <li>2. On this page, click <strong>Generate extension token</strong>, then copy the token.</li>
-              <li>3. In LinkedIn, open a page with visible profile cards, like <strong>My Network</strong>, search results, or people results.</li>
-              <li>4. Open the extension, confirm the App URL is <code>https://www.theblackfemaleengineer.com</code>, paste the token, click <strong>Scan page</strong>, then click <strong>Sync captured</strong>.</li>
-              <li>5. Come back here and refresh to see warm matches. Repeat on more LinkedIn pages if you want to capture more connections.</li>
+              <li>1. Click <strong>Download extension</strong> above. After the zip downloads, double-click it so Finder creates an unzipped <code>linkedin-sync</code> folder.</li>
+              <li>2. In Chrome, open <code>chrome://extensions</code>, turn on Developer mode, click <strong>Load unpacked</strong>, and in Finder select that unzipped <code>linkedin-sync</code> folder, usually in Downloads.</li>
+              <li>3. On this page, click <strong>Generate extension token</strong>, then copy the token.</li>
+              <li>4. In LinkedIn, open a page with visible profile cards, like <strong>My Network</strong>, search results, or people results.</li>
+              <li>5. Open the extension, confirm the App URL is <code>https://www.theblackfemaleengineer.com</code>, paste the token, click <strong>Scan page</strong>, then click <strong>Sync captured</strong>.</li>
+              <li>6. Come back here and refresh to see warm matches. Repeat on more LinkedIn pages if you want to capture more connections.</li>
             </ol>
             <p className="mt-3 text-xs text-[var(--gray-600)]">
               The extension only captures the profile cards currently visible on the page, not your full LinkedIn network all at once.
