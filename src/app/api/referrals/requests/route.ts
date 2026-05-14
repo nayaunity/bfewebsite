@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 import {
   buildReferralPacketForUser,
   createReferralEvent,
@@ -131,6 +132,10 @@ export async function GET() {
   if (!isReferralAssistEnabledForEmail(session.user.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
+  }
 
   const [requests, { access }] = await Promise.all([
     prisma.referralRequest.findMany({
@@ -154,6 +159,10 @@ export async function POST(request: Request) {
   }
   if (!isReferralAssistEnabledForEmail(session.user.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
   }
 
   try {

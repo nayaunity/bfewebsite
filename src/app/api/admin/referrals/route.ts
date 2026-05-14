@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { checkOperationsAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 function serializeRequest(request: {
   id: string;
@@ -143,6 +144,10 @@ export async function GET(request: Request) {
   }
   if (!isReferralAssistEnabledForEmail(session?.user?.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
   }
 
   const searchParams = new URL(request.url).searchParams;

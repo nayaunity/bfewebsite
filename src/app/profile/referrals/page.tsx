@@ -7,6 +7,8 @@ import {
   getReferralAccessForUser,
   getWarmMatchesForUser,
 } from "@/lib/referrals/server";
+import { getReferralAccessSummary } from "@/lib/referrals/core";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -99,22 +101,53 @@ export default async function ReferralsPage() {
     redirect("/onboarding/self-identification");
   }
 
-  const [{ access }, linkedInStatus, requests, totalActiveJobs] = await Promise.all([
-    getReferralAccessForUser(session.user.id),
-    getLinkedInStatusForUser(session.user.id),
-    prisma.referralRequest.findMany({
-      where: { userId: session.user.id },
-      orderBy: [{ updatedAt: "desc" }],
-      include,
-    }),
+  const [backend, totalActiveJobs] = await Promise.all([
+    getReferralBackendStatus(),
     prisma.job.count({
       where: { isActive: true },
     }),
   ]);
 
-  const warmMatches = access.canPreview
-    ? await getWarmMatchesForUser(session.user.id)
-    : [];
+  const fallbackAccess = getReferralAccessSummary({
+    tier: user.subscriptionTier || "free",
+    subscriptionStatus: user.subscriptionStatus || "inactive",
+    monthlyUsed: 0,
+    concurrentUsed: 0,
+  });
+
+  const referralData = backend.ready
+    ? await (async () => {
+        const [{ access }, linkedInStatus, requests] = await Promise.all([
+          getReferralAccessForUser(session.user.id),
+          getLinkedInStatusForUser(session.user.id),
+          prisma.referralRequest.findMany({
+            where: { userId: session.user.id },
+            orderBy: [{ updatedAt: "desc" }],
+            include,
+          }),
+        ]);
+
+        const warmMatches = access.canPreview
+          ? await getWarmMatchesForUser(session.user.id)
+          : [];
+
+        return {
+          access,
+          linkedInStatus,
+          requests,
+          warmMatches,
+        };
+      })()
+    : {
+        access: fallbackAccess,
+        linkedInStatus: {
+          connectionsTotal: 0,
+          activeConnections: 0,
+          lastRun: null,
+        },
+        requests: [],
+        warmMatches: [],
+      };
 
   return (
     <>
@@ -142,9 +175,9 @@ export default async function ReferralsPage() {
           <ProfileTabs showReferrals />
 
           <ReferralsDashboard
-            initialAccess={access}
-            initialWarmMatches={warmMatches}
-            initialRequests={requests.map((request) => ({
+            initialAccess={referralData.access}
+            initialWarmMatches={referralData.warmMatches}
+            initialRequests={referralData.requests.map((request) => ({
               ...request,
               submittedAt: request.submittedAt?.toISOString() || null,
               followUpDueAt: request.followUpDueAt?.toISOString() || null,
@@ -165,16 +198,18 @@ export default async function ReferralsPage() {
                 createdAt: event.createdAt.toISOString(),
               })),
             }))}
-            connectionsTotal={linkedInStatus.connectionsTotal}
-            activeConnections={linkedInStatus.activeConnections}
-            lastSyncRun={linkedInStatus.lastRun ? {
-              status: linkedInStatus.lastRun.status,
-              startedAt: linkedInStatus.lastRun.startedAt.toISOString(),
-              completedAt: linkedInStatus.lastRun.completedAt?.toISOString() || null,
-              connectionsSeen: linkedInStatus.lastRun.connectionsSeen,
-              connectionsUpserted: linkedInStatus.lastRun.connectionsUpserted,
+            connectionsTotal={referralData.linkedInStatus.connectionsTotal}
+            activeConnections={referralData.linkedInStatus.activeConnections}
+            lastSyncRun={referralData.linkedInStatus.lastRun ? {
+              status: referralData.linkedInStatus.lastRun.status,
+              startedAt: referralData.linkedInStatus.lastRun.startedAt.toISOString(),
+              completedAt: referralData.linkedInStatus.lastRun.completedAt?.toISOString() || null,
+              connectionsSeen: referralData.linkedInStatus.lastRun.connectionsSeen,
+              connectionsUpserted: referralData.linkedInStatus.lastRun.connectionsUpserted,
             } : null}
             totalActiveJobs={totalActiveJobs}
+            backendReady={backend.ready}
+            backendMessage={backend.message}
           />
         </div>
 

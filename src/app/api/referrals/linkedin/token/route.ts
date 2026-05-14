@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createLinkedInSyncToken } from "@/lib/referrals/server";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -11,6 +12,10 @@ export async function POST(request: Request) {
   }
   if (!isReferralAssistEnabledForEmail(session.user.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
   }
 
   const origin = new URL(request.url).origin;

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
 import { REFERRAL_STATUSES, type ReferralRequestStatus } from "@/lib/referrals/core";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 import {
   createReferralEvent,
   getReferralAccessForUser,
@@ -161,6 +162,10 @@ export async function PATCH(
   }
   if (!isReferralAssistEnabledForEmail(session.user.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
   }
 
   const { id } = await context.params;

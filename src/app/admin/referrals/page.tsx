@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import ReferralsQueue from "./ReferralsQueue";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +66,24 @@ export default async function AdminReferralsPage() {
   }
   if (role === "contributor") {
     redirect("/admin/jobs");
+  }
+
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return (
+      <div className="pb-20 lg:pb-0">
+        <div className="mb-6">
+          <h1 className="font-serif text-2xl md:text-3xl text-[var(--foreground)]">Referrals Queue</h1>
+          <p className="mt-1 text-sm text-[var(--gray-600)]">
+            Concierge review for user-generated referral packets and live request progress.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+          {backend.message}
+        </div>
+      </div>
+    );
   }
 
   const [requests, totals] = await Promise.all([

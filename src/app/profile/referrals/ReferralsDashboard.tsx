@@ -232,6 +232,8 @@ export default function ReferralsDashboard({
   activeConnections,
   lastSyncRun,
   totalActiveJobs,
+  backendReady,
+  backendMessage,
 }: {
   initialAccess: AccessSummary;
   initialWarmMatches: WarmMatch[];
@@ -246,6 +248,8 @@ export default function ReferralsDashboard({
     connectionsUpserted: number;
   } | null;
   totalActiveJobs: number;
+  backendReady: boolean;
+  backendMessage: string | null;
 }) {
   const [access, setAccess] = useState(initialAccess);
   const [requests, setRequests] = useState(initialRequests);
@@ -282,6 +286,11 @@ export default function ReferralsDashboard({
   };
 
   const handleGenerateToken = async () => {
+    if (!backendReady) {
+      setError(backendMessage || "Referral Assist is still provisioning.");
+      return;
+    }
+
     setLoadingToken(true);
     setError(null);
     setStatusMessage(null);
@@ -313,6 +322,11 @@ export default function ReferralsDashboard({
   };
 
   const handlePreview = async (match: WarmMatch) => {
+    if (!backendReady) {
+      setError(backendMessage || "Referral Assist is still provisioning.");
+      return;
+    }
+
     setLoadingPreviewId(match.jobId);
     setError(null);
     setStatusMessage(null);
@@ -361,6 +375,12 @@ export default function ReferralsDashboard({
 
   return (
     <div className="space-y-6">
+      {!backendReady && backendMessage && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {backendMessage}
+        </div>
+      )}
+
       {!access.canPreview && (
         <section className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -405,7 +425,7 @@ export default function ReferralsDashboard({
             <button
               type="button"
               onClick={handleGenerateToken}
-              disabled={loadingToken || !access.canPreview}
+              disabled={loadingToken || !access.canPreview || !backendReady}
               className="rounded-full bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loadingToken ? "Generating..." : "Generate extension token"}
@@ -517,7 +537,9 @@ export default function ReferralsDashboard({
           <div className="mt-5 space-y-3">
             {warmMatches.length === 0 ? (
               <div className="rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
-                Sync LinkedIn first and we’ll surface jobs where your network and our catalog overlap.
+                {backendReady
+                  ? "Sync LinkedIn first and we’ll surface jobs where your network and our catalog overlap."
+                  : backendMessage || "Referral Assist is still provisioning."}
               </div>
             ) : (
               warmMatches.map((match) => (
@@ -537,7 +559,7 @@ export default function ReferralsDashboard({
                     </div>
                     <button
                       type="button"
-                      disabled={loadingPreviewId === match.jobId || !access.canPreview}
+                      disabled={loadingPreviewId === match.jobId || !access.canPreview || !backendReady}
                       onClick={() => handlePreview(match)}
                       className="rounded-full bg-[var(--foreground)] px-4 py-2 text-sm font-medium text-[var(--background)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                     >
@@ -579,7 +601,9 @@ export default function ReferralsDashboard({
 
           {!selectedRequest || !selectedPacket ? (
             <div className="mt-5 rounded-2xl bg-[var(--gray-50)] p-5 text-sm text-[var(--gray-600)]">
-              Generate a packet from a warm match and it’ll appear here with a suggested ask, “why me” bullets, and a follow-up checklist.
+              {backendReady
+                ? "Generate a packet from a warm match and it’ll appear here with a suggested ask, “why me” bullets, and a follow-up checklist."
+                : backendMessage || "Referral Assist is still provisioning."}
             </div>
           ) : (
             <div className="mt-5 space-y-4">

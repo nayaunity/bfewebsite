@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { syncLinkedInConnections } from "@/lib/referrals/server";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 export async function POST(request: Request) {
   try {
@@ -24,6 +25,10 @@ export async function POST(request: Request) {
         { error: "token and connections are required" },
         { status: 400 }
       );
+    }
+    const backend = await getReferralBackendStatus();
+    if (!backend.ready) {
+      return NextResponse.json({ error: backend.message }, { status: 503 });
     }
 
     const result = await syncLinkedInConnections({

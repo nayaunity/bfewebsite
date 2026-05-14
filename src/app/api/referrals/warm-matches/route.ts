@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getReferralAccessForUser, getWarmMatchesForUser } from "@/lib/referrals/server";
 import { isReferralAssistEnabledForEmail } from "@/lib/referrals/beta";
+import { getReferralBackendStatus } from "@/lib/referrals/runtime";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -11,6 +12,10 @@ export async function GET(request: Request) {
   }
   if (!isReferralAssistEnabledForEmail(session.user.email)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const backend = await getReferralBackendStatus();
+  if (!backend.ready) {
+    return NextResponse.json({ error: backend.message }, { status: 503 });
   }
 
   const limitParam = new URL(request.url).searchParams.get("limit");
