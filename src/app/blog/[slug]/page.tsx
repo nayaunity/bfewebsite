@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { BlogViewTracker } from "@/components/BlogViewTracker";
+import CopyableCodeBlock from "@/components/blog/CopyableCodeBlock";
 import { getBlogPost, getAllPosts } from "@/lib/blog";
 
 export const revalidate = 300; // Revalidate every 5 minutes
@@ -136,14 +137,7 @@ function renderContent(content: string) {
       }
       i++; // Skip closing ```
       elements.push(
-        <pre
-          key={keyIndex++}
-          className="bg-[#1a1a1a] p-4 rounded-xl my-6 text-sm leading-relaxed whitespace-pre-wrap break-words"
-        >
-          <code className="text-gray-100">
-            {codeLines.join("\n")}
-          </code>
-        </pre>
+        <CopyableCodeBlock key={keyIndex++} code={codeLines.join("\n")} />
       );
       continue;
     }
