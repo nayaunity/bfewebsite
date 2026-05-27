@@ -49,6 +49,13 @@ export default function ResourcesPage() {
         { name: "GitHub Essentials", description: "Optimize your GitHub for recruiters, not developers", tag: "Essential", href: "/resources/github-essentials" },
       ],
     },
+    {
+      title: "Tools & Quizzes",
+      description: "Interactive tools to help you figure out your next move.",
+      items: [
+        { name: "AI Money Stack Quiz", description: "Find which AI tools + business model fits your skills and goals", tag: "New", href: "/resources/ai-money-quiz" },
+      ],
+    },
     // {
     //   title: "Finance",
     //   description: "Financial strategies for building wealth in tech.",
