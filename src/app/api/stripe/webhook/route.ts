@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { activateSubscription, tierFromPriceId } from "@/lib/subscription";
-import { buildTrialConfirmationDraft } from "@/lib/trial-confirmation";
-import { Resend } from "resend";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -66,76 +64,10 @@ export async function POST(request: NextRequest) {
   try {
     switch (event.type) {
       case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        const metadataTier = session.metadata?.tier as
-          | "starter"
-          | "pro"
-          | undefined;
-
-        const customerId =
-          typeof session.customer === "string"
-            ? session.customer
-            : session.customer?.id ?? null;
-
-        const userId = await resolveUserId(
-          session.metadata?.userId,
-          customerId,
-          session.customer_details?.email ?? session.customer_email ?? null
-        );
-
-        if (!userId) {
-          console.error("[webhook] checkout.session.completed: could not resolve user", {
-            sessionId: session.id,
-            customerId,
-          });
-          // Return 200 to stop Stripe retries — the sync fallbacks and admin
-          // reconcile endpoint will catch any user that slips through here.
-          return NextResponse.json({ received: true, handled: false });
-        }
-
-        const subscriptionId =
-          typeof session.subscription === "string"
-            ? session.subscription
-            : session.subscription?.id;
-
-        if (!subscriptionId) {
-          console.error("[webhook] checkout.session.completed: no subscription on session", {
-            sessionId: session.id,
-          });
-          return NextResponse.json({ received: true, handled: false });
-        }
-
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        const tier =
-          metadataTier ??
-          tierFromPriceId(subscription.items.data[0]?.price?.id);
-
-        if (!tier) {
-          console.error("[webhook] checkout.session.completed: unknown tier", {
-            sessionId: session.id,
-            priceId: subscription.items.data[0]?.price?.id,
-          });
-          return NextResponse.json({ received: true, handled: false });
-        }
-
-        await activateSubscription({ userId, subscription, tier });
-
-        if (subscription.status === "trialing") {
-          try {
-            const draft = await buildTrialConfirmationDraft(userId);
-            const resend = new Resend(process.env.RESEND_API_KEY);
-            await resend.emails.send({
-              from: "Naya <naya@theblackfemaleengineer.com>",
-              replyTo: "theblackfemaleengineer@gmail.com",
-              to: draft.email,
-              subject: draft.subject,
-              html: draft.html,
-              text: draft.text,
-            });
-          } catch (emailErr) {
-            console.error("[webhook] trial confirmation email failed:", emailErr);
-          }
-        }
+        // Auto-apply sunset: reject any new subscription activations
+        console.warn("[webhook] checkout.session.completed received post-sunset — ignoring", {
+          sessionId: (event.data.object as Stripe.Checkout.Session).id,
+        });
         break;
       }
 
