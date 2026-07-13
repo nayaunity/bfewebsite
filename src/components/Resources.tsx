@@ -5,6 +5,7 @@ export default function Resources() {
     {
       category: "AI & Skills",
       items: [
+        { name: "The 3-Hour Workday Ebook", href: "/resources/3-hour-workday" },
         { name: "Claude Code 101", href: "/resources/claude-code-101" },
         { name: "Claude Architect Mock Exam", href: "/resources/claude-architect-exam" },
         { name: "AI Money Stack Quiz", href: "/resources/ai-money-quiz" },
