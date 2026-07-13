@@ -23,17 +23,15 @@ export default function Hero() {
           {/* Left Content */}
           <div>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Making tech
+              Build <span className="italic text-[#4d1b27]">skills</span>.
               <br />
-              <span className="italic text-[#ef562a]">accessible</span>.
+              Build <span className="italic text-[#4d1b27]">wealth</span>.
               <br />
-              Making it
-              <br />
-              <span className="italic text-[#ef562a]">actionable</span>.
+              Build <span className="italic text-[#4d1b27]">freedom</span>.
             </h1>
 
             <p className="mt-8 text-lg text-[var(--gray-600)] max-w-md">
-              Join 200K+ engineers, career switchers, and builders getting the jobs, skills, and confidence to thrive in tech.
+              Join 250K+ people using AI to level up their careers, income, and lives.
             </p>
 
             {/* Email Signup */}
@@ -56,7 +54,7 @@ export default function Hero() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-[#ffe500] text-black px-6 py-3 rounded-r-full hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                    className="bg-[#4d1b27] text-white px-6 py-3 rounded-r-full hover:bg-[#4d383b] transition-colors disabled:opacity-50"
                   >
                     {isLoading ? (
                       <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -82,7 +80,7 @@ export default function Hero() {
             <div className="aspect-[4/5] bg-[var(--gray-100)] rounded-3xl overflow-hidden relative">
               <Image
                 src="/images/hero-community.png"
-                alt="Black women engineers collaborating"
+                alt="Black woman building her dream life with AI"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

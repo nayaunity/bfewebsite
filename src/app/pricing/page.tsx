@@ -29,11 +29,11 @@ export default async function PricingPage() {
         {/* Hero */}
         <div className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
-            Auto-Apply for <span className="italic text-[#ef562a]">Volume</span>.{" "}
+            Auto-Apply for <span className="italic text-[#4d1b27]">Volume</span>.{" "}
             {showReferrals ? (
-              <>Use Referrals for <span className="italic text-[#ef562a]">Signal</span>.</>
+              <>Use Referrals for <span className="italic text-[#4d1b27]">Signal</span>.</>
             ) : (
-              <>Tailor for <span className="italic text-[#ef562a]">Fit</span>.</>
+              <>Tailor for <span className="italic text-[#4d1b27]">Fit</span>.</>
             )}
           </h1>
           <p className="text-lg text-[var(--gray-600)] max-w-2xl mx-auto">

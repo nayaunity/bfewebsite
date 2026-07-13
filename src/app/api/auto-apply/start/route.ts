@@ -6,8 +6,10 @@ import { matchJobsForUser } from "@/lib/auto-apply/job-matcher";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 import { calculatePacing } from "@/lib/pacing";
+import { createPlannedBrowseSession } from "@/lib/auto-apply/planned-session";
 
 export const runtime = "nodejs";
+export const maxDuration = 300;
 
 const DEFAULT_DAILY_CAP = 10;
 const CATCHUP_DAILY_CAP = 30;
@@ -35,7 +37,7 @@ export async function POST() {
   const activeSession = await prisma.browseSession.findFirst({
     where: {
       userId,
-      status: { in: ["queued", "processing"] },
+      status: { in: ["planning", "queued", "processing", "awaiting_review"] },
     },
   });
 
@@ -131,35 +133,54 @@ export async function POST() {
   // Ensure application email
   await ensureApplicationEmail(userId);
 
-  // Group by company
   const companiesWithJobs = [...new Set(matchedJobs.map((j) => j.company))];
+  const planningJobs = matchedJobs.map((job) => ({
+    id: job.id,
+    title: job.title,
+    applyUrl: job.applyUrl,
+    company: job.company,
+    companySlug: job.companySlug,
+    score: job.score,
+    matchReason: job.matchReason,
+  }));
 
-  // Create FAST session
-  const browseSession = await prisma.browseSession.create({
-    data: {
-      userId,
-      targetRole: primaryRole,
-      companies: JSON.stringify(companiesWithJobs),
-      matchedJobs: JSON.stringify(
-        matchedJobs.map((j) => ({
-          title: j.title,
-          applyUrl: j.applyUrl,
-          company: j.company,
-          matchScore: j.score,
-          matchReason: j.matchReason,
-        }))
-      ),
-      resumeUrl: resume.blobUrl,
-      resumeName: resume.fileName,
-      totalCompanies: companiesWithJobs.length,
-    },
+  const plannedSession = await createPlannedBrowseSession({
+    userId,
+    targetRole: primaryRole,
+    matchedJobs: planningJobs,
+    resumeUrl: resume.blobUrl,
+    resumeName: resume.fileName,
+    companies: companiesWithJobs,
+    totalCompanies: companiesWithJobs.length,
   });
+
+  const { planning } = plannedSession;
+  const browseSessionId = plannedSession.sessionId;
+
+  const messageParts: string[] = [];
+  if (planning.autoSubmitCount > 0) {
+    messageParts.push(`Queued ${planning.autoSubmitCount} high-confidence applications`);
+  }
+  if (planning.pendingReviewCount > 0) {
+    messageParts.push(`${planning.pendingReviewCount} application${planning.pendingReviewCount === 1 ? "" : "s"} waiting for your review`);
+  }
+  if (planning.skippedCount > 0) {
+    messageParts.push(`Skipped ${planning.skippedCount} low-confidence or unsupported job${planning.skippedCount === 1 ? "" : "s"}`);
+  }
+  const message =
+    messageParts.join(". ") ||
+    "Planning finished, but no jobs were ready to submit right now.";
 
   return NextResponse.json({
     success: true,
-    sessionId: browseSession.id,
+    sessionId: browseSessionId,
     matchedJobs: matchedJobs.length,
     companies: companiesWithJobs,
-    message: `Found ${matchedJobs.length} matching jobs across ${companiesWithJobs.length} companies. Applying now.`,
+    planningRunId: planning.planningRunId,
+    pendingReviewCount: planning.pendingReviewCount,
+    autoSubmitCount: planning.autoSubmitCount,
+    skippedCount: planning.skippedCount,
+    sessionStatus: planning.sessionStatus,
+    message,
   });
 }

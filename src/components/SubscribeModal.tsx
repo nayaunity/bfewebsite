@@ -50,7 +50,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       />
 
       {/* Modal */}
-      <div className="relative bg-[#1a1a1a] rounded-2xl p-8 md:p-10 max-w-md w-full mx-4 shadow-2xl">
+      <div className="relative bg-[#2a2828] rounded-2xl p-8 md:p-10 max-w-md w-full mx-4 shadow-2xl">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -67,7 +67,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
             Stay in the loop
           </h2>
           <p className="text-white/60 mb-8">
-            Get tech, career, and finance insights delivered to your inbox.
+            Get AI, career, and income insights delivered to your inbox.
           </p>
 
           {isSuccess ? (
@@ -89,7 +89,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50 whitespace-nowrap"
+                  className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 whitespace-nowrap"
                 >
                   {isLoading ? "..." : "Subscribe"}
                 </button>

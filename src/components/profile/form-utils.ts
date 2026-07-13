@@ -1,10 +1,10 @@
 export const inputClass =
-  "w-full px-3 py-2.5 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a] placeholder:text-[var(--gray-600)]/50";
+  "w-full px-3 py-2.5 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] placeholder:text-[var(--gray-600)]/50";
 
 export const selectClass = inputClass;
 
 export const textareaClass =
-  "w-full px-3 py-2.5 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a] placeholder:text-[var(--gray-600)]/50 resize-vertical min-h-[80px]";
+  "w-full px-3 py-2.5 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] placeholder:text-[var(--gray-600)]/50 resize-vertical min-h-[80px]";
 
 export const labelClass = "block text-sm font-medium text-[var(--foreground)] mb-1";
 

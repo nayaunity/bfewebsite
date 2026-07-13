@@ -32,8 +32,8 @@ export default function HeroSection() {
           >
             Your job hunt,<br />
             done while you<br />
-            <span className="italic text-[#ef562a]">do literally</span><br />
-            <span className="italic text-[#ef562a]">anything else.</span>
+            <span className="italic text-[#4d1b27]">do literally</span><br />
+            <span className="italic text-[#4d1b27]">anything else.</span>
           </h1>
 
           {/* Lede */}
@@ -66,7 +66,7 @@ export default function HeroSection() {
               ))}
             </div>
             <div className="text-[13px] text-[#52525b] leading-snug">
-              <b className="text-[#1a1a1a]">100+</b> people stopped staring<br />at LinkedIn this week.
+              <b className="text-[#2a2828]">100+</b> people stopped staring<br />at LinkedIn this week.
             </div>
           </div>
         </div>

@@ -85,7 +85,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
   return (
     <section>
       <h1 className="font-serif text-3xl sm:text-4xl">
-        Nice to meet you, <span className="italic text-[#ef562a]">{displayName}</span>.
+        Nice to meet you, <span className="italic text-[#4d1b27]">{displayName}</span>.
       </h1>
       <p className="mt-3 text-[var(--gray-600)]">
         We pulled a few things from your resume. Confirm these and we&apos;ll show you matched jobs.
@@ -111,8 +111,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                   onClick={() => toggleRole(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
                     on
-                      ? "border-[#ef562a] bg-[#ef562a] text-white"
-                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                      ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
                   }`}
                 >
                   {opt.label}
@@ -132,8 +132,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   remote === opt
-                    ? "border-[#ef562a] bg-[#ef562a] text-white"
-                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                    ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
                 }`}
               >
                 {opt}
@@ -173,7 +173,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               type="checkbox"
               checked={seekingInternship}
               onChange={(e) => setSeekingInternship(e.target.checked)}
-              className="mt-1 h-4 w-4 accent-[#ef562a]"
+              className="mt-1 h-4 w-4 accent-[#4d1b27]"
             />
             <span>
               <span className="block text-sm font-semibold">I&apos;m only looking for internships</span>
@@ -192,8 +192,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[#ef562a] bg-[#ef562a] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
               }`}
             >
               Yes
@@ -203,8 +203,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[#ef562a] bg-[#ef562a] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
               }`}
             >
               No
@@ -220,7 +220,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
           type="button"
           onClick={submit}
           disabled={submitting}
-          className="rounded-full bg-[#ef562a] px-6 py-3 text-sm font-semibold text-white hover:bg-[#d84a21] disabled:opacity-60"
+          className="rounded-full bg-[#4d1b27] px-6 py-3 text-sm font-semibold text-white hover:bg-[#d84a21] disabled:opacity-60"
         >
           {submitting ? "Finding matches..." : "Show my matches"}
         </button>

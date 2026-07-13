@@ -2,9 +2,9 @@ function ResumePreview() {
   return (
     <div className="bg-white border border-[#f5e6d3] rounded-xl p-3.5" style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.04)" }}>
       <div className="flex gap-2.5 mb-2.5">
-        <div className="w-9 h-9 rounded-lg bg-[#ef562a]" />
+        <div className="w-9 h-9 rounded-lg bg-[#4d1b27]" />
         <div className="flex-1">
-          <div className="h-2 w-[60%] bg-[#1a1a1a] rounded-full" />
+          <div className="h-2 w-[60%] bg-[#2a2828] rounded-full" />
           <div className="h-1.5 w-[40%] bg-[#d6d3d1] rounded-full mt-1" />
         </div>
       </div>
@@ -32,11 +32,11 @@ function MatchPreview() {
     <div className="flex flex-col gap-1.5">
       {items.map((item, k) => (
         <div key={k} className="bg-white border border-[#f5e6d3] rounded-[10px] px-3 py-2.5 flex items-center gap-2.5" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-          <div className="w-7 h-7 rounded-md bg-[#1a1a1a] text-white grid place-items-center text-[11px] font-bold">
+          <div className="w-7 h-7 rounded-md bg-[#2a2828] text-white grid place-items-center text-[11px] font-bold">
             {item.c[0]}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-[#1a1a1a]">{item.r}</div>
+            <div className="text-xs font-semibold text-[#2a2828]">{item.r}</div>
             <div className="text-[10px] text-[#78716c]">{item.c}</div>
           </div>
           <div className="text-[11px] font-bold text-[#10b981] bg-[#dcfce7] px-[7px] py-[3px] rounded-full">
@@ -50,7 +50,7 @@ function MatchPreview() {
 
 function ApplyPreview() {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl p-3.5 text-white font-mono text-[11px]">
+    <div className="bg-[#2a2828] rounded-xl p-3.5 text-white font-mono text-[11px]">
       <div className="flex gap-[5px] mb-2.5">
         <div className="w-2 h-2 rounded-full bg-[#ef4444]" />
         <div className="w-2 h-2 rounded-full bg-[#fbbf24]" />
@@ -71,21 +71,21 @@ const STEPS = [
     n: "01",
     t: "Drop your resume.",
     d: "We read it like a recruiter would, except in 0.4 seconds and without judgement about your gap year.",
-    accent: "#ef562a",
+    accent: "#4d1b27",
     fig: <ResumePreview />,
   },
   {
     n: "02",
     t: "We find your best fits.",
     d: "Every morning, fresh roles from 200+ top companies matched to your skills and preferences.",
-    accent: "#1a1a1a",
+    accent: "#2a2828",
     fig: <MatchPreview />,
   },
   {
     n: "03",
     t: "We apply. Real apps.",
     d: "Tailored resume submitted on the actual careers page. Just like you would. Except at midnight. While you sleep.",
-    accent: "#ef562a",
+    accent: "#4d1b27",
     fig: <ApplyPreview />,
   },
 ];
@@ -101,7 +101,7 @@ export default function HowItWorksEditorial() {
             style={{ fontSize: "clamp(40px, 5.2vw, 72px)" }}
           >
             Three steps.<br />
-            <span className="italic text-[#ef562a]">Then you go live your life.</span>
+            <span className="italic text-[#4d1b27]">Then you go live your life.</span>
           </h2>
         </div>
 

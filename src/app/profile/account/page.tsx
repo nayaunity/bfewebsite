@@ -180,7 +180,7 @@ export default async function AccountPage() {
                 <Link
                   href="/pricing"
                   className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-95"
-                  style={{ background: "#ef562a" }}
+                  style={{ background: "#4d1b27" }}
                 >
                   Upgrade plan
                 </Link>

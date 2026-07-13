@@ -112,9 +112,9 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ef562a]/10 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-[#ef562a] animate-spin"
+              className="w-8 h-8 text-[#4d1b27] animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -170,7 +170,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           <p className="text-sm text-[var(--gray-600)] mb-6">{errorMsg}</p>
           <Link
             href="/profile"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#ef562a] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
           >
             Back to Dashboard
           </Link>
@@ -183,9 +183,9 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#ef562a]/10 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-[#ef562a]"
+              className="w-10 h-10 text-[#4d1b27]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -212,7 +212,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           <div className="flex flex-col gap-3 items-center">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#ef562a] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
             >
               Upgrade to Unlock
               <svg
@@ -245,9 +245,9 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#ef562a]/10 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-[#ef562a] animate-spin"
+              className="w-8 h-8 text-[#4d1b27] animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -282,9 +282,9 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#ef562a]/10 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-[#ef562a]"
+              className="w-10 h-10 text-[#4d1b27]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -312,7 +312,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
                 href={rewriteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#ef562a] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white rounded-xl hover:bg-[#d44a22] transition-colors font-medium"
               >
                 View Rewritten Resume
                 <svg
@@ -364,7 +364,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
         </div>
         <div className="h-2 bg-[var(--gray-100)] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#ef562a] rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-[#4d1b27] rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -373,7 +373,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
       {/* Question card */}
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8">
         <div className="flex items-center gap-3 mb-4">
-          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ef562a] text-white flex items-center justify-center text-sm font-bold">
+          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] text-white flex items-center justify-center text-sm font-bold">
             {q.number}
           </span>
           <h3 className="text-lg font-serif text-[var(--foreground)]">
@@ -392,7 +392,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           }
           placeholder={q.placeholder}
           rows={4}
-          className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--gray-600)]/50 focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a] resize-none transition-all"
+          className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--gray-600)]/50 focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] resize-none transition-all"
           autoFocus
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.metaKey && canProceed) {
@@ -446,7 +446,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
             <button
               onClick={handleSubmit}
               disabled={!canProceed || phase === "submitting"}
-              className="flex items-center gap-2 px-6 py-2.5 bg-[#ef562a] text-white rounded-xl hover:bg-[#d44a22] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#4d1b27] text-white rounded-xl hover:bg-[#d44a22] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm"
             >
               {phase === "submitting" ? (
                 <>
@@ -494,7 +494,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
             <button
               onClick={() => setCurrentStep((s) => s + 1)}
               disabled={!canProceed}
-              className="flex items-center gap-2 px-6 py-2.5 bg-[#ef562a] text-white rounded-xl hover:bg-[#d44a22] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#4d1b27] text-white rounded-xl hover:bg-[#d44a22] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm"
             >
               Next
               <svg

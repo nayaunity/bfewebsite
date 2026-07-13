@@ -110,7 +110,7 @@ export default function NextStepsClient({
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--card-border)]">
         <Link href="/" className="font-serif text-xl font-bold">
-          the<span className="text-[#ef562a]">BFE</span>
+          the<span className="text-[#4d1b27]">BFE</span>
         </Link>
         <Link
           href="/"
@@ -126,7 +126,7 @@ export default function NextStepsClient({
           <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-3">
             Welcome{userName ? `, ${userName}` : ""}!
           </h1>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ef562a]/10 text-[#ef562a] text-sm font-bold">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4d1b27]/10 text-[#4d1b27] text-sm font-bold">
             Last step!
           </div>
           <p className="mt-4 text-[var(--gray-600)] max-w-md mx-auto">
@@ -141,7 +141,7 @@ export default function NextStepsClient({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#ffe500] text-black text-xs font-bold">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#4d1b27] text-white text-xs font-bold">
                     1
                   </span>
                   <h2 className="font-serif text-xl text-[var(--foreground)]">
@@ -169,7 +169,7 @@ export default function NextStepsClient({
                   className="h-full rounded-full transition-all duration-500"
                   style={{
                     width: `${Math.min((resumeCount / goal) * 100, 100)}%`,
-                    backgroundColor: goalMet ? "#22c55e" : "#ef562a",
+                    backgroundColor: goalMet ? "#22c55e" : "#4d1b27",
                   }}
                 />
               </div>
@@ -233,8 +233,8 @@ export default function NextStepsClient({
                     onClick={() => setSelectedRole(selectedRole === role ? null : role)}
                     className={`px-4 py-2 text-sm rounded-full border transition-colors ${
                       selectedRole === role
-                        ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a] font-medium"
-                        : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#ef562a]"
+                        ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-medium"
+                        : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#4d1b27]"
                     }`}
                   >
                     {role}
@@ -246,11 +246,11 @@ export default function NextStepsClient({
             {/* Upload button — only shows after role selected */}
             {selectedRole && (
               <label className="block cursor-pointer mt-3">
-                <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-[#ef562a] rounded-lg bg-[#ef562a]/5 hover:bg-[#ef562a]/10 transition-colors">
-                  <svg className="w-5 h-5 text-[#ef562a]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-[#4d1b27] rounded-lg bg-[#4d1b27]/5 hover:bg-[#4d1b27]/10 transition-colors">
+                  <svg className="w-5 h-5 text-[#4d1b27]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                   </svg>
-                  <span className="text-sm font-medium text-[#ef562a]">
+                  <span className="text-sm font-medium text-[#4d1b27]">
                     {uploading ? "Uploading..." : `Upload ${selectedRole} resume (PDF)`}
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export default function NextStepsClient({
         {/* Trial CTA - shown to free users after resume upload */}
         {goalMet && tier === "free" && (
           <div className="mt-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6">
-            <p className="text-xs font-semibold text-[#ef562a] uppercase tracking-wider mb-2">7-day free trial</p>
+            <p className="text-xs font-semibold text-[#4d1b27] uppercase tracking-wider mb-2">7-day free trial</p>
             <p className="font-serif text-xl text-[var(--foreground)]">Start applying today, no charge for 7 days</p>
             <p className="text-sm text-[var(--gray-600)] mt-2">
               We auto-apply to up to 100 matched jobs per month. Card on file, $0 today, $29/mo after the trial. Cancel anytime.
@@ -279,12 +279,12 @@ export default function NextStepsClient({
               onClick={handleStartTrial}
               disabled={trialLoading}
               className="mt-4 w-full px-6 py-3 rounded-xl font-medium text-white disabled:opacity-50"
-              style={{ background: "#ef562a" }}
+              style={{ background: "#4d1b27" }}
             >
               {trialLoading ? "Starting..." : "Start 7-day trial"}
             </button>
             <p className="text-[11px] text-[var(--gray-600)] text-center mt-2">
-              Prefer the upgrade? <Link href="/pricing" className="text-[#ef562a] hover:underline">See plan options</Link>
+              Prefer the upgrade? <Link href="/pricing" className="text-[#4d1b27] hover:underline">See plan options</Link>
             </p>
           </div>
         )}
@@ -293,7 +293,7 @@ export default function NextStepsClient({
         {resumes.length > 0 && tier !== "free" && (
           <Link
             href="/profile/applications"
-            className="flex items-center justify-between w-full mt-6 px-6 py-4 bg-gradient-to-r from-[#ef562a] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
+            className="flex items-center justify-between w-full mt-6 px-6 py-4 bg-gradient-to-r from-[#4d1b27] to-[#d44a22] text-white rounded-2xl hover:opacity-95 transition-opacity"
           >
             <div>
               <span className="text-lg font-serif">Start Applying to Jobs</span>

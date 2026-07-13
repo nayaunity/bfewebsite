@@ -88,7 +88,7 @@ export default function FAQSection() {
                           {" "}
                           <Link
                             href={faq.link.href}
-                            className="text-[#ef562a] underline hover:no-underline"
+                            className="text-[#4d1b27] underline hover:no-underline"
                           >
                             {faq.link.label}
                           </Link>

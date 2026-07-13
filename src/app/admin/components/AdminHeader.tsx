@@ -15,7 +15,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2">
           <span className="font-serif text-xl font-bold">BFE</span>
-          <span className="text-xs bg-[#ffe500] text-black px-2 py-0.5 rounded-full font-medium">
+          <span className="text-xs bg-[#4d1b27] text-white px-2 py-0.5 rounded-full font-medium">
             Admin
           </span>
         </div>

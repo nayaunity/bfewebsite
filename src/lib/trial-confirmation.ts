@@ -68,7 +68,7 @@ Naya
   <p>Welcome to the Starter plan! Your 7-day free trial is now active.</p>
   <p>Your trial ends on <strong>${trialEndDate}</strong>. After that, you'll be charged $29/mo. You can cancel anytime from your profile page.</p>
   <p style="margin: 20px 0;">
-    <a href="${profileUrl}" style="display: inline-block; background: #ef562a; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Go to your dashboard</a>
+    <a href="${profileUrl}" style="display: inline-block; background: #4d1b27; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Go to your dashboard</a>
   </p>
   <p style="margin-top: 24px;">Talk soon,<br/>Naya</p>
 </div>`;

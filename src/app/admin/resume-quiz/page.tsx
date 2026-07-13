@@ -349,7 +349,7 @@ export default async function ResumeQuizAdminPage() {
                           user.subscriptionTier === "pro"
                             ? "bg-purple-100 text-purple-700"
                             : user.subscriptionTier === "starter"
-                              ? "bg-[#ef562a]/10 text-[#ef562a]"
+                              ? "bg-[#4d1b27]/10 text-[#4d1b27]"
                               : "bg-[var(--gray-100)] text-[var(--gray-600)]"
                         }`}
                       >

@@ -73,7 +73,7 @@ export function MicroWinForm({
         </p>
         <button
           onClick={onReset}
-          className="text-[#ef562a] font-medium hover:underline"
+          className="text-[#4d1b27] font-medium hover:underline"
         >
           Share another win
         </button>
@@ -97,7 +97,7 @@ export function MicroWinForm({
               onClick={() => setSelectedPrompt(key as PromptType)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedPrompt === key
-                  ? "bg-[#ffe500] text-black"
+                  ? "bg-[#4d1b27] text-white"
                   : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
               }`}
             >
@@ -119,7 +119,7 @@ export function MicroWinForm({
           rows={3}
           maxLength={MAX_CONTENT_LENGTH + 50}
           disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors resize-none bg-[var(--background)] disabled:opacity-50"
+          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors resize-none bg-[var(--background)] disabled:opacity-50"
         />
         <div
           className={`mt-1 text-sm text-right ${isOverLimit ? "text-red-500" : "text-[var(--gray-600)]"}`}
@@ -141,7 +141,7 @@ export function MicroWinForm({
           placeholder="e.g., Sarah T."
           maxLength={50}
           disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--background)] disabled:opacity-50"
+          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--background)] disabled:opacity-50"
         />
         <p className="mt-1 text-sm text-[var(--gray-600)]">
           Leave blank to post anonymously
@@ -159,7 +159,7 @@ export function MicroWinForm({
       <button
         type="submit"
         disabled={isSubmitting || isOverLimit || !content.trim()}
-        className="w-full bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Sharing..." : "Share your win"}
       </button>

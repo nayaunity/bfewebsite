@@ -33,7 +33,7 @@ export default function DEICompaniesPage() {
             {/* Back Link */}
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-2 text-[var(--gray-600)] hover:text-[#ef562a] transition-colors mb-8"
+              className="inline-flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors mb-8"
             >
               <svg
                 className="w-5 h-5"
@@ -57,7 +57,7 @@ export default function DEICompaniesPage() {
               </span>
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight mt-4">
                 Companies committed to{" "}
-                <span className="italic text-[#ef562a]">DEI</span>
+                <span className="italic text-[#4d1b27]">DEI</span>
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Explore {companies.length} companies known for their dedication to
@@ -74,7 +74,7 @@ export default function DEICompaniesPage() {
                   onClick={() => setSelectedIndustry(industry)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedIndustry === industry
-                      ? "bg-[#ffe500] text-black"
+                      ? "bg-[#4d1b27] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -95,14 +95,14 @@ export default function DEICompaniesPage() {
                   href={company.careersUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#ffe500] hover:shadow-lg transition-all"
+                  className="group bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-xs px-3 py-1 bg-[var(--gray-100)] text-[var(--gray-600)] rounded-full">
                       {company.industry}
                     </span>
                     <svg
-                      className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
+                      className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ export default function DEICompaniesPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                  <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
                     {company.name}
                   </h3>
                   <p className="mt-2 text-sm text-[var(--gray-600)]">
@@ -148,7 +148,7 @@ export default function DEICompaniesPage() {
               </p>
               <a
                 href="mailto:naya@bfepartnerships.com?subject=DEI Company Suggestion"
-                className="inline-flex items-center gap-2 mt-8 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+                className="inline-flex items-center gap-2 mt-8 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
               >
                 Suggest a Company
                 <svg

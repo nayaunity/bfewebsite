@@ -8,7 +8,7 @@ export default async function Blogs() {
   const posts = allPosts.filter(post => post.featured).slice(0, 3);
 
   return (
-    <section id="blog" className="bg-[#1a1a1a] py-20 md:py-28">
+    <section id="blog" className="bg-[#2a2828] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -16,7 +16,7 @@ export default async function Blogs() {
             <span className="italic">from the</span> BLOG
           </h2>
           <p className="mt-4 text-white/60 max-w-xl mx-auto">
-            Insights on tech, career growth, and making your mark in the industry.
+            Insights on AI, career growth, and building income on your own terms.
           </p>
         </div>
 
@@ -27,10 +27,10 @@ export default async function Blogs() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="bg-[#2a2a2a] rounded-2xl overflow-hidden hover:bg-[#333] transition-colors group border border-white/10 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
+                className="bg-[#333131] rounded-2xl overflow-hidden hover:bg-[#3d3a3a] transition-colors group border border-white/10 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
               >
                 {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-[#333]">
+                <div className="relative aspect-[16/10] overflow-hidden bg-[#3d3a3a]">
                   {post.image ? (
                     <Image
                       src={post.image}
@@ -51,11 +51,11 @@ export default async function Blogs() {
                 {/* Content */}
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[#ef562a] text-sm font-medium">{post.category}</span>
+                    <span className="text-[#4d1b27] text-sm font-medium">{post.category}</span>
                     <span className="text-white/40 text-sm">·</span>
                     <span className="text-white/40 text-sm">{post.readTime}</span>
                   </div>
-                  <h3 className="font-serif text-lg text-white group-hover:text-[#ffe500] transition-colors line-clamp-2">
+                  <h3 className="font-serif text-lg text-white group-hover:text-[#4d1b27] transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   <p className="mt-2 text-white/50 text-sm line-clamp-2">
@@ -75,7 +75,7 @@ export default async function Blogs() {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
           >
             View All Posts
           </Link>

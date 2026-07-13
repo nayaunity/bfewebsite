@@ -17,23 +17,23 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.theblackfemaleengineer.com"),
-  title: "The Black Female Engineer | Resources, Jobs & Community",
+  title: "The Black Female Engineer | Build Skills, Wealth & Freedom with AI",
   description:
-    "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
+    "Join 250K+ people building skills, earning more, and creating freedom with AI. Free resources, tools, and a community to help you level up.",
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "The Black Female Engineer",
-    title: "The Black Female Engineer | Resources, Jobs & Community",
+    title: "The Black Female Engineer | Build Skills, Wealth & Freedom with AI",
     description:
-      "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
+      "Join 250K+ people building skills, earning more, and creating freedom with AI. Free resources, tools, and a community to help you level up.",
     images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Black Female Engineer | Resources, Jobs & Community",
+    title: "The Black Female Engineer | Build Skills, Wealth & Freedom with AI",
     description:
-      "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
+      "Join 250K+ people building skills, earning more, and creating freedom with AI. Free resources, tools, and a community to help you level up.",
     images: ["/images/bfeimage2.png"],
   },
 };
@@ -57,7 +57,7 @@ export default function RootLayout({
                 url: "https://www.theblackfemaleengineer.com",
                 logo: "https://www.theblackfemaleengineer.com/images/bfeimage2.png",
                 description:
-                  "Empowering young professionals interested in tech with resources, job opportunities, mentorship, and a supportive community.",
+                  "Join 250K+ people building skills, earning more, and creating freedom with AI. Free resources, tools, and a community to help you level up.",
                 sameAs: [
                   "https://www.instagram.com/theblackfemaleengineer",
                   "https://www.linkedin.com/company/theblackfemaleengineer",

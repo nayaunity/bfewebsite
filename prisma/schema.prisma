@@ -93,6 +93,8 @@ model User {
   referralRequests    ReferralRequest[]
   applyQueue          ApplyQueue[]
   browseSessions      BrowseSession[]
+  planningRuns        PlanningRun[]
+  reviewTasks         ReviewTask[]
   tickets             Ticket[]
   workdayCredentials  WorkdayCredential[]
   portfolio           Portfolio?
@@ -392,6 +394,8 @@ model BrowseSession {
 
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   discoveries BrowseDiscovery[]
+  planningRuns PlanningRun[]
+  reviewTasks  ReviewTask[]
 
   @@index([status])
   @@index([status, lastHeartbeatAt])
@@ -411,13 +415,107 @@ model BrowseDiscovery {
   matchReason        String?
   resumeTailored     Boolean  @default(false)
   tailoredResumeUrl  String?
+  atsType            String?
+  jobDescriptionSnapshot String?
+  confidenceScore       Float?
+  confidenceBucket      String?
+  confidenceReasons     String?
+  graphStatus           String   @default("pending")
+  planningDecision      String?
+  userActionRequired    Boolean  @default(false)
+  personalizedWritingRequired Boolean @default(false)
+  customWritingDraft    String?
+  customWritingFinal    String?
+  customWritingEditedAt DateTime?
+  customWritingApprovedAt DateTime?
+  planPayload           String?
+  graphThreadId         String?
+  graphCheckpointId     String?
+  reviewedAt            DateTime?
   createdAt          DateTime @default(now())
 
-  session BrowseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session    BrowseSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  reviewTask ReviewTask?
+  graphEvents PlanningRunEvent[]
 
   @@unique([sessionId, applyUrl])
   @@index([sessionId])
   @@index([status])
+  @@index([graphStatus])
+  @@index([planningDecision])
+  @@index([atsType, graphStatus])
+}
+
+model PlanningRun {
+  id               String   @id @default(cuid())
+  sessionId        String
+  userId           String
+  status           String   @default("queued")
+  graphVersion     String   @default("v1")
+  pendingReviewCount Int    @default(0)
+  autoSubmitCount  Int      @default(0)
+  skippedCount     Int      @default(0)
+  stateSnapshot    String?
+  errorMessage     String?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime @default(now())
+
+  session     BrowseSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events      PlanningRunEvent[]
+  reviewTasks ReviewTask[]
+
+  @@index([userId, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([status, createdAt])
+}
+
+model PlanningRunEvent {
+  id            String   @id @default(cuid())
+  planningRunId String
+  discoveryId   String?
+  node          String
+  status        String
+  payload       String?
+  createdAt     DateTime @default(now())
+
+  planningRun PlanningRun    @relation(fields: [planningRunId], references: [id], onDelete: Cascade)
+  discovery   BrowseDiscovery? @relation(fields: [discoveryId], references: [id], onDelete: SetNull)
+
+  @@index([planningRunId, createdAt])
+  @@index([discoveryId, createdAt])
+  @@index([node, createdAt])
+}
+
+model ReviewTask {
+  id              String   @id @default(cuid())
+  discoveryId     String   @unique
+  planningRunId   String?
+  sessionId       String
+  userId          String
+  type            String   @default("custom_writing")
+  status          String   @default("pending")
+  title           String
+  prompt          String?
+  reason          String?
+  requiredActions String?
+  draft           String?
+  editedDraft     String?
+  reviewerNotes   String?
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  reviewedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  discovery   BrowseDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  planningRun PlanningRun?    @relation(fields: [planningRunId], references: [id], onDelete: SetNull)
+  session     BrowseSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, createdAt])
+  @@index([sessionId, status])
 }
 
 model TempOnboarding {

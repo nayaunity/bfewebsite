@@ -84,7 +84,7 @@ export function ProfileSection({
                 {title}
               </h3>
               {badge && (
-                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#ef562a]/10 text-[#ef562a]">
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#4d1b27]/10 text-[#4d1b27]">
                   {badge}
                 </span>
               )}

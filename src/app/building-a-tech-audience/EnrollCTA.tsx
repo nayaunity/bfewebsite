@@ -77,7 +77,7 @@ export function TierEnrollButton({
         disabled={loading}
         className={
           className ??
-          "inline-flex items-center justify-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-lg w-full disabled:opacity-70 disabled:cursor-not-allowed"
+          "inline-flex items-center justify-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-lg w-full disabled:opacity-70 disabled:cursor-not-allowed"
         }
       >
         {loading ? "Redirecting to checkout..." : cta}
@@ -98,7 +98,7 @@ export function TierEnrollButton({
         )}
       </button>
       {error && (
-        <p className="mt-2 text-xs text-[#ef562a] text-center">{error}</p>
+        <p className="mt-2 text-xs text-[#4d1b27] text-center">{error}</p>
       )}
     </div>
   );
@@ -110,7 +110,7 @@ export default function EnrollCTA({ className }: { className?: string }) {
       href="#pricing"
       className={
         className ??
-        "inline-flex items-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-lg"
+        "inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-lg"
       }
     >
       Reserve Your Seat

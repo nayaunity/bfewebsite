@@ -39,7 +39,7 @@ export default function AirbnbConnectApprenticeship() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#ef562a] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
                 Airbnb
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-green-500 text-white rounded-full animate-pulse">
@@ -94,19 +94,19 @@ export default function AirbnbConnectApprenticeship() {
               <p className="text-[var(--foreground)] mb-4">You must meet <strong>ALL</strong> of the following criteria:</p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">1</span>
                   <span><strong>Education:</strong> No 4-year Computer Science degree</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">2</span>
                   <span><strong>Coding Background:</strong> Skills acquired through bootcamps, online courses, or community college</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">3</span>
                   <span><strong>Work Experience:</strong> Minimum 2 years total work experience with less than 1 year of professional software engineering</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">4</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">4</span>
                   <span><strong>Technical Skills:</strong> Ability to convert problems to code, implement basic functions (conditionals, loops), and experience with React, Rails, or Express</span>
                 </li>
               </ul>
@@ -122,8 +122,8 @@ export default function AirbnbConnectApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">What You&apos;ll Get</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                   </div>
@@ -133,8 +133,8 @@ export default function AirbnbConnectApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
@@ -144,8 +144,8 @@ export default function AirbnbConnectApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
@@ -155,8 +155,8 @@ export default function AirbnbConnectApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
@@ -171,9 +171,9 @@ export default function AirbnbConnectApprenticeship() {
             {/* Timeline */}
             <section>
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Application Timeline</h2>
-              <div className="p-6 bg-[#ffe500]/10 border border-[#ffe500] rounded-xl">
+              <div className="p-6 bg-[#4d1b27]/10 border border-[#4d1b27] rounded-xl">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-[#ffe500] flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full bg-[#4d1b27] flex items-center justify-center">
                     <span className="text-black font-bold text-xl">NOW</span>
                   </div>
                   <div>
@@ -209,7 +209,7 @@ export default function AirbnbConnectApprenticeship() {
                   href="https://careers.airbnb.com/positions/7773917/?gh_jid=7773917"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Apply on Airbnb Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

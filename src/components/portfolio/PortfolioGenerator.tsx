@@ -93,7 +93,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         </p>
         <a
           href="/profile"
-          className="inline-block px-6 py-3 bg-[#ef562a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-block px-6 py-3 bg-[#4d1b27] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
         >
           Go to Profile
         </a>
@@ -115,7 +115,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         </p>
         <a
           href="/pricing"
-          className="inline-block px-6 py-3 bg-[#ef562a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-block px-6 py-3 bg-[#4d1b27] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
         >
           View Plans
         </a>
@@ -132,7 +132,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         <div className="w-20 h-20 mx-auto mb-8 relative">
           <div className="absolute inset-0 rounded-full border-4 border-[var(--gray-200)]" />
           <div
-            className="absolute inset-0 rounded-full border-4 border-[#ef562a] border-t-transparent animate-spin"
+            className="absolute inset-0 rounded-full border-4 border-[#4d1b27] border-t-transparent animate-spin"
           />
         </div>
         <h3 className="text-xl font-serif font-bold text-[var(--foreground)] mb-3">
@@ -144,7 +144,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         <div className="max-w-md mx-auto">
           <div className="h-2 bg-[var(--gray-200)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#ef562a] rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-[#4d1b27] rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -152,7 +152,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
             {STEP_ORDER.slice(1, -1).map((step, i) => (
               <span
                 key={step}
-                className={stepIndex > i + 1 ? "text-[#ef562a] font-semibold" : ""}
+                className={stepIndex > i + 1 ? "text-[#4d1b27] font-semibold" : ""}
               >
                 {STEP_LABELS[step]?.replace("...", "")}
               </span>
@@ -179,7 +179,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         </p>
         <a
           href={`/portfolio/${slug}`}
-          className="inline-block px-6 py-3 bg-[#ef562a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-block px-6 py-3 bg-[#4d1b27] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
         >
           View Portfolio
         </a>
@@ -201,7 +201,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         </p>
         <button
           onClick={startGeneration}
-          className="px-6 py-3 bg-[#ef562a] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity cursor-pointer"
+          className="px-6 py-3 bg-[#4d1b27] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity cursor-pointer"
         >
           Try Again
         </button>
@@ -228,7 +228,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
       </p>
       <button
         onClick={startGeneration}
-        className="px-8 py-4 bg-[#ef562a] text-white font-semibold rounded-xl text-lg hover:opacity-90 transition-opacity cursor-pointer shadow-lg shadow-orange-500/20"
+        className="px-8 py-4 bg-[#4d1b27] text-white font-semibold rounded-xl text-lg hover:opacity-90 transition-opacity cursor-pointer shadow-lg shadow-orange-500/20"
       >
         Generate My Portfolio
       </button>

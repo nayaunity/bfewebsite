@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     where.status = statusFilter;
   }
 
-  const [applications, total, stats] = await Promise.all([
+  const [applications, total, stats, plannedApplications, pendingReviewCount] = await Promise.all([
     prisma.jobApplication.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -30,6 +30,29 @@ export async function GET(request: NextRequest) {
       by: ["status"],
       where: { userId: session.user.id },
       _count: true,
+    }),
+    prisma.browseDiscovery.findMany({
+      where: {
+        session: { userId: session.user.id },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        reviewTask: {
+          select: {
+            id: true,
+            status: true,
+            reason: true,
+          },
+        },
+      },
+    }),
+    prisma.reviewTask.count({
+      where: {
+        userId: session.user.id,
+        status: "pending",
+      },
     }),
   ]);
 
@@ -43,6 +66,23 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     applications,
+    plannedApplications: plannedApplications.map((item) => ({
+      id: item.id,
+      company: item.company,
+      jobTitle: item.jobTitle,
+      applyUrl: item.applyUrl,
+      status: item.userActionRequired ? "review" : item.status,
+      errorMessage: item.errorMessage,
+      createdAt: item.createdAt,
+      atsType: item.atsType,
+      confidenceBucket: item.confidenceBucket,
+      confidenceScore: item.confidenceScore,
+      matchScore: item.matchScore,
+      matchReason: item.matchReason,
+      userActionRequired: item.userActionRequired,
+      personalizedWritingRequired: item.personalizedWritingRequired,
+      reviewTask: item.reviewTask,
+    })),
     pagination: {
       page,
       limit,
@@ -55,6 +95,7 @@ export async function GET(request: NextRequest) {
       skipped: statusCounts.skipped || 0,
       failed: statusCounts.failed || 0,
       pending: statusCounts.pending || 0,
+      pendingReview: pendingReviewCount,
     },
   });
 }

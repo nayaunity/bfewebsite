@@ -61,7 +61,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
         {sidebarOpen && (
           <div className="space-y-2">
             {course.modules.map((module) => (
-              <div key={module.id} className="border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#ffe500] transition-colors">
+              <div key={module.id} className="border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#4d1b27] transition-colors">
                 <button
                   onClick={() => {
                     setActiveModule(activeModule === module.id ? 0 : module.id);
@@ -100,7 +100,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                         key={lesson.id}
                         href={`/resources/interview-prep/${lesson.slug}`}
                         className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[var(--gray-50)] transition-colors text-sm block ${
-                          currentSlug === lesson.slug ? "bg-[#ffe500]/20" : ""
+                          currentSlug === lesson.slug ? "bg-[#4d1b27]/20" : ""
                         }`}
                       >
                         {lesson.free || hasAccess ? (
@@ -125,7 +125,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                             // Not completed circle
                             <div className="w-6 h-6 rounded-full border-2 border-[var(--card-border)] flex items-center justify-center flex-shrink-0">
                               {currentSlug === lesson.slug && (
-                                <div className="w-2 h-2 rounded-full bg-[#ef562a]"></div>
+                                <div className="w-2 h-2 rounded-full bg-[#4d1b27]"></div>
                               )}
                             </div>
                           )
@@ -146,7 +146,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                           </svg>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#ef562a] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
+                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#4d1b27] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
                             {lesson.title}
                           </p>
                           <p className="text-xs text-[var(--gray-600)]">{lesson.duration}</p>

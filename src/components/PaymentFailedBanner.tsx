@@ -58,7 +58,7 @@ export function PaymentFailedBanner() {
             onClick={handleUpdateCard}
             disabled={loading}
             className="px-5 py-2.5 rounded-lg font-medium text-white disabled:opacity-50"
-            style={{ background: "#ef562a" }}
+            style={{ background: "#4d1b27" }}
           >
             {loading ? "Opening..." : "Update payment method"}
           </button>

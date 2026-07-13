@@ -44,7 +44,7 @@ export function AutoApplySettingsSection({ initialData, usage }: Props) {
           disabled={!initialData.hasResume}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
             autoApplyEnabled
-              ? "bg-[#ef562a]"
+              ? "bg-[#4d1b27]"
               : "bg-[var(--gray-200)]"
           } ${!initialData.hasResume ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
         >

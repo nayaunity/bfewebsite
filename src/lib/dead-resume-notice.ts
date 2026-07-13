@@ -57,7 +57,7 @@ Naya
 <p>Hi ${firstName},</p>
 <p>Need a fast favor: please re-upload your resume in your profile today. The copy we have on our end isn't loading anymore (issue on our side, not yours), and until you re-upload, the system can't send out any new applications for you.</p>
 <p>We've already patched the bug that caused this, so it won't happen again. But we still need a fresh upload from you to get applications running.</p>
-<p>Once you re-upload, applications will resume automatically. Takes 30 seconds at <a href="${profileUrl}" style="color: #ef562a; font-weight: 600;">${profileUrl}</a>.</p>
+<p>Once you re-upload, applications will resume automatically. Takes 30 seconds at <a href="${profileUrl}" style="color: #4d1b27; font-weight: 600;">${profileUrl}</a>.</p>
 <p>Sorry for the friction. Reply here if anything's not working.</p>
 <p>Naya</p>
 </body></html>`;

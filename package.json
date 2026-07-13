@@ -8,12 +8,16 @@
     "start": "next start",
     "lint": "eslint",
     "test:referrals": "node --test --experimental-strip-types src/lib/referrals/referrals.test.ts",
+    "test:auto-apply-planning": "node --test --experimental-strip-types src/lib/auto-apply/planning.test.ts",
+    "test:auto-apply-graph-metrics": "node --test --experimental-strip-types src/lib/auto-apply/graph-metrics.test.ts",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:reset": "rm -f prisma/dev.db && npx prisma db push && npm run db:seed"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
     "@auth/prisma-adapter": "^2.11.1",
+    "@langchain/core": "^1.1.48",
+    "@langchain/langgraph": "^1.3.2",
     "@libsql/client": "^0.14.0",
     "@prisma/adapter-libsql": "^6.19.2",
     "@prisma/client": "^6.19.2",

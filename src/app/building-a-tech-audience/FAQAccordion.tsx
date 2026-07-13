@@ -54,7 +54,7 @@ export default function FAQAccordion() {
           <summary className="flex items-center justify-between cursor-pointer px-6 py-5 text-left text-white font-medium text-lg hover:bg-white/5 transition-colors list-none [&::-webkit-details-marker]:hidden">
             {faq.question}
             <svg
-              className="w-5 h-5 text-[#ffe500] flex-shrink-0 ml-4 transition-transform group-open:rotate-45"
+              className="w-5 h-5 text-[#4d1b27] flex-shrink-0 ml-4 transition-transform group-open:rotate-45"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}

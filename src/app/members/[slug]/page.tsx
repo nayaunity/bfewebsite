@@ -93,7 +93,7 @@ export default async function MemberPage({ params }: PageProps) {
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[#ffe500] flex items-center justify-center">
+                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[#4d1b27] flex items-center justify-center">
                         <span className="font-serif text-4xl text-black">
                           {member.name.split(' ').map(n => n[0]).join('')}
                         </span>
@@ -108,7 +108,7 @@ export default async function MemberPage({ params }: PageProps) {
               <div>
                 <Link
                   href="/#community"
-                  className="inline-flex items-center text-sm text-[var(--gray-600)] hover:text-[#ef562a] mb-6 transition-colors"
+                  className="inline-flex items-center text-sm text-[var(--gray-600)] hover:text-[#4d1b27] mb-6 transition-colors"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -121,12 +121,12 @@ export default async function MemberPage({ params }: PageProps) {
                 </h1>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2 text-lg">
-                  <span className="text-[#ef562a]">{member.role}</span>
+                  <span className="text-[#4d1b27]">{member.role}</span>
                   <span className="text-[var(--gray-400)]">at</span>
                   <span>{member.company}</span>
                 </div>
 
-                <div className="mt-6 inline-block bg-[#ffe500] text-black px-4 py-2 rounded-full text-sm font-medium">
+                <div className="mt-6 inline-block bg-[#4d1b27] text-white px-4 py-2 rounded-full text-sm font-medium">
                   {member.specialty}
                 </div>
 
@@ -142,7 +142,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.linkedinUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#ffe500] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
                         aria-label="LinkedIn"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.twitterUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#ffe500] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
                         aria-label="Twitter"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#ffe500] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
                         aria-label="Website"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,12 +189,12 @@ export default async function MemberPage({ params }: PageProps) {
         </section>
 
         {/* Story Section */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
+        <section className="bg-[#2a2828] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="font-serif text-3xl md:text-4xl text-white text-center">
               My Story
             </h2>
-            <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
             <div className="space-y-6">
               {member.story.map((paragraph, index) => (
                 <p key={index} className="text-xl md:text-2xl text-white/80 leading-relaxed">
@@ -215,7 +215,7 @@ export default async function MemberPage({ params }: PageProps) {
             <div className="space-y-6">
               {member.experience.map((item, index) => (
                 <div key={index} className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0 mt-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -238,7 +238,7 @@ export default async function MemberPage({ params }: PageProps) {
               {member.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] px-6 py-3 rounded-full text-lg hover:border-[#ffe500] transition-colors"
+                  className="bg-[var(--card-bg)] border border-[var(--card-border)] px-6 py-3 rounded-full text-lg hover:border-[#4d1b27] transition-colors"
                 >
                   {skill}
                 </span>
@@ -269,7 +269,7 @@ export default async function MemberPage({ params }: PageProps) {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 rounded-full bg-[#ffe500]/20 flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full bg-[#4d1b27]/20 flex items-center justify-center">
                         <span className="font-serif text-3xl text-white/60">
                           {otherMember.name.split(' ').map(n => n[0]).join('')}
                         </span>
@@ -278,7 +278,7 @@ export default async function MemberPage({ params }: PageProps) {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                    <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#ffe500] transition-colors">
+                    <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#4d1b27] transition-colors">
                       {otherMember.name}
                     </h4>
                     <p className="text-white/60 text-sm mt-1">
@@ -303,13 +303,13 @@ export default async function MemberPage({ params }: PageProps) {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/community"
-                className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+                className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
               >
                 Join the Community
               </Link>
               <Link
                 href="/#community"
-                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#ffe500] transition-colors"
+                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
               >
                 Meet More Members
               </Link>

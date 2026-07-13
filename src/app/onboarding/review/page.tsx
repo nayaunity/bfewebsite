@@ -81,7 +81,7 @@ export default async function OnboardingReviewPage({ searchParams }: Props) {
 
       <main className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
         <div className="mb-6 text-center">
-          <p className="text-xs font-semibold text-[#ef562a] uppercase tracking-wider mb-2">
+          <p className="text-xs font-semibold text-[#4d1b27] uppercase tracking-wider mb-2">
             One more thing
           </p>
           <h1 className="font-serif text-3xl sm:text-4xl text-[var(--foreground)]">

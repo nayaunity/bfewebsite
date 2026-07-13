@@ -39,7 +39,7 @@ export function UsageMeter({
                 ? "bg-red-500"
                 : percentage > 80
                 ? "bg-yellow-500"
-                : "bg-[#ef562a]"
+                : "bg-[#4d1b27]"
             }`}
             style={{ width: `${percentage}%` }}
           />
@@ -62,12 +62,12 @@ export function UsageMeter({
           {onUpgrade ? (
             <button
               onClick={() => onUpgrade("pro")}
-              className="text-xs font-medium text-[#ef562a] hover:underline"
+              className="text-xs font-medium text-[#4d1b27] hover:underline"
             >
               Upgrade to 300/mo
             </button>
           ) : (
-            <a href="/pricing" className="text-xs font-medium text-[#ef562a] hover:underline">
+            <a href="/pricing" className="text-xs font-medium text-[#4d1b27] hover:underline">
               Upgrade to 300/mo
             </a>
           )}

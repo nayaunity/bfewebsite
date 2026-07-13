@@ -95,14 +95,14 @@ export default function Jobs() {
                 className="bg-[var(--card-bg)] p-6 rounded-2xl hover:shadow-lg transition-shadow group border border-[var(--card-border)] text-left cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[#ef562a] text-sm font-medium">{job.company}</span>
+                  <span className="text-[#4d1b27] text-sm font-medium">{job.company}</span>
                   {job.remote && (
                     <span className="text-xs px-2 py-0.5 bg-green-100 text-green-800 rounded-full">
                       Remote
                     </span>
                   )}
                 </div>
-                <h3 className="font-serif text-xl mt-2 group-hover:text-[#ef562a] transition-colors">
+                <h3 className="font-serif text-xl mt-2 group-hover:text-[#4d1b27] transition-colors">
                   {job.title}
                 </h3>
                 <div className="mt-4 flex items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -124,7 +124,7 @@ export default function Jobs() {
         <div className="mt-12 text-center">
           <Link
             href="/jobs"
-            className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
           >
             View All Jobs
           </Link>
@@ -135,7 +135,7 @@ export default function Jobs() {
           <p className="text-sm tracking-wide mb-4">ARE YOU HIRING?</p>
           <Link
             href="/jobs/submit"
-            className="inline-block border-2 border-[#ffe500] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#ffe500] hover:text-black transition-colors"
+            className="inline-block border-2 border-[#4d1b27] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors"
           >
             Post a Job
           </Link>

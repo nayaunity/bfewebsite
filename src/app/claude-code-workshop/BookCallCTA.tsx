@@ -19,7 +19,7 @@ export default function BookCallCTA({ className }: { className?: string }) {
       }}
       className={
         className ??
-        "inline-flex items-center gap-2 bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-lg"
+        "inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-lg"
       }
     >
       Book a 15-Min Call

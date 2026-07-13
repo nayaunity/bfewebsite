@@ -11,7 +11,7 @@ export default function CompanyMarquee() {
           {[...COMPANIES, ...COMPANIES].map((c, i) => (
             <div
               key={i}
-              className="font-serif italic text-2xl md:text-4xl text-[#1a1a1a] flex-shrink-0 select-none"
+              className="font-serif italic text-2xl md:text-4xl text-[#2a2828] flex-shrink-0 select-none"
             >
               {c}
             </div>

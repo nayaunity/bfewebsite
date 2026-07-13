@@ -11,7 +11,7 @@ export async function POST() {
   const active = await prisma.browseSession.findFirst({
     where: {
       userId: session.user.id,
-      status: { in: ["queued", "processing"] },
+      status: { in: ["planning", "queued", "processing"] },
     },
   });
 

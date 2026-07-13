@@ -36,7 +36,7 @@ export default function AIMoneyQuizPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight">
-                Find your <span className="italic text-[#ef562a]">AI money stack</span>
+                Find your <span className="italic text-[#4d1b27]">AI money stack</span>
               </h1>
               <p className="mt-4 text-lg text-[var(--gray-600)]">
                 6 ways to use AI to make up to $5,000+/month. No tech knowledge required. Take the quiz to find which one fits you best.

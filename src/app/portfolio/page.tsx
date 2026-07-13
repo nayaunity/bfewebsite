@@ -55,7 +55,7 @@ export default async function PortfolioPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-3xl font-serif font-bold text-[var(--foreground)]">
-              My <span className="text-[#ef562a] italic">Portfolio</span>
+              My <span className="text-[#4d1b27] italic">Portfolio</span>
             </h1>
             <p className="text-[var(--gray-600)] mt-2">
               A professional portfolio generated from your resume with AI-powered visuals.
@@ -85,7 +85,7 @@ export default async function PortfolioPage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/portfolio/${portfolio.slug}`}
-                    className="px-4 py-2 bg-[#ef562a] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    className="px-4 py-2 bg-[#4d1b27] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
                   >
                     View
                   </Link>

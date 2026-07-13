@@ -195,7 +195,7 @@ export default function OnboardingWizard() {
           onClick={() => { setData((p) => ({ ...p, [key]: opt })); setTimeout(next, 300); }}
           className={`w-full py-4 px-6 rounded-xl border text-base font-medium flex items-center justify-center gap-2 transition-all ${
             data[key] === opt
-              ? "border-[#ef562a] bg-[#ef562a]/5 text-[#ef562a]"
+              ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
               : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--gray-200)]"
           }`}
         >
@@ -213,7 +213,7 @@ export default function OnboardingWizard() {
           onClick={() => { setData((p) => ({ ...p, [key]: opt.label })); setTimeout(next, 300); }}
           className={`w-full py-4 px-6 rounded-xl border text-left transition-all ${
             data[key] === opt.label
-              ? "border-[#ef562a] bg-[#ef562a]/5"
+              ? "border-[#4d1b27] bg-[#4d1b27]/5"
               : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
           }`}
         >
@@ -264,7 +264,7 @@ export default function OnboardingWizard() {
                     disabled={disabled}
                     className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${
                       selected
-                        ? "border-[#ef562a] bg-[#ef562a]/5 text-[#ef562a]"
+                        ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
                         : disabled
                           ? "border-[var(--card-border)] text-[var(--gray-200)] cursor-not-allowed opacity-40"
                           : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--gray-200)]"
@@ -293,7 +293,7 @@ export default function OnboardingWizard() {
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              Our goal is to help you land a great job <span className="text-[#ef562a]">10x faster</span>.
+              Our goal is to help you land a great job <span className="text-[#4d1b27]">10x faster</span>.
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <p className="text-sm font-medium text-[var(--foreground)] mb-4">Job Offers</p>
@@ -301,9 +301,9 @@ export default function OnboardingWizard() {
                 <div className="flex-1 bg-red-200 rounded-t-lg" style={{ height: "30%" }} />
                 <div className="flex-1 bg-red-200 rounded-t-lg" style={{ height: "35%" }} />
                 <div className="flex-1 bg-red-200 rounded-t-lg" style={{ height: "40%" }} />
-                <div className="flex-1 bg-[#ef562a] rounded-t-lg" style={{ height: "55%" }} />
-                <div className="flex-1 bg-[#ef562a] rounded-t-lg" style={{ height: "70%" }} />
-                <div className="flex-1 bg-[#ef562a] rounded-t-lg" style={{ height: "90%" }} />
+                <div className="flex-1 bg-[#4d1b27] rounded-t-lg" style={{ height: "55%" }} />
+                <div className="flex-1 bg-[#4d1b27] rounded-t-lg" style={{ height: "70%" }} />
+                <div className="flex-1 bg-[#4d1b27] rounded-t-lg" style={{ height: "90%" }} />
               </div>
               <div className="flex justify-between mt-2 text-xs text-[var(--gray-600)]">
                 <span>Month 0</span>
@@ -311,7 +311,7 @@ export default function OnboardingWizard() {
               </div>
               <div className="flex justify-between mt-1 text-xs">
                 <span className="text-red-400">Traditional Job Search</span>
-                <span className="text-[#ef562a] font-medium">the<span className="font-bold">BFE</span></span>
+                <span className="text-[#4d1b27] font-medium">the<span className="font-bold">BFE</span></span>
               </div>
               <p className="text-sm text-[var(--gray-600)] mt-4 text-center">
                 Interviews are usually delayed at first, but after 1 week the results are clear.
@@ -358,7 +358,7 @@ export default function OnboardingWizard() {
           <div className="text-center">
             <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
               Getting<br />
-              <span className="text-[#ef562a]">{data.interviewGoal} interviews</span> is<br />
+              <span className="text-[#4d1b27]">{data.interviewGoal} interviews</span> is<br />
               totally achievable!
             </h1>
             <p className="text-[var(--gray-600)]">
@@ -383,12 +383,12 @@ export default function OnboardingWizard() {
                     onClick={() => toggleArray("roles", role.label)}
                     className={`w-full py-3 px-4 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       selected
-                        ? "border-[#ef562a] bg-[#ef562a]/5"
+                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#ef562a] bg-[#ef562a]" : "border-[var(--gray-200)]"
+                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -423,12 +423,12 @@ export default function OnboardingWizard() {
                     onClick={() => toggleArray("experience", exp.label, 2)}
                     className={`w-full py-4 px-6 rounded-xl border text-left flex items-center gap-3 transition-all ${
                       selected
-                        ? "border-[#ef562a] bg-[#ef562a]/5"
+                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#ef562a] bg-[#ef562a]" : "border-[var(--gray-200)]"
+                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -463,12 +463,12 @@ export default function OnboardingWizard() {
                     onClick={() => toggleArray("locations", loc)}
                     className={`w-full py-4 px-6 rounded-xl border text-left flex items-center gap-3 transition-all ${
                       selected
-                        ? "border-[#ef562a] bg-[#ef562a]/5"
+                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#ef562a] bg-[#ef562a]" : "border-[var(--gray-200)]"
+                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -484,7 +484,7 @@ export default function OnboardingWizard() {
             {!showMoreLocations && (
               <button
                 onClick={() => setShowMoreLocations(true)}
-                className="w-full mt-3 text-sm text-[#ef562a] hover:underline text-center"
+                className="w-full mt-3 text-sm text-[#4d1b27] hover:underline text-center"
               >
                 View More Locations
               </button>
@@ -519,7 +519,7 @@ export default function OnboardingWizard() {
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              Land <span className="text-[#ef562a]">10x more interviews</span> with theBFE
+              Land <span className="text-[#4d1b27]">10x more interviews</span> with theBFE
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex justify-center gap-4 mb-4">
@@ -527,7 +527,7 @@ export default function OnboardingWizard() {
                   <p className="text-xs text-[var(--gray-600)] mb-2">Without theBFE</p>
                   <div className="h-16 bg-[var(--gray-200)] rounded-lg" />
                 </div>
-                <div className="bg-[#ef562a] rounded-xl p-4 text-center flex-1">
+                <div className="bg-[#4d1b27] rounded-xl p-4 text-center flex-1">
                   <p className="text-xs text-white/70 mb-2">With theBFE</p>
                   <p className="text-2xl font-bold text-white">10x</p>
                   <p className="text-xs text-white/70">more interviews</p>
@@ -570,17 +570,17 @@ export default function OnboardingWizard() {
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              You have great potential to <span className="text-[#ef562a]">crush your goal</span>
+              You have great potential to <span className="text-[#4d1b27]">crush your goal</span>
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[var(--foreground)]">Interviews</span>
-                <span className="text-xs font-medium text-[#ef562a] bg-[#ef562a]/10 px-2 py-1 rounded">{dateStr} - Offer</span>
+                <span className="text-xs font-medium text-[#4d1b27] bg-[#4d1b27]/10 px-2 py-1 rounded">{dateStr} - Offer</span>
               </div>
               <div className="h-24 flex items-end gap-1">
                 {[15, 20, 30, 45, 60, 80, 95].map((h, i) => (
-                  <div key={i} className="flex-1 bg-[#ef562a]/20 rounded-t" style={{ height: `${h}%` }}>
-                    <div className="w-full bg-[#ef562a]/40 rounded-t" style={{ height: "60%" }} />
+                  <div key={i} className="flex-1 bg-[#4d1b27]/20 rounded-t" style={{ height: `${h}%` }}>
+                    <div className="w-full bg-[#4d1b27]/40 rounded-t" style={{ height: "60%" }} />
                   </div>
                 ))}
               </div>
@@ -598,12 +598,12 @@ export default function OnboardingWizard() {
           <div className="text-center py-12">
             <div className="inline-flex items-center gap-3 bg-[var(--gray-50)] rounded-2xl px-8 py-5 border border-[var(--card-border)] mb-10">
               <div className="font-serif text-xl font-bold">
-                the<span className="text-[#ef562a]">BFE</span>
+                the<span className="text-[#4d1b27]">BFE</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#ef562a] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <div className="w-2 h-2 bg-[#ef562a] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <div className="w-2 h-2 bg-[#ef562a] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <div className="w-2 h-2 bg-[#4d1b27] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <div className="w-2 h-2 bg-[#4d1b27] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <div className="w-2 h-2 bg-[#4d1b27] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
             <h2 className="font-serif text-2xl text-[var(--foreground)] mb-3">
@@ -614,7 +614,7 @@ export default function OnboardingWizard() {
             </p>
             <div className="mt-8 max-w-xs mx-auto">
               <div className="h-1.5 bg-[var(--gray-100)] rounded-full overflow-hidden">
-                <div className="h-full bg-[#ef562a] rounded-full animate-[loading_3s_ease-in-out_forwards]" />
+                <div className="h-full bg-[#4d1b27] rounded-full animate-[loading_3s_ease-in-out_forwards]" />
               </div>
             </div>
             <style jsx>{`
@@ -672,15 +672,15 @@ export default function OnboardingWizard() {
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex gap-2 text-xs mb-4">
                 <span className="text-[var(--gray-600)]">Job Matches</span>
-                <span className="text-[#ef562a]">&gt;</span>
-                <span className="font-medium text-[#ef562a]">Applying</span>
+                <span className="text-[#4d1b27]">&gt;</span>
+                <span className="font-medium text-[#4d1b27]">Applying</span>
                 <span className="text-[var(--gray-600)]">&gt;</span>
                 <span className="text-[var(--gray-600)]">Applied</span>
               </div>
               <div className="bg-[var(--background)] rounded-lg p-3 border border-[var(--card-border)] flex justify-between items-center">
                 <div className="space-y-1"><div className="h-2 w-32 bg-[var(--gray-200)] rounded" /><div className="h-2 w-24 bg-[var(--gray-100)] rounded" /></div>
                 <span className="text-xs text-[var(--gray-600)] flex items-center gap-1">
-                  <span className="w-3 h-3 border-2 border-[var(--gray-200)] border-t-[#ef562a] rounded-full animate-spin" />
+                  <span className="w-3 h-3 border-2 border-[var(--gray-200)] border-t-[#4d1b27] rounded-full animate-spin" />
                   Applying...
                 </span>
               </div>
@@ -700,7 +700,7 @@ export default function OnboardingWizard() {
             </p>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)] text-center">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <div className="w-10 h-5 bg-[#ef562a] rounded-full relative">
+                <div className="w-10 h-5 bg-[#4d1b27] rounded-full relative">
                   <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5" />
                 </div>
                 <span className="font-medium text-[var(--foreground)]">Autopilot</span>
@@ -760,8 +760,8 @@ export default function OnboardingWizard() {
             <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-4">
               Congratulations, your custom plan is ready!
             </h1>
-            <p className="text-xs text-[#ef562a] uppercase tracking-wider font-medium">YOUR GOAL</p>
-            <p className="text-lg text-[var(--foreground)]">Land a job by <span className="text-[#ef562a] font-bold">{dateStr}</span></p>
+            <p className="text-xs text-[#4d1b27] uppercase tracking-wider font-medium">YOUR GOAL</p>
+            <p className="text-lg text-[var(--foreground)]">Land a job by <span className="text-[#4d1b27] font-bold">{dateStr}</span></p>
             <p className="font-serif text-xl text-[var(--foreground)] mt-6 mb-4">BFE applies <em>for</em> you:</p>
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {data.roles.slice(0, 2).map((r) => (
@@ -807,8 +807,8 @@ export default function OnboardingWizard() {
               </div>
               <div className="text-2xl text-[var(--gray-200)]">&darr;</div>
               <div>
-                <p className="font-bold text-lg text-[#ef562a]">{dateStr}</p>
-                <p className="font-medium text-[#ef562a]">Land that job.</p>
+                <p className="font-bold text-lg text-[#4d1b27]">{dateStr}</p>
+                <p className="font-medium text-[#4d1b27]">Land that job.</p>
               </div>
             </div>
           </div>
@@ -824,7 +824,7 @@ export default function OnboardingWizard() {
     <div className="min-h-screen bg-[var(--background)] flex flex-col">
       <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--card-border)]">
         <Link href="/" className="font-serif text-xl font-bold">
-          the<span className="text-[#ef562a]">BFE</span>
+          the<span className="text-[#4d1b27]">BFE</span>
         </Link>
         <Link href="/auth/signin" className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors">
           Log in

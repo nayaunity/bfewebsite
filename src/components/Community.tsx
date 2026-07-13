@@ -20,15 +20,15 @@ export default function Community() {
   return (
     <section id="community">
       {/* Dark Section - Who are we - COMMENTED OUT
-      <div className="bg-[#1a1a1a] py-20 md:py-32">
+      <div className="bg-[#2a2828] py-20 md:py-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white">
             Who are we?
           </h2>
-          <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+          <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
           <p className="text-xl md:text-2xl text-white/80 font-serif italic">
             We&apos;re engineers, creators, leaders, and{" "}
-            <span className="text-[#ef562a]">out-of-the-box</span> thinkers.
+            <span className="text-[#4d1b27]">out-of-the-box</span> thinkers.
           </p>
 
           {isSuccess ? (
@@ -50,7 +50,7 @@ export default function Community() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                  className="bg-[#4d1b27] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "..." : "Join"}
                 </button>
@@ -65,7 +65,7 @@ export default function Community() {
       */}
 
       {/* Community Members Grid - COMMENTED OUT
-      <div className="bg-[#1a1a1a] py-16 md:py-24">
+      <div className="bg-[#2a2828] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {communityMembers.map((member) => (
@@ -82,7 +82,7 @@ export default function Community() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#ffe500]/20 flex items-center justify-center group-hover:bg-[#ffe500]/30 transition-colors">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#4d1b27]/20 flex items-center justify-center group-hover:bg-[#4d1b27]/30 transition-colors">
                       <span className="font-serif text-2xl md:text-3xl text-white/60">
                         {member.name.split(' ').map(n => n[0]).join('')}
                       </span>
@@ -91,7 +91,7 @@ export default function Community() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                  <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#ffe500] transition-colors">
+                  <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#4d1b27] transition-colors">
                     {member.name}
                   </h4>
                   <p className="text-white/60 text-sm mt-1">
@@ -106,13 +106,13 @@ export default function Community() {
       */}
 
       {/* Newsletter Section */}
-      <div id="newsletter" className="bg-[#1a1a1a] py-16 md:py-20">
+      <div id="newsletter" className="bg-[#2a2828] py-16 md:py-20">
         <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Stay in the loop
           </h2>
           <p className="text-white/60 mb-8">
-            Get tech, career, and finance insights delivered to your inbox.
+            Get AI, career, and income insights delivered to your inbox.
           </p>
           {isSuccess ? (
             <div className="p-4 bg-green-500/20 text-green-300 rounded-full max-w-md mx-auto text-center">
@@ -133,7 +133,7 @@ export default function Community() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                  className="bg-[#4d1b27] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "..." : "Subscribe"}
                 </button>
@@ -157,19 +157,19 @@ export default function Community() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">200K+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">250K+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Community Members</div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">100+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">100+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Resources Shared</div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">50+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Partnered Companies</div>
             </div>
             <div>
-              {/* <div className="font-serif text-4xl md:text-5xl text-[#ef562a]">50+</div>
+              {/* <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">50+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div> */}
             </div>
           </div>

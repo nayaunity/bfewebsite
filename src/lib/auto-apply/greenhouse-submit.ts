@@ -1,9 +1,9 @@
-import {
+import type {
   ApplicantProfile,
   GreenhouseJobDetail,
   SubmitResult,
-} from "./types";
-import { matchQuestionAnswers } from "./question-matcher";
+} from "./types.ts";
+import { matchQuestionAnswers } from "./question-matcher.ts";
 
 /**
  * Fetch a job's details including required questions from the Greenhouse API.

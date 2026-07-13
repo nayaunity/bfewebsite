@@ -3,7 +3,7 @@
 const tierStyles: Record<string, string> = {
   free: "bg-[var(--gray-100)] text-[var(--gray-600)]",
   starter: "bg-blue-100 text-blue-700",
-  pro: "bg-[#ef562a]/10 text-[#ef562a]",
+  pro: "bg-[#4d1b27]/10 text-[#4d1b27]",
 };
 
 export function SubscriptionBadge({ tier }: { tier: string }) {

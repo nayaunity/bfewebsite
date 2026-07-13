@@ -86,7 +86,7 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
                     key={ticket.id}
                     className={`bg-[var(--background)] border rounded-xl p-3 hover:shadow-md transition-all cursor-pointer ${
                       selectedTicket?.id === ticket.id
-                        ? "border-[#ef562a] ring-1 ring-[#ef562a]/30"
+                        ? "border-[#4d1b27] ring-1 ring-[#4d1b27]/30"
                         : "border-[var(--card-border)]"
                     }`}
                     onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
@@ -164,7 +164,7 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
               <div>
                 <p className="text-xs font-medium text-[var(--gray-600)] uppercase tracking-wider mb-2">Submitted by</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#ef562a] flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-xs font-bold">
                     {(selectedTicket.userName || selectedTicket.userEmail)[0].toUpperCase()}
                   </div>
                   <div>
@@ -186,7 +186,7 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
                       onClick={() => moveTicket(selectedTicket.id, col.key)}
                       className={`flex-1 py-2 text-xs font-medium rounded-lg border transition-colors ${
                         selectedTicket.status === col.key
-                          ? "border-[#ef562a] bg-[#ef562a] text-white"
+                          ? "border-[#4d1b27] bg-[#4d1b27] text-white"
                           : "border-[var(--card-border)] text-[var(--gray-600)] hover:bg-[var(--gray-50)]"
                       }`}
                     >

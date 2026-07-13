@@ -4,7 +4,7 @@ import ResumeDrop from "./ResumeDrop";
 
 export default function FinalCTAEditorial() {
   return (
-    <section className="bg-[#1a1a1a] py-20 md:py-[120px] px-4 sm:px-8 relative overflow-hidden">
+    <section className="bg-[#2a2828] py-20 md:py-[120px] px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-[920px] mx-auto text-center">
         <div className="text-[13px] text-white/60 tracking-[1.5px] font-bold mb-6">
           GET YOUR TIME BACK
@@ -14,7 +14,7 @@ export default function FinalCTAEditorial() {
           style={{ fontSize: "clamp(40px, 6vw, 88px)" }}
         >
           Save 30+ hours a month.<br />
-          <span className="italic text-[#ffe500]">Spend them on what matters.</span>
+          <span className="italic text-[#4d1b27]">Spend them on what matters.</span>
         </h2>
         <p className="text-white/70 text-lg max-w-[620px] mx-auto mt-5 mb-9 leading-relaxed">
           You didn&apos;t spend years building your skills to waste weekends pasting

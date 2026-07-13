@@ -3,28 +3,26 @@ import Link from "next/link";
 export default function Resources() {
   const resources = [
     {
-      category: "Learning",
+      category: "AI & Skills",
       items: [
-        { name: "Technical Interview Prep", href: "/resources/interview-prep" },
-        { name: "System Design Guide", href: "/resources/system-design" },
-        { name: "Break Into Tech", href: "/resources/break-into-tech" },
-        { name: "Web Development Fundamentals", href: "/resources/web-development" },
+        { name: "Claude Code 101", href: "/resources/claude-code-101" },
+        { name: "Claude Architect Mock Exam", href: "/resources/claude-architect-exam" },
+        { name: "AI Money Stack Quiz", href: "/resources/ai-money-quiz" },
       ],
     },
     {
-      category: "Career",
+      category: "Career & Income",
       items: [
         { name: "Resume & LinkedIn", href: "/resources/resume-linkedin" },
         { name: "Salary Negotiation Guide", href: "/resources/salary-negotiation" },
-        { name: "Gaining Experience", href: "/resources/gaining-experience" },
         { name: "Personal Branding", href: "/resources/personal-branding" },
+        { name: "Gaining Experience", href: "/resources/gaining-experience" },
       ],
     },
     {
       category: "Community",
       items: [
         { name: "Meet the Community", href: "/community" },
-        { name: "Job Board", href: "/jobs" },
         { name: "Work With Me", href: "/work-with-us" },
         { name: "Contact Me", href: "/contact" },
       ],
@@ -39,7 +37,7 @@ export default function Resources() {
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl">
             <span className="italic">what</span> THE RESOURCES
             <br />
-            <span className="italic">can help you</span> ACHIEVE
+            <span className="italic">can help you</span> BUILD
           </h2>
         </div>
 
@@ -55,7 +53,7 @@ export default function Resources() {
                   <li key={itemIndex}>
                     <Link
                       href={item.href}
-                      className="group flex items-center justify-between py-2 hover:text-[#ef562a] transition-colors"
+                      className="group flex items-center justify-between py-2 hover:text-[#4d1b27] transition-colors"
                     >
                       <span className="font-serif text-xl">{item.name}</span>
                       <svg
@@ -83,7 +81,7 @@ export default function Resources() {
         <div className="mt-16 text-center">
           <Link
             href="/resources"
-            className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
           >
             View All Resources
           </Link>

@@ -72,7 +72,7 @@ Naya
   <p>Your 7-day free trial ends in <strong>${days} day${days === 1 ? "" : "s"}</strong>, on <strong>${endDate}</strong>. After that, you'll be charged $29/mo for the Starter plan.</p>
   <p>If you'd like to cancel, you can do so anytime from your profile page. No questions asked.</p>
   <p style="margin: 20px 0;">
-    <a href="${profileUrl}" style="display: inline-block; background: #ef562a; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Manage your subscription</a>
+    <a href="${profileUrl}" style="display: inline-block; background: #4d1b27; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Manage your subscription</a>
   </p>
   <p style="margin-top: 24px;">Talk soon,<br/>Naya</p>
 </div>`;

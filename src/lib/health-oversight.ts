@@ -3,6 +3,54 @@ import { prisma } from "./prisma";
 import { type PacingResult } from "./pacing";
 import { type PacingDiagnostics } from "./pacing-diagnostics";
 import Anthropic from "@anthropic-ai/sdk";
+import {
+  summarizeAutoApplyGraphMetrics,
+  type AutoApplyGraphMetrics,
+} from "./auto-apply/graph-metrics";
+
+export async function collectAutoApplyGraphMetrics(args: {
+  since: Date;
+  userId?: string;
+}): Promise<AutoApplyGraphMetrics> {
+  const discoveries = await prisma.browseDiscovery.findMany({
+    where: {
+      ...(args.userId ? { session: { userId: args.userId } } : {}),
+      OR: [
+        { createdAt: { gte: args.since } },
+        { reviewedAt: { gte: args.since } },
+        {
+          session: {
+            OR: [
+              { createdAt: { gte: args.since } },
+              { startedAt: { gte: args.since } },
+              { completedAt: { gte: args.since } },
+            ],
+          },
+        },
+      ],
+    },
+    select: {
+      atsType: true,
+      status: true,
+      graphStatus: true,
+      planningDecision: true,
+      reviewTask: {
+        select: {
+          status: true,
+        },
+      },
+    },
+  });
+  return summarizeAutoApplyGraphMetrics(
+    discoveries.map((discovery) => ({
+      atsType: discovery.atsType,
+      status: discovery.status,
+      graphStatus: discovery.graphStatus,
+      planningDecision: discovery.planningDecision,
+      reviewTaskStatus: discovery.reviewTask?.status ?? null,
+    }))
+  );
+}
 
 export type AdaptiveStrategy =
   | "quality_gate"

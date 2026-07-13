@@ -41,7 +41,7 @@ function BooleanToggle({
             onClick={() => onChange(val)}
             className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
               value === val
-                ? "bg-[#ef562a] text-white"
+                ? "bg-[#4d1b27] text-white"
                 : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
             }`}
           >

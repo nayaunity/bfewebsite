@@ -161,7 +161,7 @@ export default async function AdminAutoApplyPage() {
           <p className="text-xs text-[var(--gray-600)]">Failed</p>
         </div>
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-          <p className="text-2xl font-bold text-[#ef562a]">
+          <p className="text-2xl font-bold text-[#4d1b27]">
             {optedInUsers}
           </p>
           <p className="text-xs text-[var(--gray-600)]">Opted-In Users</p>

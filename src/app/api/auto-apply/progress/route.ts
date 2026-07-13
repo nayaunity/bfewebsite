@@ -24,6 +24,10 @@ export async function GET() {
       jobsFound: true,
       jobsApplied: true,
       jobsSkipped: true,
+      reviewTasks: {
+        where: { status: "pending" },
+        select: { id: true },
+      },
       startedAt: true,
     },
   });
@@ -33,13 +37,17 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    active: todaySession.status === "queued" || todaySession.status === "processing",
+    active:
+      todaySession.status === "planning" ||
+      todaySession.status === "queued" ||
+      todaySession.status === "processing",
     status: todaySession.status,
     totalCompanies: todaySession.totalCompanies,
     companiesDone: todaySession.companiesDone,
     jobsFound: todaySession.jobsFound,
     jobsApplied: todaySession.jobsApplied,
     jobsSkipped: todaySession.jobsSkipped,
+    pendingReviewCount: todaySession.reviewTasks.length,
     startedAt: todaySession.startedAt?.toISOString() || null,
   });
 }

@@ -169,10 +169,10 @@ The average job search takes 100+ applications. You've sent 5 - that's $0.15 per
 Naya`;
 
   const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #111; max-width: 560px;">
-  <p style="font-size: 20px; font-weight: 700; margin: 0 0 18px;">the<span style="color: #ef562a;">BFE</span></p>
+  <p style="font-size: 20px; font-weight: 700; margin: 0 0 18px;">the<span style="color: #4d1b27;">BFE</span></p>
   <p style="margin: 0 0 12px;">Hey ${firstName},</p>
   <p style="margin: 0 0 14px;">Your applications to <strong>${companiesText}</strong> are live, and you've hit your <strong>5-app free limit</strong>. 5,000+ new jobs were just added. Unlock 100 apps/mo for <strong>$14.50</strong> (normally $29, 50% off for the next 72 hours).</p>
-  <p style="text-align: center; margin: 18px 0 20px;"><a href="${checkoutUrl}" style="display: inline-block; background: #ef562a; color: #fff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Unlock 100 Apps/Mo - $14.50 (50% off)</a></p>
+  <p style="text-align: center; margin: 18px 0 20px;"><a href="${checkoutUrl}" style="display: inline-block; background: #4d1b27; color: #fff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Unlock 100 Apps/Mo - $14.50 (50% off)</a></p>
   <p style="margin: 0 0 8px;">A few ${primary} roles open right now:</p>
   <ul style="list-style: none; padding-left: 20px; margin: 0 0 14px;">
     <li style="margin-bottom: 4px;"><strong>${openRoles[0].title}</strong> at ${openRoles[0].company}</li>

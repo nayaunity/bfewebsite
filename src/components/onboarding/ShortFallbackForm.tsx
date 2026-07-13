@@ -79,8 +79,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                   onClick={() => toggle(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm ${
                     on
-                      ? "border-[#ef562a] bg-[#ef562a] text-white"
-                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                      ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
                   }`}
                 >
                   {opt.label}
@@ -100,8 +100,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium ${
                   remote === opt
-                    ? "border-[#ef562a] bg-[#ef562a] text-white"
-                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                    ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
                 }`}
               >
                 {opt}
@@ -118,8 +118,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[#ef562a] bg-[#ef562a] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
               }`}
             >
               Yes
@@ -129,8 +129,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[#ef562a] bg-[#ef562a] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#ef562a]"
+                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
               }`}
             >
               No
@@ -146,7 +146,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
           type="button"
           onClick={submit}
           disabled={submitting}
-          className="rounded-full bg-[#ef562a] px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-full bg-[#4d1b27] px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
         >
           {submitting ? "Finding matches..." : "Show my matches"}
         </button>

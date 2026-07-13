@@ -277,7 +277,7 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Find your <span className="italic text-[#ef562a]">next</span>
+              Find your <span className="italic text-[#4d1b27]">next</span>
               <br />
               opportunity
             </h1>
@@ -289,14 +289,14 @@ export default function JobBoard() {
               {session?.user && (
                 <a
                   href="/profile/referrals"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#ef562a] text-white font-medium rounded-full hover:bg-[#d84a21] transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#d84a21] transition-colors"
                 >
                   Get Referrals <span aria-hidden="true">&rarr;</span>
                 </a>
               )}
               <a
                 href="/auto-apply/landing"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
               >
                 Auto-Apply to Jobs <span aria-hidden="true">&rarr;</span>
               </a>
@@ -318,7 +318,7 @@ export default function JobBoard() {
                   onClick={() => handleMobileFilterChange(filter.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedMobileFilter === filter.value
-                      ? "bg-[#ffe500] text-black"
+                      ? "bg-[#4d1b27] text-white"
                       : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                   }`}
                 >
@@ -329,7 +329,7 @@ export default function JobBoard() {
                 onClick={handleRemoteToggle}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   remoteOnly
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -339,7 +339,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(false)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -349,7 +349,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(true)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -373,7 +373,7 @@ export default function JobBoard() {
                   onClick={() => handleCategoryChange(category)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedCategory === category
-                      ? "bg-[#ffe500] text-black"
+                      ? "bg-[#4d1b27] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -388,7 +388,7 @@ export default function JobBoard() {
               <select
                 value={selectedCompany}
                 onChange={handleCompanyChange}
-                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[#ef562a] focus:border-transparent"
+                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[#4d1b27] focus:border-transparent"
               >
                 <option value="">All Companies</option>
                 {companies.map((company) => (
@@ -403,7 +403,7 @@ export default function JobBoard() {
                 onClick={handleRemoteToggle}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   remoteOnly
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -415,7 +415,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(false)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -427,7 +427,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(true)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -452,17 +452,17 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <button
             onClick={() => router.push("/jobs/anthropic-fellows-program")}
-            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
+            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#4d1b27] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#ef562a] font-medium">Anthropic</span>
-                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
+                  <span className="text-[#4d1b27] font-medium">Anthropic</span>
+                  <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
                     APPLY BY APR 26
                   </span>
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
                   Anthropic Fellows Program
                 </h3>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -477,24 +477,24 @@ export default function JobBoard() {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#ef562a]">Learn More &rarr;</span>
+                <span className="text-sm font-medium text-[#4d1b27]">Learn More &rarr;</span>
               </div>
             </div>
           </button>
 
           <button
             onClick={() => router.push("/jobs/anthropic-ai-stem-fellows")}
-            className="block w-full text-left bg-[#ffe500]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#ffe500] cursor-pointer"
+            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#4d1b27] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#ef562a] font-medium">Anthropic</span>
-                  <span className="text-xs px-3 py-1 bg-[#ffe500] text-black rounded-full font-semibold">
+                  <span className="text-[#4d1b27] font-medium">Anthropic</span>
+                  <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
                     APPLY BY MAY 15
                   </span>
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
                   Anthropic AI STEM Fellowship
                 </h3>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -509,7 +509,7 @@ export default function JobBoard() {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#ef562a]">Learn More &rarr;</span>
+                <span className="text-sm font-medium text-[#4d1b27]">Learn More &rarr;</span>
               </div>
             </div>
           </button>
@@ -517,7 +517,7 @@ export default function JobBoard() {
       </section>
 
       {/* Referral + Auto-Apply Banner */}
-      <section className="bg-[#ef562a] py-10">
+      <section className="bg-[#4d1b27] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="font-serif text-2xl md:text-3xl text-white">
@@ -530,7 +530,7 @@ export default function JobBoard() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/profile/referrals"
-              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#ffe500] text-black font-medium rounded-full hover:bg-[#f0d800] transition-colors"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#f0d800] transition-colors"
             >
               Start Referrals <span aria-hidden="true">&rarr;</span>
             </a>
@@ -579,7 +579,7 @@ export default function JobBoard() {
                   setIsInternational(false);
                   router.replace("/jobs", { scroll: false });
                 }}
-                className="mt-4 text-[#ef562a] hover:underline"
+                className="mt-4 text-[#4d1b27] hover:underline"
               >
                 Clear all filters
               </button>
@@ -603,11 +603,11 @@ export default function JobBoard() {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[#ef562a] font-medium">
+                        <span className="text-[#4d1b27] font-medium">
                           {job.company}
                         </span>
                         {connectionCounts[job.companySlug] > 0 && (
-                          <span className="text-xs px-2 py-1 bg-[#ef562a]/10 text-[#ef562a] rounded-full font-medium">
+                          <span className="text-xs px-2 py-1 bg-[#4d1b27]/10 text-[#4d1b27] rounded-full font-medium">
                             You know {connectionCounts[job.companySlug]} {connectionCounts[job.companySlug] === 1 ? "person" : "people"} here
                           </span>
                         )}
@@ -617,7 +617,7 @@ export default function JobBoard() {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
                         {job.title}
                       </h3>
                       <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -645,7 +645,7 @@ export default function JobBoard() {
                         <a
                           href="/profile/referrals"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[#ef562a] text-[#ef562a] hover:bg-[#ef562a] hover:text-white transition-colors"
+                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[#4d1b27] text-[#4d1b27] hover:bg-[#4d1b27] hover:text-white transition-colors"
                         >
                           Get Referred
                         </a>
@@ -654,7 +654,7 @@ export default function JobBoard() {
                         <a
                           href="/auto-apply/landing"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-5 py-2 text-sm font-medium rounded-full bg-[#ef562a] text-white hover:opacity-90 transition-opacity"
+                          className="px-5 py-2 text-sm font-medium rounded-full bg-[#4d1b27] text-white hover:opacity-90 transition-opacity"
                         >
                           Auto Apply
                         </a>
@@ -664,7 +664,7 @@ export default function JobBoard() {
                         <span className="text-lg font-medium">{job.salary}</span>
                       )}
                       <svg
-                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#ef562a] transition-colors"
+                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -739,7 +739,7 @@ export default function JobBoard() {
                       disabled={loadingMore}
                       className={`px-3 py-2 font-medium transition-colors ${
                         page === current
-                          ? "text-[#ef562a]"
+                          ? "text-[#4d1b27]"
                           : "text-[var(--gray-600)] hover:text-[var(--foreground)]"
                       } disabled:opacity-50`}
                     >

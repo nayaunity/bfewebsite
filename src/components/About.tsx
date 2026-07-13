@@ -18,14 +18,14 @@ export default function About() {
         </div>
 
         {/* Yellow Block */}
-        <div className="bg-[#ffe500] p-8 md:p-12 flex flex-col justify-center text-black">
+        <div className="bg-[#4d1b27] p-8 md:p-12 flex flex-col justify-center text-white">
           <p className="text-sm tracking-wide">
-            BRIDGING THE GAP
+            HELPING YOU BUILD
             <br />
-            BETWEEN <span className="font-semibold">INNOVATION</span>
+            <span className="font-semibold">SKILLS</span>, <span className="font-semibold">WEALTH</span>,
           </p>
           <p className="mt-6 text-sm tracking-wide">
-            AND <span className="font-semibold">EVERYDAY LIFE</span>.
+            AND <span className="font-semibold">FREEDOM</span> WITH <span className="font-semibold">AI</span>.
           </p>
         </div>
 
@@ -36,15 +36,15 @@ export default function About() {
             <br />
             <span className="font-semibold">TOOLS</span> AND
             <br />
-            <span className="font-semibold">INSPIRATION</span>
+            <span className="font-semibold">STRATEGIES</span>
             <br />
-            TO MAKE AN
+            TO <span className="font-semibold">EARN MORE</span>,
             <br />
-            <span className="font-semibold">IMPACT</span> IN
+            <span className="font-semibold">LEARN FASTER</span>,
             <br />
-            <span className="font-semibold">TECH</span>, <span className="font-semibold">CODING</span>,
+            AND LIVE ON YOUR
             <br />
-            <span className="font-semibold">CAREER</span> &amp; <span className="font-semibold">FINANCE</span>.
+            <span className="font-semibold">OWN TERMS</span>.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export default function About() {
         <div className="bg-[var(--background)] p-8 md:p-12 flex items-center justify-center border-l border-[var(--card-border)]">
           <Link
             href="#community"
-            className="border-2 border-[#ffe500] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#ffe500] hover:text-black transition-colors text-center"
+            className="border-2 border-[#4d1b27] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors text-center"
           >
             JOIN US
           </Link>
@@ -68,7 +68,7 @@ export default function About() {
 
           {/* Partner Logos as Text - Row 1 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
-            <span className="text-[#ef562a]">MICROSOFT</span>
+            <span className="text-[#4d1b27]">MICROSOFT</span>
             <span>ADOBE</span>
             <span>AMAZON</span>
             <span>HP</span>
@@ -77,7 +77,7 @@ export default function About() {
           {/* Partner Logos as Text - Row 2 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>TIKTOK</span>
-            <span className="text-[#ef562a]">LINKEDIN</span>
+            <span className="text-[#4d1b27]">LINKEDIN</span>
             <span>SAS</span>
             <span>CANVA</span>
           </div>
@@ -86,13 +86,13 @@ export default function About() {
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>JETBRAINS</span>
             <span>SERVICENOW</span>
-            <span className="text-[#ef562a]">ANTHROPIC</span>
+            <span className="text-[#4d1b27]">ANTHROPIC</span>
             {/* <span>AFROTECH</span> */}
           </div>
 
           <p className="text-center mt-12 text-sm">
             WANT TO PARTNER WITH ME?{" "}
-            <a href="/work-with-us" className="underline hover:text-[#ef562a]">
+            <a href="/work-with-us" className="underline hover:text-[#4d1b27]">
               LET ME KNOW
             </a>
           </p>

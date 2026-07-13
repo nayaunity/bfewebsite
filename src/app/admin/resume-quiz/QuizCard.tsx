@@ -55,7 +55,7 @@ export function QuizCard({ user }: QuizCardProps) {
                   user.subscriptionTier === "pro"
                     ? "bg-purple-100 text-purple-700"
                     : user.subscriptionTier === "starter"
-                      ? "bg-[#ef562a]/10 text-[#ef562a]"
+                      ? "bg-[#4d1b27]/10 text-[#4d1b27]"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)]"
                 }`}
               >
@@ -138,7 +138,7 @@ export function QuizCard({ user }: QuizCardProps) {
                 href={user.rewriteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#ef562a] hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#4d1b27] hover:underline"
               >
                 View Rewritten Resume
                 <svg

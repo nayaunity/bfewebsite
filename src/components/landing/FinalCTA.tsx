@@ -3,7 +3,7 @@ import { COMPANIES } from "./companyData";
 
 export default function FinalCTA() {
   return (
-    <section className="relative py-24 md:py-32 bg-[#1a1a1a] overflow-hidden">
+    <section className="relative py-24 md:py-32 bg-[#2a2828] overflow-hidden">
       {/* Background scattered company names */}
       <div className="absolute inset-0 select-none pointer-events-none" aria-hidden="true">
         {COMPANIES.map((company, i) => (
@@ -28,12 +28,12 @@ export default function FinalCTA() {
         <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
           Land your dream job,
           <br />
-          <span className="italic text-[#ef562a]">10x easier</span>.
+          <span className="italic text-[#4d1b27]">10x easier</span>.
         </h2>
 
         <Link
           href="/auto-apply/get-started"
-          className="inline-flex items-center gap-2 mt-10 bg-[#ffe500] text-black px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
+          className="inline-flex items-center gap-2 mt-10 bg-[#4d1b27] text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
         >
           Get Started
         </Link>

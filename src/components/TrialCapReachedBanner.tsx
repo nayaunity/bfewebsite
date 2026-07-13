@@ -68,7 +68,7 @@ export function TrialCapReachedBanner() {
             onClick={handleUpgradeNow}
             disabled={loading}
             className="px-5 py-2.5 rounded-lg font-medium text-white whitespace-nowrap disabled:opacity-50"
-            style={{ background: "#ef562a" }}
+            style={{ background: "#4d1b27" }}
           >
             {loading ? "Upgrading..." : "Upgrade now for $29"}
           </button>

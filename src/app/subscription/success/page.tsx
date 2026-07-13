@@ -46,7 +46,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#ef562a"
+              stroke="#4d1b27"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -57,7 +57,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[var(--foreground)] mb-4">
-            You&apos;re <span className="italic text-[#ef562a]">in</span>.
+            You&apos;re <span className="italic text-[#4d1b27]">in</span>.
           </h1>
 
           <p className="text-[var(--gray-600)] text-lg mb-2">
@@ -81,7 +81,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/profile/applications"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#ef562a] hover:bg-[#d94a22] text-white font-semibold transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#4d1b27] hover:bg-[#d94a22] text-white font-semibold transition-colors"
             >
               Go to dashboard
             </Link>
@@ -97,7 +97,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
             Questions? Write to{" "}
             <a
               href="mailto:theblackfemaleengineer@gmail.com"
-              className="underline hover:text-[#ef562a]"
+              className="underline hover:text-[#4d1b27]"
             >
               theblackfemaleengineer@gmail.com
             </a>

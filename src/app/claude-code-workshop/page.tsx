@@ -74,15 +74,14 @@ export default function ClaudeCodeWorkshopPage() {
               <div>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Your team&apos;s{" "}
-                  <span className="italic text-[#ef562a]">Claude Code</span>
+                  <span className="italic text-[#4d1b27]">Claude Code</span>
                   <br />
                   workshop instructor
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
                   I&apos;m Nyaradzo, engineer, educator, and Anthropic partner.
-                  I&apos;ve spent 5+ years making technology accessible to over
-                  200K professionals, and now I teach teams how to ship
-                  faster with Claude Code.
+                  I&apos;ve spent 5+ years helping 250K+ people build with AI,
+                  and now I teach teams how to ship faster with Claude Code.
                 </p>
               </div>
               <div className="relative rounded-3xl aspect-square overflow-hidden">
@@ -99,12 +98,12 @@ export default function ClaudeCodeWorkshopPage() {
         </section>
 
         {/* What the Workshop Delivers */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
+        <section className="bg-[#2a2828] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white">
               <span className="italic">what your team</span> WALKS AWAY WITH
             </h2>
-            <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
             <div className="space-y-8 text-left max-w-2xl mx-auto">
               {[
                 "A working Claude Code setup tailored to your codebase, frameworks, and CI pipeline",
@@ -113,7 +112,7 @@ export default function ClaudeCodeWorkshopPage() {
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <svg
-                    className="w-6 h-6 text-[#ef562a] flex-shrink-0 mt-1"
+                    className="w-6 h-6 text-[#4d1b27] flex-shrink-0 mt-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -137,7 +136,7 @@ export default function ClaudeCodeWorkshopPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="grid grid-cols-2 gap-8 md:gap-16 mb-10">
               <div>
-                <div className="font-serif text-5xl md:text-7xl text-[#ef562a]">
+                <div className="font-serif text-5xl md:text-7xl text-[#4d1b27]">
                   93%
                 </div>
                 <p className="mt-2 text-[var(--gray-600)] text-sm md:text-base">
@@ -145,7 +144,7 @@ export default function ClaudeCodeWorkshopPage() {
                 </p>
               </div>
               <div>
-                <div className="font-serif text-5xl md:text-7xl text-[#ef562a]">
+                <div className="font-serif text-5xl md:text-7xl text-[#4d1b27]">
                   100%
                 </div>
                 <p className="mt-2 text-[var(--gray-600)] text-sm md:text-base">
@@ -169,22 +168,22 @@ export default function ClaudeCodeWorkshopPage() {
               </p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>ANTHROPIC</span>
-                <span className="text-[#ef562a]">MICROSOFT</span>
+                <span className="text-[#4d1b27]">MICROSOFT</span>
                 <span>HP</span>
-                <span className="text-[#ef562a]">AMD</span>
+                <span className="text-[#4d1b27]">AMD</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* Testimonials */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
+        <section className="bg-[#2a2828] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
                 <span className="italic">what attendees</span> SAY
               </h2>
-              <div className="w-px h-12 bg-[#ffe500] mx-auto my-8"></div>
+              <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {[
@@ -198,7 +197,7 @@ export default function ClaudeCodeWorkshopPage() {
                   className="border border-white/10 rounded-2xl p-8"
                 >
                   <svg
-                    className="w-8 h-8 text-[#ffe500] mb-4"
+                    className="w-8 h-8 text-[#4d1b27] mb-4"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -231,12 +230,12 @@ export default function ClaudeCodeWorkshopPage() {
                   key={tier.name}
                   className={`bg-[var(--card-bg)] border rounded-2xl p-8 relative ${
                     tier.popular
-                      ? "border-[#ffe500] border-2"
+                      ? "border-[#4d1b27] border-2"
                       : "border-[var(--card-border)]"
                   }`}
                 >
                   {tier.popular && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#ffe500] text-black">
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27] text-white">
                       MOST POPULAR
                     </span>
                   )}
@@ -244,14 +243,14 @@ export default function ClaudeCodeWorkshopPage() {
                   <p className="text-[var(--gray-600)] text-sm mb-6">
                     {tier.duration}
                   </p>
-                  <div className="font-serif text-4xl md:text-5xl text-[#ef562a] mb-8">
+                  <div className="font-serif text-4xl md:text-5xl text-[#4d1b27] mb-8">
                     {tier.price}
                   </div>
                   <ul className="space-y-3">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <svg
-                          className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5"
+                          className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -274,7 +273,7 @@ export default function ClaudeCodeWorkshopPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
+        <section className="bg-[#2a2828] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4 text-white">
               Ready to upskill your team?

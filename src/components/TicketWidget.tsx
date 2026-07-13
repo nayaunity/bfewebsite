@@ -88,7 +88,7 @@ export function TicketWidget({ page }: { page: string }) {
                 onClick={() => setType(t.value)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
                   type === t.value
-                    ? "border-[#ef562a] bg-[#ef562a]/5 text-[#ef562a]"
+                    ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
                     : "border-[var(--card-border)] text-[var(--gray-600)] hover:border-[var(--gray-200)]"
                 }`}
               >
@@ -107,7 +107,7 @@ export function TicketWidget({ page }: { page: string }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={200}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a]"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
           />
 
           {/* Message */}
@@ -117,14 +117,14 @@ export function TicketWidget({ page }: { page: string }) {
             onChange={(e) => setMessage(e.target.value)}
             maxLength={2000}
             rows={4}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/30 focus:border-[#ef562a] resize-none"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] resize-none"
           />
 
           {/* Submit */}
           <button
             onClick={handleSubmit}
             disabled={submitting || !title.trim() || !message.trim()}
-            className="w-full py-2 text-sm font-medium rounded-lg bg-[#ef562a] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full py-2 text-sm font-medium rounded-lg bg-[#4d1b27] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {submitting ? "Sending..." : "Submit"}
           </button>

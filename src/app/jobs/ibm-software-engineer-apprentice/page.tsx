@@ -40,13 +40,13 @@ export default function IBMSoftwareEngineerApprentice() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#ef562a] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
                 IBM
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
                 Now Hiring
               </span>
-              <span className="px-3 py-1 text-sm font-medium bg-[#ffe500] text-black rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
                 Apprenticeship
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-purple-100 text-purple-800 rounded-full">
@@ -112,19 +112,19 @@ export default function IBMSoftwareEngineerApprentice() {
               <p className="text-[var(--foreground)] mb-4">This program is ideal for:</p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">1</span>
                   <span><strong>Career changers:</strong> You&apos;re transitioning into tech from another field</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">2</span>
                   <span><strong>Self-taught developers:</strong> You&apos;ve learned to code on your own and want structured experience</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">3</span>
                   <span><strong>Bootcamp graduates:</strong> You&apos;ve completed a coding bootcamp and want enterprise experience</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">4</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">4</span>
                   <span><strong>Non-traditional backgrounds:</strong> You don&apos;t have a CS degree but have a passion for technology</span>
                 </li>
               </ul>
@@ -166,7 +166,7 @@ export default function IBMSoftwareEngineerApprentice() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">What You&apos;ll Learn</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">1</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">1</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Software Development Fundamentals</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -175,7 +175,7 @@ export default function IBMSoftwareEngineerApprentice() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">2</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">2</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Cloud Computing</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -184,7 +184,7 @@ export default function IBMSoftwareEngineerApprentice() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">3</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">3</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Agile & DevOps</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -193,7 +193,7 @@ export default function IBMSoftwareEngineerApprentice() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">4</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">4</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">IBM Design Thinking</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -209,8 +209,8 @@ export default function IBMSoftwareEngineerApprentice() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">The Experience</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
@@ -220,8 +220,8 @@ export default function IBMSoftwareEngineerApprentice() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                   </div>
@@ -231,8 +231,8 @@ export default function IBMSoftwareEngineerApprentice() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                   </div>
@@ -242,8 +242,8 @@ export default function IBMSoftwareEngineerApprentice() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
@@ -307,7 +307,7 @@ export default function IBMSoftwareEngineerApprentice() {
                   href="https://careers.ibm.com/en_US/careers/JobDetail?jobId=43140"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Apply on IBM Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

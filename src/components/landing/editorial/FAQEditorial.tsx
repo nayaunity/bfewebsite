@@ -16,7 +16,7 @@ export default function FAQEditorial() {
             style={{ fontSize: "clamp(40px, 5.2vw, 72px)" }}
           >
             The skeptical questions.<br />
-            <span className="italic text-[#ef562a]">Answered honestly.</span>
+            <span className="italic text-[#4d1b27]">Answered honestly.</span>
           </h2>
         </div>
 
@@ -28,9 +28,9 @@ export default function FAQEditorial() {
               onClick={() => setOpenIdx(openIdx === i ? -1 : i)}
             >
               <div className="flex items-center justify-between">
-                <div className="font-serif text-[22px] text-[#1a1a1a] pr-4">{f.q}</div>
+                <div className="font-serif text-[22px] text-[#2a2828] pr-4">{f.q}</div>
                 <div
-                  className="text-[28px] text-[#ef562a] leading-none font-light transition-transform duration-200 flex-shrink-0"
+                  className="text-[28px] text-[#4d1b27] leading-none font-light transition-transform duration-200 flex-shrink-0"
                   style={{ transform: openIdx === i ? "rotate(45deg)" : "rotate(0)" }}
                 >
                   +

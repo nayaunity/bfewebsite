@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auditMatchQuality } from "@/lib/health-oversight";
+import {
+  auditMatchQuality,
+  collectAutoApplyGraphMetrics,
+} from "@/lib/health-oversight";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -20,33 +23,56 @@ export async function GET(request: NextRequest) {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
-    const completedSessions = await prisma.browseSession.findMany({
+    const auditableSessions = await prisma.browseSession.findMany({
       where: {
-        status: "completed",
-        completedAt: { gte: todayStart },
         jobsApplied: { gt: 0 },
+        OR: [
+          { createdAt: { gte: todayStart } },
+          { startedAt: { gte: todayStart } },
+          { completedAt: { gte: todayStart } },
+        ],
       },
       select: {
         id: true,
         userId: true,
+        status: true,
         discoveries: {
           where: { status: "applied" },
           select: {
             id: true,
             jobTitle: true,
             company: true,
+            atsType: true,
           },
         },
       },
     });
 
-    if (completedSessions.length === 0) {
-      console.log("[Quality Audit] No completed sessions with applications today");
+    if (auditableSessions.length === 0) {
+      console.log("[Quality Audit] No applied sessions to audit today");
+      const graphMetrics = await collectAutoApplyGraphMetrics({
+        since: todayStart,
+      });
       return NextResponse.json({
         success: true,
         duration: "0s",
         sessionsAudited: 0,
         totalAudited: 0,
+        graphMetrics: {
+          totalPlanned: graphMetrics.totalPlanned,
+          autoSubmitRate:
+            graphMetrics.autoSubmitRate === null
+              ? null
+              : Math.round(graphMetrics.autoSubmitRate * 100),
+          pendingReviewCount: graphMetrics.pendingReviewCount,
+          supportedSuccessRate:
+            graphMetrics.supportedSuccessRate === null
+              ? null
+              : Math.round(graphMetrics.supportedSuccessRate * 100),
+          unsupportedAutoSubmitCount:
+            graphMetrics.unsupportedAutoSubmitCount,
+          perAts: graphMetrics.atsBuckets,
+        },
       });
     }
 
@@ -56,7 +82,7 @@ export async function GET(request: NextRequest) {
     });
     const auditedIds = new Set(alreadyAudited.map((a) => a.discoveryId));
 
-    const userIds = [...new Set(completedSessions.map((s) => s.userId))];
+    const userIds = [...new Set(auditableSessions.map((s) => s.userId))];
     const users = await prisma.user.findMany({
       where: { id: { in: userIds } },
       select: {
@@ -78,7 +104,7 @@ export async function GET(request: NextRequest) {
 
     const perUserBadCounts: Map<string, { total: number; bad: number }> = new Map();
 
-    for (const session of completedSessions) {
+    for (const session of auditableSessions) {
       const unaudited = session.discoveries.filter(
         (d) => !auditedIds.has(d.id)
       );
@@ -174,32 +200,87 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    if (totalAudited > 0) {
-      const systemBadRate = totalBad / totalAudited;
-      if (systemBadRate > 0.2) {
-        const existing = await prisma.adminAlert.findFirst({
-          where: {
+    const graphMetrics = await collectAutoApplyGraphMetrics({
+      since: todayStart,
+    });
+    const goodMarginalRate =
+      totalAudited > 0 ? (totalGood + totalMarginal) / totalAudited : null;
+
+    if (goodMarginalRate !== null && goodMarginalRate < 0.9) {
+      const existing = await prisma.adminAlert.findFirst({
+        where: {
+          kind: "match_quality_systemic",
+          resolvedAt: null,
+          createdAt: { gte: twentyFourHoursAgo },
+        },
+      });
+      if (!existing) {
+        await prisma.adminAlert.create({
+          data: {
             kind: "match_quality_systemic",
-            resolvedAt: null,
-            createdAt: { gte: twentyFourHoursAgo },
+            severity: "high",
+            message: `System-wide good-or-marginal match rate is ${Math.round(goodMarginalRate * 100)}% (${totalGood + totalMarginal}/${totalAudited}), below the 90% launch gate.`,
+            metadata: JSON.stringify({
+              goodMarginalRate,
+              totalAudited,
+              totalBad,
+              totalGood,
+              totalMarginal,
+            }),
           },
         });
-        if (!existing) {
-          await prisma.adminAlert.create({
-            data: {
-              kind: "match_quality_systemic",
-              severity: "high",
-              message: `System-wide bad match rate: ${Math.round(systemBadRate * 100)}% (${totalBad}/${totalAudited}). Matcher may need tuning.`,
-              metadata: JSON.stringify({
-                badRate: systemBadRate,
-                totalAudited,
-                totalBad,
-                totalGood,
-                totalMarginal,
-              }),
-            },
-          });
-        }
+      }
+    }
+
+    if (
+      graphMetrics.supportedSuccessRate !== null &&
+      graphMetrics.supportedSuccessRate < 0.8
+    ) {
+      const existing = await prisma.adminAlert.findFirst({
+        where: {
+          kind: "apply_success_rate_systemic",
+          resolvedAt: null,
+          createdAt: { gte: twentyFourHoursAgo },
+        },
+      });
+      if (!existing) {
+        await prisma.adminAlert.create({
+          data: {
+            kind: "apply_success_rate_systemic",
+            severity: "high",
+            message: `Supported ATS submit success is ${Math.round(graphMetrics.supportedSuccessRate * 100)}% (${graphMetrics.supportedAppliedCount}/${graphMetrics.supportedAttemptedCount}), below the 80% launch gate.`,
+            metadata: JSON.stringify({
+              supportedAttemptedCount: graphMetrics.supportedAttemptedCount,
+              supportedAppliedCount: graphMetrics.supportedAppliedCount,
+              supportedFailedCount: graphMetrics.supportedFailedCount,
+              supportedSuccessRate: graphMetrics.supportedSuccessRate,
+              atsBuckets: graphMetrics.atsBuckets,
+            }),
+          },
+        });
+      }
+    }
+
+    if (graphMetrics.unsupportedAutoSubmitCount > 0) {
+      const existing = await prisma.adminAlert.findFirst({
+        where: {
+          kind: "unsupported_portal_auto_submit",
+          resolvedAt: null,
+          createdAt: { gte: twentyFourHoursAgo },
+        },
+      });
+      if (!existing) {
+        await prisma.adminAlert.create({
+          data: {
+            kind: "unsupported_portal_auto_submit",
+            severity: "high",
+            message: `${graphMetrics.unsupportedAutoSubmitCount} unsupported-portal applications were marked ready or applied today. Launch gate requires 0.`,
+            metadata: JSON.stringify({
+              unsupportedAutoSubmitCount:
+                graphMetrics.unsupportedAutoSubmitCount,
+            }),
+          },
+        });
       }
     }
 
@@ -207,18 +288,60 @@ export async function GET(request: NextRequest) {
     const summary = {
       success: true,
       duration: `${duration}s`,
-      sessionsAudited: completedSessions.length,
+      sessionsAudited: auditableSessions.length,
       totalAudited,
       verdicts: {
         good: totalGood,
         marginal: totalMarginal,
         bad: totalBad,
       },
+      launchGates: {
+        matchQualityGoodOrMarginal:
+          goodMarginalRate === null ? null : Math.round(goodMarginalRate * 100),
+        supportedSubmitSuccess:
+          graphMetrics.supportedSuccessRate === null
+            ? null
+            : Math.round(graphMetrics.supportedSuccessRate * 100),
+        unsupportedPortalAutoSubmits:
+          graphMetrics.unsupportedAutoSubmitCount,
+        blocked:
+          (goodMarginalRate !== null && goodMarginalRate < 0.9) ||
+          (graphMetrics.supportedSuccessRate !== null &&
+            graphMetrics.supportedSuccessRate < 0.8) ||
+          graphMetrics.unsupportedAutoSubmitCount > 0,
+      },
+      graphMetrics: {
+        totalPlanned: graphMetrics.totalPlanned,
+        autoSubmitCount: graphMetrics.autoSubmitCount,
+        reviewRoutedCount: graphMetrics.reviewRoutedCount,
+        skippedCount: graphMetrics.skippedCount,
+        pendingReviewCount: graphMetrics.pendingReviewCount,
+        approvedReviewCount: graphMetrics.approvedReviewCount,
+        rejectedReviewCount: graphMetrics.rejectedReviewCount,
+        autoSubmitRate:
+          graphMetrics.autoSubmitRate === null
+            ? null
+            : Math.round(graphMetrics.autoSubmitRate * 100),
+        supportedAttemptedCount: graphMetrics.supportedAttemptedCount,
+        supportedAppliedCount: graphMetrics.supportedAppliedCount,
+        supportedFailedCount: graphMetrics.supportedFailedCount,
+        supportedSuccessRate:
+          graphMetrics.supportedSuccessRate === null
+            ? null
+            : Math.round(graphMetrics.supportedSuccessRate * 100),
+        unsupportedAutoSubmitCount:
+          graphMetrics.unsupportedAutoSubmitCount,
+        perAts: graphMetrics.atsBuckets,
+      },
       alerts: {
         perUser: [...perUserBadCounts.values()].filter(
           (c) => c.total > 0 && c.bad / c.total > 0.3
         ).length,
-        systemic: totalAudited > 0 && totalBad / totalAudited > 0.2,
+        systemic:
+          (goodMarginalRate !== null && goodMarginalRate < 0.9) ||
+          (graphMetrics.supportedSuccessRate !== null &&
+            graphMetrics.supportedSuccessRate < 0.8) ||
+          graphMetrics.unsupportedAutoSubmitCount > 0,
       },
     };
 

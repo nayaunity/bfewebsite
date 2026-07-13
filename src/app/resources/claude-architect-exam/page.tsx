@@ -41,7 +41,7 @@ export default function ClaudeArchitectExamPage() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
-              <Link href="/resources" className="hover:text-[#ef562a]">
+              <Link href="/resources" className="hover:text-[#4d1b27]">
                 Resources
               </Link>
               <span>/</span>
@@ -54,7 +54,7 @@ export default function ClaudeArchitectExamPage() {
               </span>
               <h1 className="font-serif text-4xl md:text-5xl leading-tight">
                 Claude Architect{" "}
-                <span className="italic text-[#ef562a]">Mock Exam</span>
+                <span className="italic text-[#4d1b27]">Mock Exam</span>
               </h1>
               <p className="mt-4 text-lg text-[var(--gray-600)] max-w-2xl">
                 Full-length practice exam for the Claude Certified Architect

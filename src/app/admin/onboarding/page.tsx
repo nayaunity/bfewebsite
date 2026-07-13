@@ -175,7 +175,7 @@ export default async function OnboardingPage() {
                         <span className="w-36 truncate text-[var(--gray-600)]">{STEP_LABELS[i] || `Step ${i}`}</span>
                         <div className="flex-1 h-5 bg-[var(--gray-100)] rounded overflow-hidden">
                           <div
-                            className={`h-full rounded ${isHighDrop ? "bg-red-400" : "bg-[#ef562a]"}`}
+                            className={`h-full rounded ${isHighDrop ? "bg-red-400" : "bg-[#4d1b27]"}`}
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -280,7 +280,7 @@ export default async function OnboardingPage() {
                 {/* Onboarding data tags */}
                 <div className="flex flex-wrap gap-2">
                   {tags.roles.map((role: string) => (
-                    <span key={role} className="text-xs px-2.5 py-1 rounded-full bg-[#ef562a]/10 text-[#ef562a] font-medium">
+                    <span key={role} className="text-xs px-2.5 py-1 rounded-full bg-[#4d1b27]/10 text-[#4d1b27] font-medium">
                       {role}
                     </span>
                   ))}
@@ -295,7 +295,7 @@ export default async function OnboardingPage() {
                     </span>
                   ))}
                   {data.minSalary ? (
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-[#ffe500]/20 text-[#b8a600] dark:text-[#ffe500]">
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-[#4d1b27]/20 text-[#b8a600] dark:text-[#4d1b27]">
                       ${(Number(data.minSalary) / 1000).toFixed(0)}K+
                     </span>
                   ) : null}

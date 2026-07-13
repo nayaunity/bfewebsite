@@ -138,7 +138,7 @@ export default function StartClient({ initialTempId }: { initialTempId?: string 
             <button
               type="button"
               onClick={() => { setPhase("upload"); setErrorMessage(null); }}
-              className="mt-4 rounded-full bg-[#ef562a] px-5 py-2 text-sm font-semibold text-white hover:bg-[#d84a21]"
+              className="mt-4 rounded-full bg-[#4d1b27] px-5 py-2 text-sm font-semibold text-white hover:bg-[#d84a21]"
             >
               Start over
             </button>

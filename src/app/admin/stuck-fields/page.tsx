@@ -74,7 +74,7 @@ export default async function StuckFieldsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-serif text-3xl text-[var(--foreground)]">
-              Stuck <span className="italic text-[#ef562a]">fields</span>
+              Stuck <span className="italic text-[#4d1b27]">fields</span>
             </h1>
             <p className="text-[var(--gray-600)] mt-1 text-sm">
               Top failure clusters across applications in the last 7 days
@@ -112,7 +112,7 @@ export default async function StuckFieldsPage() {
                   <td className="px-4 py-2"><FailurePill type={row.failureType} /></td>
                   <td className="px-4 py-2 whitespace-nowrap">{new Date(row.lastSeen).toISOString().replace("T", " ").slice(0, 16)}</td>
                   <td className="px-4 py-2">
-                    <a href={row.samplePageUrl} target="_blank" rel="noreferrer" className="text-[#ef562a] hover:underline truncate inline-block max-w-xs">
+                    <a href={row.samplePageUrl} target="_blank" rel="noreferrer" className="text-[#4d1b27] hover:underline truncate inline-block max-w-xs">
                       {row.samplePageUrl.slice(0, 60)}{row.samplePageUrl.length > 60 ? "…" : ""}
                     </a>
                   </td>

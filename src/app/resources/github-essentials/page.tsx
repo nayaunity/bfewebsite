@@ -27,7 +27,7 @@ export default function GitHubEssentialsPage() {
         <section className="py-12 md:py-16 border-b border-[var(--card-border)]" style={{ background: 'linear-gradient(to bottom, var(--hero-gradient-from), var(--background))' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
-              <Link href="/resources" className="hover:text-[#ef562a]">
+              <Link href="/resources" className="hover:text-[#4d1b27]">
                 Resources
               </Link>
               <span>/</span>
@@ -41,7 +41,7 @@ export default function GitHubEssentialsPage() {
                 </span>
                 <h1 className="font-serif text-4xl md:text-5xl leading-tight">
                   {course.title.split(" ")[0]}{" "}
-                  <span className="italic text-[#ef562a]">
+                  <span className="italic text-[#4d1b27]">
                     {course.title.split(" ").slice(1).join(" ")}
                   </span>
                 </h1>
@@ -93,7 +93,7 @@ export default function GitHubEssentialsPage() {
                 {firstLesson && (
                   <Link
                     href={`/resources/github-essentials/${firstLesson.slug}`}
-                    className="block w-full bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors text-center"
+                    className="block w-full bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-center"
                   >
                     Start Module 1 &rarr;
                   </Link>
@@ -169,7 +169,7 @@ function CourseSidebar({ course }: { course: ReturnType<typeof getCourse> }) {
             <a
               key={module.id}
               href={`#module-${module.id}`}
-              className="block border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#ffe500] transition-colors"
+              className="block border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#4d1b27] transition-colors"
             >
               <div className="p-4 bg-[var(--gray-50)] hover:bg-[var(--gray-100)] transition-colors">
                 <span className="text-xs text-[var(--gray-600)]">Module {module.id}</span>

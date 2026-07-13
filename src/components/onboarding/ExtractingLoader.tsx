@@ -25,12 +25,12 @@ export default function ExtractingLoader() {
     <section className="flex min-h-[70vh] flex-col items-center justify-center py-10">
       <div className="mb-8 inline-flex items-center gap-3 rounded-2xl border border-[var(--card-border)] bg-[var(--gray-50)] px-5 py-3">
         <div className="font-serif text-base font-bold">
-          the<span className="text-[#ef562a]">BFE</span>
+          the<span className="text-[#4d1b27]">BFE</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#ef562a]" style={{ animationDelay: "0ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#ef562a]" style={{ animationDelay: "150ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#ef562a]" style={{ animationDelay: "300ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "0ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "150ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "300ms" }} />
         </div>
       </div>
 
@@ -43,7 +43,7 @@ export default function ExtractingLoader() {
           <span
             key={i}
             className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-8 bg-[#ef562a]" : "w-1.5 bg-[var(--gray-200)]"
+              i === index ? "w-8 bg-[#4d1b27]" : "w-1.5 bg-[var(--gray-200)]"
             }`}
           />
         ))}
@@ -126,8 +126,8 @@ function ApplySlide() {
     >
       <div className="mb-4 flex gap-2 text-xs">
         <span className="text-[var(--gray-600)]">Job Matches</span>
-        <span className="text-[#ef562a]">&gt;</span>
-        <span className="font-medium text-[#ef562a]">Applying</span>
+        <span className="text-[#4d1b27]">&gt;</span>
+        <span className="font-medium text-[#4d1b27]">Applying</span>
         <span className="text-[var(--gray-600)]">&gt;</span>
         <span className="text-[var(--gray-600)]">Applied</span>
       </div>
@@ -137,7 +137,7 @@ function ApplySlide() {
           <div className="h-2 w-24 rounded bg-[var(--gray-100)]" />
         </div>
         <span className="flex items-center gap-1.5 text-xs text-[var(--gray-600)]">
-          <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--gray-200)] border-t-[#ef562a]" />
+          <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--gray-200)] border-t-[#4d1b27]" />
           Applying...
         </span>
       </div>
@@ -153,7 +153,7 @@ function AutopilotSlide() {
       subtitle="BFE works around the clock — you wake up to fresh applications submitted overnight. Being early gives you a real edge."
     >
       <div className="mb-4 flex items-center justify-center gap-2">
-        <div className="relative h-5 w-10 rounded-full bg-[#ef562a]">
+        <div className="relative h-5 w-10 rounded-full bg-[#4d1b27]">
           <div className="absolute right-0.5 top-0.5 h-4 w-4 rounded-full bg-white" />
         </div>
         <span className="text-sm font-medium">Autopilot on</span>

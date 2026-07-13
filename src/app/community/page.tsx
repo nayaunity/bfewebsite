@@ -91,7 +91,7 @@ export default function CommunityPage() {
               </div>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-4 py-2 rounded-lg font-medium hover:bg-[#f5dc00] transition-colors shadow-sm text-sm"
+                className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm text-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -120,7 +120,7 @@ export default function CommunityPage() {
               {/* Add Win Button */}
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-5 py-2.5 rounded-lg font-medium hover:bg-[#f5dc00] transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -167,7 +167,7 @@ export default function CommunityPage() {
                   setShowForm(false);
                   resetSubmitState();
                 }}
-                className="absolute -top-12 right-0 text-white hover:text-[#ffe500] transition-colors"
+                className="absolute -top-12 right-0 text-white hover:text-[#4d1b27] transition-colors"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -211,7 +211,7 @@ export default function CommunityPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="bg-[#ffe500] text-black px-6 py-3 rounded-lg font-medium hover:bg-[#f5dc00] transition-colors shadow-sm"
+                  className="bg-[#4d1b27] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm"
                 >
                   Add the first win
                 </button>

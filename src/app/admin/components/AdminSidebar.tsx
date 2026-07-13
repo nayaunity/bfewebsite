@@ -168,7 +168,7 @@ export default function AdminSidebar({
                 <span className="font-serif text-xl font-bold">BFE</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                   role === "admin"
-                    ? "bg-[#ffe500] text-black"
+                    ? "bg-[#4d1b27] text-white"
                     : "bg-blue-100 text-blue-800"
                 }`}>
                   {role === "admin" ? "Admin" : "Contributor"}
@@ -188,7 +188,7 @@ export default function AdminSidebar({
                     href={item.href}
                     className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-full transition-colors ${
                       isActive
-                        ? "bg-[#ffe500] text-black"
+                        ? "bg-[#4d1b27] text-white"
                         : "text-[var(--gray-600)] hover:bg-[var(--gray-100)] hover:text-[var(--foreground)]"
                     }`}
                   >
@@ -246,7 +246,7 @@ export default function AdminSidebar({
                 href={item.href}
                 className={`flex flex-col items-center px-3 py-2 text-xs font-medium transition-colors ${
                   isActive
-                    ? "text-[#ef562a]"
+                    ? "text-[#4d1b27]"
                     : "text-[var(--gray-600)]"
                 }`}
               >

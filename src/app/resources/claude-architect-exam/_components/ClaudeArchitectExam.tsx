@@ -811,7 +811,7 @@ export default function ClaudeArchitectExam() {
       <div className="p-8 max-w-[720px] mx-auto bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)]">
         <div className="border-b border-[var(--card-border)] pb-6 mb-6">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-9 h-9 rounded-lg bg-[#ef562a] flex items-center justify-center text-white text-[15px] font-semibold">
+            <div className="w-9 h-9 rounded-lg bg-[#4d1b27] flex items-center justify-center text-white text-[15px] font-semibold">
               C
             </div>
             <span className="text-[11px] text-[var(--gray-600)] tracking-wider uppercase font-medium">
@@ -866,7 +866,7 @@ export default function ClaudeArchitectExam() {
 
         <button
           onClick={handleBeginExam}
-          className="w-full py-3.5 bg-[#ef562a] hover:bg-[#d94d24] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
+          className="w-full py-3.5 bg-[#4d1b27] hover:bg-[#d94d24] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
         >
           Begin Exam
         </button>
@@ -878,7 +878,7 @@ export default function ClaudeArchitectExam() {
   if (phase === "gate") {
     return (
       <div className="p-8 max-w-[720px] mx-auto bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] text-[var(--foreground)] text-center">
-        <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-[#ffe500] flex items-center justify-center">
+        <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-[#4d1b27] flex items-center justify-center">
           <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
@@ -897,12 +897,12 @@ export default function ClaudeArchitectExam() {
             placeholder="Enter your email"
             required
             disabled={isSubmitting}
-            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-[#ef562a] disabled:opacity-50"
+            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-[#4d1b27] disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-[#ef562a] text-white px-8 py-4 rounded-full font-medium hover:bg-[#d94d25] transition-colors disabled:opacity-50"
+            className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#d94d25] transition-colors disabled:opacity-50"
           >
             {isSubmitting ? "..." : "Get Access"}
           </button>
@@ -983,7 +983,7 @@ export default function ClaudeArchitectExam() {
                   onClick={() => { setReviewFilter(f); setShowReview(true); }}
                   className={`text-[11px] px-2.5 py-1 rounded border cursor-pointer transition-colors ${
                     reviewFilter === f && showReview
-                      ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a] font-semibold"
+                      ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-semibold"
                       : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
                   }`}
                 >
@@ -1058,7 +1058,7 @@ export default function ClaudeArchitectExam() {
           </div>
           <div className="h-1 rounded-full bg-[var(--gray-200)] overflow-hidden">
             <div
-              className="h-full rounded-full bg-[#ef562a] transition-all duration-200"
+              className="h-full rounded-full bg-[#4d1b27] transition-all duration-200"
               style={{ width: (progress / QUESTIONS.length) * 100 + "%" }}
             />
           </div>
@@ -1089,7 +1089,7 @@ export default function ClaudeArchitectExam() {
                 onClick={() => { setScenIdx(i); setQIdx(0); }}
                 className={`shrink-0 text-[11px] px-2.5 py-1 rounded-md border cursor-pointer transition-colors ${
                   active
-                    ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a] font-semibold"
+                    ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-semibold"
                     : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
                 }`}
               >
@@ -1107,7 +1107,7 @@ export default function ClaudeArchitectExam() {
             </span>
             <button
               onClick={() => setShowCtx(!showCtx)}
-              className="text-[11px] border-none bg-transparent cursor-pointer text-[var(--gray-600)] p-0 hover:text-[#ef562a] transition-colors"
+              className="text-[11px] border-none bg-transparent cursor-pointer text-[var(--gray-600)] p-0 hover:text-[#4d1b27] transition-colors"
             >
               {showCtx ? "hide" : "show context"}
             </button>
@@ -1149,11 +1149,11 @@ export default function ClaudeArchitectExam() {
                 onClick={() => selectAnswer(i)}
                 className={`w-full text-left py-2.5 px-3.5 rounded-lg mb-1.5 cursor-pointer text-[13px] flex gap-2.5 items-start leading-normal border transition-colors ${
                   selected
-                    ? "border-[#ef562a] bg-[#ef562a]/10 text-[#ef562a]"
+                    ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27]"
                     : "border-[var(--card-border)] bg-transparent text-[var(--foreground)] hover:border-[var(--gray-600)]"
                 }`}
               >
-                <span className={`font-bold min-w-[16px] shrink-0 ${selected ? "text-[#ef562a]" : "text-[var(--gray-600)]"}`}>
+                <span className={`font-bold min-w-[16px] shrink-0 ${selected ? "text-[#4d1b27]" : "text-[var(--gray-600)]"}`}>
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span>{opt}</span>
@@ -1174,7 +1174,7 @@ export default function ClaudeArchitectExam() {
                 onClick={() => setQIdx(i)}
                 className={`w-7 h-7 rounded text-[11px] cursor-pointer border transition-colors ${
                   isCurrent
-                    ? "bg-[#ef562a] border-[#ef562a] text-white font-bold"
+                    ? "bg-[#4d1b27] border-[#4d1b27] text-white font-bold"
                     : isFlag
                     ? "bg-[var(--accent-yellow-bg)] border-amber-500 text-[var(--accent-yellow-text)] font-medium"
                     : done
@@ -1202,7 +1202,7 @@ export default function ClaudeArchitectExam() {
           {isLast ? (
             <button
               onClick={submitExam}
-              className="flex-1 py-2.5 rounded-lg border-none bg-[#ef562a] hover:bg-[#d94d24] text-white cursor-pointer text-[13px] font-semibold transition-colors"
+              className="flex-1 py-2.5 rounded-lg border-none bg-[#4d1b27] hover:bg-[#d94d24] text-white cursor-pointer text-[13px] font-semibold transition-colors"
             >
               Submit exam
             </button>

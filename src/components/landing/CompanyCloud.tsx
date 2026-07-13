@@ -35,7 +35,7 @@ export default function CompanyCloud() {
           return (
             <span
               key={company}
-              className={`absolute font-serif font-bold select-none transition-opacity ${pos.size} ${pos.highlight ? "text-[#ef562a]" : "text-[var(--gray-300)]"}`}
+              className={`absolute font-serif font-bold select-none transition-opacity ${pos.size} ${pos.highlight ? "text-[#4d1b27]" : "text-[var(--gray-300)]"}`}
               style={{
                 top: pos.top,
                 left: pos.left,

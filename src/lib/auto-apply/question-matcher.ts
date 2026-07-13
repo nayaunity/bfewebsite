@@ -1,5 +1,5 @@
-import type { GreenhouseQuestion, ApplicantProfile } from "./types";
-import { STANDARD_FIELD_NAMES } from "./types";
+import type { GreenhouseQuestion, ApplicantProfile } from "./types.ts";
+import { STANDARD_FIELD_NAMES } from "./types.ts";
 
 interface QuestionPattern {
   pattern: RegExp;

@@ -34,11 +34,14 @@ If the user provides full content:
 
 ### Required Formatting Rules
 
-1. **Code blocks for copyable content** - Wrap these in triple backticks:
-   - AI prompts or templates
+1. **Code blocks for ALL prompts and copyable content** - Every AI prompt, template, or snippet that a reader might copy MUST be wrapped in triple backticks (```). This is non-negotiable. Examples:
+   - AI prompts (Claude, ChatGPT, etc.) — ALWAYS in code blocks
    - Code snippets
    - Instructions meant to be pasted elsewhere
    - Fill-in-the-blank templates with [BRACKETS]
+   - Any quoted text the reader is expected to copy-paste
+
+   **If the blog post contains prompts and they are NOT in code blocks, the post is wrong. Fix it before publishing.**
 
 2. **Markdown structure**:
    - `## Heading` for main sections

@@ -147,7 +147,7 @@ export function ResumeManager({
       {atLimit ? (
         <p className="text-xs text-[var(--gray-600)]">
           Resume limit reached on {tier} plan.{" "}
-          <a href="/pricing" className="text-[#ef562a] underline">
+          <a href="/pricing" className="text-[#4d1b27] underline">
             Upgrade
           </a>{" "}
           for more.

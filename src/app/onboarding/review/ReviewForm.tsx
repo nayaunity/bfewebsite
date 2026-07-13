@@ -56,7 +56,7 @@ export default function ReviewForm({
   };
 
   const inputClass =
-    "w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/40";
+    "w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/40";
 
   return (
     <form
@@ -98,7 +98,7 @@ export default function ReviewForm({
           type="checkbox"
           checked={fields.seekingInternship}
           onChange={(e) => setFields((f) => ({ ...f, seekingInternship: e.target.checked }))}
-          className="mt-1 h-4 w-4 accent-[#ef562a]"
+          className="mt-1 h-4 w-4 accent-[#4d1b27]"
         />
         <span>
           <span className="block text-sm font-semibold">I&apos;m only looking for internships</span>
@@ -127,7 +127,7 @@ export default function ReviewForm({
           type="submit"
           disabled={saving}
           className="px-6 py-2.5 rounded-lg font-medium text-white disabled:opacity-50"
-          style={{ background: "#ef562a" }}
+          style={{ background: "#4d1b27" }}
         >
           {saving ? "Saving..." : firstTime ? "Looks good. Start applying" : "Save changes"}
         </button>

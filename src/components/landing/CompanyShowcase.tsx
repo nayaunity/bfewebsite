@@ -6,7 +6,7 @@ export default function CompanyShowcase() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight mb-10">
           Our users apply to jobs at{" "}
-          <span className="italic text-[#ef562a]">incredible</span> companies
+          <span className="italic text-[#4d1b27]">incredible</span> companies
           like:
         </h2>
 

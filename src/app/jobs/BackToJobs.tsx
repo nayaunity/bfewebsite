@@ -17,7 +17,7 @@ export default function BackToJobs() {
   return (
     <button
       onClick={handleBack}
-      className="text-sm text-[var(--gray-600)] hover:text-[#ef562a] transition-colors inline-flex items-center gap-2"
+      className="text-sm text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors inline-flex items-center gap-2"
     >
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

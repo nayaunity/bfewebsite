@@ -39,12 +39,12 @@ export default function WaitlistForm() {
           placeholder="Enter your email"
           required
           disabled={isLoading}
-          className="flex-1 px-5 py-4 bg-[var(--background)] border-2 border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-[#ef562a]/50 focus:border-[#ef562a] disabled:opacity-50"
+          className="flex-1 px-5 py-4 bg-[var(--background)] border-2 border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 focus:border-[#4d1b27] disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-[#ef562a] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#d94a24] transition-colors disabled:opacity-50 whitespace-nowrap"
+          className="bg-[#4d1b27] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#d94a24] transition-colors disabled:opacity-50 whitespace-nowrap"
         >
           {isLoading ? "Joining..." : "Join the Waitlist"}
         </button>

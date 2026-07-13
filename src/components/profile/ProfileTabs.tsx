@@ -44,7 +44,7 @@ export function ProfileTabs({ showReferrals = true }: { showReferrals?: boolean 
                 className={
                   "inline-block px-3 sm:px-4 py-3 text-sm transition-colors border-b-2 whitespace-nowrap " +
                   (active
-                    ? "border-[#ef562a] text-[var(--foreground)] font-medium"
+                    ? "border-[#4d1b27] text-[var(--foreground)] font-medium"
                     : "border-transparent text-[var(--gray-600)] hover:text-[var(--foreground)]")
                 }
               >

@@ -36,7 +36,7 @@ export default function CopyableCodeBlock({ code }: { code: string }) {
           </span>
         )}
       </button>
-      <pre className="bg-[#1a1a1a] p-4 pt-12 rounded-xl text-sm leading-relaxed whitespace-pre-wrap break-words">
+      <pre className="bg-[#2a2828] p-4 pt-12 rounded-xl text-sm leading-relaxed whitespace-pre-wrap break-words">
         <code className="text-gray-100">{code}</code>
       </pre>
     </div>

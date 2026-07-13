@@ -72,7 +72,7 @@ export function TrialRequiredBanner({
           onClick={handleStartTrial}
           disabled={loading}
           className="px-5 py-2.5 rounded-lg font-medium text-white whitespace-nowrap disabled:opacity-50"
-          style={{ background: "#ef562a" }}
+          style={{ background: "#4d1b27" }}
         >
           {loading ? "Starting..." : "Start 7-day trial"}
         </button>

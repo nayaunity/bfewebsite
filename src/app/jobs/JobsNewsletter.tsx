@@ -16,7 +16,7 @@ export default function JobsNewsletter() {
   };
 
   return (
-    <section className="bg-[#1a1a1a] py-16 md:py-24">
+    <section className="bg-[#2a2828] py-16 md:py-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
           Opportunities in your inbox
@@ -43,7 +43,7 @@ export default function JobsNewsletter() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#ffe500] text-black px-6 py-4 rounded-r-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50"
+                className="bg-[#4d1b27] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
               >
                 {isLoading ? "..." : "Subscribe"}
               </button>

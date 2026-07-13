@@ -178,7 +178,7 @@ export default async function IntegrationRunsPage() {
                           <td className="p-3">{r.ats}</td>
                           <td className="p-3">{r.role}</td>
                           <td className="p-3">
-                            <a href={r.url} target="_blank" rel="noreferrer" className="text-[#ef562a] hover:underline break-all">
+                            <a href={r.url} target="_blank" rel="noreferrer" className="text-[#4d1b27] hover:underline break-all">
                               {r.url}
                             </a>
                             {r.errorMessage && (

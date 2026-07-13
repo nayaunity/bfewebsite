@@ -72,7 +72,7 @@ export default function SubmitResourcePage() {
               </Link>
               <Link
                 href="/"
-                className="inline-block bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#ffe500] transition-colors"
+                className="inline-block bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
               >
                 Back to Home
               </Link>
@@ -95,7 +95,7 @@ export default function SubmitResourcePage() {
               &larr; Back to Resources
             </Link>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight">
-              Submit a <span className="italic text-[#ef562a]">resource</span>
+              Submit a <span className="italic text-[#4d1b27]">resource</span>
             </h1>
             <p className="mt-4 text-[var(--gray-600)] text-lg">
               Share articles, tutorials, tools, or guides that have helped you grow in tech. Your recommendation could be the catalyst for someone else&apos;s breakthrough.
@@ -107,25 +107,25 @@ export default function SubmitResourcePage() {
             <h3 className="font-medium mb-4">What I&apos;m looking for</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Tutorials, courses, or guides on coding and tech skills</span>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Career growth and professional development content</span>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Useful tools, templates, or productivity boosters</span>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Content relevant to Black women and underrepresented groups in tech</span>
@@ -150,7 +150,7 @@ export default function SubmitResourcePage() {
                   name="name"
                   required
                   placeholder="e.g. Jane Smith"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -165,7 +165,7 @@ export default function SubmitResourcePage() {
                   name="email"
                   required
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 />
                 <p className="mt-1 text-sm text-[var(--gray-600)]">
                   I&apos;ll only use this to follow up about your submission
@@ -188,7 +188,7 @@ export default function SubmitResourcePage() {
                   name="resource_title"
                   required
                   placeholder="e.g. The Complete Web Development Bootcamp"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -203,7 +203,7 @@ export default function SubmitResourcePage() {
                   name="resource_url"
                   required
                   placeholder="https://example.com/resource"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -218,7 +218,7 @@ export default function SubmitResourcePage() {
                     id="category"
                     name="category"
                     required
-                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                   >
                     <option value="">Select category...</option>
                     <option value="Tech & Coding">Tech & Coding</option>
@@ -239,7 +239,7 @@ export default function SubmitResourcePage() {
                     id="resource_type"
                     name="resource_type"
                     required
-                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                   >
                     <option value="">Select type...</option>
                     <option value="Article">Article / Blog Post</option>
@@ -264,7 +264,7 @@ export default function SubmitResourcePage() {
                   id="skill_level"
                   name="skill_level"
                   required
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="">Who is this best for?</option>
                   <option value="Beginner">Beginner - No prior experience needed</option>
@@ -283,7 +283,7 @@ export default function SubmitResourcePage() {
                   id="is_free"
                   name="is_free"
                   required
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="">Select...</option>
                   <option value="Yes">Yes - Completely free</option>
@@ -303,7 +303,7 @@ export default function SubmitResourcePage() {
                   rows={4}
                   required
                   placeholder="Tell me what makes this resource valuable and how it helped you..."
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors resize-none bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors resize-none bg-[var(--card-bg)]"
                 />
                 <p className="mt-1 text-sm text-[var(--gray-600)]">
                   Personal experiences help others decide if this resource is right for them
@@ -321,7 +321,7 @@ export default function SubmitResourcePage() {
                 name="additional_info"
                 rows={3}
                 placeholder="Any other context, creator attribution, or relevant details..."
-                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#ef562a] transition-colors resize-none bg-[var(--card-bg)]"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors resize-none bg-[var(--card-bg)]"
               />
             </div>
 
@@ -330,7 +330,7 @@ export default function SubmitResourcePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Submitting..." : "Submit Resource"}
               </button>

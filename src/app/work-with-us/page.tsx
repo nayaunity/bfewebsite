@@ -91,7 +91,7 @@ export default function WorkWithUsPage() {
   ];
 
   const stats = [
-    { number: "200K+", label: "Community Members" },
+    { number: "250K+", label: "Community Members" },
     // { number: "50K+", label: "Newsletter Subscribers" },
     { number: "50M+", label: "Content Views" },
     { number: "100+", label: "Brand Partnerships" },
@@ -115,7 +115,7 @@ export default function WorkWithUsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                Let&apos;s <span className="italic text-[#ef562a]">work</span>
+                Let&apos;s <span className="italic text-[#4d1b27]">work</span>
                 <br />
                 together
               </h1>
@@ -127,12 +127,12 @@ export default function WorkWithUsPage() {
         </section>
 
         {/* Stats */}
-        <section className="bg-[#1a1a1a] py-16 md:py-20">
+        <section className="bg-[#2a2828] py-16 md:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="font-serif text-4xl md:text-5xl text-[#ffe500] mb-2">
+                  <div className="font-serif text-4xl md:text-5xl text-[#4d1b27] mb-2">
                     {stat.number}
                   </div>
                   <div className="text-white/60 text-sm tracking-wide">
@@ -160,9 +160,9 @@ export default function WorkWithUsPage() {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8 hover:border-[#ffe500] transition-colors"
+                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8 hover:border-[#4d1b27] transition-colors"
                 >
-                  <div className="w-14 h-14 rounded-full bg-[#ffe500] flex items-center justify-center mb-6 text-black">
+                  <div className="w-14 h-14 rounded-full bg-[#4d1b27] flex items-center justify-center mb-6 text-white">
                     {service.icon}
                   </div>
                   <h3 className="font-serif text-2xl mb-3">{service.title}</h3>
@@ -170,7 +170,7 @@ export default function WorkWithUsPage() {
                   <ul className="space-y-3 mb-8">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start gap-3">
-                        <svg className="w-5 h-5 text-[#ef562a] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                         </svg>
                         <span className="text-[var(--gray-600)]">{feature}</span>
@@ -180,7 +180,7 @@ export default function WorkWithUsPage() {
                   {service.href ? (
                     <Link
                       href={service.href}
-                      className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+                      className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
                     >
                       {service.cta}
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -190,7 +190,7 @@ export default function WorkWithUsPage() {
                   ) : (
                     <a
                       href="mailto:naya@bfepartnerships.com"
-                      className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+                      className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
                     >
                       {service.cta}
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -211,7 +211,7 @@ export default function WorkWithUsPage() {
               <p className="text-sm tracking-widest mb-8">TRUSTED BY LEADING COMPANIES</p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-400)]">
                 {pastPartners.map((partner, index) => (
-                  <span key={partner} className={index % 2 === 1 ? "text-[#ef562a]" : ""}>
+                  <span key={partner} className={index % 2 === 1 ? "text-[#4d1b27]" : ""}>
                     {partner.toUpperCase()}
                   </span>
                 ))}
@@ -230,7 +230,7 @@ export default function WorkWithUsPage() {
                 </h2>
                 <div className="mt-8 space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#ffe500] flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0">
                       <span className="font-serif font-bold text-black">1</span>
                     </div>
                     <div>
@@ -241,7 +241,7 @@ export default function WorkWithUsPage() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#ffe500] flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0">
                       <span className="font-serif font-bold text-black">2</span>
                     </div>
                     <div>
@@ -252,7 +252,7 @@ export default function WorkWithUsPage() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#ffe500] flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0">
                       <span className="font-serif font-bold text-black">3</span>
                     </div>
                     <div>
@@ -289,13 +289,13 @@ export default function WorkWithUsPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="mailto:naya@bfepartnerships.com"
-                className="bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+                className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
               >
                 Get in Touch
               </a>
               <Link
                 href="/jobs/submit"
-                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#ffe500] transition-colors"
+                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
               >
                 Post a Job
               </Link>

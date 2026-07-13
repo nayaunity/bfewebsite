@@ -19,7 +19,7 @@ export function MicroWinCard({
     MICRO_WIN_PROMPTS[promptType as keyof typeof MICRO_WIN_PROMPTS];
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 hover:border-[#ffe500] transition-colors">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 hover:border-[#4d1b27] transition-colors">
       {/* Prompt badge */}
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">{prompt?.emoji || "✨"}</span>

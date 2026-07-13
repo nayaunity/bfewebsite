@@ -197,7 +197,7 @@ export function CancelSubscriptionButton({
                 disabled={loading}
                 onClick={handleCancel}
                 className="px-5 py-2 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-50"
-                style={{ background: "#ef562a" }}
+                style={{ background: "#4d1b27" }}
               >
                 {loading
                   ? "Canceling..."

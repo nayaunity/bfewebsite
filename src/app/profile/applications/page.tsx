@@ -27,7 +27,7 @@ export default async function ApplicationsPage() {
   todayStart.setHours(0, 0, 0, 0);
   const showReferrals = isReferralAssistEnabledForEmail(session.user.email);
 
-  const [user, applications, browseDiscoveries, usageData, todaySession, totalActiveJobs, referralConnectionCount] = await Promise.all([
+  const [user, applications, browseDiscoveries, usageData, todaySession, reviewTasks, totalActiveJobs, referralConnectionCount] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: { firstName: true, monthlyAppCount: true, subscriptionTier: true, subscriptionStatus: true, targetRole: true, onboardingData: true, resumeUrl: true, resumes: { select: { id: true }, take: 1 }, freeTierEndsAt: true, seekingInternship: true, preferenceBannerDismissedAt: true, selfIdCompletedAt: true },
@@ -45,6 +45,18 @@ export default async function ApplicationsPage() {
       take: 200,
       include: {
         session: { select: { targetRole: true, resumeUrl: true, createdAt: true } },
+        reviewTask: {
+          select: {
+            id: true,
+            status: true,
+            title: true,
+            reason: true,
+            draft: true,
+            editedDraft: true,
+            reviewerNotes: true,
+            createdAt: true,
+          },
+        },
       },
     }),
     canApply(session.user.id),
@@ -66,6 +78,10 @@ export default async function ApplicationsPage() {
         jobsSkipped: true,
         createdAt: true,
         startedAt: true,
+        reviewTasks: {
+          where: { status: "pending" },
+          select: { id: true },
+        },
         discoveries: {
           orderBy: { createdAt: "desc" },
           select: {
@@ -74,6 +90,27 @@ export default async function ApplicationsPage() {
             jobTitle: true,
             status: true,
             createdAt: true,
+          },
+        },
+      },
+    }),
+    prisma.reviewTask.findMany({
+      where: {
+        userId: session.user.id,
+        status: "pending",
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        discovery: {
+          select: {
+            company: true,
+            jobTitle: true,
+            applyUrl: true,
+            atsType: true,
+            confidenceBucket: true,
+            confidenceScore: true,
+            personalizedWritingRequired: true,
+            matchReason: true,
           },
         },
       },
@@ -100,7 +137,16 @@ export default async function ApplicationsPage() {
     company: d.company,
     jobTitle: d.jobTitle,
     applyUrl: d.applyUrl,
-    status: d.status === "applied" ? "submitted" : d.status === "skipped" ? "skipped" : d.status === "failed" ? "failed" : "pending",
+    status:
+      d.userActionRequired || d.reviewTask?.status === "pending"
+        ? "review"
+        : d.status === "applied"
+          ? "submitted"
+          : d.status === "skipped"
+            ? "skipped"
+            : d.status === "failed"
+              ? "failed"
+              : "pending",
     errorMessage: d.errorMessage,
     submittedAt: d.status === "applied" ? d.createdAt : null,
     createdAt: d.createdAt,
@@ -111,6 +157,12 @@ export default async function ApplicationsPage() {
     originalResumeUrl: d.session?.resumeUrl || null,
     matchScore: d.matchScore,
     matchReason: d.matchReason,
+    atsType: d.atsType || null,
+    confidenceBucket: d.confidenceBucket || null,
+    confidenceScore: d.confidenceScore || null,
+    userActionRequired: d.userActionRequired || false,
+    personalizedWritingRequired: d.personalizedWritingRequired || false,
+    reviewReason: d.reviewTask?.reason || null,
   }));
 
   const allApplications = [
@@ -211,7 +263,7 @@ export default async function ApplicationsPage() {
                 </div>
                 <Link
                   href="/profile/referrals"
-                  className="inline-flex items-center justify-center rounded-full bg-[#ef562a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
+                  className="inline-flex items-center justify-center rounded-full bg-[#4d1b27] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
                 >
                   {referralConnectionCount > 0 ? "View referrals" : "Sync LinkedIn"}
                 </Link>
@@ -223,7 +275,7 @@ export default async function ApplicationsPage() {
           <ApplicationsDashboard
             initialApplications={allApplications}
             stats={{
-              total: allApplications.length,
+            total: allApplications.length,
               applied,
               failed,
               uniqueCompanies: new Set(allApplications.filter((a) => a.status === "submitted" || a.status === "applied").map((a) => a.company)).size,
@@ -247,6 +299,28 @@ export default async function ApplicationsPage() {
             showInternshipPreferenceBanner={
               user?.seekingInternship === true && !user?.preferenceBannerDismissedAt
             }
+            reviewTasks={reviewTasks.map((task) => ({
+              id: task.id,
+              status: task.status,
+              type: task.type,
+              title: task.title,
+              prompt: task.prompt,
+              reason: task.reason,
+              requiredActions: task.requiredActions,
+              draft: task.draft,
+              editedDraft: task.editedDraft,
+              reviewerNotes: task.reviewerNotes,
+              createdAt: task.createdAt.toISOString(),
+              updatedAt: task.updatedAt.toISOString(),
+              company: task.discovery.company,
+              jobTitle: task.discovery.jobTitle,
+              applyUrl: task.discovery.applyUrl,
+              atsType: task.discovery.atsType,
+              confidenceBucket: task.discovery.confidenceBucket,
+              confidenceScore: task.discovery.confidenceScore,
+              personalizedWritingRequired: task.discovery.personalizedWritingRequired,
+              matchReason: task.discovery.matchReason,
+            }))}
             // Do NOT include todaySession.errorMessage or any per-discovery
             // errorMessage here. Raw worker error text is operator-only and
             // belongs in /admin/errors and /admin/auto-apply, never in the
@@ -259,6 +333,7 @@ export default async function ApplicationsPage() {
               jobsApplied: todaySession.jobsApplied,
               jobsFailed: todaySession.jobsFailed,
               jobsSkipped: todaySession.jobsSkipped,
+              pendingReviewCount: todaySession.reviewTasks.length,
               startedAt: todaySession.startedAt?.toISOString() || null,
               discoveries: todaySession.discoveries.map((d) => ({
                 id: d.id,

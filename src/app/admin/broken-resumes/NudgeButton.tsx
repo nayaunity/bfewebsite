@@ -41,7 +41,7 @@ export function NudgeButton({ email }: { email: string }) {
       <button
         onClick={send}
         disabled={state === "sending"}
-        className="rounded-lg bg-[#ef562a] text-white px-3 py-1.5 text-xs font-medium hover:bg-[#d34d23] disabled:opacity-50 transition-colors"
+        className="rounded-lg bg-[#4d1b27] text-white px-3 py-1.5 text-xs font-medium hover:bg-[#d34d23] disabled:opacity-50 transition-colors"
       >
         {state === "sending" ? "Sending..." : "Send nudge"}
       </button>

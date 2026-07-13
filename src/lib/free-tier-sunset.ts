@@ -67,7 +67,7 @@ Naya
   <p>Hey ${firstName},</p>
   <p>Your free month ends in <strong>${days} day${days === 1 ? "" : "s"}</strong>. Most job searches take 100+ applications, and ${inventoryPhrase}. The 7-day free trial keeps your auto-apply running so you don't lose ground. $0 today, $29/mo after the trial. Cancel anytime.</p>
   <p style="margin: 20px 0;">
-    <a href="${checkoutUrl}" style="display: inline-block; background: #ef562a; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Start your 7-day free trial</a>
+    <a href="${checkoutUrl}" style="display: inline-block; background: #4d1b27; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Start your 7-day free trial</a>
   </p>
   <p style="margin-top: 24px;">Talk soon,<br/>Naya</p>
 </div>`;

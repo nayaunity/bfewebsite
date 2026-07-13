@@ -43,7 +43,7 @@ export default function SendButton({ token, count }: { token: string; count: num
       <button
         onClick={handleSend}
         disabled={loading || count === 0}
-        className="px-6 py-3 bg-[#ef562a] text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#d94921] transition"
+        className="px-6 py-3 bg-[#4d1b27] text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#d94921] transition"
       >
         {loading ? "Sending..." : `Send all ${count}`}
       </button>

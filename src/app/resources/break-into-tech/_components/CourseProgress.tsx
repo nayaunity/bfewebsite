@@ -38,7 +38,7 @@ export default function CourseProgress({ course }: CourseProgressProps) {
           </div>
           <Link
             href="/auth/signin?callbackUrl=/resources/break-into-tech"
-            className="px-5 py-2.5 bg-[#ef562a] text-white rounded-full font-medium hover:bg-[#d94d25] transition-colors text-sm text-center shrink-0"
+            className="px-5 py-2.5 bg-[#4d1b27] text-white rounded-full font-medium hover:bg-[#d94d25] transition-colors text-sm text-center shrink-0"
           >
             Sign In
           </Link>

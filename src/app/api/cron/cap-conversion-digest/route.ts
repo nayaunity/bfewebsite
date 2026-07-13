@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
   const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; line-height: 1.6; color: #111; max-width: 560px;">
     <p><strong>${candidates.length} cap-conversion candidate${candidates.length === 1 ? "" : "s"} today.</strong></p>
     <ul>${candidateList}</ul>
-    <p><a href="${approveUrl}" style="display: inline-block; background: #ef562a; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Preview &amp; approve</a></p>
+    <p><a href="${approveUrl}" style="display: inline-block; background: #4d1b27; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Preview &amp; approve</a></p>
     <p style="color: #666; font-size: 13px;">Link expires in 24 hours. After that, these users will be skipped and you'll need to run a manual send.</p>
   </div>`;
 

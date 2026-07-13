@@ -82,7 +82,7 @@ export function JobPreferencesSection({ initialData }: Props) {
             type="checkbox"
             checked={seekingInternship}
             onChange={(e) => setSeekingInternship(e.target.checked)}
-            className="mt-1 h-4 w-4 accent-[#ef562a]"
+            className="mt-1 h-4 w-4 accent-[#4d1b27]"
           />
           <span>
             <span className="block font-semibold">Show me internships only</span>

@@ -40,7 +40,7 @@ export default function NomuraSummerAnalystProgram() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#ef562a] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
                 Nomura
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
@@ -100,7 +100,7 @@ export default function NomuraSummerAnalystProgram() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Role Types</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">1</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">1</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Developers</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -109,7 +109,7 @@ export default function NomuraSummerAnalystProgram() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">2</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">2</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Business Analysts</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -118,7 +118,7 @@ export default function NomuraSummerAnalystProgram() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#ffe500] flex items-center justify-center text-black font-bold">3</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">3</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Infrastructure</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -134,15 +134,15 @@ export default function NomuraSummerAnalystProgram() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Requirements</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">1</span>
                   <span>Pursuing a Bachelor&apos;s or Master&apos;s degree in Computer Science or related fields within the United States</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">2</span>
                   <span>Graduating between December 2026 and June 2027</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ffe500] flex items-center justify-center text-black text-sm font-bold">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">3</span>
                   <span>Outstanding academic qualifications with a strong GPA</span>
                 </li>
               </ul>
@@ -153,8 +153,8 @@ export default function NomuraSummerAnalystProgram() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Desired Skills</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
@@ -164,8 +164,8 @@ export default function NomuraSummerAnalystProgram() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
                   </div>
@@ -175,8 +175,8 @@ export default function NomuraSummerAnalystProgram() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
@@ -186,8 +186,8 @@ export default function NomuraSummerAnalystProgram() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#ef562a]/10 flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5 text-[#ef562a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                    <svg className="w-5 h-5 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
@@ -242,7 +242,7 @@ export default function NomuraSummerAnalystProgram() {
                   href="https://nomuracampus.tal.net/vx/lang-en-GB/mobile-0/appcentre-1/brand-4/xf-3348347fc789/candidate/so/pm/1/pl/1/opp/1279-2026-Information-Technology-Summer-Analyst-Program/en-GB"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#ef562a] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Apply on Nomura Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

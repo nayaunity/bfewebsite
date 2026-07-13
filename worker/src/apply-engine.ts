@@ -477,6 +477,8 @@ export interface ApplicantData {
   veteranStatus?: string;
   disabilityStatus?: string;
   applicationAnswers?: string;
+  customWritingText?: string;
+  reviewedAnswers?: string;
   targetCompany?: string;
 }
 
@@ -490,6 +492,9 @@ function generateWhyAnswer(applicant: ApplicantData): string {
 }
 
 function generateCoverLetter(applicant: ApplicantData): string {
+  if (applicant.customWritingText?.trim()) {
+    return applicant.customWritingText.trim();
+  }
   const whyText = generateWhyAnswer(applicant);
   const links = [
     applicant.websiteUrl ? `Portfolio: ${applicant.websiteUrl}` : null,
@@ -1497,6 +1502,13 @@ async function greenhouseDeterministicFill(
       hasText: /cover letter/i,
     }).first();
     if (await coverLetterGroup.isVisible({ timeout: 500 }).catch(() => false)) {
+      if (!applicant.customWritingText?.trim()) {
+        return {
+          success: false,
+          error: "Review required: cover letter field detected",
+          steps,
+        };
+      }
       // Check if it has "Enter manually" button — use that to type a cover letter
       const enterManually = coverLetterGroup.getByRole("button", { name: /Enter manually/i }).first();
       if (await enterManually.isVisible({ timeout: 1000 }).catch(() => false)) {
@@ -2201,6 +2213,33 @@ async function askClaudeNextAction(
   if (applicant.applicationAnswers) {
     try { customAnswers = JSON.parse(applicant.applicationAnswers); } catch { /* ignore */ }
   }
+  if (applicant.reviewedAnswers) {
+    try {
+      const reviewed = JSON.parse(applicant.reviewedAnswers) as Record<string, string>;
+      customAnswers = { ...customAnswers, ...reviewed };
+    } catch {
+      // Ignore malformed reviewed answers and continue with the base profile.
+    }
+  }
+
+  const reservedKeys = new Set([
+    "tellMeAboutYourself",
+    "whyThisRole",
+    "greatestStrength",
+    "greatestWeakness",
+    "whyLeaving",
+    "technicalChallenge",
+    "whatMakesYouUnique",
+    "whereDoYouSeeYourself",
+    "managementStyle",
+    "conflictResolution",
+    "diversityAndInclusion",
+    "howDoYouHandleFailure",
+    "howDoYouStayCurrent",
+  ]);
+  const dynamicAnswerLines = Object.entries(customAnswers)
+    .filter(([key, value]) => !reservedKeys.has(key) && typeof value === "string" && value.trim().length > 0)
+    .map(([key, value]) => `- ${key}: ${value}`);
 
   // Build application answers section from applicant profile data
   const answersSection = `
@@ -2239,6 +2278,7 @@ ${customAnswers.conflictResolution ? `- Conflict Resolution: ${customAnswers.con
 ${customAnswers.diversityAndInclusion ? `- Diversity & Inclusion: ${customAnswers.diversityAndInclusion}` : ""}
 ${customAnswers.howDoYouHandleFailure ? `- How You Handle Failure: ${customAnswers.howDoYouHandleFailure}` : ""}
 ${customAnswers.howDoYouStayCurrent ? `- How You Stay Current: ${customAnswers.howDoYouStayCurrent}` : ""}
+${dynamicAnswerLines.length > 0 ? `${dynamicAnswerLines.join("\n")}` : ""}
 
 ROLE ANSWER (adapt to the specific company):
 ${generateWhyAnswer(applicant)}`;

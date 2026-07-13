@@ -23,7 +23,7 @@ export function ProfileCompletionBar({ filled, total }: ProfileCompletionBarProp
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            backgroundColor: pct === 100 ? "var(--accent-green-text)" : "#ef562a",
+            backgroundColor: pct === 100 ? "var(--accent-green-text)" : "#4d1b27",
           }}
         />
       </div>

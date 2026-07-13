@@ -104,12 +104,12 @@ export function PricingCards({
             key={tier.key}
             className={`relative bg-[var(--card-bg)] border-2 rounded-2xl p-8 flex flex-col ${
               tier.highlighted
-                ? "border-[#ef562a]"
+                ? "border-[#4d1b27]"
                 : "border-[var(--card-border)]"
             }`}
           >
             {tier.highlighted && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#ffe500] text-black text-xs font-bold px-3 py-1 rounded-full">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4d1b27] text-white text-xs font-bold px-3 py-1 rounded-full">
                 Most Popular
               </span>
             )}
@@ -126,7 +126,7 @@ export function PricingCards({
               </span>
             </div>
             {tier.trialBlurb && (
-              <p className="text-xs font-medium text-[#ef562a] mb-6">
+              <p className="text-xs font-medium text-[#4d1b27] mb-6">
                 {tier.trialBlurb}
               </p>
             )}
@@ -139,7 +139,7 @@ export function PricingCards({
                   className="flex items-start gap-2.5 text-[15px] text-[var(--gray-600)]"
                 >
                   <svg
-                    className="w-5 h-5 text-[#ef562a] mt-0.5 flex-shrink-0"
+                    className="w-5 h-5 text-[#4d1b27] mt-0.5 flex-shrink-0"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -167,7 +167,7 @@ export function PricingCards({
                 disabled={loading === tier.key}
                 className={`w-full py-3 text-sm font-medium rounded-lg transition-opacity disabled:opacity-50 ${
                   tier.highlighted
-                    ? "bg-[#ef562a] text-white hover:opacity-90"
+                    ? "bg-[#4d1b27] text-white hover:opacity-90"
                     : "bg-[var(--foreground)] text-[var(--background)] hover:opacity-90"
                 }`}
               >

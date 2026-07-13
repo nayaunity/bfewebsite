@@ -9,10 +9,10 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 export const metadata = {
   title: "Blog | The Black Female Engineer",
-  description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+  description: "Articles on AI, career growth, and building income on your own terms.",
   openGraph: {
     title: "Blog | The Black Female Engineer",
-    description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+    description: "Articles on AI, career growth, and building income on your own terms.",
     url: "/blog",
     type: "website",
     images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
@@ -20,7 +20,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image" as const,
     title: "Blog | The Black Female Engineer",
-    description: "Articles on tech, coding, career growth, and finance for young professionals making their mark.",
+    description: "Articles on AI, career growth, and building income on your own terms.",
     images: ["/images/bfeimage2.png"],
   },
 };
@@ -43,10 +43,10 @@ export default async function BlogPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                The <span className="italic text-[#ef562a]">blog</span>
+                The <span className="italic text-[#4d1b27]">blog</span>
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
-                Thoughts on tech, career, coding, and making an impact.
+                Thoughts on AI, career growth, and building the life you want.
               </p>
             </div>
 
@@ -57,7 +57,7 @@ export default async function BlogPage() {
                   key={category}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     category === "All"
-                      ? "bg-[#ffe500] text-black"
+                      ? "bg-[#4d1b27] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -78,7 +78,7 @@ export default async function BlogPage() {
                   <Link
                     key={post.slug}
                     href={`/blog/${post.slug}`}
-                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[#ffe500] hover:shadow-lg transition-all"
+                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all"
                   >
                     {post.image && (
                       <div className="relative aspect-[16/9] overflow-hidden">
@@ -93,12 +93,12 @@ export default async function BlogPage() {
                     )}
                     <div className="p-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-[#ffe500] text-black font-medium">
+                        <span className="text-xs px-2 py-1 rounded-full bg-[#4d1b27] text-white font-medium">
                           {post.category}
                         </span>
                         <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
                       </div>
-                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#ef562a] transition-colors">
+                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
                         {post.title}
                       </h3>
                       <p className="mt-2 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>
@@ -111,7 +111,7 @@ export default async function BlogPage() {
                           })}
                         </span>
                         <svg
-                          className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#ef562a] group-hover:translate-x-1 transition-all"
+                          className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] group-hover:translate-x-1 transition-all"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ export default async function BlogPage() {
                     className="group flex flex-col-reverse md:flex-row gap-6 py-8 first:pt-0 last:pb-0"
                   >
                     <div className="flex-1">
-                      <h3 className="font-serif text-xl md:text-2xl font-medium group-hover:text-[#ef562a] transition-colors leading-tight">
+                      <h3 className="font-serif text-xl md:text-2xl font-medium group-hover:text-[#4d1b27] transition-colors leading-tight">
                         {post.title}
                       </h3>
                       <p className="mt-3 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>
@@ -187,17 +187,17 @@ export default async function BlogPage() {
         </section>
 
         {/* Newsletter CTA */}
-        <section className="bg-[#1a1a1a] py-16 md:py-24">
+        <section className="bg-[#2a2828] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
               Never miss an article
             </h2>
             <p className="text-white/60 mb-8">
-              Get the latest posts on tech, career, and finance delivered straight to your inbox.
+              Get the latest posts on AI, career growth, and income delivered to your inbox.
             </p>
             <Link
               href="#newsletter"
-              className="inline-block bg-[#ffe500] text-black px-8 py-4 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+              className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
             >
               Subscribe to Newsletter
             </Link>

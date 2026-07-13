@@ -15,11 +15,11 @@ export default function CourseThankYouPage() {
       <Navigation />
       <main className="pt-42 md:pt-50 min-h-screen bg-[var(--background)] text-[var(--foreground)]">
         <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
-          <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#ffe500] text-black mb-6 tracking-wide">
+          <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#4d1b27] text-white mb-6 tracking-wide">
             PAYMENT RECEIVED
           </span>
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-            You&apos;re <span className="italic text-[#ef562a]">in</span>.
+            You&apos;re <span className="italic text-[#4d1b27]">in</span>.
           </h1>
           <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-6">
             Your seat in Building a Tech Audience is reserved. A receipt is on
@@ -34,21 +34,21 @@ export default function CourseThankYouPage() {
             <h2 className="font-serif text-lg mb-3">What to expect next</h2>
             <ul className="space-y-2 text-sm text-[var(--gray-600)]">
               <li className="flex items-start gap-3">
-                <span className="text-[#ef562a] font-bold">1.</span>
+                <span className="text-[#4d1b27] font-bold">1.</span>
                 <span>
                   Watch your inbox (and spam folder) for a welcome email from
                   Naya in the next few minutes.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#ef562a] font-bold">2.</span>
+                <span className="text-[#4d1b27] font-bold">2.</span>
                 <span>
                   On May 15 you&apos;ll get course access and your first
                   module.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#ef562a] font-bold">3.</span>
+                <span className="text-[#4d1b27] font-bold">3.</span>
                 <span>
                   If you picked the Group or 1:1 tier, scheduling details for
                   office hours and coaching arrive the week of launch.
@@ -60,7 +60,7 @@ export default function CourseThankYouPage() {
             Questions? Reply to your receipt email or reach out at{" "}
             <a
               href="mailto:theblackfemaleengineer@gmail.com"
-              className="text-[#ef562a] hover:underline"
+              className="text-[#4d1b27] hover:underline"
             >
               theblackfemaleengineer@gmail.com
             </a>
@@ -68,7 +68,7 @@ export default function CourseThankYouPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 bg-[#ffe500] text-black px-6 py-3 rounded-full font-medium hover:bg-[#f5dc00] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
           >
             Back to home
           </Link>

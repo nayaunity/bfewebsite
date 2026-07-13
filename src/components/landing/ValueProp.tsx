@@ -4,7 +4,7 @@ export default function ValueProp() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight mb-12">
           BFE applies you to{" "}
-          <span className="italic text-[#ef562a]">100s</span> of great jobs
+          <span className="italic text-[#4d1b27]">100s</span> of great jobs
           every month.
         </h2>
 
@@ -19,7 +19,7 @@ export default function ValueProp() {
               key={step}
               className="flex items-center gap-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full px-6 py-3"
             >
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#ffe500] text-black text-sm font-bold flex items-center justify-center">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#4d1b27] text-white text-sm font-bold flex items-center justify-center">
                 {step}
               </span>
               <span className="font-medium text-sm text-[var(--foreground)]">
@@ -36,7 +36,7 @@ export default function ValueProp() {
             { value: "5-10x", label: "More Interviews" },
           ].map(({ value, label }) => (
             <div key={label}>
-              <p className="font-serif text-3xl md:text-4xl text-[#ef562a]">
+              <p className="font-serif text-3xl md:text-4xl text-[#4d1b27]">
                 {value}
               </p>
               <p className="text-sm text-[var(--gray-600)] mt-1">{label}</p>

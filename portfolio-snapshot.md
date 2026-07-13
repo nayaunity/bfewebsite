@@ -1,0 +1,101 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e6]:
+      - paragraph [ref=e7]: Portfolio
+      - heading "Portfolio Tester" [level=1] [ref=e8]
+      - paragraph [ref=e9]: Bridging the gap between AI and developers
+    - generic [ref=e15]:
+      - heading "About" [level=2] [ref=e16]
+      - generic [ref=e17]:
+        - paragraph [ref=e18]: Portfolio Tester is a Developer Relations powerhouse with over five years of experience building thriving developer ecosystems at the intersection of artificial intelligence, community, and code. With a foundation in full-stack software engineering and a natural gift for translating complex technical concepts into accessible, actionable content, she has grown a global developer community of more than 250,000 followers across platforms including Instagram, TikTok, YouTube, and LinkedIn. Her work spans hands-on AI tooling, including RAG pipeline development and Model Context Protocol integrations, to high-impact brand partnerships with industry leaders like Microsoft, AWS, and Anthropic.
+        - paragraph [ref=e19]: Her career reflects a rare combination of engineering depth and communication excellence. As a Software Engineer at Comcast, she shipped production AR/VR experiences that drove a 30% increase in user engagement and built SwiftUI component systems that meaningfully accelerated development cycles. At DreamWorks Animation Studios, she bridged the gap between developer communities and product teams, authoring API documentation and code samples that empowered developers to build faster and smarter. These engineering roots give her credibility and precision that set her apart in the Developer Relations space.
+        - paragraph [ref=e20]: "Portfolio Tester is a sought-after voice in the AI and developer tooling conversation, having keynoted SquadCon and delivered technical presentations at the TikTok Women in Cyber Summit. She is deeply committed to AI safety and responsible AI development, partnering directly with Anthropic on technical content showcasing cutting-edge model capabilities. Whether she is live-coding a workshop, shipping a new AI integration demo, or mentoring the next generation of developers, her mission remains constant: make technology more human, more accessible, and more powerful for every builder."
+    - generic [ref=e24]:
+      - heading "Experience" [level=2] [ref=e25]
+      - generic [ref=e28]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - heading "Technical Content Creator & Developer Advocate" [level=3] [ref=e34]
+            - generic [ref=e35]: Nov 2021 - Present
+          - paragraph [ref=e36]: "@TheBlackFemaleEngineer"
+          - paragraph [ref=e37]: Built and scaled an independent developer community of 250,000+ followers across Instagram, TikTok, YouTube, and LinkedIn, generating 2M+ impressions through partnerships with Microsoft, LinkedIn, AWS, and HP. Engineered RAG pipelines for real-world conference applications and partnered directly with Anthropic to showcase Claude's Opus 4.5 capabilities to developer audiences worldwide. Created a high-volume library of code demos, tutorials, and AI integration samples covering prompt engineering, LLM workflows, and Model Context Protocol, establishing a trusted platform for developers at every career stage.
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - heading "Developer Advocate" [level=3] [ref=e43]
+            - generic [ref=e44]: Aug 2021 - Aug 2022
+          - paragraph [ref=e45]: DreamWorks Animation Studios (Comcast NBCUniversal)
+          - paragraph [ref=e46]: Served as the connective tissue between DreamWorks' developer community and its internal engineering and product teams, gathering structured feedback that directly shaped the product roadmap and improved adoption rates. Authored comprehensive API documentation and practical code samples for Unity's SyncSketch API, reducing integration friction for developers building on the platform. Became the go-to technical resource for emerging API capabilities and design patterns within the DreamWorks developer ecosystem.
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - heading "Software Engineer" [level=3] [ref=e52]
+            - generic [ref=e53]: Aug 2021 - Jul 2023
+          - paragraph [ref=e54]: Comcast
+          - paragraph [ref=e55]: Developed immersive AR/VR experiences for Comcast's mobile platforms, achieving a 30% increase in user engagement through innovative interactive content. Architected a reusable SwiftUI component library that cut development time by 20% while raising overall code quality and long-term maintainability. Championed ADA accessibility by implementing VoiceOver and dynamic text features, resulting in a 30% improvement in positive user feedback and a more inclusive product experience.
+    - generic [ref=e59]:
+      - heading "Skills" [level=2] [ref=e60]
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - heading "Languages & Frameworks" [level=3] [ref=e63]
+          - generic [ref=e64]:
+            - generic [ref=e65]: Python
+            - generic [ref=e66]: JavaScript
+            - generic [ref=e67]: TypeScript
+            - generic [ref=e68]: Swift
+            - generic [ref=e69]: SwiftUI
+            - generic [ref=e70]: React
+            - generic [ref=e71]: Node.js
+        - generic [ref=e72]:
+          - heading "AI & Machine Learning" [level=3] [ref=e73]
+          - generic [ref=e74]:
+            - generic [ref=e75]: LLM Integration
+            - generic [ref=e76]: RAG Pipeline Development
+            - generic [ref=e77]: Model Context Protocol (MCP)
+            - generic [ref=e78]: Prompt Engineering
+            - generic [ref=e79]: Claude API
+            - generic [ref=e80]: OpenAI API
+            - generic [ref=e81]: Vector Databases
+        - generic [ref=e82]:
+          - heading "APIs & Developer Tooling" [level=3] [ref=e83]
+          - generic [ref=e84]:
+            - generic [ref=e85]: REST APIs
+            - generic [ref=e86]: API Documentation
+            - generic [ref=e87]: SDK Development
+            - generic [ref=e88]: SyncSketch API
+            - generic [ref=e89]: Unity Integration
+        - generic [ref=e90]:
+          - heading "Content & Community" [level=3] [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]: Technical Writing
+            - generic [ref=e94]: Video Production
+            - generic [ref=e95]: Live Streaming
+            - generic [ref=e96]: Developer Workshops
+            - generic [ref=e97]: Open Source Community Management
+            - generic [ref=e98]: Keynote Speaking
+        - generic [ref=e99]:
+          - heading "Mobile & Immersive" [level=3] [ref=e100]
+          - generic [ref=e101]:
+            - generic [ref=e102]: AR/VR Development
+            - generic [ref=e103]: iOS Development
+            - generic [ref=e104]: SwiftUI
+            - generic [ref=e105]: ADA Accessibility
+            - generic [ref=e106]: Mobile Platforms
+    - generic [ref=e109]:
+      - heading "Education" [level=2] [ref=e110]
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - img [ref=e114]
+          - heading "Full Stack Software Engineering Certificate" [level=3] [ref=e117]
+          - paragraph [ref=e118]: Flatiron School
+          - paragraph [ref=e119]: "2021"
+        - generic [ref=e120]:
+          - img [ref=e122]
+          - heading "Bachelor of Science, Finance & Accounting" [level=3] [ref=e125]
+          - paragraph [ref=e126]: University of Colorado at Boulder
+          - paragraph [ref=e127]: "2021"
+    - generic [ref=e130]:
+      - heading "Let's Connect" [level=2] [ref=e131]
+      - paragraph [ref=e132]: Interested in working together? Get in touch.
+      - link "Get in Touch" [ref=e134] [cursor=pointer]:
+        - /url: "mailto:"
+      - paragraph [ref=e136]: Portfolio Tester's Portfolio. Powered by The Black Female Engineer.
+  - alert [ref=e141]

@@ -18,7 +18,7 @@ export const metadata = {
 
 export default function LandingPage() {
   return (
-    <div className="editorial-landing bg-[#fdfaf6] text-[#1a1a1a]" style={{ colorScheme: "light" }}>
+    <div className="editorial-landing bg-[#fdfaf6] text-[#2a2828]" style={{ colorScheme: "light" }}>
       <PagePresenceTracker page="landing" />
       <LandingNav />
       <main>

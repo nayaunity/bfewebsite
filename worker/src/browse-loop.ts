@@ -1,9 +1,14 @@
 import { getDb, getCompanyCooldown, setCompanyCooldown, logStuckField } from "./db";
-import { discoverJobs, discoverJobsFromCatalog, applyToJob } from "./career-browser";
+import { applyToJob } from "./career-browser";
 import { checkAnthropicCredits, isCreditExhaustionError } from "./apply-engine";
 import { postCreditAlert } from "./alerts";
 import { logWorkerError } from "./error-log";
 import { readQuotaWithLazyReset } from "./period";
+import {
+  computePlannedSessionFinalStatus,
+  mapPlannedDiscoveryRow,
+  type PlannedDiscoveryJob,
+} from "./planning-helpers";
 
 async function getSessionUserId(sessionId: string): Promise<string | null> {
   try {
@@ -83,11 +88,8 @@ function isSpamFlagError(msg: string | null | undefined): boolean {
 import { writeFileSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import targetCompanies from "../data/target-companies.json";
 
-const DELAY_BETWEEN_COMPANIES_MS = 10_000;
 const DELAY_BETWEEN_JOBS_MS = 5_000;
-const COMPANY_TIMEOUT_MS = 120_000;
 const DAILY_APP_CAP = 30;
 
 function log(sessionId: string, level: "info" | "warn" | "error", msg: string, meta?: Record<string, unknown>) {
@@ -103,6 +105,14 @@ interface BrowseSessionRow {
   resumeUrl: string;
   resumeName: string;
   seekingInternship: number | null;
+}
+
+function assertClaimedSession(
+  session: BrowseSessionRow | null
+): asserts session is BrowseSessionRow {
+  if (!session) {
+    throw new Error("Browse session must be claimed before processing");
+  }
 }
 
 interface UserProfile {
@@ -142,18 +152,7 @@ interface UserProfile {
   applicationAnswers: string | null;
 }
 
-const companyUrlMap = new Map(
-  targetCompanies.map((c) => [c.name, c.careersUrl])
-);
-
-const companySlugMap = new Map(
-  targetCompanies.map((c) => [c.name, (c as { slug?: string }).slug || ""])
-);
-
-/**
- * Poll for and process the next browse session.
- */
-export async function processNextBrowseSession(): Promise<boolean> {
+async function runSessionWatchdog(): Promise<void> {
   const db = getDb();
 
   // Watchdog: reset sessions whose worker has stopped making progress.
@@ -226,6 +225,10 @@ export async function processNextBrowseSession(): Promise<boolean> {
       }
     }
   } catch {}
+}
+
+async function claimNextQueuedSession(): Promise<BrowseSessionRow | null> {
+  const db = getDb();
 
   // Claim next queued session with compare-and-swap to prevent race conditions
   // across multiple worker replicas. Step 1: read a candidate. Step 2: UPDATE
@@ -256,9 +259,31 @@ export async function processNextBrowseSession(): Promise<boolean> {
     // Another replica claimed it first — retry with next in queue
   }
 
-  if (!session) {
-    return false;
+  return session;
+}
+
+async function claimQueuedSessionById(sessionId: string): Promise<BrowseSessionRow | null> {
+  const db = getDb();
+  const claimed = await db.execute({
+    sql: `UPDATE BrowseSession SET status = 'processing',
+          startedAt = CASE WHEN startedAt IS NULL THEN datetime('now') ELSE startedAt END,
+          lastHeartbeatAt = ?
+          WHERE id = ? AND status = 'queued'
+          RETURNING id, userId, targetRole, companies, matchedJobs, resumeUrl, resumeName, seekingInternship`,
+    args: [new Date().toISOString(), sessionId],
+  });
+
+  if (!claimed.rows || claimed.rows.length === 0) {
+    return null;
   }
+
+  return claimed.rows[0] as unknown as BrowseSessionRow;
+}
+
+async function processClaimedBrowseSession(session: BrowseSessionRow): Promise<boolean> {
+  const db = getDb();
+
+  assertClaimedSession(session);
 
   // Browserbase A/B: enable for a hashed percentage of userIds when a rollout
   // percentage is configured. Session-scoped so concurrent sessions stay
@@ -286,7 +311,6 @@ export async function processNextBrowseSession(): Promise<boolean> {
   }
 
   const user = userResult.rows[0] as unknown as UserProfile;
-  const companies: string[] = JSON.parse(session.companies);
 
   // Defense-in-depth: provision applicationEmail if missing. The API routes
   // call ensureApplicationEmail() but sessions queued by other paths (direct
@@ -341,21 +365,45 @@ export async function processNextBrowseSession(): Promise<boolean> {
     }
     resumePath = join(tmpdir(), `resume-${Date.now()}.pdf`);
     writeFileSync(resumePath, buffer);
-  } catch (err) {
+  } catch {
     await markSessionFailed(session.id, "Failed to download resume");
     return true;
   }
 
-  // FAST PATH: If matchedJobs is set, skip discovery entirely — apply directly
-  if (session.matchedJobs) {
-    const jobs: Array<{ title: string; applyUrl: string; company: string; matchScore?: number; matchReason?: string }> = JSON.parse(session.matchedJobs);
-    log(session.id, "info", `Fast path: ${jobs.length} pre-matched jobs`);
+  const plannedJobsResult = await db.execute({
+    sql: `SELECT id, company, jobTitle, applyUrl, matchScore, matchReason, customWritingFinal, planPayload
+          FROM BrowseDiscovery
+          WHERE sessionId = ?
+            AND graphStatus = 'ready_to_submit'
+            AND status IN ('found', 'pending', 'queued')
+          ORDER BY COALESCE(confidenceScore, 0) DESC, createdAt ASC`,
+    args: [session.id],
+  });
+  const plannedJobs: PlannedDiscoveryJob[] = (plannedJobsResult.rows || []).map(
+    (row) => mapPlannedDiscoveryRow(row as Record<string, unknown>)
+  );
+
+  // Execution is now graph-gated: the worker only consumes discoveries that
+  // the planning graph explicitly moved into ready_to_submit.
+  if (plannedJobs.length > 0) {
+    const jobs: Array<{
+      discoveryId?: string;
+      title: string;
+      applyUrl: string;
+      company: string;
+      matchScore?: number | null;
+      matchReason?: string | null;
+      customWritingText?: string;
+      reviewedAnswers?: string;
+    }> = plannedJobs;
+    log(session.id, "info", `Planned execution path: ${jobs.length} graph-approved jobs`);
     let successCount = 0;
     // Discoveries that failed with verification-timeout get one retry at the
     // end of the session. Verification-timeout means the second submit was
     // never clicked, so no application was actually submitted at the ATS —
     // safe to retry without risking a duplicate.
     const verificationRetryQueue: typeof jobs = [];
+    let quotaBlocked = false;
 
     await db.execute({
       sql: `UPDATE BrowseSession SET jobsFound = ? WHERE id = ?`,
@@ -375,7 +423,11 @@ export async function processNextBrowseSession(): Promise<boolean> {
       const slug = companyKey(job.company);
       const cooldownReason = await getCompanyCooldown(slug);
       if (cooldownReason) {
-        await createDiscovery(session.id, job.company, job.title, job.applyUrl, "skipped", `[skipped — company on cooldown] ${cooldownReason}`, job.matchScore, job.matchReason);
+        if (job.discoveryId) {
+          await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", `[skipped — company on cooldown] ${cooldownReason}`, "skipped");
+        } else {
+          await createDiscovery(session.id, job.company, job.title, job.applyUrl, "skipped", `[skipped — company on cooldown] ${cooldownReason}`, job.matchScore, job.matchReason);
+        }
         log(session.id, "info", `Cooldown skip: ${job.company} — ${cooldownReason.slice(0, 80)}`);
         continue;
       }
@@ -391,6 +443,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
       const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
       if (dailyCount >= DAILY_APP_CAP) {
         log(session.id, "info", `Daily cap reached (${DAILY_APP_CAP}), stopping`);
+        quotaBlocked = true;
         break;
       }
 
@@ -407,6 +460,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           currentUser.subscriptionStatus === "unpaid")
       ) {
         log(session.id, "info", `[payment-failed] subscription is ${currentUser.subscriptionStatus}, stopping. User must update payment method.`);
+        quotaBlocked = true;
         break;
       }
       if (
@@ -416,6 +470,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         new Date(currentUser.freeTierEndsAt) <= new Date()
       ) {
         log(session.id, "info", `Free tier ended (freeTierEndsAt=${currentUser.freeTierEndsAt}), stopping. User must start trial.`);
+        quotaBlocked = true;
         break;
       }
       // Trial cap: max 5 apps during the 7-day Stripe trial (matches legacy
@@ -423,17 +478,23 @@ export async function processNextBrowseSession(): Promise<boolean> {
       // Starter cap unlocks.
       if (currentUser && currentUser.subscriptionStatus === "trialing" && currentUser.monthlyAppCount >= 5) {
         log(session.id, "info", `Trial cap reached (${currentUser.monthlyAppCount}/5), stopping. User is still trialing.`);
+        quotaBlocked = true;
         break;
       }
       const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
       const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
       if (currentUser && currentUser.monthlyAppCount >= limit) {
         log(session.id, "info", `Monthly limit reached (${currentUser.monthlyAppCount}/${limit}), stopping`);
+        quotaBlocked = true;
         break;
       }
 
       // Record & apply
-      await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null, job.matchScore, job.matchReason);
+      if (job.discoveryId) {
+        await updateDiscoveryStatus(session.id, job.applyUrl, "applying", null, "applying");
+      } else {
+        await createDiscovery(session.id, job.company, job.title, job.applyUrl, "applying", null, job.matchScore, job.matchReason);
+      }
       log(session.id, "info", `Applying: ${job.title} @ ${job.company}`);
       await heartbeat(session.id);
 
@@ -455,7 +516,10 @@ export async function processNextBrowseSession(): Promise<boolean> {
           earliestStartDate: user.earliestStartDate || undefined, gender: user.gender || undefined,
           race: user.race || undefined, hispanicOrLatino: user.hispanicOrLatino || undefined,
           veteranStatus: user.veteranStatus || undefined, disabilityStatus: user.disabilityStatus || undefined,
-          applicationAnswers: user.applicationAnswers || undefined, targetCompany: job.company,
+          applicationAnswers: user.applicationAnswers || undefined,
+          customWritingText: job.customWritingText,
+          reviewedAnswers: job.reviewedAnswers,
+          targetCompany: job.company,
         },
         session.resumeUrl, session.resumeName, session.targetRole,
         user.subscriptionTier as string | undefined, job.title, session.userId
@@ -471,7 +535,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
       if (applyResult.success) {
         successCount++;
-        await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+        await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null, "applied");
         if (applyResult.tailored) {
           await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
           // Only count against quota after successful tailored apply
@@ -484,12 +548,26 @@ export async function processNextBrowseSession(): Promise<boolean> {
       } else if (isCreditExhaustionError(applyResult.error)) {
         // Defense in depth: credits ran out mid-session after the preflight passed.
         // Don't charge the user, don't fail the discovery, pause the session, alert.
-        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", "[skipped — Anthropic credits exhausted mid-session]");
+        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", "[skipped — Anthropic credits exhausted mid-session]", "skipped");
         log(session.id, "error", `Anthropic credits exhausted mid-session — pausing`, { error: applyResult.error });
         await postCreditAlert({ sessionId: session.id, userId: session.userId, rawError: applyResult.error || "credit balance too low" });
         await markSessionPaused(session.id, "paused: Anthropic credits exhausted mid-session");
         if (resumePath) { try { unlinkSync(resumePath); } catch {} }
         return true;
+      } else if (applyResult.error && /Review required:/i.test(applyResult.error)) {
+        await updateDiscoveryStatus(session.id, job.applyUrl, "found", applyResult.error, "needs_review");
+        if (job.discoveryId) {
+          await upsertRuntimeReviewTask({
+            discoveryId: job.discoveryId,
+            sessionId: session.id,
+            userId: session.userId,
+            company: job.company,
+            jobTitle: job.title,
+            reason: applyResult.error,
+            draft: job.customWritingText || null,
+          });
+        }
+        log(session.id, "info", `Review required: ${job.title} @ ${job.company}`);
       } else if (isSpamFlagError(applyResult.error)) {
         // Ashby/Greenhouse anti-bot flagged us. Mark the discovery as
         // "skipped" (don't show as red failure to user, don't charge quota),
@@ -497,7 +575,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
         // same company are short-circuited too.
         const slug = companyKey(job.company);
         await setCompanyCooldown(slug, `Spam-flag at ${job.company}`, 24);
-        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", `[skipped — anti-bot flag] ${applyResult.error}`);
+        await updateDiscoveryStatus(session.id, job.applyUrl, "skipped", `[skipped — anti-bot flag] ${applyResult.error}`, "skipped");
         await logStuckField({
           discoveryId: session.id, // closest available; per-discovery id not exposed here
           company: job.company,
@@ -512,7 +590,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-8).join(" → ")}`
           : applyResult.error || "Unknown error";
         log(session.id, "warn", `Failed, trying next: ${job.title} — ${applyResult.error}`);
-        await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
+        await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps, "failed");
         await db.execute({ sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`, args: [session.id] });
         // Telemetry: log a categorized stuck-field row for later triage
         const category = /could not open dropdown/i.test(applyResult.error || "") ? "could-not-open-dropdown"
@@ -559,16 +637,19 @@ export async function processNextBrowseSession(): Promise<boolean> {
           (u.subscriptionStatus === "past_due" || u.subscriptionStatus === "unpaid")
         ) {
           log(session.id, "info", `Skipping retry — [payment-failed] subscription is ${u.subscriptionStatus}`);
+          quotaBlocked = true;
           break;
         }
         if (u && u.subscriptionStatus === "trialing" && u.monthlyAppCount >= 5) {
           log(session.id, "info", `Skipping retry — trial cap reached (${u.monthlyAppCount}/5)`);
+          quotaBlocked = true;
           break;
         }
         const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
         const limit = tierLimits[u?.subscriptionTier || "free"] || 5;
         if (u && u.monthlyAppCount >= limit) {
           log(session.id, "info", `Skipping retry — monthly limit reached (${u.monthlyAppCount}/${limit})`);
+          quotaBlocked = true;
           break;
         }
 
@@ -592,7 +673,10 @@ export async function processNextBrowseSession(): Promise<boolean> {
             earliestStartDate: user.earliestStartDate || undefined, gender: user.gender || undefined,
             race: user.race || undefined, hispanicOrLatino: user.hispanicOrLatino || undefined,
             veteranStatus: user.veteranStatus || undefined, disabilityStatus: user.disabilityStatus || undefined,
-            applicationAnswers: user.applicationAnswers || undefined, targetCompany: job.company,
+            applicationAnswers: user.applicationAnswers || undefined,
+            customWritingText: job.customWritingText,
+            reviewedAnswers: job.reviewedAnswers,
+            targetCompany: job.company,
           },
           session.resumeUrl, session.resumeName, session.targetRole,
           user.subscriptionTier as string | undefined, job.title, session.userId
@@ -600,7 +684,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
         if (retryResult.success) {
           successCount++;
-          await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
+          await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null, "applied");
           if (retryResult.tailored) {
             await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [retryResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
             const { incrementTailorQuota } = await import("./tailor-resume");
@@ -616,7 +700,7 @@ export async function processNextBrowseSession(): Promise<boolean> {
           const retryErrorWithSteps = retryResult.steps
             ? `[retry] ${retryResult.error} | Steps: ${retryResult.steps.slice(-8).join(" → ")}`
             : `[retry] ${retryResult.error || "Unknown error"}`;
-          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", retryErrorWithSteps);
+          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", retryErrorWithSteps, "failed");
           log(session.id, "warn", `Retry failed: ${job.title} — ${retryResult.error}`);
         }
 
@@ -627,317 +711,65 @@ export async function processNextBrowseSession(): Promise<boolean> {
 
     // Clean up & complete
     if (resumePath) { try { unlinkSync(resumePath); } catch {} }
-    await db.execute({
-      sql: `UPDATE BrowseSession SET status = 'completed', completedAt = datetime('now') WHERE id = ?`,
+    const pendingReviewCountResult = await db.execute({
+      sql: `SELECT COUNT(*) as cnt FROM ReviewTask WHERE sessionId = ? AND status = 'pending'`,
       args: [session.id],
     });
-    log(session.id, "info", "Fast path session completed");
+    const readyToSubmitCountResult = await db.execute({
+      sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery WHERE sessionId = ? AND graphStatus = 'ready_to_submit'`,
+      args: [session.id],
+    });
+    const pendingReviewCount = (pendingReviewCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
+    const readyToSubmitCount = (readyToSubmitCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
+    const finalStatus = computePlannedSessionFinalStatus({
+      quotaBlocked,
+      pendingReviewCount,
+      readyToSubmitCount,
+    });
+    await db.execute({
+      sql: `UPDATE BrowseSession SET status = ?, completedAt = CASE WHEN ? = 'completed' THEN datetime('now') ELSE NULL END WHERE id = ?`,
+      args: [finalStatus, finalStatus, session.id],
+    });
+    log(session.id, "info", `Fast path session completed with status=${finalStatus}`);
     return true;
   }
 
-  // LEGACY PATH: Discovery-based company iteration
-  let limitReached = false;
-  for (const companyName of companies) {
-    // Stop early if monthly limit was already hit
-    if (limitReached) {
-      await appendProgressLog(session.id, {
-        company: companyName,
-        status: "skipped",
-        found: 0,
-        applied: 0,
-        skipped: 0,
-        failed: 0,
-        error: "Monthly limit reached — stopping session",
-      });
-      await incrementCompanyDone(session.id);
-      continue;
-    }
-    const careersUrl = companyUrlMap.get(companyName);
-    if (!careersUrl) {
-      await appendProgressLog(session.id, {
-        company: companyName,
-        status: "error",
-        error: "No career page URL configured",
-        found: 0,
-        applied: 0,
-      });
-      await incrementCompanyDone(session.id);
-      continue;
-    }
-
-    const companyResult = { found: 0, applied: 0, skipped: 0, failed: 0 };
-
-    try {
-      // Try catalog first (instant DB lookup), fall back to live scrape
-      const companySlug = companySlugMap.get(companyName) || "";
-      let discovered: import("./career-browser").DiscoveredJob[];
-      let discoveryLog: import("./career-browser").DiscoveryLog;
-
-      if (companySlug) {
-        const catalogJobs = await discoverJobsFromCatalog(companySlug, session.targetRole, session.seekingInternship === 1);
-        if (catalogJobs.length > 0) {
-          discovered = catalogJobs;
-          discoveryLog = { steps: [`Catalog: ${catalogJobs.length} jobs for ${companySlug}`] };
-        } else {
-          // Catalog empty — fall back to live scrape
-          const live = await Promise.race([
-            discoverJobs(careersUrl, session.targetRole),
-            new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
-            ),
-          ]);
-          discovered = live.jobs;
-          discoveryLog = live.log;
-          discoveryLog.steps.unshift("Catalog empty, fell back to live scrape");
-        }
-      } else {
-        // No slug — use live scrape (legacy path)
-        const live = await Promise.race([
-          discoverJobs(careersUrl, session.targetRole),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Company timeout")), COMPANY_TIMEOUT_MS)
-          ),
-        ]);
-        discovered = live.jobs;
-        discoveryLog = live.log;
-      }
-
-      companyResult.found = discovered.length;
-      console.log(`[Browse] ${companyName}: found ${discovered.length} matching jobs`);
-      for (const step of discoveryLog.steps) {
-        console.log(`[Browse] ${companyName}: ${step}`);
-      }
-
-      // Update session counters
-      await db.execute({
-        sql: `UPDATE BrowseSession SET jobsFound = jobsFound + ? WHERE id = ?`,
-        args: [discovered.length, session.id],
-      });
-
-      // Apply to each discovered job — track URLs we've already processed in this session
-      const processedUrls = new Set<string>();
-
-      for (const job of discovered) {
-        // Dedup within this session's batch (career browser can return the same job twice)
-        if (processedUrls.has(job.applyUrl)) {
-          companyResult.skipped++;
-          continue;
-        }
-        processedUrls.add(job.applyUrl);
-
-        // Check if already applied to this URL in ANY previous session or current session
-        const dedupCheck = await db.execute({
-          sql: `SELECT 1 FROM BrowseDiscovery WHERE sessionId IN (SELECT id FROM BrowseSession WHERE userId = ?) AND applyUrl = ? AND status IN ('applied', 'applying', 'failed') LIMIT 1`,
-          args: [session.userId, job.applyUrl],
-        });
-
-        if (dedupCheck.rows && dedupCheck.rows.length > 0) {
-          companyResult.skipped++;
-          continue;
-        }
-
-        // Also check JobApplication table (cross-flow dedup with Greenhouse auto-apply)
-        const jobAppCheck = await db.execute({
-          sql: `SELECT 1 FROM JobApplication WHERE userId = ? AND status IN ('submitted', 'pending') AND jobId IN (SELECT id FROM Job WHERE applyUrl = ?) LIMIT 1`,
-          args: [session.userId, job.applyUrl],
-        });
-
-        if (jobAppCheck.rows && jobAppCheck.rows.length > 0) {
-          companyResult.skipped++;
-          continue;
-        }
-
-        // Location filter — fire for both US and non-US users.
-        // US users: skip anything tagged international or with foreign tokens.
-        // Non-US users: skip international jobs not in their own country
-        // (mirrors the matcher fix from the May 3 "remote applications" ticket).
-        {
-          const jobLoc = await db.execute({
-            sql: "SELECT location, region FROM Job WHERE applyUrl = ? LIMIT 1",
-            args: [job.applyUrl],
-          });
-          const loc = jobLoc.rows?.[0];
-          if (loc) {
-            const location = (loc.location as string || "").toLowerCase();
-            const region = loc.region as string || "";
-            const userIsUS = isUserUS(user.countryOfResidence);
-            let skipReason: string | null = null;
-            if (userIsUS) {
-              if (region === "international" || isForeignLocation(location)) {
-                skipReason = "Location mismatch (non-US)";
-              }
-            } else if (region === "international") {
-              if (!locationMatchesUserCountry(location, user.countryOfResidence)) {
-                skipReason = `Location mismatch (not in ${user.countryOfResidence})`;
-              }
-            }
-            if (skipReason) {
-              companyResult.skipped++;
-              await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", skipReason);
-              console.log(`[Browse] Skipped ${job.title} — ${skipReason}: ${loc.location}`);
-              continue;
-            }
-          }
-        }
-
-        // Check daily cap (10 applications per day)
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        const dailyCountResult = await db.execute({
-          sql: `SELECT COUNT(*) as cnt FROM BrowseDiscovery d
-                JOIN BrowseSession s ON d.sessionId = s.id
-                WHERE s.userId = ? AND d.status = 'applied' AND d.createdAt >= datetime(?)`,
-          args: [session.userId, todayStart.toISOString()],
-        });
-        const dailyCount = (dailyCountResult.rows?.[0] as unknown as { cnt: number })?.cnt || 0;
-        if (dailyCount >= DAILY_APP_CAP) {
-          log(session.id, "info", `Daily cap reached (${DAILY_APP_CAP}), stopping`);
-          break;
-        }
-
-        // Check monthly quota — lazy-reset on anniversary boundary
-        const currentUser = await readQuotaWithLazyReset(session.userId);
-        const tierLimits: Record<string, number> = { free: 5, starter: 100, pro: 300 };
-        const limit = tierLimits[currentUser?.subscriptionTier || "free"] || 5;
-        if (currentUser && currentUser.monthlyAppCount >= limit) {
-          companyResult.skipped++;
-          await createDiscovery(session.id, companyName, job.title, job.applyUrl, "skipped", "Monthly limit reached");
-          limitReached = true;
-          console.log(`[Browse] Monthly limit reached (${currentUser.monthlyAppCount}/${limit}). Stopping session.`);
-          break;
-        }
-
-        // Record discovery
-        await createDiscovery(session.id, companyName, job.title, job.applyUrl, "applying", null);
-        await heartbeat(session.id);
-
-        // Apply
-        const applyResult = await applyToJob(
-          job.applyUrl,
-          {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.applicationEmail || user.email,
-            phone: user.phone,
-            preferredName: user.preferredName || undefined,
-            pronouns: user.pronouns || undefined,
-            usState: user.usState || undefined,
-            workAuthorized: user.workAuthorized === 1,
-            needsSponsorship: user.needsSponsorship === 1,
-            countryOfResidence: user.countryOfResidence || undefined,
-            willingToRelocate: user.willingToRelocate === 1,
-            remotePreference: user.remotePreference || undefined,
-            linkedinUrl: user.linkedinUrl || undefined,
-            githubUrl: user.githubUrl || undefined,
-            websiteUrl: user.websiteUrl || undefined,
-            currentEmployer: user.currentEmployer || undefined,
-            currentTitle: user.currentTitle || undefined,
-            school: user.school || undefined,
-            degree: user.degree || undefined,
-            graduationYear: user.graduationYear || undefined,
-            additionalCerts: user.additionalCerts || undefined,
-            city: user.city || undefined,
-            yearsOfExperience: user.yearsOfExperience || undefined,
-            salaryExpectation: user.salaryExpectation || undefined,
-            earliestStartDate: user.earliestStartDate || undefined,
-            gender: user.gender || undefined,
-            race: user.race || undefined,
-            hispanicOrLatino: user.hispanicOrLatino || undefined,
-            veteranStatus: user.veteranStatus || undefined,
-            disabilityStatus: user.disabilityStatus || undefined,
-            applicationAnswers: user.applicationAnswers || undefined,
-            targetCompany: companyName,
-          },
-          session.resumeUrl,
-          session.resumeName,
-          session.targetRole,
-          user.subscriptionTier as string | undefined,
-          job.title,
-          session.userId
-        );
-
-        // Log the apply steps if available
-        if (applyResult.steps) {
-          for (const s of applyResult.steps) {
-            console.log(`[Apply] ${job.title}: ${s}`);
-          }
-        }
-
-        if (applyResult.success) {
-          companyResult.applied++;
-          await updateDiscoveryStatus(session.id, job.applyUrl, "applied", null);
-          if (applyResult.tailored) {
-            await db.execute({ sql: `UPDATE BrowseDiscovery SET resumeTailored = 1, tailoredResumeUrl = ? WHERE sessionId = ? AND applyUrl = ?`, args: [applyResult.tailoredResumeUrl || null, session.id, job.applyUrl] });
-            const { incrementTailorQuota } = await import("./tailor-resume");
-            await incrementTailorQuota(session.userId);
-          }
-          await db.execute({
-            sql: `UPDATE BrowseSession SET jobsApplied = jobsApplied + 1 WHERE id = ?`,
-            args: [session.id],
-          });
-          await db.execute({
-            sql: `UPDATE User SET monthlyAppCount = monthlyAppCount + 1 WHERE id = ?`,
-            args: [session.userId],
-          });
-        } else {
-          companyResult.failed++;
-          const errorWithSteps = applyResult.steps
-            ? `${applyResult.error} | Steps: ${applyResult.steps.slice(-3).join(" → ")}`
-            : applyResult.error || "Unknown error";
-          await updateDiscoveryStatus(session.id, job.applyUrl, "failed", errorWithSteps);
-          await db.execute({
-            sql: `UPDATE BrowseSession SET jobsFailed = jobsFailed + 1 WHERE id = ?`,
-            args: [session.id],
-          });
-        }
-
-        // Delay between applications
-        await heartbeat(session.id);
-        await delay(DELAY_BETWEEN_JOBS_MS);
-      }
-
-      await appendProgressLog(session.id, {
-        company: companyName,
-        status: "done",
-        found: companyResult.found,
-        applied: companyResult.applied,
-        skipped: companyResult.skipped,
-        failed: companyResult.failed,
-        debugLog: discoveryLog.steps,
-      });
-    } catch (err) {
-      const errMsg = err instanceof Error ? err.message : "Unknown error";
-      console.error(`[Browse] Error browsing ${companyName}:`, errMsg);
-      await appendProgressLog(session.id, {
-        company: companyName,
-        status: "error",
-        error: errMsg,
-        found: companyResult.found,
-        applied: companyResult.applied,
-      });
-    }
-
-    await incrementCompanyDone(session.id);
-
-    // Delay between companies
-    if (companies.indexOf(companyName) < companies.length - 1) {
-      await delay(DELAY_BETWEEN_COMPANIES_MS);
-    }
-  }
-
-  // Clean up resume
   if (resumePath) {
-    try { unlinkSync(resumePath); } catch {}
+    try {
+      unlinkSync(resumePath);
+    } catch {}
   }
-
-  // Mark session completed
-  await db.execute({
-    sql: `UPDATE BrowseSession SET status = 'completed', completedAt = datetime('now') WHERE id = ?`,
-    args: [session.id],
-  });
-
-  console.log(`[Browse] Session ${session.id} completed`);
+  await markSessionFailed(
+    session.id,
+    "Session has no graph-approved jobs ready to submit"
+  );
+  log(
+    session.id,
+    "warn",
+    "No ready_to_submit discoveries found; refusing legacy unplanned execution"
+  );
   return true;
+}
+
+/**
+ * Poll for and process the next browse session.
+ */
+export async function processNextBrowseSession(): Promise<boolean> {
+  await runSessionWatchdog();
+  const session = await claimNextQueuedSession();
+  if (!session) {
+    return false;
+  }
+  return processClaimedBrowseSession(session);
+}
+
+export async function processBrowseSessionById(sessionId: string): Promise<boolean> {
+  await runSessionWatchdog();
+  const session = await claimQueuedSessionById(sessionId);
+  if (!session) {
+    return false;
+  }
+  return processClaimedBrowseSession(session);
 }
 
 async function markSessionFailed(sessionId: string, error: string) {
@@ -967,33 +799,6 @@ async function markSessionPaused(sessionId: string, error: string) {
     userId,
     sessionId,
     message: error,
-  });
-}
-
-async function incrementCompanyDone(sessionId: string) {
-  const db = getDb();
-  await db.execute({
-    sql: `UPDATE BrowseSession SET companiesDone = companiesDone + 1 WHERE id = ?`,
-    args: [sessionId],
-  });
-}
-
-async function appendProgressLog(
-  sessionId: string,
-  entry: Record<string, unknown>
-) {
-  const db = getDb();
-  const result = await db.execute({
-    sql: `SELECT progressLog FROM BrowseSession WHERE id = ?`,
-    args: [sessionId],
-  });
-  const current = JSON.parse(
-    (result.rows?.[0] as unknown as { progressLog: string })?.progressLog || "[]"
-  );
-  current.push(entry);
-  await db.execute({
-    sql: `UPDATE BrowseSession SET progressLog = ? WHERE id = ?`,
-    args: [JSON.stringify(current), sessionId],
   });
 }
 
@@ -1031,12 +836,30 @@ async function updateDiscoveryStatus(
   sessionId: string,
   applyUrl: string,
   status: string,
-  errorMessage: string | null
+  errorMessage: string | null,
+  graphStatus?: string | null
 ) {
   const db = getDb();
   await db.execute({
-    sql: `UPDATE BrowseDiscovery SET status = ?, errorMessage = ? WHERE sessionId = ? AND applyUrl = ?`,
-    args: [status, errorMessage, sessionId, applyUrl],
+    sql: `UPDATE BrowseDiscovery
+          SET status = ?,
+              errorMessage = ?,
+              graphStatus = COALESCE(?, graphStatus),
+              userActionRequired = CASE
+                WHEN ? = 'needs_review' THEN 1
+                WHEN ? IN ('skipped', 'applied', 'failed', 'ready_to_submit', 'applying') THEN 0
+                ELSE userActionRequired
+              END
+          WHERE sessionId = ? AND applyUrl = ?`,
+    args: [
+      status,
+      errorMessage,
+      graphStatus ?? null,
+      graphStatus ?? null,
+      graphStatus ?? null,
+      sessionId,
+      applyUrl,
+    ],
   });
   // Log only real failures and anti-bot skips. Routine skips (cap, location,
   // cooldown) are operator noise, not errors.
@@ -1065,81 +888,69 @@ async function updateDiscoveryStatus(
   }
 }
 
+async function upsertRuntimeReviewTask(params: {
+  discoveryId: string;
+  sessionId: string;
+  userId: string;
+  company: string;
+  jobTitle: string;
+  reason: string;
+  draft: string | null;
+}) {
+  const db = getDb();
+  const existing = await db.execute({
+    sql: `SELECT id FROM ReviewTask WHERE discoveryId = ? LIMIT 1`,
+    args: [params.discoveryId],
+  });
+  const planningRunRow = await db.execute({
+    sql: `SELECT graphThreadId FROM BrowseDiscovery WHERE id = ? LIMIT 1`,
+    args: [params.discoveryId],
+  });
+  const planningRunId = (planningRunRow.rows?.[0] as unknown as { graphThreadId?: string })?.graphThreadId ?? null;
+
+  if (existing.rows && existing.rows.length > 0) {
+    await db.execute({
+      sql: `UPDATE ReviewTask
+            SET status = 'pending',
+                type = 'custom_writing',
+                title = ?,
+                reason = ?,
+                draft = ?,
+                editedDraft = NULL,
+                reviewerNotes = NULL,
+                approvedAt = NULL,
+                rejectedAt = NULL,
+                reviewedAt = NULL,
+                updatedAt = datetime('now')
+            WHERE discoveryId = ?`,
+      args: [
+        `Review ${params.jobTitle} at ${params.company}`,
+        params.reason,
+        params.draft,
+        params.discoveryId,
+      ],
+    });
+  } else {
+    const id = `review_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    await db.execute({
+      sql: `INSERT INTO ReviewTask (
+              id, discoveryId, planningRunId, sessionId, userId, type, status,
+              title, reason, draft, createdAt, updatedAt
+            ) VALUES (?, ?, ?, ?, ?, 'custom_writing', 'pending', ?, ?, ?, datetime('now'), datetime('now'))`,
+      args: [
+        id,
+        params.discoveryId,
+        planningRunId,
+        params.sessionId,
+        params.userId,
+        `Review ${params.jobTitle} at ${params.company}`,
+        params.reason,
+        params.draft,
+      ],
+    });
+  }
+}
+
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-const NON_US_INDICATORS = [
-  "india", "ireland", "uk", "united kingdom", "england", "germany", "france",
-  "japan", "singapore", "australia", "brazil", "canada", "italy", "spain",
-  "netherlands", "sweden", "denmark", "norway", "finland", "poland", "czech",
-  "israel", "korea", "china", "hong kong", "taiwan", "mexico", "argentina",
-  "colombia", "chile", "peru", "bangalore", "bengaluru", "hyderabad", "mumbai",
-  "pune", "delhi", "chennai", "london", "berlin", "paris", "tokyo", "sydney",
-  "melbourne", "toronto", "vancouver", "montreal", "dublin", "amsterdam",
-  "são paulo", "sao paulo", "tel aviv", "seoul", "shanghai", "beijing",
-  "krakow", "warsaw", "stockholm", "copenhagen", "oslo", "helsinki",
-  "zurich", "geneva", "munich", "hamburg", "barcelona", "madrid", "lisbon",
-  "milan", "rome", "vienna", "brussels", "prague",
-];
-
-function isUserUS(country: string | null | undefined): boolean {
-  if (!country) return true; // default to US if unset
-  const c = country.toLowerCase();
-  // Word-boundary match so "Mauritius", "Belarus", "Cyprus", "Australia"
-  // (which all contain the substring "us") aren't classified as US.
-  return c.includes("united states") || c.includes("america") || /\b(us|usa)\b/.test(c);
-}
-
-function isForeignLocation(location: string): boolean {
-  return NON_US_INDICATORS.some((ind) => location.includes(ind));
-}
-
-// Lowercase tokens we expect to see in a job's `location` string for each
-// non-US country we have users in. Mirror of src/lib/job-region.ts so the
-// worker's own location gate can allow non-US users to see jobs in their
-// country while blocking jobs from other countries.
-const COUNTRY_TOKENS: Record<string, string[]> = {
-  canada: ["canada", "toronto", "vancouver", "montreal", "ottawa", "calgary", "edmonton", "ontario", "quebec", "alberta", "british columbia"],
-  "united kingdom": ["united kingdom", "uk", "england", "scotland", "wales", "london", "manchester", "edinburgh", "bristol", "birmingham", "leeds", "glasgow"],
-  india: ["india", "bangalore", "bengaluru", "mumbai", "delhi", "hyderabad", "chennai", "pune", "kolkata", "gurgaon", "noida"],
-  australia: ["australia", "sydney", "melbourne", "brisbane", "perth", "adelaide", "canberra"],
-  germany: ["germany", "deutschland", "berlin", "munich", "münchen", "hamburg", "frankfurt", "cologne", "köln"],
-  france: ["france", "paris", "lyon", "marseille", "toulouse"],
-  ireland: ["ireland", "dublin", "cork"],
-  netherlands: ["netherlands", "amsterdam", "rotterdam", "utrecht", "hague"],
-  singapore: ["singapore"],
-  nigeria: ["nigeria", "lagos", "abuja", "ibadan", "port harcourt"],
-  kenya: ["kenya", "nairobi", "mombasa"],
-  ghana: ["ghana", "accra", "kumasi"],
-  "south africa": ["south africa", "johannesburg", "cape town", "pretoria", "durban"],
-  "united arab emirates": ["united arab emirates", "uae", "dubai", "abu dhabi"],
-  rwanda: ["rwanda", "kigali"],
-  tanzania: ["tanzania", "dar es salaam", "dodoma"],
-  cameroon: ["cameroon", "yaoundé", "yaounde", "douala"],
-  morocco: ["morocco", "casablanca", "rabat"],
-  pakistan: ["pakistan", "karachi", "lahore", "islamabad"],
-  belgium: ["belgium", "brussels", "antwerp"],
-  mauritius: ["mauritius", "port louis"],
-  palestine: ["palestine", "gaza", "ramallah", "west bank"],
-};
-
-function getUserCountryTokens(country: string | null | undefined): string[] {
-  if (!country) return [];
-  const normalized = country.trim().toLowerCase();
-  if (COUNTRY_TOKENS[normalized]) return COUNTRY_TOKENS[normalized];
-  for (const [key, tokens] of Object.entries(COUNTRY_TOKENS)) {
-    if (normalized.includes(key)) return tokens;
-  }
-  return [normalized];
-}
-
-function locationMatchesUserCountry(location: string, country: string | null | undefined): boolean {
-  const tokens = getUserCountryTokens(country);
-  if (tokens.length === 0) return false;
-  const ll = location.toLowerCase();
-  return tokens.some((t) => {
-    const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(ll);
-  });
 }

@@ -69,7 +69,7 @@ export default function ResumeDrop({
       className={`cursor-pointer transition-all ${uploading ? "pointer-events-none opacity-70" : ""}`}
       style={{
         background: isDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.7)",
-        border: `1.5px dashed ${dragging ? "#ef562a" : isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.12)"}`,
+        border: `1.5px dashed ${dragging ? "#4d1b27" : isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.12)"}`,
         borderRadius: 16,
         padding: compact ? "20px 22px" : "28px 28px",
         backdropFilter: "blur(8px)",
@@ -88,7 +88,7 @@ export default function ResumeDrop({
       <div className="flex items-center gap-4">
         <div
           className="w-11 h-11 rounded-xl flex-shrink-0 grid place-items-center"
-          style={{ background: "#ef562a", color: "#fff" }}
+          style={{ background: "#4d1b27", color: "#fff" }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 5v14M5 12l7-7 7 7" />
@@ -97,7 +97,7 @@ export default function ResumeDrop({
         <div className="flex-1 min-w-0">
           <div
             className="font-semibold text-base"
-            style={{ color: isDark ? "#fff" : "#1a1a1a" }}
+            style={{ color: isDark ? "#fff" : "#2a2828" }}
           >
             Drop your resume to get matched
           </div>
@@ -110,7 +110,7 @@ export default function ResumeDrop({
         </div>
         <button
           className="flex-shrink-0 px-5 py-2.5 rounded-full font-semibold text-sm transition-opacity hover:opacity-90"
-          style={{ background: "#ef562a", color: "#fff" }}
+          style={{ background: "#4d1b27", color: "#fff" }}
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>

@@ -66,11 +66,11 @@ export default async function LessonPage({ params }: PageProps) {
         <div className="bg-[var(--gray-50)] border-b border-[var(--card-border)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)]">
-              <Link href="/resources" className="hover:text-[#ef562a]">
+              <Link href="/resources" className="hover:text-[#4d1b27]">
                 Resources
               </Link>
               <span>/</span>
-              <Link href="/resources/web-development" className="hover:text-[#ef562a]">
+              <Link href="/resources/web-development" className="hover:text-[#4d1b27]">
                 Web Development
               </Link>
               <span>/</span>

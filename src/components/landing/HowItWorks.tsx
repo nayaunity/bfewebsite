@@ -75,7 +75,7 @@ export default function HowItWorks() {
               key={title}
               className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 md:p-8"
             >
-              <div className="text-[#ef562a] mb-4">{icon}</div>
+              <div className="text-[#4d1b27] mb-4">{icon}</div>
               <h3 className="font-serif text-xl mb-2">{title}</h3>
               <p className="text-sm text-[var(--gray-600)] leading-relaxed">
                 {description}

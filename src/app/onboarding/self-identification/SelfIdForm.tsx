@@ -22,7 +22,7 @@ export interface SelfIdInitial {
 }
 
 const inputClass =
-  "w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#ef562a]/40";
+  "w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/40";
 const labelClass = "block text-xs font-semibold text-[var(--gray-600)] uppercase tracking-wider mb-1";
 
 function pronounChoiceFromStored(stored: string): string {
@@ -274,7 +274,7 @@ export default function SelfIdForm({
           type="submit"
           disabled={!allFilled || saving}
           className="px-6 py-2.5 rounded-lg font-medium text-white disabled:opacity-50"
-          style={{ background: "#ef562a" }}
+          style={{ background: "#4d1b27" }}
         >
           {saving ? "Saving..." : "Save and start applying"}
         </button>
@@ -299,8 +299,8 @@ function YesNoButton({
       className={
         "flex-1 px-4 py-2 rounded-lg border text-sm font-medium transition-colors " +
         (active
-          ? "border-[#ef562a] bg-[#ef562a] text-white"
-          : "border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] hover:border-[#ef562a]/60")
+          ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+          : "border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] hover:border-[#4d1b27]/60")
       }
     >
       {label}

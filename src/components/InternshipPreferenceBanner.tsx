@@ -53,7 +53,7 @@ export function InternshipPreferenceBanner() {
           <button
             onClick={() => dismiss("keep")}
             disabled={busy !== null}
-            className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#ef562a] text-white hover:opacity-90 disabled:opacity-50"
+            className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#4d1b27] text-white hover:opacity-90 disabled:opacity-50"
           >
             {busy === "keep" ? "Saving..." : "Sounds good"}
           </button>

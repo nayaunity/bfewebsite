@@ -4,6 +4,7 @@ import { calculatePacing } from "@/lib/pacing";
 import { getCurrentPeriodStart } from "@/lib/subscription";
 import { runPacingDiagnostics } from "@/lib/pacing-diagnostics";
 import {
+  collectAutoApplyGraphMetrics,
   computeAdaptiveStrategy,
   diagnoseAndRemediate,
 } from "@/lib/health-oversight";
@@ -22,6 +23,8 @@ export async function GET(request: NextRequest) {
   try {
     console.log("[Health Check] Starting pre-apply health assessment...");
     const startTime = Date.now();
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
 
     const eligibleUsers = await prisma.user.findMany({
       where: {
@@ -177,6 +180,34 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const graphMetrics = await collectAutoApplyGraphMetrics({
+      since: todayStart,
+    });
+    if (graphMetrics.pendingReviewCount >= 10) {
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const existing = await prisma.adminAlert.findFirst({
+        where: {
+          kind: "review_queue_backlog",
+          resolvedAt: null,
+          createdAt: { gte: twentyFourHoursAgo },
+        },
+      });
+      if (!existing) {
+        await prisma.adminAlert.create({
+          data: {
+            kind: "review_queue_backlog",
+            severity: "medium",
+            message: `Review backlog is ${graphMetrics.pendingReviewCount} applications. Auto-submit share is ${Math.round((graphMetrics.autoSubmitRate || 0) * 100)}%.`,
+            metadata: JSON.stringify({
+              pendingReviewCount: graphMetrics.pendingReviewCount,
+              autoSubmitRate: graphMetrics.autoSubmitRate,
+              supportedSuccessRate: graphMetrics.supportedSuccessRate,
+            }),
+          },
+        });
+      }
+    }
+
     const duration = Math.round((Date.now() - startTime) / 1000);
     const strategyCounts = results.reduce(
       (acc, r) => {
@@ -192,6 +223,23 @@ export async function GET(request: NextRequest) {
       usersAssessed: results.length,
       strategies: strategyCounts,
       escalations: escalations.length,
+      graphOverview: {
+        totalPlanned: graphMetrics.totalPlanned,
+        autoSubmitCount: graphMetrics.autoSubmitCount,
+        reviewRoutedCount: graphMetrics.reviewRoutedCount,
+        pendingReviewCount: graphMetrics.pendingReviewCount,
+        approvedReviewCount: graphMetrics.approvedReviewCount,
+        rejectedReviewCount: graphMetrics.rejectedReviewCount,
+        autoSubmitRate:
+          graphMetrics.autoSubmitRate === null
+            ? null
+            : Math.round(graphMetrics.autoSubmitRate * 100),
+        supportedSuccessRate:
+          graphMetrics.supportedSuccessRate === null
+            ? null
+            : Math.round(graphMetrics.supportedSuccessRate * 100),
+        perAts: graphMetrics.atsBuckets,
+      },
     };
 
     console.log("[Health Check] Complete:", summary);

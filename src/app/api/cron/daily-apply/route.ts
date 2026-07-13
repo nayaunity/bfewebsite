@@ -6,6 +6,7 @@ import {
   loadJobCatalog,
   type CatalogJob,
 } from "@/lib/auto-apply/job-matcher";
+import { createPlannedBrowseSession } from "@/lib/auto-apply/planned-session";
 import { matchUserResume } from "@/lib/resume-matcher";
 import { ensureApplicationEmail } from "@/lib/application-email";
 import { calculatePacing } from "@/lib/pacing";
@@ -89,7 +90,9 @@ export async function GET(request: NextRequest) {
             prisma.browseSession.findFirst({
               where: {
                 userId: user.id,
-                status: { in: ["queued", "processing"] },
+                status: {
+                  in: ["planning", "queued", "processing", "awaiting_review"],
+                },
               },
             }),
             prisma.healthCheck.findFirst({
@@ -323,29 +326,30 @@ async function processUser(
 
     await ensureApplicationEmail(user.id);
 
-    const session = await prisma.browseSession.create({
-      data: {
-        userId: user.id,
-        targetRole: primaryRole,
-        companies: JSON.stringify(companiesWithJobs),
-        matchedJobs: JSON.stringify(
-          matchedJobs.map((j) => ({
-            title: j.title,
-            applyUrl: j.applyUrl,
-            company: j.company,
-          }))
-        ),
-        resumeUrl: resume.blobUrl,
-        resumeName: resume.fileName,
-        totalCompanies: companiesWithJobs.length,
-        seekingInternship: user.seekingInternship === true,
-        qualityThreshold: check.qualityThreshold ?? null,
-        healthCheckId: check.healthCheckId,
-      },
+    const planningJobs = matchedJobs.map((job) => ({
+      id: job.id,
+      title: job.title,
+      applyUrl: job.applyUrl,
+      company: job.company,
+      companySlug: job.companySlug,
+      score: job.score,
+      matchReason: job.matchReason,
+    }));
+    const session = await createPlannedBrowseSession({
+      userId: user.id,
+      targetRole: primaryRole,
+      matchedJobs: planningJobs,
+      resumeUrl: resume.blobUrl,
+      resumeName: resume.fileName,
+      companies: companiesWithJobs,
+      totalCompanies: companiesWithJobs.length,
+      seekingInternship: user.seekingInternship === true,
+      qualityThreshold: check.qualityThreshold ?? null,
+      healthCheckId: check.healthCheckId,
     });
 
     console.log(
-      `[Daily Apply] ${user.email}: ${matchedJobs.length} matches across ${companiesWithJobs.length} companies → session ${session.id}`
+      `[Daily Apply] ${user.email}: planned ${matchedJobs.length} matches across ${companiesWithJobs.length} companies → session ${session.sessionId} (${session.planning.autoSubmitCount} auto-submit, ${session.planning.pendingReviewCount} review, ${session.planning.skippedCount} skipped)`
     );
 
     return {
@@ -353,7 +357,7 @@ async function processUser(
       email: user.email,
       status: "session_created",
       matchedJobs: matchedJobs.length,
-      sessionId: session.id,
+      sessionId: session.sessionId,
     };
   } catch (error) {
     console.error(`[Daily Apply] Error for ${user.email}:`, error);

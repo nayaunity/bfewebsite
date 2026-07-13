@@ -17,6 +17,10 @@ export async function GET(
   const browseSession = await prisma.browseSession.findUnique({
     where: { id: sessionId },
     include: {
+      reviewTasks: {
+        where: { status: "pending" },
+        select: { id: true },
+      },
       discoveries: {
         orderBy: { createdAt: "desc" },
       },
@@ -41,6 +45,7 @@ export async function GET(
       jobsApplied: browseSession.jobsApplied,
       jobsSkipped: browseSession.jobsSkipped,
       jobsFailed: browseSession.jobsFailed,
+      pendingReviewCount: browseSession.reviewTasks.length,
       progressLog: JSON.parse(browseSession.progressLog),
       // errorMessage is intentionally translated via friendlyError before
       // returning. Raw worker errors must NEVER reach the client. Operators
@@ -55,6 +60,12 @@ export async function GET(
       jobTitle: d.jobTitle,
       applyUrl: d.applyUrl,
       status: d.status,
+      atsType: d.atsType,
+      confidenceBucket: d.confidenceBucket,
+      confidenceScore: d.confidenceScore,
+      graphStatus: d.graphStatus,
+      userActionRequired: d.userActionRequired,
+      personalizedWritingRequired: d.personalizedWritingRequired,
       errorMessage: (d.status === "failed" || d.status === "skipped") ? friendlyError(d.errorMessage) : null,
     })),
   });
@@ -83,7 +94,11 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  if (browseSession.status !== "queued" && browseSession.status !== "processing") {
+  if (
+    browseSession.status !== "planning" &&
+    browseSession.status !== "queued" &&
+    browseSession.status !== "processing"
+  ) {
     return NextResponse.json({ error: "Session is not active" }, { status: 400 });
   }
 

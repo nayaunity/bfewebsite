@@ -105,7 +105,7 @@ export default function PrivacyPage() {
                 <h2 className="font-serif text-2xl mb-4 text-[var(--foreground)]">Contact Us</h2>
                 <p className="text-[var(--gray-600)] leading-relaxed">
                   If you have any questions about this privacy policy or our data practices, please contact us at{" "}
-                  <a href="mailto:hello@theblackfemaleengineer.com" className="text-[#ef562a] hover:underline">
+                  <a href="mailto:hello@theblackfemaleengineer.com" className="text-[#4d1b27] hover:underline">
                     hello@theblackfemaleengineer.com
                   </a>
                 </p>

@@ -31,9 +31,9 @@ export function CountdownBar() {
   if (expired) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#ef562a] text-white py-3 px-4 text-center">
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-[#4d1b27] text-white py-3 px-4 text-center">
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-6 font-serif text-base sm:text-lg tracking-wide">
-        <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#ffe500] animate-pulse" />
+        <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#4d1b27] animate-pulse" />
         <span className="italic">
           Presale closes in{" "}
           <span className="not-italic font-bold">
@@ -67,7 +67,7 @@ export default function CountdownBadge() {
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-sm">
       {!expired && (
         <div className="flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#ef562a] animate-pulse" />
+          <span className="inline-block w-2 h-2 rounded-full bg-[#4d1b27] animate-pulse" />
           <span className="text-[var(--gray-600)]">
             Presale ends in{" "}
             <strong className="text-[var(--foreground)]">
@@ -78,7 +78,7 @@ export default function CountdownBadge() {
       )}
       <div className="flex items-center gap-2">
         {expired && (
-          <span className="inline-block w-2 h-2 rounded-full bg-[#ef562a] animate-pulse" />
+          <span className="inline-block w-2 h-2 rounded-full bg-[#4d1b27] animate-pulse" />
         )}
         <span className="text-[var(--gray-600)]">
           <strong className="text-[var(--foreground)]">{TOTAL_SPOTS}</strong>{" "}
