@@ -27,7 +27,8 @@ export default function ResourcesPage() {
       title: "AI & Skills",
       description: "Learn to use AI to build, earn, and grow.",
       items: [
-        { name: "The 3-Hour Workday Ebook", description: "A step-by-step guide to using AI to reclaim your time with a 5-phase system", tag: "New", href: "/resources/3-hour-workday" },
+        { name: "The $60K/Month Blueprint", description: "The business model, systems, and AI leverage behind building a $60K/month business", tag: "New", href: "/blog/60-k-business-breakdown" },
+        { name: "The 3-Hour Workday Ebook", description: "A step-by-step guide to using AI to reclaim your time with a 5-phase system", tag: "Featured", href: "/resources/3-hour-workday" },
         { name: "Claude Code 101", description: "Your beginner's guide to building with AI in the terminal", tag: "Beginner", href: "/resources/claude-code-101" },
         { name: "Claude Architect Mock Exam", description: "48-question practice exam for Claude Certified Architect certification", tag: "Featured", href: "/resources/claude-architect-exam" },
         { name: "AI Money Stack Quiz", description: "Find which AI tools + business model fits your skills and goals", tag: "Featured", href: "/resources/ai-money-quiz" },
