@@ -79,8 +79,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                   onClick={() => toggle(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm ${
                     on
-                      ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                      ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                   }`}
                 >
                   {opt.label}
@@ -100,8 +100,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium ${
                   remote === opt
-                    ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                    ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                 }`}
               >
                 {opt}
@@ -118,8 +118,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
               Yes
@@ -129,8 +129,8 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
               No

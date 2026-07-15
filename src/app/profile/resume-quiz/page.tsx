@@ -40,7 +40,7 @@ export default async function ResumeQuizPage() {
           </div>
 
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[#4d1b27] text-xs font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[var(--accent)] text-xs font-medium mb-4">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -48,7 +48,7 @@ export default async function ResumeQuizPage() {
             </div>
             <h1 className="text-3xl font-serif text-[var(--foreground)] mb-3">
               Help us make your resume{" "}
-              <span className="italic text-[#4d1b27]">unforgettable</span>
+              <span className="italic text-[var(--accent)]">unforgettable</span>
             </h1>
             <p className="text-[var(--gray-600)] max-w-lg mx-auto">
               A few quick questions tailored to YOUR experience, ~5 minutes.

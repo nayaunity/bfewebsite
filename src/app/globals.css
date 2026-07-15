@@ -9,6 +9,7 @@ html[data-theme="light"] {
   --foreground: #2a2828;
   --yellow: #4d1b27;
   --orange: #4d1b27;
+  --accent: #4d1b27;
   --gray-50: #f3f3f1;
   --gray-100: #f3f3f1;
   --gray-200: #e5e7eb;
@@ -47,6 +48,7 @@ html[data-theme="dark"] {
   --gray-800: #f3f3f1;
   --card-bg: #333131;
   --card-border: #4d383b;
+  --accent: #c4686e;
   --cta-bg: #4d1b27;
   --cta-text: #f3f3f1;
   --cta-text-muted: #897075;
@@ -81,6 +83,7 @@ html[data-theme="dark"] {
   --color-foreground: var(--foreground);
   --color-yellow: var(--yellow);
   --color-orange: var(--orange);
+  --color-accent: var(--accent);
   --font-serif: var(--font-playfair);
   --font-sans: var(--font-inter);
 }

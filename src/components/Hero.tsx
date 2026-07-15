@@ -23,11 +23,11 @@ export default function Hero() {
           {/* Left Content */}
           <div>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Build <span className="italic text-[#4d1b27]">skills</span>.
+              Build <span className="italic text-[var(--accent)]">skills</span>.
               <br />
-              Build <span className="italic text-[#4d1b27]">wealth</span>.
+              Build <span className="italic text-[var(--accent)]">wealth</span>.
               <br />
-              Build <span className="italic text-[#4d1b27]">freedom</span>.
+              Build <span className="italic text-[var(--accent)]">freedom</span>.
             </h1>
 
             <p className="mt-8 text-lg text-[var(--gray-600)] max-w-md">

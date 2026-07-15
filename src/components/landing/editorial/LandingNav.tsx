@@ -16,7 +16,7 @@ export default function LandingNav() {
       <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-4 flex items-center justify-between gap-8">
         <div className="flex items-baseline gap-3.5">
           <Link href="/" className="font-serif text-[22px] font-bold tracking-tight no-underline text-[#2a2828]">
-            BFE<span className="text-[#4d1b27]">.</span>
+            BFE<span className="text-[var(--accent)]">.</span>
           </Link>
           <div className="text-xs text-[#9a3412] tracking-[1.2px] font-semibold hidden sm:block">
             AUTO·APPLY

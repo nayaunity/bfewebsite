@@ -8,7 +8,7 @@ export default function LandingHero() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
           Your job search,{" "}
-          <span className="italic text-[#4d1b27]">on Autopilot</span>.
+          <span className="italic text-[var(--accent)]">on Autopilot</span>.
         </h1>
 
         <p className="mt-6 text-lg md:text-xl text-[var(--gray-600)] max-w-2xl mx-auto">

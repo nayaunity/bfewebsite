@@ -88,7 +88,7 @@ export function TicketWidget({ page }: { page: string }) {
                 onClick={() => setType(t.value)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
                   type === t.value
-                    ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
+                    ? "border-[var(--accent)] bg-[#4d1b27]/5 text-[var(--accent)]"
                     : "border-[var(--card-border)] text-[var(--gray-600)] hover:border-[var(--gray-200)]"
                 }`}
               >
@@ -107,7 +107,7 @@ export function TicketWidget({ page }: { page: string }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={200}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
           />
 
           {/* Message */}
@@ -117,7 +117,7 @@ export function TicketWidget({ page }: { page: string }) {
             onChange={(e) => setMessage(e.target.value)}
             maxLength={2000}
             rows={4}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] resize-none"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)] resize-none"
           />
 
           {/* Submit */}

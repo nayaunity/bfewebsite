@@ -61,7 +61,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
         {sidebarOpen && (
           <div className="space-y-2">
             {course.modules.map((module) => (
-              <div key={module.id} className="border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#4d1b27] transition-colors">
+              <div key={module.id} className="border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[var(--accent)] transition-colors">
                 <button
                   onClick={() => {
                     setActiveModule(activeModule === module.id ? 0 : module.id);
@@ -146,7 +146,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                           </svg>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[#4d1b27] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
+                          <p className={`truncate ${currentSlug === lesson.slug ? "text-[var(--accent)] font-medium" : ""} ${isCompleted(lesson.slug) ? "text-[var(--accent-green-text)]" : ""}`}>
                             {lesson.title}
                           </p>
                           <p className="text-xs text-[var(--gray-600)]">{lesson.duration}</p>

@@ -95,14 +95,14 @@ export default function Jobs() {
                 className="bg-[var(--card-bg)] p-6 rounded-2xl hover:shadow-lg transition-shadow group border border-[var(--card-border)] text-left cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[#4d1b27] text-sm font-medium">{job.company}</span>
+                  <span className="text-[var(--accent)] text-sm font-medium">{job.company}</span>
                   {job.remote && (
                     <span className="text-xs px-2 py-0.5 bg-green-100 text-green-800 rounded-full">
                       Remote
                     </span>
                   )}
                 </div>
-                <h3 className="font-serif text-xl mt-2 group-hover:text-[#4d1b27] transition-colors">
+                <h3 className="font-serif text-xl mt-2 group-hover:text-[var(--accent)] transition-colors">
                   {job.title}
                 </h3>
                 <div className="mt-4 flex items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -135,7 +135,7 @@ export default function Jobs() {
           <p className="text-sm tracking-wide mb-4">ARE YOU HIRING?</p>
           <Link
             href="/jobs/submit"
-            className="inline-block border-2 border-[#4d1b27] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors"
+            className="inline-block border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors"
           >
             Post a Job
           </Link>

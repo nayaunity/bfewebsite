@@ -28,7 +28,7 @@ export default function FinalCTA() {
         <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
           Land your dream job,
           <br />
-          <span className="italic text-[#4d1b27]">10x easier</span>.
+          <span className="italic text-[var(--accent)]">10x easier</span>.
         </h2>
 
         <Link

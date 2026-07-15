@@ -246,7 +246,7 @@ export default function AdminSidebar({
                 href={item.href}
                 className={`flex flex-col items-center px-3 py-2 text-xs font-medium transition-colors ${
                   isActive
-                    ? "text-[#4d1b27]"
+                    ? "text-[var(--accent)]"
                     : "text-[var(--gray-600)]"
                 }`}
               >

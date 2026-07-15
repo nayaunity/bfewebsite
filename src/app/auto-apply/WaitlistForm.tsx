@@ -39,7 +39,7 @@ export default function WaitlistForm() {
           placeholder="Enter your email"
           required
           disabled={isLoading}
-          className="flex-1 px-5 py-4 bg-[var(--background)] border-2 border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 focus:border-[#4d1b27] disabled:opacity-50"
+          className="flex-1 px-5 py-4 bg-[var(--background)] border-2 border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 focus:border-[var(--accent)] disabled:opacity-50"
         />
         <button
           type="submit"

@@ -229,7 +229,7 @@ export default function BuildingATechAudiencePage() {
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Building a{" "}
-                  <span className="italic text-[#4d1b27]">Tech Audience</span>.
+                  <span className="italic text-[var(--accent)]">Tech Audience</span>.
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
                   The course for engineers who want their technical expertise
@@ -327,7 +327,7 @@ export default function BuildingATechAudiencePage() {
                     {mod.topics.map((topic, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <svg
-                          className="w-4 h-4 text-[#4d1b27] flex-shrink-0 mt-1"
+                          className="w-4 h-4 text-[var(--accent)] flex-shrink-0 mt-1"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -370,7 +370,7 @@ export default function BuildingATechAudiencePage() {
                   key={tier.key}
                   className={`relative bg-[var(--card-bg)] rounded-2xl p-8 flex flex-col ${
                     tier.highlight
-                      ? "border-2 border-[#4d1b27] md:scale-105 md:shadow-xl"
+                      ? "border-2 border-[var(--accent)] md:scale-105 md:shadow-xl"
                       : "border border-[var(--card-border)]"
                   }`}
                 >
@@ -385,14 +385,14 @@ export default function BuildingATechAudiencePage() {
                       {tier.tagline}
                     </p>
                   </div>
-                  <div className="font-serif text-5xl text-[#4d1b27] text-center mb-8">
+                  <div className="font-serif text-5xl text-[var(--accent)] text-center mb-8">
                     {tier.price}
                   </div>
                   <ul className="space-y-3 text-left mb-8 flex-1">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <svg
-                          className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5"
+                          className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -468,11 +468,11 @@ export default function BuildingATechAudiencePage() {
               </p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>AMAZON</span>
-                <span className="text-[#4d1b27]">MICROSOFT</span>
+                <span className="text-[var(--accent)]">MICROSOFT</span>
                 <span>ADOBE</span>
-                <span className="text-[#4d1b27]">LINKEDIN</span>
+                <span className="text-[var(--accent)]">LINKEDIN</span>
                 <span>HP</span>
-                <span className="text-[#4d1b27]">ANTHROPIC</span>
+                <span className="text-[var(--accent)]">ANTHROPIC</span>
               </div>
             </div>
           </div>

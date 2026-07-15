@@ -299,8 +299,8 @@ function YesNoButton({
       className={
         "flex-1 px-4 py-2 rounded-lg border text-sm font-medium transition-colors " +
         (active
-          ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-          : "border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] hover:border-[#4d1b27]/60")
+          ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+          : "border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] hover:border-[var(--accent)]/60")
       }
     >
       {label}

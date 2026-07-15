@@ -55,7 +55,7 @@ export default async function PortfolioPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-3xl font-serif font-bold text-[var(--foreground)]">
-              My <span className="text-[#4d1b27] italic">Portfolio</span>
+              My <span className="text-[var(--accent)] italic">Portfolio</span>
             </h1>
             <p className="text-[var(--gray-600)] mt-2">
               A professional portfolio generated from your resume with AI-powered visuals.

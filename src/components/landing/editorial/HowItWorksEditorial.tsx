@@ -101,7 +101,7 @@ export default function HowItWorksEditorial() {
             style={{ fontSize: "clamp(40px, 5.2vw, 72px)" }}
           >
             Three steps.<br />
-            <span className="italic text-[#4d1b27]">Then you go live your life.</span>
+            <span className="italic text-[var(--accent)]">Then you go live your life.</span>
           </h2>
         </div>
 

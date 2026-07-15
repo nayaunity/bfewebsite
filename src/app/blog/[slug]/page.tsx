@@ -92,7 +92,7 @@ function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
           href={linkMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#4d1b27] hover:underline"
+          className="text-[var(--accent)] hover:underline"
         >
           {linkMatch[1]}
         </a>
@@ -105,7 +105,7 @@ function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
           href={urlMatch[0]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#4d1b27] hover:underline break-all"
+          className="text-[var(--accent)] hover:underline break-all"
         >
           {urlMatch[0]}
         </a>
@@ -320,7 +320,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="mb-8">
             <Link
               href="/blog"
-              className="text-sm text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors inline-flex items-center gap-2"
+              className="text-sm text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -402,7 +402,7 @@ export default async function BlogPostPage({ params }: Props) {
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#4d1b27] hover:bg-[#4d1b27] transition-colors group"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors group"
               >
                 <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -412,7 +412,7 @@ export default async function BlogPostPage({ params }: Props) {
                 href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#4d1b27] hover:bg-[#4d1b27] transition-colors group"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors group"
               >
                 <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -432,7 +432,7 @@ export default async function BlogPostPage({ params }: Props) {
                   <Link
                     key={relatedPost.slug}
                     href={`/blog/${relatedPost.slug}`}
-                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all"
+                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-lg transition-all"
                   >
                     {relatedPost.image && (
                       <div className="relative aspect-[16/9] overflow-hidden">
@@ -447,7 +447,7 @@ export default async function BlogPostPage({ params }: Props) {
                     )}
                     <div className="p-5">
                       <span className="text-xs text-[var(--gray-600)]">{relatedPost.readTime}</span>
-                      <h3 className="font-serif text-lg mt-2 text-[var(--foreground)] group-hover:text-[#4d1b27] transition-colors line-clamp-2">
+                      <h3 className="font-serif text-lg mt-2 text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                         {relatedPost.title}
                       </h3>
                     </div>

@@ -233,7 +233,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                 onClick={() => setSelectedId(request.id)}
                 className={`mb-3 w-full rounded-2xl border p-4 text-left transition-colors ${
                   selectedId === request.id
-                    ? "border-[#4d1b27] bg-[#4d1b27]/5"
+                    ? "border-[var(--accent)] bg-[#4d1b27]/5"
                     : "border-[var(--card-border)] hover:bg-[var(--gray-50)]"
                 }`}
               >
@@ -247,7 +247,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-medium text-[#4d1b27]">P{request.priority}</p>
+                    <p className="text-xs font-medium text-[var(--accent)]">P{request.priority}</p>
                     <p className="mt-1 text-[11px] text-[var(--gray-600)]">{STATUS_LABELS[coerceStatus(request.status)]}</p>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--gray-600)]">Connection</p>
                 <p className="mt-2 text-sm font-medium text-[var(--foreground)]">{selected.connection.fullName}</p>
                 <p className="text-sm text-[var(--gray-600)]">{selected.connection.headline || "LinkedIn connection"}</p>
-                <a href={selected.connection.profileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs text-[#4d1b27] hover:underline">
+                <a href={selected.connection.profileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs text-[var(--accent)] hover:underline">
                   Open LinkedIn profile
                 </a>
               </div>
@@ -356,7 +356,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                     <ul className="mt-3 space-y-2 text-sm text-[var(--foreground)]">
                       {selectedPacket.whyMeBullets.map((bullet) => (
                         <li key={bullet} className="flex gap-2">
-                          <span className="mt-1 text-[#4d1b27]">•</span>
+                          <span className="mt-1 text-[var(--accent)]">•</span>
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -367,7 +367,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                     <ul className="mt-3 space-y-2 text-sm text-[var(--foreground)]">
                       {selectedPacket.followUpChecklist.map((bullet) => (
                         <li key={bullet} className="flex gap-2">
-                          <span className="mt-1 text-[#4d1b27]">✓</span>
+                          <span className="mt-1 text-[var(--accent)]">✓</span>
                           <span>{bullet}</span>
                         </li>
                       ))}

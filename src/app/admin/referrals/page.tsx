@@ -117,7 +117,7 @@ export default async function AdminReferralsPage() {
           <p className="text-xs text-[var(--gray-600)]">Total requests</p>
         </div>
         <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-4">
-          <p className="text-2xl font-bold text-[#4d1b27]">{live}</p>
+          <p className="text-2xl font-bold text-[var(--accent)]">{live}</p>
           <p className="text-xs text-[var(--gray-600)]">Live queue</p>
         </div>
         <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-4">

@@ -209,7 +209,7 @@ function AuthForm() {
         </p>
         <button
           onClick={() => { setStep("email"); setPassword(""); setError(""); }}
-          className="mt-4 text-sm text-[#4d1b27] hover:underline"
+          className="mt-4 text-sm text-[var(--accent)] hover:underline"
         >
           Try a different method
         </button>
@@ -221,7 +221,7 @@ function AuthForm() {
     <>
       <div className="text-center mb-6">
         <Link href="/" className="font-serif text-2xl font-bold">
-          the<span className="text-[#4d1b27]">BFE</span>
+          the<span className="text-[var(--accent)]">BFE</span>
         </Link>
         <p className="text-sm text-[var(--gray-600)] mt-2">
           {step === "email" && "Enter your email to get started"}
@@ -250,7 +250,7 @@ function AuthForm() {
               placeholder="you@example.com"
               required
               autoFocus
-              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
             />
           </div>
           <button
@@ -268,7 +268,7 @@ function AuthForm() {
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
               {email}
-              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#4d1b27] text-xs hover:underline">change</button>
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[var(--accent)] text-xs hover:underline">change</button>
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
@@ -281,7 +281,7 @@ function AuthForm() {
                 placeholder="Enter your password"
                 required
                 autoFocus
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button
@@ -307,7 +307,7 @@ function AuthForm() {
           <form onSubmit={handleSetPassword} className="space-y-4">
             <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
               {email}
-              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#4d1b27] text-xs hover:underline">change</button>
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[var(--accent)] text-xs hover:underline">change</button>
             </div>
             <p className="text-xs text-[var(--gray-600)]">
               You previously signed in with a magic link. Set a password so you can sign in faster next time.
@@ -324,7 +324,7 @@ function AuthForm() {
                 required
                 autoFocus
                 minLength={8}
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button
@@ -350,7 +350,7 @@ function AuthForm() {
           <form onSubmit={handleCreateAccount} className="space-y-4">
             <div className="px-4 py-3 text-sm rounded-lg bg-[var(--gray-50)] text-[var(--foreground)] border border-[var(--card-border)]">
               {email}
-              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[#4d1b27] text-xs hover:underline">change</button>
+              <button type="button" onClick={() => { setStep("email"); setPassword(""); setError(""); }} className="ml-2 text-[var(--accent)] text-xs hover:underline">change</button>
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
@@ -364,7 +364,7 @@ function AuthForm() {
                 required
                 autoFocus
                 minLength={8}
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button

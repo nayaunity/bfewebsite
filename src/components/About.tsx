@@ -52,7 +52,7 @@ export default function About() {
         <div className="bg-[var(--background)] p-8 md:p-12 flex items-center justify-center border-l border-[var(--card-border)]">
           <Link
             href="#community"
-            className="border-2 border-[#4d1b27] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors text-center"
+            className="border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors text-center"
           >
             JOIN US
           </Link>
@@ -68,7 +68,7 @@ export default function About() {
 
           {/* Partner Logos as Text - Row 1 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
-            <span className="text-[#4d1b27]">MICROSOFT</span>
+            <span className="text-[var(--accent)]">MICROSOFT</span>
             <span>ADOBE</span>
             <span>AMAZON</span>
             <span>HP</span>
@@ -77,7 +77,7 @@ export default function About() {
           {/* Partner Logos as Text - Row 2 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>TIKTOK</span>
-            <span className="text-[#4d1b27]">LINKEDIN</span>
+            <span className="text-[var(--accent)]">LINKEDIN</span>
             <span>SAS</span>
             <span>CANVA</span>
           </div>
@@ -86,13 +86,13 @@ export default function About() {
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">
             <span>JETBRAINS</span>
             <span>SERVICENOW</span>
-            <span className="text-[#4d1b27]">ANTHROPIC</span>
+            <span className="text-[var(--accent)]">ANTHROPIC</span>
             {/* <span>AFROTECH</span> */}
           </div>
 
           <p className="text-center mt-12 text-sm">
             WANT TO PARTNER WITH ME?{" "}
-            <a href="/work-with-us" className="underline hover:text-[#4d1b27]">
+            <a href="/work-with-us" className="underline hover:text-[var(--accent)]">
               LET ME KNOW
             </a>
           </p>

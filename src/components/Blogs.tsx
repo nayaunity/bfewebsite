@@ -51,11 +51,11 @@ export default async function Blogs() {
                 {/* Content */}
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[#4d1b27] text-sm font-medium">{post.category}</span>
+                    <span className="text-[var(--accent)] text-sm font-medium">{post.category}</span>
                     <span className="text-white/40 text-sm">·</span>
                     <span className="text-white/40 text-sm">{post.readTime}</span>
                   </div>
-                  <h3 className="font-serif text-lg text-white group-hover:text-[#4d1b27] transition-colors line-clamp-2">
+                  <h3 className="font-serif text-lg text-white group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   <p className="mt-2 text-white/50 text-sm line-clamp-2">

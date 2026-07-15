@@ -55,7 +55,7 @@ export default function Resources() {
                   <li key={itemIndex}>
                     <Link
                       href={item.href}
-                      className="group flex items-center justify-between py-2 hover:text-[#4d1b27] transition-colors"
+                      className="group flex items-center justify-between py-2 hover:text-[var(--accent)] transition-colors"
                     >
                       <span className="font-serif text-xl">{item.name}</span>
                       <svg

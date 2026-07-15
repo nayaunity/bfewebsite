@@ -118,8 +118,8 @@ export default function CsvUploadPanel({
         onClick={() => inputRef.current?.click()}
         className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
           dragOver
-            ? "border-[#4d1b27] bg-[#4d1b27]/5"
-            : "border-[var(--card-border)] hover:border-[#4d1b27]/50"
+            ? "border-[var(--accent)] bg-[#4d1b27]/5"
+            : "border-[var(--card-border)] hover:border-[var(--accent)]/50"
         } ${state === "uploading" ? "pointer-events-none opacity-60" : ""}`}
       >
         <input
@@ -132,7 +132,7 @@ export default function CsvUploadPanel({
 
         {state === "uploading" ? (
           <div className="space-y-2">
-            <div className="inline-block w-6 h-6 border-2 border-[#4d1b27] border-t-transparent rounded-full animate-spin" />
+            <div className="inline-block w-6 h-6 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-[var(--gray-600)]">Importing connections...</p>
           </div>
         ) : (

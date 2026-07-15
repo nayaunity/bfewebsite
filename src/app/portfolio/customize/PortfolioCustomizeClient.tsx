@@ -113,7 +113,7 @@ export function PortfolioCustomizeClient({
             Live at:{" "}
             <Link
               href={`/portfolio/${slug}`}
-              className="text-[#4d1b27] hover:underline"
+              className="text-[var(--accent)] hover:underline"
             >
               /portfolio/{slug}
             </Link>

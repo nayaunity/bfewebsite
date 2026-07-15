@@ -25,7 +25,7 @@ export default function CohortPage() {
             </p>
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-tight">
               Use AI to build the{" "}
-              <span className="italic text-[#4d1b27]">life</span> you
+              <span className="italic text-[var(--accent)]">life</span> you
               actually want.
             </h1>
             <p className="mt-8 text-lg md:text-xl text-[var(--gray-600)] max-w-2xl mx-auto">
@@ -39,7 +39,7 @@ export default function CohortPage() {
         <section className="bg-[var(--gray-50)] py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="font-serif text-3xl md:text-4xl text-center mb-4">
-              What you&apos;ll <span className="italic text-[#4d1b27]">learn</span>
+              What you&apos;ll <span className="italic text-[var(--accent)]">learn</span>
             </h2>
             <p className="text-center text-[var(--gray-600)] mb-12 max-w-xl mx-auto">
               This isn&apos;t a course about prompting. It&apos;s a system for
@@ -71,7 +71,7 @@ export default function CohortPage() {
                   key={item.number}
                   className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8"
                 >
-                  <span className="text-sm font-mono text-[#4d1b27]">
+                  <span className="text-sm font-mono text-[var(--accent)]">
                     {item.number}
                   </span>
                   <h3 className="font-serif text-xl mt-3 mb-3">{item.title}</h3>
@@ -89,7 +89,7 @@ export default function CohortPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="font-serif text-3xl md:text-4xl text-center mb-12">
               Built for people who are{" "}
-              <span className="italic text-[#4d1b27]">ready</span>
+              <span className="italic text-[var(--accent)]">ready</span>
             </h2>
 
             <div className="grid sm:grid-cols-2 gap-6">

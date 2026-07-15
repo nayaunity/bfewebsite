@@ -86,7 +86,7 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
                     key={ticket.id}
                     className={`bg-[var(--background)] border rounded-xl p-3 hover:shadow-md transition-all cursor-pointer ${
                       selectedTicket?.id === ticket.id
-                        ? "border-[#4d1b27] ring-1 ring-[#4d1b27]/30"
+                        ? "border-[var(--accent)] ring-1 ring-[#4d1b27]/30"
                         : "border-[var(--card-border)]"
                     }`}
                     onClick={() => setSelectedTicket(selectedTicket?.id === ticket.id ? null : ticket)}
@@ -186,7 +186,7 @@ export default function TicketKanban({ initialTickets }: { initialTickets: Ticke
                       onClick={() => moveTicket(selectedTicket.id, col.key)}
                       className={`flex-1 py-2 text-xs font-medium rounded-lg border transition-colors ${
                         selectedTicket.status === col.key
-                          ? "border-[#4d1b27] bg-[#4d1b27] text-white"
+                          ? "border-[var(--accent)] bg-[#4d1b27] text-white"
                           : "border-[var(--card-border)] text-[var(--gray-600)] hover:bg-[var(--gray-50)]"
                       }`}
                     >

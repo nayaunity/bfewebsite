@@ -114,7 +114,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
         <div className="text-center max-w-md">
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-[#4d1b27] animate-spin"
+              className="w-8 h-8 text-[var(--accent)] animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -185,7 +185,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
         <div className="text-center max-w-md">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-[#4d1b27]"
+              className="w-10 h-10 text-[var(--accent)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -247,7 +247,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
         <div className="text-center max-w-md">
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-[#4d1b27] animate-spin"
+              className="w-8 h-8 text-[var(--accent)] animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -284,7 +284,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
         <div className="text-center max-w-md">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#4d1b27]/10 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-[#4d1b27]"
+              className="w-10 h-10 text-[var(--accent)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -392,7 +392,7 @@ export function ResumeQuiz({ firstName }: { firstName: string | null }) {
           }
           placeholder={q.placeholder}
           rows={4}
-          className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--gray-600)]/50 focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27] resize-none transition-all"
+          className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--gray-600)]/50 focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)] resize-none transition-all"
           autoFocus
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.metaKey && canProceed) {

@@ -11,7 +11,7 @@ export default function PricingSection() {
             style={{ fontSize: "clamp(40px, 5.2vw, 72px)" }}
           >
             Two plans.<br />
-            <span className="italic text-[#4d1b27]">Both cheaper than a recruiter.</span>
+            <span className="italic text-[var(--accent)]">Both cheaper than a recruiter.</span>
           </h2>
         </div>
 

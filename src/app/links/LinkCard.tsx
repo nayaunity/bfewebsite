@@ -76,7 +76,7 @@ export function LinkCard({ id, title, description, url, image, featured }: LinkC
       onClick={handleClick}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="block bg-[var(--card-bg)] border border-[var(--card-border)] p-5 rounded-2xl hover:border-[#4d1b27] transition-colors group"
+      className="block bg-[var(--card-bg)] border border-[var(--card-border)] p-5 rounded-2xl hover:border-[var(--accent)] transition-colors group"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -91,7 +91,7 @@ export function LinkCard({ id, title, description, url, image, featured }: LinkC
             </div>
           )}
           <div>
-            <h3 className="font-serif text-lg group-hover:text-[#4d1b27] transition-colors">{title}</h3>
+            <h3 className="font-serif text-lg group-hover:text-[var(--accent)] transition-colors">{title}</h3>
             {description && (
               <p className="text-[var(--gray-600)] text-sm mt-1">{description}</p>
             )}

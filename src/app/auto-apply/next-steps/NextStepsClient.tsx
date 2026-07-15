@@ -110,7 +110,7 @@ export default function NextStepsClient({
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--card-border)]">
         <Link href="/" className="font-serif text-xl font-bold">
-          the<span className="text-[#4d1b27]">BFE</span>
+          the<span className="text-[var(--accent)]">BFE</span>
         </Link>
         <Link
           href="/"
@@ -126,7 +126,7 @@ export default function NextStepsClient({
           <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-3">
             Welcome{userName ? `, ${userName}` : ""}!
           </h1>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4d1b27]/10 text-[#4d1b27] text-sm font-bold">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4d1b27]/10 text-[var(--accent)] text-sm font-bold">
             Last step!
           </div>
           <p className="mt-4 text-[var(--gray-600)] max-w-md mx-auto">
@@ -233,8 +233,8 @@ export default function NextStepsClient({
                     onClick={() => setSelectedRole(selectedRole === role ? null : role)}
                     className={`px-4 py-2 text-sm rounded-full border transition-colors ${
                       selectedRole === role
-                        ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-medium"
-                        : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#4d1b27]"
+                        ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)] font-medium"
+                        : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--accent)]"
                     }`}
                   >
                     {role}
@@ -246,11 +246,11 @@ export default function NextStepsClient({
             {/* Upload button — only shows after role selected */}
             {selectedRole && (
               <label className="block cursor-pointer mt-3">
-                <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-[#4d1b27] rounded-lg bg-[#4d1b27]/5 hover:bg-[#4d1b27]/10 transition-colors">
-                  <svg className="w-5 h-5 text-[#4d1b27]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-[var(--accent)] rounded-lg bg-[#4d1b27]/5 hover:bg-[#4d1b27]/10 transition-colors">
+                  <svg className="w-5 h-5 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                   </svg>
-                  <span className="text-sm font-medium text-[#4d1b27]">
+                  <span className="text-sm font-medium text-[var(--accent)]">
                     {uploading ? "Uploading..." : `Upload ${selectedRole} resume (PDF)`}
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export default function NextStepsClient({
         {/* Trial CTA - shown to free users after resume upload */}
         {goalMet && tier === "free" && (
           <div className="mt-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6">
-            <p className="text-xs font-semibold text-[#4d1b27] uppercase tracking-wider mb-2">7-day free trial</p>
+            <p className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider mb-2">7-day free trial</p>
             <p className="font-serif text-xl text-[var(--foreground)]">Start applying today, no charge for 7 days</p>
             <p className="text-sm text-[var(--gray-600)] mt-2">
               We auto-apply to up to 100 matched jobs per month. Card on file, $0 today, $29/mo after the trial. Cancel anytime.
@@ -284,7 +284,7 @@ export default function NextStepsClient({
               {trialLoading ? "Starting..." : "Start 7-day trial"}
             </button>
             <p className="text-[11px] text-[var(--gray-600)] text-center mt-2">
-              Prefer the upgrade? <Link href="/pricing" className="text-[#4d1b27] hover:underline">See plan options</Link>
+              Prefer the upgrade? <Link href="/pricing" className="text-[var(--accent)] hover:underline">See plan options</Link>
             </p>
           </div>
         )}

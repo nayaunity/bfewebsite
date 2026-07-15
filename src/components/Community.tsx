@@ -28,7 +28,7 @@ export default function Community() {
           <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
           <p className="text-xl md:text-2xl text-white/80 font-serif italic">
             We&apos;re engineers, creators, leaders, and{" "}
-            <span className="text-[#4d1b27]">out-of-the-box</span> thinkers.
+            <span className="text-[var(--accent)]">out-of-the-box</span> thinkers.
           </p>
 
           {isSuccess ? (
@@ -91,7 +91,7 @@ export default function Community() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                  <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#4d1b27] transition-colors">
+                  <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[var(--accent)] transition-colors">
                     {member.name}
                   </h4>
                   <p className="text-white/60 text-sm mt-1">
@@ -157,19 +157,19 @@ export default function Community() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">250K+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">250K+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Community Members</div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">100+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">100+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Resources Shared</div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">50+</div>
+              <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">50+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Partnered Companies</div>
             </div>
             <div>
-              {/* <div className="font-serif text-4xl md:text-5xl text-[#4d1b27]">50+</div>
+              {/* <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">50+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div> */}
             </div>
           </div>

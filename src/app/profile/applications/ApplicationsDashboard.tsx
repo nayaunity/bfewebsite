@@ -658,7 +658,7 @@ export default function ApplicationsDashboard({
             </p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-[68px] 2xl:text-[80px] leading-[0.95] mt-2 tracking-tight text-[var(--foreground)]">
               <span>We applied to </span>
-              <span className="text-[#4d1b27]">{counted} jobs</span>
+              <span className="text-[var(--accent)]">{counted} jobs</span>
               <span> for you.</span>
             </h2>
             <p className="mt-3 text-base xl:text-lg text-[var(--gray-600)] max-w-3xl">
@@ -709,7 +709,7 @@ export default function ApplicationsDashboard({
                     Monthly applications {tierLabel ? `· ${tierLabel}` : ""}
                   </span>
                   <span className="text-[12px] font-mono tabular-nums text-[var(--foreground)]">
-                    <span className="font-semibold text-[#4d1b27]">{usage.used}</span>
+                    <span className="font-semibold text-[var(--accent)]">{usage.used}</span>
                     <span className="text-[var(--gray-600)]"> / {usage.limit}</span>
                   </span>
                 </div>
@@ -737,14 +737,14 @@ export default function ApplicationsDashboard({
           {/* Start Applying CTA — gates on profileReady, hasActiveSession, atLimit */}
           <div className="flex justify-start lg:justify-center">
             {hasActiveSession ? (
-              <span className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.15em] rounded-xl bg-[#fef3ef] text-[#4d1b27]">
+              <span className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.15em] rounded-xl bg-[#fef3ef] text-[var(--accent)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27] animate-pulse" />
                 Session running
               </span>
             ) : atLimit ? (
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[#4d1b27] hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[var(--accent)] hover:opacity-90 transition-all"
               >
                 Limit reached. See plans
               </Link>
@@ -774,7 +774,7 @@ export default function ApplicationsDashboard({
             ) : (
               <Link
                 href={missingRoles ? "/profile" : "/auto-apply/next-steps"}
-                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[#4d1b27] hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[var(--accent)] hover:opacity-90 transition-all"
               >
                 {missingRoles ? "Set target roles" : "Upload a resume"}
               </Link>
@@ -785,7 +785,7 @@ export default function ApplicationsDashboard({
           <div
             className="flex items-start gap-3 rounded-2xl px-4 py-3 bg-[var(--accent-blue-bg)] border border-[var(--card-border)]"
           >
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#4d1b27]/10 text-[#4d1b27]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#4d1b27]/10 text-[var(--accent)]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6" />
               </svg>
@@ -839,13 +839,13 @@ export default function ApplicationsDashboard({
             {missingRoles && (
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27]" />
-                <Link href="/profile" className="hover:text-[#4d1b27] hover:underline">Set your target roles</Link>
+                <Link href="/profile" className="hover:text-[var(--accent)] hover:underline">Set your target roles</Link>
               </li>
             )}
             {missingResume && (
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27]" />
-                <Link href="/auto-apply/next-steps" className="hover:text-[#4d1b27] hover:underline">Upload a resume</Link>
+                <Link href="/auto-apply/next-steps" className="hover:text-[var(--accent)] hover:underline">Upload a resume</Link>
               </li>
             )}
           </ul>
@@ -872,7 +872,7 @@ export default function ApplicationsDashboard({
           <div className="mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden">
             <div className="px-5 py-4 border-b border-[var(--gray-100)] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-[#4d1b27]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h3l3-7 4 14 3-7h5" />
                 </svg>
                 <h2 className="text-[15px] font-semibold text-[var(--foreground)]">
@@ -880,7 +880,7 @@ export default function ApplicationsDashboard({
                 </h2>
               </div>
               {isActive ? (
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#fef3ef] text-[#4d1b27]">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#fef3ef] text-[var(--accent)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27] animate-pulse" />
                   Running
                 </span>
@@ -904,7 +904,7 @@ export default function ApplicationsDashboard({
                             ? "Submitting applications"
                             : "Scanning your target companies"}
                       </span>
-                      <span className="text-xl font-bold text-[#4d1b27]">{progressPct}%</span>
+                      <span className="text-xl font-bold text-[var(--accent)]">{progressPct}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-[var(--gray-100)] rounded-full overflow-hidden">
                       <div
@@ -1043,7 +1043,7 @@ export default function ApplicationsDashboard({
                       href={task.applyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-[#4d1b27] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
                     >
                       View Job
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1099,7 +1099,7 @@ export default function ApplicationsDashboard({
 
       {/* Celebration Banner — shown after first success, before hitting limit */}
       {usage && usage.tier === "free" && stats.applied >= 1 && !atLimit && !celebrationDismissed && (
-        <div className="mb-8 relative bg-gradient-to-r from-[#4d1b27]/5 to-[#4d1b27]/10 border border-[#4d1b27]/20 rounded-2xl p-5">
+        <div className="mb-8 relative bg-gradient-to-r from-[#4d1b27]/5 to-[#4d1b27]/10 border border-[var(--accent)]/20 rounded-2xl p-5">
           <button
             onClick={() => setCelebrationDismissed(true)}
             className="absolute top-3 right-3 text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
@@ -1119,7 +1119,7 @@ export default function ApplicationsDashboard({
             )}.
           </p>
           {totalActiveJobs && totalActiveJobs > 0 && (
-            <p className="text-sm font-medium text-[#4d1b27] mb-3">
+            <p className="text-sm font-medium text-[var(--accent)] mb-3">
               {totalActiveJobs.toLocaleString()}+ more matching jobs are waiting. Starter members apply to 100/month.
             </p>
           )}
@@ -1235,7 +1235,7 @@ export default function ApplicationsDashboard({
                                   {connectionCounts[slugifyCompany(app.company)] > 0 && (
                                     <Link
                                       href="/profile/referrals"
-                                      className="ml-2 inline-flex items-center gap-1 text-[#4d1b27] font-medium hover:underline"
+                                      className="ml-2 inline-flex items-center gap-1 text-[var(--accent)] font-medium hover:underline"
                                     >
                                       You know {connectionCounts[slugifyCompany(app.company)]} {connectionCounts[slugifyCompany(app.company)] === 1 ? "person" : "people"} here
                                     </Link>
@@ -1264,7 +1264,7 @@ export default function ApplicationsDashboard({
                                       href={app.applyUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="inline-flex items-center gap-1 text-xs text-[#4d1b27] hover:underline"
+                                      className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
                                     >
                                       View Job
                                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1283,7 +1283,7 @@ export default function ApplicationsDashboard({
                                 {connectionCounts[slugifyCompany(app.company)] > 0 && (
                                   <Link
                                     href="/profile/referrals"
-                                    className="inline-flex items-center gap-1 text-xs font-medium text-[#4d1b27] hover:underline"
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] hover:underline"
                                   >
                                     Get Referred
                                   </Link>
@@ -1293,7 +1293,7 @@ export default function ApplicationsDashboard({
                                     href={app.applyUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 text-xs text-[#4d1b27] hover:underline"
+                                    className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
                                   >
                                     View Job
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

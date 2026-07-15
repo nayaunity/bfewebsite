@@ -127,7 +127,7 @@ export default function TermsPage() {
                 <h2 className="font-serif text-2xl mb-4 text-[var(--foreground)]">Contact Us</h2>
                 <p className="text-[var(--gray-600)] leading-relaxed">
                   If you have any questions about these Terms of Service, please contact us at{" "}
-                  <a href="mailto:hello@theblackfemaleengineer.com" className="text-[#4d1b27] hover:underline">
+                  <a href="mailto:hello@theblackfemaleengineer.com" className="text-[var(--accent)] hover:underline">
                     hello@theblackfemaleengineer.com
                   </a>
                 </p>

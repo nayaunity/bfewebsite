@@ -897,7 +897,7 @@ export default function ClaudeArchitectExam() {
             placeholder="Enter your email"
             required
             disabled={isSubmitting}
-            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-[#4d1b27] disabled:opacity-50"
+            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-[var(--accent)] disabled:opacity-50"
           />
           <button
             type="submit"
@@ -983,7 +983,7 @@ export default function ClaudeArchitectExam() {
                   onClick={() => { setReviewFilter(f); setShowReview(true); }}
                   className={`text-[11px] px-2.5 py-1 rounded border cursor-pointer transition-colors ${
                     reviewFilter === f && showReview
-                      ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-semibold"
+                      ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)] font-semibold"
                       : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
                   }`}
                 >
@@ -1089,7 +1089,7 @@ export default function ClaudeArchitectExam() {
                 onClick={() => { setScenIdx(i); setQIdx(0); }}
                 className={`shrink-0 text-[11px] px-2.5 py-1 rounded-md border cursor-pointer transition-colors ${
                   active
-                    ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27] font-semibold"
+                    ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)] font-semibold"
                     : "border-[var(--card-border)] bg-transparent text-[var(--gray-600)]"
                 }`}
               >
@@ -1107,7 +1107,7 @@ export default function ClaudeArchitectExam() {
             </span>
             <button
               onClick={() => setShowCtx(!showCtx)}
-              className="text-[11px] border-none bg-transparent cursor-pointer text-[var(--gray-600)] p-0 hover:text-[#4d1b27] transition-colors"
+              className="text-[11px] border-none bg-transparent cursor-pointer text-[var(--gray-600)] p-0 hover:text-[var(--accent)] transition-colors"
             >
               {showCtx ? "hide" : "show context"}
             </button>
@@ -1149,11 +1149,11 @@ export default function ClaudeArchitectExam() {
                 onClick={() => selectAnswer(i)}
                 className={`w-full text-left py-2.5 px-3.5 rounded-lg mb-1.5 cursor-pointer text-[13px] flex gap-2.5 items-start leading-normal border transition-colors ${
                   selected
-                    ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27]"
+                    ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)]"
                     : "border-[var(--card-border)] bg-transparent text-[var(--foreground)] hover:border-[var(--gray-600)]"
                 }`}
               >
-                <span className={`font-bold min-w-[16px] shrink-0 ${selected ? "text-[#4d1b27]" : "text-[var(--gray-600)]"}`}>
+                <span className={`font-bold min-w-[16px] shrink-0 ${selected ? "text-[var(--accent)]" : "text-[var(--gray-600)]"}`}>
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span>{opt}</span>
@@ -1174,7 +1174,7 @@ export default function ClaudeArchitectExam() {
                 onClick={() => setQIdx(i)}
                 className={`w-7 h-7 rounded text-[11px] cursor-pointer border transition-colors ${
                   isCurrent
-                    ? "bg-[#4d1b27] border-[#4d1b27] text-white font-bold"
+                    ? "bg-[#4d1b27] border-[var(--accent)] text-white font-bold"
                     : isFlag
                     ? "bg-[var(--accent-yellow-bg)] border-amber-500 text-[var(--accent-yellow-text)] font-medium"
                     : done

@@ -8,9 +8,9 @@ export default function PullQuote() {
           style={{ fontSize: "clamp(28px, 3.4vw, 48px)" }}
         >
           The average tech job gets{" "}
-          <span className="italic text-[#4d1b27]">250 applications</span>.
+          <span className="italic text-[var(--accent)]">250 applications</span>.
           You&apos;re sending two a week. We send{" "}
-          <span className="italic text-[#4d1b27]">ten a night</span>,
+          <span className="italic text-[var(--accent)]">ten a night</span>,
           each with a resume rewritten for that exact job description,
           submitted in the window recruiters actually read.
         </p>

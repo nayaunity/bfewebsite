@@ -125,7 +125,7 @@ export default function LessonContent({
                 placeholder="Enter your email"
                 required
                 disabled={isSubmitting}
-                className="w-full px-5 py-4 border border-[var(--card-border)] rounded-full focus:outline-none focus:border-[#4d1b27] bg-[var(--card-bg)] disabled:opacity-50"
+                className="w-full px-5 py-4 border border-[var(--card-border)] rounded-full focus:outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] disabled:opacity-50"
               />
               <button
                 type="submit"
@@ -149,7 +149,7 @@ export default function LessonContent({
           {prevLesson ? (
             <Link
               href={`/resources/gaining-experience/${prevLesson.slug}`}
-              className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors"
+              className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -165,7 +165,7 @@ export default function LessonContent({
           {nextLesson ? (
             <Link
               href={`/resources/gaining-experience/${nextLesson.slug}`}
-              className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors"
+              className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors"
             >
               <div className="text-right">
                 <span className="text-xs text-[var(--gray-600)] block">Next</span>
@@ -245,7 +245,7 @@ export default function LessonContent({
                         const isCodeBlock = className || content.includes('\n');
                         if (!isCodeBlock) {
                           return (
-                            <code className="bg-[var(--gray-100)] px-1.5 py-0.5 rounded text-[#4d1b27] font-normal text-sm" {...props}>
+                            <code className="bg-[var(--gray-100)] px-1.5 py-0.5 rounded text-[var(--accent)] font-normal text-sm" {...props}>
                               {children}
                             </code>
                           );
@@ -273,7 +273,7 @@ export default function LessonContent({
                       ),
                       li: ({ children }) => (
                         <li className="flex gap-2">
-                          <span className="text-[#4d1b27] mt-1.5 flex-shrink-0">•</span>
+                          <span className="text-[var(--accent)] mt-1.5 flex-shrink-0">•</span>
                           <span>{children}</span>
                         </li>
                       ),
@@ -288,7 +288,7 @@ export default function LessonContent({
                         </strong>
                       ),
                       blockquote: ({ children }) => (
-                        <blockquote className="border-l-4 border-[#4d1b27] bg-[var(--blockquote-bg)] pl-4 py-3 my-4 italic text-[var(--blockquote-text)]">
+                        <blockquote className="border-l-4 border-[var(--accent)] bg-[var(--blockquote-bg)] pl-4 py-3 my-4 italic text-[var(--blockquote-text)]">
                           {children}
                         </blockquote>
                       ),
@@ -305,7 +305,7 @@ export default function LessonContent({
           {content.resources.length > 0 && (
             <div className="mt-12 p-6 md:p-8 bg-[var(--gray-50)] rounded-2xl">
               <h3 className="font-serif text-xl mb-6 flex items-center gap-2">
-                <svg className="w-6 h-6 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 Curated Resources
@@ -317,20 +317,20 @@ export default function LessonContent({
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block bg-[var(--card-bg)] p-4 rounded-xl border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-md transition-all group"
+                    className="block bg-[var(--card-bg)] p-4 rounded-xl border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-md transition-all group"
                   >
                     <div className="flex items-start justify-between">
                       <div>
                         <span className="text-xs px-2 py-0.5 rounded bg-[var(--gray-100)] text-[var(--gray-600)]">
                           {resource.type}
                         </span>
-                        <h4 className="font-medium mt-2 group-hover:text-[#4d1b27] transition-colors">
+                        <h4 className="font-medium mt-2 group-hover:text-[var(--accent)] transition-colors">
                           {resource.title}
                         </h4>
                         <p className="text-sm text-[var(--gray-600)] mt-1">{resource.source}</p>
                         <p className="text-sm text-[var(--gray-600)] mt-2">{resource.description}</p>
                       </div>
-                      <svg className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[var(--accent)] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </div>
@@ -342,9 +342,9 @@ export default function LessonContent({
 
           {/* Key Takeaways */}
           {content.keyTakeaways.length > 0 && (
-            <div className="mt-8 p-6 md:p-8 bg-[#4d1b27]/10 border border-[#4d1b27]/30 rounded-2xl">
+            <div className="mt-8 p-6 md:p-8 bg-[#4d1b27]/10 border border-[var(--accent)]/30 rounded-2xl">
               <h3 className="font-serif text-xl mb-4 flex items-center gap-2">
-                <svg className="w-6 h-6 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
                 Key Takeaways
@@ -438,7 +438,7 @@ export default function LessonContent({
         {prevLesson ? (
           <Link
             href={`/resources/gaining-experience/${prevLesson.slug}`}
-            className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors"
+            className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -454,7 +454,7 @@ export default function LessonContent({
         {nextLesson ? (
           <Link
             href={`/resources/gaining-experience/${nextLesson.slug}`}
-            className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors"
+            className="flex items-center gap-2 text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors"
           >
             <div className="text-right">
               <span className="text-xs text-[var(--gray-600)] block">Next</span>

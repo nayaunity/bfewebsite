@@ -297,7 +297,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
           onClick={() => { setData((p) => ({ ...p, [key]: opt })); setTimeout(next, 300); }}
           className={`w-full py-4 px-6 rounded-xl border text-base font-medium flex items-center justify-center gap-2 transition-all ${
             data[key] === opt
-              ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
+              ? "border-[var(--accent)] bg-[#4d1b27]/5 text-[var(--accent)]"
               : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--gray-200)]"
           }`}
         >
@@ -315,7 +315,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
           onClick={() => { setData((p) => ({ ...p, [key]: opt.label })); setTimeout(next, 300); }}
           className={`w-full py-4 px-6 rounded-xl border text-left transition-all ${
             data[key] === opt.label
-              ? "border-[#4d1b27] bg-[#4d1b27]/5"
+              ? "border-[var(--accent)] bg-[#4d1b27]/5"
               : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
           }`}
         >
@@ -366,7 +366,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     disabled={disabled}
                     className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${
                       selected
-                        ? "border-[#4d1b27] bg-[#4d1b27]/5 text-[#4d1b27]"
+                        ? "border-[var(--accent)] bg-[#4d1b27]/5 text-[var(--accent)]"
                         : disabled
                           ? "border-[var(--card-border)] text-[var(--gray-200)] cursor-not-allowed opacity-40"
                           : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--gray-200)]"
@@ -395,7 +395,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              Our goal is to help you land a great job <span className="text-[#4d1b27]">10x faster</span>.
+              Our goal is to help you land a great job <span className="text-[var(--accent)]">10x faster</span>.
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <p className="text-sm font-medium text-[var(--foreground)] mb-4">Job Offers</p>
@@ -413,7 +413,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
               </div>
               <div className="flex justify-between mt-1 text-xs">
                 <span className="text-red-400">Traditional Job Search</span>
-                <span className="text-[#4d1b27] font-medium">the<span className="font-bold">BFE</span></span>
+                <span className="text-[var(--accent)] font-medium">the<span className="font-bold">BFE</span></span>
               </div>
               <p className="text-sm text-[var(--gray-600)] mt-4 text-center">
                 Interviews are usually delayed at first, but after 1 week the results are clear.
@@ -460,7 +460,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
           <div className="text-center">
             <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">
               Getting<br />
-              <span className="text-[#4d1b27]">{data.interviewGoal} interviews</span> is<br />
+              <span className="text-[var(--accent)]">{data.interviewGoal} interviews</span> is<br />
               totally achievable!
             </h1>
             <p className="text-[var(--gray-600)]">
@@ -485,12 +485,12 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     onClick={() => toggleArray("roles", role.label)}
                     className={`w-full py-3 px-4 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       selected
-                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
+                        ? "border-[var(--accent)] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
+                      selected ? "border-[var(--accent)] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -525,12 +525,12 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     onClick={() => toggleArray("experience", exp.label, 2)}
                     className={`w-full py-4 px-6 rounded-xl border text-left flex items-center gap-3 transition-all ${
                       selected
-                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
+                        ? "border-[var(--accent)] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
+                      selected ? "border-[var(--accent)] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -565,12 +565,12 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     onClick={() => toggleArray("locations", loc)}
                     className={`w-full py-4 px-6 rounded-xl border text-left flex items-center gap-3 transition-all ${
                       selected
-                        ? "border-[#4d1b27] bg-[#4d1b27]/5"
+                        ? "border-[var(--accent)] bg-[#4d1b27]/5"
                         : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#4d1b27] bg-[#4d1b27]" : "border-[var(--gray-200)]"
+                      selected ? "border-[var(--accent)] bg-[#4d1b27]" : "border-[var(--gray-200)]"
                     }`}>
                       {selected && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -586,7 +586,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
             {!showMoreLocations && (
               <button
                 onClick={() => setShowMoreLocations(true)}
-                className="w-full mt-3 text-sm text-[#4d1b27] hover:underline text-center"
+                className="w-full mt-3 text-sm text-[var(--accent)] hover:underline text-center"
               >
                 View More Locations
               </button>
@@ -621,7 +621,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              Land <span className="text-[#4d1b27]">10x more interviews</span> with theBFE
+              Land <span className="text-[var(--accent)]">10x more interviews</span> with theBFE
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex justify-center gap-4 mb-4">
@@ -672,12 +672,12 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
         return (
           <>
             <h1 className="font-serif text-3xl md:text-4xl text-center text-[var(--foreground)] mb-6">
-              You have great potential to <span className="text-[#4d1b27]">crush your goal</span>
+              You have great potential to <span className="text-[var(--accent)]">crush your goal</span>
             </h1>
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[var(--foreground)]">Interviews</span>
-                <span className="text-xs font-medium text-[#4d1b27] bg-[#4d1b27]/10 px-2 py-1 rounded">{dateStr} - Offer</span>
+                <span className="text-xs font-medium text-[var(--accent)] bg-[#4d1b27]/10 px-2 py-1 rounded">{dateStr} - Offer</span>
               </div>
               <div className="h-24 flex items-end gap-1">
                 {[15, 20, 30, 45, 60, 80, 95].map((h, i) => (
@@ -715,7 +715,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     value={data.firstName}
                     onChange={(e) => setData({ ...data, firstName: e.target.value })}
                     placeholder="Jane"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                   />
                 </div>
                 <div>
@@ -725,7 +725,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                     value={data.lastName}
                     onChange={(e) => setData({ ...data, lastName: e.target.value })}
                     placeholder="Doe"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -736,7 +736,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                   value={data.phone}
                   onChange={(e) => setData({ ...data, phone: e.target.value })}
                   placeholder="+1 (555) 123-4567"
-                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                 />
               </div>
               <div>
@@ -746,7 +746,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                   value={data.linkedinUrl}
                   onChange={(e) => setData({ ...data, linkedinUrl: e.target.value })}
                   placeholder="https://linkedin.com/in/yourname"
-                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                 />
                 <p className="text-xs text-[var(--gray-600)] mt-1">Most companies require this on their applications</p>
               </div>
@@ -772,7 +772,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                   value={data.countryOfResidence}
                   onChange={(e) => setData({ ...data, countryOfResidence: e.target.value })}
                   placeholder="United States"
-                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                 />
               </div>
               {data.countryOfResidence.toLowerCase().includes("united states") && (
@@ -781,7 +781,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                   <select
                     value={data.usState}
                     onChange={(e) => setData({ ...data, usState: e.target.value })}
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[#4d1b27]"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
                   >
                     <option value="">Select state...</option>
                     {US_STATES.map((s) => (
@@ -814,8 +814,8 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                       onClick={() => setData({ ...data, workAuthorized: val })}
                       className={`flex-1 py-3 text-sm font-medium rounded-xl border transition-colors ${
                         data.workAuthorized === val
-                          ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27]"
-                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#4d1b27]"
+                          ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)]"
+                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--accent)]"
                       }`}
                     >
                       {val}
@@ -832,8 +832,8 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
                       onClick={() => setData({ ...data, needsSponsorship: val })}
                       className={`flex-1 py-3 text-sm font-medium rounded-xl border transition-colors ${
                         data.needsSponsorship === val
-                          ? "border-[#4d1b27] bg-[#4d1b27]/10 text-[#4d1b27]"
-                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[#4d1b27]"
+                          ? "border-[var(--accent)] bg-[#4d1b27]/10 text-[var(--accent)]"
+                          : "border-[var(--card-border)] text-[var(--foreground)] hover:border-[var(--accent)]"
                       }`}
                     >
                       {val}
@@ -851,7 +851,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
           <div className="text-center py-12">
             <div className="inline-flex items-center gap-3 bg-[var(--gray-50)] rounded-2xl px-8 py-5 border border-[var(--card-border)] mb-10">
               <div className="font-serif text-xl font-bold">
-                the<span className="text-[#4d1b27]">BFE</span>
+                the<span className="text-[var(--accent)]">BFE</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#4d1b27] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -925,8 +925,8 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
             <div className="bg-[var(--gray-50)] rounded-2xl p-6 border border-[var(--card-border)]">
               <div className="flex gap-2 text-xs mb-4">
                 <span className="text-[var(--gray-600)]">Job Matches</span>
-                <span className="text-[#4d1b27]">&gt;</span>
-                <span className="font-medium text-[#4d1b27]">Applying</span>
+                <span className="text-[var(--accent)]">&gt;</span>
+                <span className="font-medium text-[var(--accent)]">Applying</span>
                 <span className="text-[var(--gray-600)]">&gt;</span>
                 <span className="text-[var(--gray-600)]">Applied</span>
               </div>
@@ -1013,8 +1013,8 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
             <h1 className="font-serif text-3xl md:text-4xl text-[var(--foreground)] mb-4">
               Congratulations, your custom plan is ready!
             </h1>
-            <p className="text-xs text-[#4d1b27] uppercase tracking-wider font-medium">YOUR GOAL</p>
-            <p className="text-lg text-[var(--foreground)]">Land a job by <span className="text-[#4d1b27] font-bold">{dateStr}</span></p>
+            <p className="text-xs text-[var(--accent)] uppercase tracking-wider font-medium">YOUR GOAL</p>
+            <p className="text-lg text-[var(--foreground)]">Land a job by <span className="text-[var(--accent)] font-bold">{dateStr}</span></p>
             <p className="font-serif text-xl text-[var(--foreground)] mt-6 mb-4">BFE applies <em>for</em> you:</p>
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {data.roles.slice(0, 2).map((r) => (
@@ -1060,8 +1060,8 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
               </div>
               <div className="text-2xl text-[var(--gray-200)]">&darr;</div>
               <div>
-                <p className="font-bold text-lg text-[#4d1b27]">{dateStr}</p>
-                <p className="font-medium text-[#4d1b27]">Land that job.</p>
+                <p className="font-bold text-lg text-[var(--accent)]">{dateStr}</p>
+                <p className="font-medium text-[var(--accent)]">Land that job.</p>
               </div>
             </div>
           </div>
@@ -1077,7 +1077,7 @@ export default function OnboardingWizard({ isSignedIn = false }: { isSignedIn?: 
     <div className="min-h-screen bg-[var(--background)] flex flex-col">
       <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--card-border)]">
         <Link href="/" className="font-serif text-xl font-bold">
-          the<span className="text-[#4d1b27]">BFE</span>
+          the<span className="text-[var(--accent)]">BFE</span>
         </Link>
         <Link href="/auth/signin" className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors">
           Log in

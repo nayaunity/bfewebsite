@@ -496,7 +496,7 @@ export default async function AnalyticsPage() {
           Site Visitors
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-[var(--card-bg)] border-2 border-[#4d1b27] rounded-xl p-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Active Now</p>
             <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
               {analytics.site.activeNow}
@@ -593,7 +593,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#4d1b27]/10 border border-[#4d1b27]/40 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
               <p className="text-xs text-[var(--gray-600)] mt-0.5">CTA clicks / unique visitors</p>
@@ -689,7 +689,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#4d1b27]/10 border border-[#4d1b27]/40 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
               <p className="text-xs text-[var(--gray-600)] mt-0.5">Tier CTA clicks / unique visitors</p>
@@ -775,7 +775,7 @@ export default async function AnalyticsPage() {
           <h2 className="font-serif text-xl text-[var(--foreground)]">
             Auto Apply Waitlist
           </h2>
-          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[#4d1b27]">
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[var(--accent)]">
             BETA
           </span>
         </div>
@@ -1041,7 +1041,7 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </div>
-        <div className="mt-4 bg-[#4d1b27]/10 border border-[#4d1b27]/40 rounded-xl p-4 flex items-center justify-between">
+        <div className="mt-4 bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-[var(--foreground)]">Claude Code CTA</p>
             <p className="text-xs text-[var(--gray-600)] mt-0.5">Course enrollment button</p>

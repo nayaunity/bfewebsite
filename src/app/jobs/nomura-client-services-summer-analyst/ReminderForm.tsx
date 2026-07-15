@@ -17,7 +17,7 @@ export default function ReminderForm() {
 
   return (
     <section className="my-10">
-      <div className="p-6 md:p-8 bg-[#4d1b27]/50 border border-[#4d1b27] rounded-2xl">
+      <div className="p-6 md:p-8 bg-[#4d1b27]/50 border border-[var(--accent)] rounded-2xl">
         <div className="flex items-start gap-4 mb-4">
           <div className="w-12 h-12 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@ export default function ReminderForm() {
               placeholder="Enter your email"
               required
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 focus:border-[#4d1b27] disabled:opacity-50"
+              className="flex-1 px-4 py-3 bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] placeholder-[var(--gray-600)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 focus:border-[var(--accent)] disabled:opacity-50"
             />
             <button
               type="submit"

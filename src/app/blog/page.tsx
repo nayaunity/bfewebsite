@@ -43,7 +43,7 @@ export default async function BlogPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                The <span className="italic text-[#4d1b27]">blog</span>
+                The <span className="italic text-[var(--accent)]">blog</span>
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Thoughts on AI, career growth, and building the life you want.
@@ -78,7 +78,7 @@ export default async function BlogPage() {
                   <Link
                     key={post.slug}
                     href={`/blog/${post.slug}`}
-                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all"
+                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-lg transition-all"
                   >
                     {post.image && (
                       <div className="relative aspect-[16/9] overflow-hidden">
@@ -98,7 +98,7 @@ export default async function BlogPage() {
                         </span>
                         <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
                       </div>
-                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
+                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[var(--accent)] transition-colors">
                         {post.title}
                       </h3>
                       <p className="mt-2 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>
@@ -111,7 +111,7 @@ export default async function BlogPage() {
                           })}
                         </span>
                         <svg
-                          className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] group-hover:translate-x-1 transition-all"
+                          className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ export default async function BlogPage() {
                     className="group flex flex-col-reverse md:flex-row gap-6 py-8 first:pt-0 last:pb-0"
                   >
                     <div className="flex-1">
-                      <h3 className="font-serif text-xl md:text-2xl font-medium group-hover:text-[#4d1b27] transition-colors leading-tight">
+                      <h3 className="font-serif text-xl md:text-2xl font-medium group-hover:text-[var(--accent)] transition-colors leading-tight">
                         {post.title}
                       </h3>
                       <p className="mt-3 text-[var(--gray-600)] line-clamp-2">{post.excerpt}</p>

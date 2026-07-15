@@ -53,7 +53,7 @@ export default function ResourcesPage() {
       "Essential": "bg-[var(--gray-100)] text-[var(--foreground)]",
       "Advanced": "bg-[var(--accent-purple-bg)] text-[var(--accent-purple-text)]",
       "Beginner": "bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)]",
-      "In-Demand": "bg-[#4d1b27]/10 text-[#4d1b27]",
+      "In-Demand": "bg-[#4d1b27]/10 text-[var(--accent)]",
       "Trending": "bg-pink-100 text-pink-800",
       "Growth": "bg-teal-100 text-teal-800",
       "Hot": "bg-red-100 text-red-800",
@@ -74,7 +74,7 @@ export default function ResourcesPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                Free <span className="italic text-[#4d1b27]">resources</span>
+                Free <span className="italic text-[var(--accent)]">resources</span>
                 <br />
                 to level up
               </h1>
@@ -102,14 +102,14 @@ export default function ResourcesPage() {
                   <Link
                     key={itemIndex}
                     href={item.href || "#"}
-                    className="bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all group"
+                    className="bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <span className={`text-xs px-2 py-1 rounded-full font-medium ${getTagColor(item.tag)}`}>
                         {item.tag}
                       </span>
                       <svg
-                        className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors"
+                        className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[var(--accent)] transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -117,7 +117,7 @@ export default function ResourcesPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
-                    <h3 className="font-serif text-xl group-hover:text-[#4d1b27] transition-colors">
+                    <h3 className="font-serif text-xl group-hover:text-[var(--accent)] transition-colors">
                       {item.name}
                     </h3>
                     <p className="mt-2 text-sm text-[var(--gray-600)]">{item.description}</p>

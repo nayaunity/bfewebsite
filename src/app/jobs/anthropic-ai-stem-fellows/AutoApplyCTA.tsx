@@ -3,7 +3,7 @@ export default function AutoApplyCTA({ variant = "default" }: { variant?: "defau
 
   return (
     <section className="my-10">
-      <div className="p-6 md:p-8 bg-[#4d1b27]/50 border border-[#4d1b27] rounded-2xl">
+      <div className="p-6 md:p-8 bg-[#4d1b27]/50 border border-[var(--accent)] rounded-2xl">
         <div className="flex items-start gap-4 mb-4">
           <div className="w-12 h-12 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -62,12 +62,12 @@ export function UsageMeter({
           {onUpgrade ? (
             <button
               onClick={() => onUpgrade("pro")}
-              className="text-xs font-medium text-[#4d1b27] hover:underline"
+              className="text-xs font-medium text-[var(--accent)] hover:underline"
             >
               Upgrade to 300/mo
             </button>
           ) : (
-            <a href="/pricing" className="text-xs font-medium text-[#4d1b27] hover:underline">
+            <a href="/pricing" className="text-xs font-medium text-[var(--accent)] hover:underline">
               Upgrade to 300/mo
             </a>
           )}

@@ -70,7 +70,7 @@ export default async function ApplyExclusionsPage() {
                   key={i}
                   className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)]"
                 >
-                  <div className="font-mono text-xs text-[#4d1b27] break-all">
+                  <div className="font-mono text-xs text-[var(--accent)] break-all">
                     /{p.pattern}/{p.flags}
                   </div>
                   <p className="text-sm text-[var(--gray-600)] mt-2">{p.reason}</p>

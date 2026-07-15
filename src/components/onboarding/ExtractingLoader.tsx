@@ -25,7 +25,7 @@ export default function ExtractingLoader() {
     <section className="flex min-h-[70vh] flex-col items-center justify-center py-10">
       <div className="mb-8 inline-flex items-center gap-3 rounded-2xl border border-[var(--card-border)] bg-[var(--gray-50)] px-5 py-3">
         <div className="font-serif text-base font-bold">
-          the<span className="text-[#4d1b27]">BFE</span>
+          the<span className="text-[var(--accent)]">BFE</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "0ms" }} />
@@ -126,8 +126,8 @@ function ApplySlide() {
     >
       <div className="mb-4 flex gap-2 text-xs">
         <span className="text-[var(--gray-600)]">Job Matches</span>
-        <span className="text-[#4d1b27]">&gt;</span>
-        <span className="font-medium text-[#4d1b27]">Applying</span>
+        <span className="text-[var(--accent)]">&gt;</span>
+        <span className="font-medium text-[var(--accent)]">Applying</span>
         <span className="text-[var(--gray-600)]">&gt;</span>
         <span className="text-[var(--gray-600)]">Applied</span>
       </div>

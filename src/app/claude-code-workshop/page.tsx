@@ -74,7 +74,7 @@ export default function ClaudeCodeWorkshopPage() {
               <div>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Your team&apos;s{" "}
-                  <span className="italic text-[#4d1b27]">Claude Code</span>
+                  <span className="italic text-[var(--accent)]">Claude Code</span>
                   <br />
                   workshop instructor
                 </h1>
@@ -112,7 +112,7 @@ export default function ClaudeCodeWorkshopPage() {
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <svg
-                    className="w-6 h-6 text-[#4d1b27] flex-shrink-0 mt-1"
+                    className="w-6 h-6 text-[var(--accent)] flex-shrink-0 mt-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -136,7 +136,7 @@ export default function ClaudeCodeWorkshopPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="grid grid-cols-2 gap-8 md:gap-16 mb-10">
               <div>
-                <div className="font-serif text-5xl md:text-7xl text-[#4d1b27]">
+                <div className="font-serif text-5xl md:text-7xl text-[var(--accent)]">
                   93%
                 </div>
                 <p className="mt-2 text-[var(--gray-600)] text-sm md:text-base">
@@ -144,7 +144,7 @@ export default function ClaudeCodeWorkshopPage() {
                 </p>
               </div>
               <div>
-                <div className="font-serif text-5xl md:text-7xl text-[#4d1b27]">
+                <div className="font-serif text-5xl md:text-7xl text-[var(--accent)]">
                   100%
                 </div>
                 <p className="mt-2 text-[var(--gray-600)] text-sm md:text-base">
@@ -168,9 +168,9 @@ export default function ClaudeCodeWorkshopPage() {
               </p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>ANTHROPIC</span>
-                <span className="text-[#4d1b27]">MICROSOFT</span>
+                <span className="text-[var(--accent)]">MICROSOFT</span>
                 <span>HP</span>
-                <span className="text-[#4d1b27]">AMD</span>
+                <span className="text-[var(--accent)]">AMD</span>
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function ClaudeCodeWorkshopPage() {
                   className="border border-white/10 rounded-2xl p-8"
                 >
                   <svg
-                    className="w-8 h-8 text-[#4d1b27] mb-4"
+                    className="w-8 h-8 text-[var(--accent)] mb-4"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -230,7 +230,7 @@ export default function ClaudeCodeWorkshopPage() {
                   key={tier.name}
                   className={`bg-[var(--card-bg)] border rounded-2xl p-8 relative ${
                     tier.popular
-                      ? "border-[#4d1b27] border-2"
+                      ? "border-[var(--accent)] border-2"
                       : "border-[var(--card-border)]"
                   }`}
                 >
@@ -243,14 +243,14 @@ export default function ClaudeCodeWorkshopPage() {
                   <p className="text-[var(--gray-600)] text-sm mb-6">
                     {tier.duration}
                   </p>
-                  <div className="font-serif text-4xl md:text-5xl text-[#4d1b27] mb-8">
+                  <div className="font-serif text-4xl md:text-5xl text-[var(--accent)] mb-8">
                     {tier.price}
                   </div>
                   <ul className="space-y-3">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <svg
-                          className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5"
+                          className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >

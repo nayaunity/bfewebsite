@@ -203,7 +203,7 @@ export default async function AdminDashboard() {
       href: "/admin/jobs",
       color: "bg-[#2a2828]",
       icon: (
-        <svg className="h-6 w-6 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-6 w-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
@@ -256,7 +256,7 @@ export default async function AdminDashboard() {
           </div>
           <div className="flex gap-6 md:gap-10">
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-[#4d1b27]">{stats.analytics.activeVisitors}</p>
+              <p className="text-3xl md:text-4xl font-bold text-[var(--accent)]">{stats.analytics.activeVisitors}</p>
               <p className="text-gray-400 text-sm mt-1">Active Now</p>
             </div>
             <div className="text-center">
@@ -320,21 +320,21 @@ export default async function AdminDashboard() {
               {stats.analytics.todayVisitors}
             </p>
           </div>
-          <div className="bg-[var(--card-bg)] border-2 border-[#4d1b27] rounded-xl p-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Presale Visitors</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.presaleVisitorsToday}
             </p>
             <p className="text-xs text-[var(--gray-600)]">{stats.analytics.presaleCtaToday} CTA clicks</p>
           </div>
-          <div className="bg-[var(--card-bg)] border-2 border-[#4d1b27] rounded-xl p-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Auto Apply Waitlist</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.autoApplyVisitorsToday}
             </p>
             <p className="text-xs text-[var(--gray-600)]">visitors today</p>
           </div>
-          <div className="bg-[var(--card-bg)] border-2 border-[#4d1b27] rounded-xl p-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
             <p className="text-sm text-[var(--gray-600)]">Tech Audience Presale</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.btaPresaleVisitorsToday}

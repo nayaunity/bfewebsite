@@ -99,12 +99,12 @@ export default function MatchedJobsPreview({ onApply }: Props) {
 
   return (
     <section className="text-center">
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#4d1b27]/10 px-4 py-2 text-sm font-medium text-[#4d1b27]">
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#4d1b27]/10 px-4 py-2 text-sm font-medium text-[var(--accent)]">
         <span>✨</span>
         <span>Your matches are ready</span>
       </div>
 
-      <h1 className="font-serif text-7xl italic leading-none text-[#4d1b27] tabular-nums sm:text-8xl md:text-[10rem]">
+      <h1 className="font-serif text-7xl italic leading-none text-[var(--accent)] tabular-nums sm:text-8xl md:text-[10rem]">
         {count}+
       </h1>
 

@@ -178,7 +178,7 @@ export function RolesAndResumesSection({
                   isSelected
                     ? hasResume
                       ? "border-[var(--accent-green-text)] bg-[var(--accent-green-bg)]"
-                      : "border-[#4d1b27] bg-[var(--accent-orange-bg)]"
+                      : "border-[var(--accent)] bg-[var(--accent-orange-bg)]"
                     : "border-[var(--card-border)] hover:border-[var(--gray-200)]"
                 }`}
               >
@@ -292,7 +292,7 @@ export function RolesAndResumesSection({
               <button
                 type="button"
                 onClick={() => setShowWhy(!showWhy)}
-                className="inline-flex items-center gap-1.5 text-xs text-[#4d1b27] hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs text-[var(--accent)] hover:underline cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -322,7 +322,7 @@ export function RolesAndResumesSection({
           {atLimit && rolesMissingResumes.length > 0 && (
             <p className="text-xs text-[var(--gray-600)] mt-2">
               Resume limit reached on {tier} plan.{" "}
-              <a href="/pricing" className="text-[#4d1b27] underline">Upgrade</a> for more.
+              <a href="/pricing" className="text-[var(--accent)] underline">Upgrade</a> for more.
             </p>
           )}
         </div>

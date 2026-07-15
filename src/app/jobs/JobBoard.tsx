@@ -277,7 +277,7 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-              Find your <span className="italic text-[#4d1b27]">next</span>
+              Find your <span className="italic text-[var(--accent)]">next</span>
               <br />
               opportunity
             </h1>
@@ -452,17 +452,17 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <button
             onClick={() => router.push("/jobs/anthropic-fellows-program")}
-            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#4d1b27] cursor-pointer"
+            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#4d1b27] font-medium">Anthropic</span>
+                  <span className="text-[var(--accent)] font-medium">Anthropic</span>
                   <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
                     APPLY BY APR 26
                   </span>
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[var(--accent)] transition-colors">
                   Anthropic Fellows Program
                 </h3>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -477,24 +477,24 @@ export default function JobBoard() {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#4d1b27]">Learn More &rarr;</span>
+                <span className="text-sm font-medium text-[var(--accent)]">Learn More &rarr;</span>
               </div>
             </div>
           </button>
 
           <button
             onClick={() => router.push("/jobs/anthropic-ai-stem-fellows")}
-            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[#4d1b27] cursor-pointer"
+            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[#4d1b27] font-medium">Anthropic</span>
+                  <span className="text-[var(--accent)] font-medium">Anthropic</span>
                   <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
                     APPLY BY MAY 15
                   </span>
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
+                <h3 className="font-serif text-xl md:text-2xl group-hover:text-[var(--accent)] transition-colors">
                   Anthropic AI STEM Fellowship
                 </h3>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -509,7 +509,7 @@ export default function JobBoard() {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-[#4d1b27]">Learn More &rarr;</span>
+                <span className="text-sm font-medium text-[var(--accent)]">Learn More &rarr;</span>
               </div>
             </div>
           </button>
@@ -579,7 +579,7 @@ export default function JobBoard() {
                   setIsInternational(false);
                   router.replace("/jobs", { scroll: false });
                 }}
-                className="mt-4 text-[#4d1b27] hover:underline"
+                className="mt-4 text-[var(--accent)] hover:underline"
               >
                 Clear all filters
               </button>
@@ -603,11 +603,11 @@ export default function JobBoard() {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[#4d1b27] font-medium">
+                        <span className="text-[var(--accent)] font-medium">
                           {job.company}
                         </span>
                         {connectionCounts[job.companySlug] > 0 && (
-                          <span className="text-xs px-2 py-1 bg-[#4d1b27]/10 text-[#4d1b27] rounded-full font-medium">
+                          <span className="text-xs px-2 py-1 bg-[#4d1b27]/10 text-[var(--accent)] rounded-full font-medium">
                             You know {connectionCounts[job.companySlug]} {connectionCounts[job.companySlug] === 1 ? "person" : "people"} here
                           </span>
                         )}
@@ -617,7 +617,7 @@ export default function JobBoard() {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
+                      <h3 className="font-serif text-xl md:text-2xl group-hover:text-[var(--accent)] transition-colors">
                         {job.title}
                       </h3>
                       <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--gray-600)]">
@@ -645,7 +645,7 @@ export default function JobBoard() {
                         <a
                           href="/profile/referrals"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[#4d1b27] text-[#4d1b27] hover:bg-[#4d1b27] hover:text-white transition-colors"
+                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[#4d1b27] hover:text-white transition-colors"
                         >
                           Get Referred
                         </a>
@@ -664,7 +664,7 @@ export default function JobBoard() {
                         <span className="text-lg font-medium">{job.salary}</span>
                       )}
                       <svg
-                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors"
+                        className="w-6 h-6 text-[var(--gray-200)] group-hover:text-[var(--accent)] transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -739,7 +739,7 @@ export default function JobBoard() {
                       disabled={loadingMore}
                       className={`px-3 py-2 font-medium transition-colors ${
                         page === current
-                          ? "text-[#4d1b27]"
+                          ? "text-[var(--accent)]"
                           : "text-[var(--gray-600)] hover:text-[var(--foreground)]"
                       } disabled:opacity-50`}
                     >

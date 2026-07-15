@@ -104,7 +104,7 @@ export function PricingCards({
             key={tier.key}
             className={`relative bg-[var(--card-bg)] border-2 rounded-2xl p-8 flex flex-col ${
               tier.highlighted
-                ? "border-[#4d1b27]"
+                ? "border-[var(--accent)]"
                 : "border-[var(--card-border)]"
             }`}
           >
@@ -126,7 +126,7 @@ export function PricingCards({
               </span>
             </div>
             {tier.trialBlurb && (
-              <p className="text-xs font-medium text-[#4d1b27] mb-6">
+              <p className="text-xs font-medium text-[var(--accent)] mb-6">
                 {tier.trialBlurb}
               </p>
             )}
@@ -139,7 +139,7 @@ export function PricingCards({
                   className="flex items-start gap-2.5 text-[15px] text-[var(--gray-600)]"
                 >
                   <svg
-                    className="w-5 h-5 text-[#4d1b27] mt-0.5 flex-shrink-0"
+                    className="w-5 h-5 text-[var(--accent)] mt-0.5 flex-shrink-0"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >

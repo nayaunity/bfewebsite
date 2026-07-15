@@ -40,7 +40,7 @@ export default function LiveFeedCard() {
           >
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-[#2a2828]">
-                <span className="text-[#4d1b27]">{item.name}</span> applied to {item.role}
+                <span className="text-[var(--accent)]">{item.name}</span> applied to {item.role}
               </div>
               <div className="text-xs text-[#78716c] mt-0.5">
                 at <b>{item.company}</b> · {item.time}

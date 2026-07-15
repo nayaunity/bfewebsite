@@ -60,7 +60,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
-                Building <span className="italic text-[#4d1b27]">skills</span>,
+                Building <span className="italic text-[var(--accent)]">skills</span>,
                 <br />
                 wealth, and freedom
               </h1>
@@ -148,7 +148,7 @@ export default function AboutPage() {
               {timeline.map((item, index) => (
                 <div key={index} className="flex gap-6 items-start">
                   <div className="w-20 flex-shrink-0">
-                    <span className="font-serif text-2xl text-[#4d1b27]">{item.year}</span>
+                    <span className="font-serif text-2xl text-[var(--accent)]">{item.year}</span>
                   </div>
                   <div className="flex-1 pb-8 border-l-2 border-[var(--card-border)] pl-6 relative">
                     <div className="absolute left-[-5px] top-2 w-2 h-2 rounded-full bg-[#4d1b27]"></div>
@@ -167,16 +167,16 @@ export default function AboutPage() {
               <p className="text-sm tracking-widest mb-8">I&apos;VE PARTNERED WITH</p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-2xl md:text-4xl text-[var(--gray-400)]">
                 <span>AMAZON</span>
-                <span className="text-[#4d1b27]">MICROSOFT</span>
+                <span className="text-[var(--accent)]">MICROSOFT</span>
                 <span>ADOBE</span>
-                <span className="text-[#4d1b27]">LINKEDIN</span>
+                <span className="text-[var(--accent)]">LINKEDIN</span>
                 <span>HP</span>
-                <span className="text-[#4d1b27]">ANTHROPIC</span>
+                <span className="text-[var(--accent)]">ANTHROPIC</span>
               </div>
             </div>
             <p className="text-center text-sm">
               WANT TO PARTNER?{" "}
-              <Link href="/contact" className="underline hover:text-[#4d1b27]">
+              <Link href="/contact" className="underline hover:text-[var(--accent)]">
                 LET ME KNOW
               </Link>
             </p>
@@ -201,7 +201,7 @@ export default function AboutPage() {
               </Link>
               <Link
                 href="/resources"
-                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
+                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[var(--accent)] transition-colors"
               >
                 Explore Resources
               </Link>

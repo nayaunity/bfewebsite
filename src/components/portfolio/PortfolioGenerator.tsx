@@ -132,7 +132,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
         <div className="w-20 h-20 mx-auto mb-8 relative">
           <div className="absolute inset-0 rounded-full border-4 border-[var(--gray-200)]" />
           <div
-            className="absolute inset-0 rounded-full border-4 border-[#4d1b27] border-t-transparent animate-spin"
+            className="absolute inset-0 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin"
           />
         </div>
         <h3 className="text-xl font-serif font-bold text-[var(--foreground)] mb-3">
@@ -152,7 +152,7 @@ export function PortfolioGenerator({ hasResume, tier }: PortfolioGeneratorProps)
             {STEP_ORDER.slice(1, -1).map((step, i) => (
               <span
                 key={step}
-                className={stepIndex > i + 1 ? "text-[#4d1b27] font-semibold" : ""}
+                className={stepIndex > i + 1 ? "text-[var(--accent)] font-semibold" : ""}
               >
                 {STEP_LABELS[step]?.replace("...", "")}
               </span>

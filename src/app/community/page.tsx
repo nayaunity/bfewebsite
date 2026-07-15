@@ -167,7 +167,7 @@ export default function CommunityPage() {
                   setShowForm(false);
                   resetSubmitState();
                 }}
-                className="absolute -top-12 right-0 text-white hover:text-[#4d1b27] transition-colors"
+                className="absolute -top-12 right-0 text-white hover:text-[var(--accent)] transition-colors"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -82,12 +82,12 @@ export default function AutoApplyPage() {
         {/* Hero */}
         <section className="pt-44 pb-16 px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="inline-block px-4 py-1.5 bg-[#4d1b27]/10 text-[#4d1b27] text-sm font-semibold rounded-full mb-6">
+            <span className="inline-block px-4 py-1.5 bg-[#4d1b27]/10 text-[var(--accent)] text-sm font-semibold rounded-full mb-6">
               COMING SOON
             </span>
             <h1 className="font-serif text-4xl md:text-6xl text-[var(--foreground)] leading-tight">
               Stop Applying One by One.{" "}
-              <span className="italic text-[#4d1b27]">Let Us Handle It.</span>
+              <span className="italic text-[var(--accent)]">Let Us Handle It.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-[var(--gray-600)] max-w-2xl mx-auto leading-relaxed">
               Auto Apply takes your profile and automatically submits applications
@@ -117,7 +117,7 @@ export default function AutoApplyPage() {
                   key={feature.title}
                   className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#4d1b27]/10 text-[#4d1b27] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#4d1b27]/10 text-[var(--accent)] flex items-center justify-center mb-4">
                     {feature.icon}
                   </div>
                   <h3 className="font-semibold text-lg text-[var(--foreground)] mb-2">

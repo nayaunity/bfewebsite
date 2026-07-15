@@ -32,8 +32,8 @@ export default function HeroSection() {
           >
             Your job hunt,<br />
             done while you<br />
-            <span className="italic text-[#4d1b27]">do literally</span><br />
-            <span className="italic text-[#4d1b27]">anything else.</span>
+            <span className="italic text-[var(--accent)]">do literally</span><br />
+            <span className="italic text-[var(--accent)]">anything else.</span>
           </h1>
 
           {/* Lede */}

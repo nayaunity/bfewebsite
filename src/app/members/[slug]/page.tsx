@@ -108,7 +108,7 @@ export default async function MemberPage({ params }: PageProps) {
               <div>
                 <Link
                   href="/#community"
-                  className="inline-flex items-center text-sm text-[var(--gray-600)] hover:text-[#4d1b27] mb-6 transition-colors"
+                  className="inline-flex items-center text-sm text-[var(--gray-600)] hover:text-[var(--accent)] mb-6 transition-colors"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -121,7 +121,7 @@ export default async function MemberPage({ params }: PageProps) {
                 </h1>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2 text-lg">
-                  <span className="text-[#4d1b27]">{member.role}</span>
+                  <span className="text-[var(--accent)]">{member.role}</span>
                   <span className="text-[var(--gray-400)]">at</span>
                   <span>{member.company}</span>
                 </div>
@@ -238,7 +238,7 @@ export default async function MemberPage({ params }: PageProps) {
               {member.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] px-6 py-3 rounded-full text-lg hover:border-[#4d1b27] transition-colors"
+                  className="bg-[var(--card-bg)] border border-[var(--card-border)] px-6 py-3 rounded-full text-lg hover:border-[var(--accent)] transition-colors"
                 >
                   {skill}
                 </span>
@@ -278,7 +278,7 @@ export default async function MemberPage({ params }: PageProps) {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-                    <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[#4d1b27] transition-colors">
+                    <h4 className="font-serif text-lg md:text-xl text-white group-hover:text-[var(--accent)] transition-colors">
                       {otherMember.name}
                     </h4>
                     <p className="text-white/60 text-sm mt-1">
@@ -309,7 +309,7 @@ export default async function MemberPage({ params }: PageProps) {
               </Link>
               <Link
                 href="/#community"
-                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
+                className="bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[var(--accent)] transition-colors"
               >
                 Meet More Members
               </Link>

@@ -27,7 +27,7 @@ export default function ResumeLinkedInPage() {
         <section className="py-12 md:py-16 border-b border-[var(--card-border)]" style={{ background: 'linear-gradient(to bottom, var(--hero-gradient-from), var(--background))' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-4">
-              <Link href="/resources" className="hover:text-[#4d1b27]">
+              <Link href="/resources" className="hover:text-[var(--accent)]">
                 Resources
               </Link>
               <span>/</span>
@@ -41,7 +41,7 @@ export default function ResumeLinkedInPage() {
                 </span>
                 <h1 className="font-serif text-4xl md:text-5xl leading-tight">
                   {course.title.split(" ")[0]}{" "}
-                  <span className="italic text-[#4d1b27]">
+                  <span className="italic text-[var(--accent)]">
                     {course.title.split(" ").slice(1).join(" ")}
                   </span>
                 </h1>
@@ -169,7 +169,7 @@ function CourseSidebar({ course }: { course: ReturnType<typeof getCourse> }) {
             <a
               key={module.id}
               href={`#module-${module.id}`}
-              className="block border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[#4d1b27] transition-colors"
+              className="block border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[var(--accent)] transition-colors"
             >
               <div className="p-4 bg-[var(--gray-50)] hover:bg-[var(--gray-100)] transition-colors">
                 <span className="text-xs text-[var(--gray-600)]">Module {module.id}</span>

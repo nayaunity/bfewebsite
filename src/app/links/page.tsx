@@ -75,7 +75,7 @@ export default async function LinksPage() {
         <section className="pb-12 md:pb-16">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-4">
-              All <span className="italic text-[#4d1b27]">links</span>
+              All <span className="italic text-[var(--accent)]">links</span>
             </h1>
             <p className="text-lg text-[var(--gray-600)]">
               Everything mentioned in my posts, all in one place.
@@ -94,7 +94,7 @@ export default async function LinksPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-12 h-12 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[#4d1b27] hover:bg-[#4d1b27] transition-colors"
+                  className="w-12 h-12 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors"
                 >
                   <SocialIcon icon={social.icon} />
                 </a>

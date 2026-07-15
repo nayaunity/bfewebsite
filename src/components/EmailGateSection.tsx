@@ -76,7 +76,7 @@ export default function EmailGateSection({ totalLessons, courseTag = "course-sig
             placeholder="Enter your email"
             required
             disabled={isSubmitting}
-            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full focus:outline-none focus:border-[#4d1b27] disabled:opacity-50"
+            className="flex-1 px-5 py-4 border border-[var(--card-border)] rounded-full focus:outline-none focus:border-[var(--accent)] disabled:opacity-50"
           />
           <button
             type="submit"

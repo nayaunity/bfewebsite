@@ -98,7 +98,7 @@ export function TierEnrollButton({
         )}
       </button>
       {error && (
-        <p className="mt-2 text-xs text-[#4d1b27] text-center">{error}</p>
+        <p className="mt-2 text-xs text-[var(--accent)] text-center">{error}</p>
       )}
     </div>
   );

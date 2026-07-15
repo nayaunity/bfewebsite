@@ -74,7 +74,7 @@ export default function SubmitJobPage() {
               </Link>
               <Link
                 href="/work-with-us"
-                className="inline-block bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[#4d1b27] transition-colors"
+                className="inline-block bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[var(--accent)] transition-colors"
               >
                 Other Partnerships
               </Link>
@@ -97,7 +97,7 @@ export default function SubmitJobPage() {
               &larr; Back to Partnerships
             </Link>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight">
-              Post a <span className="italic text-[#4d1b27]">featured job</span>
+              Post a <span className="italic text-[var(--accent)]">featured job</span>
             </h1>
             <p className="mt-4 text-[var(--gray-600)] text-lg">
               Get your open roles in front of 250K+ engaged professionals. Fill out this form and I&apos;ll follow up to discuss featured placement options.
@@ -109,19 +109,19 @@ export default function SubmitJobPage() {
             <h3 className="font-medium mb-4">Featured Job Benefits</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Premium placement at the top of the job board</span>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Social media amplification across my platforms</span>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                 </svg>
                 <span className="text-[var(--gray-600)]">Analytics and performance reporting</span>
@@ -146,7 +146,7 @@ export default function SubmitJobPage() {
                   name="name"
                   required
                   placeholder="e.g. Jane Smith"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -161,7 +161,7 @@ export default function SubmitJobPage() {
                   name="email"
                   required
                   placeholder="you@company.com"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -176,7 +176,7 @@ export default function SubmitJobPage() {
                   name="company"
                   required
                   placeholder="e.g. Acme Inc."
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -189,7 +189,7 @@ export default function SubmitJobPage() {
                   id="role"
                   name="role"
                   required
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="">Select your role...</option>
                   <option value="Recruiter">Recruiter</option>
@@ -217,7 +217,7 @@ export default function SubmitJobPage() {
                   name="title"
                   required
                   placeholder="e.g. Senior Software Engineer"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -232,7 +232,7 @@ export default function SubmitJobPage() {
                   name="location"
                   required
                   placeholder="e.g. San Francisco, CA or Remote"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -247,7 +247,7 @@ export default function SubmitJobPage() {
                     id="remote"
                     name="remote"
                     required
-                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                   >
                     <option value="">Select...</option>
                     <option value="Yes">Yes - Fully Remote</option>
@@ -265,7 +265,7 @@ export default function SubmitJobPage() {
                     id="job_type"
                     name="job_type"
                     required
-                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                    className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                   >
                     <option value="">Select...</option>
                     <option value="Full-time">Full-time</option>
@@ -286,7 +286,7 @@ export default function SubmitJobPage() {
                   id="salary"
                   name="salary"
                   placeholder="e.g. $120K - $180K"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
                 <p className="mt-1 text-sm text-[var(--gray-600)]">
                   Jobs with salary info get 40% more engagement
@@ -303,7 +303,7 @@ export default function SubmitJobPage() {
                   id="job_url"
                   name="job_url"
                   placeholder="https://careers.company.com/job/123"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 />
               </div>
 
@@ -315,7 +315,7 @@ export default function SubmitJobPage() {
                 <select
                   id="num_roles"
                   name="num_roles"
-                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--card-bg)]"
+                  className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--card-bg)]"
                 >
                   <option value="1">1 role</option>
                   <option value="2-5">2-5 roles</option>
@@ -335,7 +335,7 @@ export default function SubmitJobPage() {
                 name="message"
                 rows={4}
                 placeholder="Tell me about your hiring goals, timeline, or any specific requirements..."
-                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors resize-none bg-[var(--card-bg)]"
+                className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors resize-none bg-[var(--card-bg)]"
               />
             </div>
 

@@ -40,7 +40,7 @@ export default async function CustomizePage() {
       <main className="min-h-screen bg-[var(--background)] pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-4">
           <h1 className="text-3xl font-serif font-bold text-[var(--foreground)] mb-2">
-            Customize <span className="text-[#4d1b27] italic">Portfolio</span>
+            Customize <span className="text-[var(--accent)] italic">Portfolio</span>
           </h1>
           <p className="text-[var(--gray-600)] mb-8">
             Edit your headline, bio, and publish settings.

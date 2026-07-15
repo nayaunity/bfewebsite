@@ -66,7 +66,7 @@ export default async function ScrapeRunsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-serif text-3xl text-[var(--foreground)]">
-              Scrape <span className="italic text-[#4d1b27]">runs</span>
+              Scrape <span className="italic text-[var(--accent)]">runs</span>
             </h1>
             <p className="text-[var(--gray-600)] mt-1 text-sm">
               Last 7 days of cron executions

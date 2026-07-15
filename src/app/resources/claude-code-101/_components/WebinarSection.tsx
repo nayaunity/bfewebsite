@@ -62,11 +62,11 @@ export default function WebinarSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27]/10 text-[#4d1b27] mb-4">
+          <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27]/10 text-[var(--accent)] mb-4">
             Free Webinar Recording
           </span>
           <h2 className="font-serif text-3xl md:text-4xl mb-3">
-            Watch the Full <span className="italic text-[#4d1b27]">Workshop</span>
+            Watch the Full <span className="italic text-[var(--accent)]">Workshop</span>
           </h2>
           <p className="text-[var(--gray-600)] max-w-2xl mx-auto">
             {hasAccess
@@ -89,7 +89,7 @@ export default function WebinarSection() {
                 }),
               }).catch(() => {});
             }}
-            className="inline-block mt-4 text-xl md:text-2xl font-serif text-[#4d1b27] hover:text-[#d44a22] transition-colors underline underline-offset-4"
+            className="inline-block mt-4 text-xl md:text-2xl font-serif text-[var(--accent)] hover:text-[#d44a22] transition-colors underline underline-offset-4"
           >
             Start Using Claude Code Today &rarr;
           </a>
@@ -149,7 +149,7 @@ export default function WebinarSection() {
                       placeholder="Enter your email"
                       required
                       disabled={isSubmitting}
-                      className="w-full px-5 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#4d1b27] disabled:opacity-50"
+                      className="w-full px-5 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[var(--accent)] disabled:opacity-50"
                     />
                     <button
                       type="submit"
@@ -173,19 +173,19 @@ export default function WebinarSection() {
             {/* Feature Pills */}
             <div className="flex flex-wrap justify-center gap-2 md:gap-3 mt-4 md:mt-6">
               <span className="inline-flex items-center gap-1.5 text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-[var(--card-bg)] border border-[var(--card-border)]">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Full Recording
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-[var(--card-bg)] border border-[var(--card-border)]">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
                 Live Demo
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-[var(--card-bg)] border border-[var(--card-border)]">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#4d1b27]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Q&A

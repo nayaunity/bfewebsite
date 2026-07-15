@@ -33,7 +33,7 @@ export default function DEICompaniesPage() {
             {/* Back Link */}
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-2 text-[var(--gray-600)] hover:text-[#4d1b27] transition-colors mb-8"
+              className="inline-flex items-center gap-2 text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors mb-8"
             >
               <svg
                 className="w-5 h-5"
@@ -57,7 +57,7 @@ export default function DEICompaniesPage() {
               </span>
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight mt-4">
                 Companies committed to{" "}
-                <span className="italic text-[#4d1b27]">DEI</span>
+                <span className="italic text-[var(--accent)]">DEI</span>
               </h1>
               <p className="mt-6 text-xl text-[var(--gray-600)]">
                 Explore {companies.length} companies known for their dedication to
@@ -95,14 +95,14 @@ export default function DEICompaniesPage() {
                   href={company.careersUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[#4d1b27] hover:shadow-lg transition-all"
+                  className="group bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-lg transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-xs px-3 py-1 bg-[var(--gray-100)] text-[var(--gray-600)] rounded-full">
                       {company.industry}
                     </span>
                     <svg
-                      className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[#4d1b27] transition-colors"
+                      className="w-5 h-5 text-[var(--gray-200)] group-hover:text-[var(--accent)] transition-colors"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ export default function DEICompaniesPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-serif text-xl md:text-2xl group-hover:text-[#4d1b27] transition-colors">
+                  <h3 className="font-serif text-xl md:text-2xl group-hover:text-[var(--accent)] transition-colors">
                     {company.name}
                   </h3>
                   <p className="mt-2 text-sm text-[var(--gray-600)]">

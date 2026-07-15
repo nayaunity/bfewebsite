@@ -49,7 +49,7 @@ export default function ResumeUploadStep({ onUploaded }: Props) {
       <h1 className="font-serif text-3xl sm:text-5xl leading-tight">
         Upload your resume.
         <br />
-        <span className="italic text-[#4d1b27]">We&apos;ll find you jobs in 10 seconds.</span>
+        <span className="italic text-[var(--accent)]">We&apos;ll find you jobs in 10 seconds.</span>
       </h1>
       <p className="mt-4 text-[var(--gray-600)] sm:text-lg">
         We read your resume, match you to thousands of open roles, and apply for you.
@@ -68,8 +68,8 @@ export default function ResumeUploadStep({ onUploaded }: Props) {
         onClick={() => !uploading && fileInputRef.current?.click()}
         className={`mt-8 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-14 transition-colors ${
           dragOver
-            ? "border-[#4d1b27] bg-[var(--accent-blue-bg,#fff4ee)]"
-            : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+            ? "border-[var(--accent)] bg-[var(--accent-blue-bg,#fff4ee)]"
+            : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
         }`}
       >
         <div className="text-4xl" aria-hidden>📄</div>
@@ -94,7 +94,7 @@ export default function ResumeUploadStep({ onUploaded }: Props) {
       )}
 
       <p className="mt-8 text-xs text-[var(--gray-600)]">
-        Don&apos;t have a resume handy? <a href="/auto-apply/get-started?legacy=1" className="underline hover:text-[#4d1b27]">Fill out a quick form instead</a>.
+        Don&apos;t have a resume handy? <a href="/auto-apply/get-started?legacy=1" className="underline hover:text-[var(--accent)]">Fill out a quick form instead</a>.
       </p>
     </section>
   );

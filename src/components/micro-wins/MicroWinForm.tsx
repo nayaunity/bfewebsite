@@ -73,7 +73,7 @@ export function MicroWinForm({
         </p>
         <button
           onClick={onReset}
-          className="text-[#4d1b27] font-medium hover:underline"
+          className="text-[var(--accent)] font-medium hover:underline"
         >
           Share another win
         </button>
@@ -119,7 +119,7 @@ export function MicroWinForm({
           rows={3}
           maxLength={MAX_CONTENT_LENGTH + 50}
           disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors resize-none bg-[var(--background)] disabled:opacity-50"
+          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors resize-none bg-[var(--background)] disabled:opacity-50"
         />
         <div
           className={`mt-1 text-sm text-right ${isOverLimit ? "text-red-500" : "text-[var(--gray-600)]"}`}
@@ -141,7 +141,7 @@ export function MicroWinForm({
           placeholder="e.g., Sarah T."
           maxLength={50}
           disabled={isSubmitting}
-          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[#4d1b27] transition-colors bg-[var(--background)] disabled:opacity-50"
+          className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl focus:outline-none focus:border-[var(--accent)] transition-colors bg-[var(--background)] disabled:opacity-50"
         />
         <p className="mt-1 text-sm text-[var(--gray-600)]">
           Leave blank to post anonymously

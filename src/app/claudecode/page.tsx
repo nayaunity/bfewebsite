@@ -180,7 +180,7 @@ export default function CertificationPage() {
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   Build with{" "}
-                  <span className="italic text-[#4d1b27]">Claude Code</span>.
+                  <span className="italic text-[var(--accent)]">Claude Code</span>.
                 </h1>
                 <p className="mt-6 text-xl text-[var(--gray-600)] leading-relaxed">
                   The first structured course for career switchers who
@@ -223,7 +223,7 @@ export default function CertificationPage() {
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <svg
-                    className="w-6 h-6 text-[#4d1b27] flex-shrink-0 mt-1"
+                    className="w-6 h-6 text-[var(--accent)] flex-shrink-0 mt-1"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -264,7 +264,7 @@ export default function CertificationPage() {
                     {mod.topics.map((topic, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <svg
-                          className="w-4 h-4 text-[#4d1b27] flex-shrink-0 mt-1"
+                          className="w-4 h-4 text-[var(--accent)] flex-shrink-0 mt-1"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -360,9 +360,9 @@ export default function CertificationPage() {
               </p>
               <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
                 <span>ANTHROPIC</span>
-                <span className="text-[#4d1b27]">MICROSOFT</span>
+                <span className="text-[var(--accent)]">MICROSOFT</span>
                 <span>HP</span>
-                <span className="text-[#4d1b27]">AMD</span>
+                <span className="text-[var(--accent)]">AMD</span>
               </div>
             </div>
           </div>
@@ -389,7 +389,7 @@ export default function CertificationPage() {
                   className="border border-white/10 rounded-2xl p-8"
                 >
                   <svg
-                    className="w-8 h-8 text-[#4d1b27] mb-4"
+                    className="w-8 h-8 text-[var(--accent)] mb-4"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -416,7 +416,7 @@ export default function CertificationPage() {
               </h2>
             </div>
             <div className="max-w-lg mx-auto">
-              <div className="bg-[var(--card-bg)] border-2 border-[#4d1b27] rounded-2xl p-8 md:p-10 relative text-center">
+              <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-8 md:p-10 relative text-center">
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[#4d1b27] text-white tracking-wide">
                   FOUNDING CLASS
                 </span>
@@ -425,14 +425,14 @@ export default function CertificationPage() {
                     $499
                   </span>
                 </div>
-                <div className="font-serif text-5xl md:text-6xl text-[#4d1b27] mb-8">
+                <div className="font-serif text-5xl md:text-6xl text-[var(--accent)] mb-8">
                   $399
                 </div>
                 <ul className="space-y-3 text-left mb-8">
                   {pricingFeatures.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <svg
-                        className="w-5 h-5 text-[#4d1b27] flex-shrink-0 mt-0.5"
+                        className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >

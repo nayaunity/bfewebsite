@@ -85,7 +85,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
   return (
     <section>
       <h1 className="font-serif text-3xl sm:text-4xl">
-        Nice to meet you, <span className="italic text-[#4d1b27]">{displayName}</span>.
+        Nice to meet you, <span className="italic text-[var(--accent)]">{displayName}</span>.
       </h1>
       <p className="mt-3 text-[var(--gray-600)]">
         We pulled a few things from your resume. Confirm these and we&apos;ll show you matched jobs.
@@ -111,8 +111,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                   onClick={() => toggleRole(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
                     on
-                      ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                      ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                      : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                   }`}
                 >
                   {opt.label}
@@ -132,8 +132,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   remote === opt
-                    ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                    ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                    : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                 }`}
               >
                 {opt}
@@ -192,8 +192,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
               Yes
@@ -203,8 +203,8 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[#4d1b27] bg-[#4d1b27] text-white"
-                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[#4d1b27]"
+                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
               No

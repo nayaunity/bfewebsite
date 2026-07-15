@@ -10,7 +10,7 @@ export default function ComparisonTable() {
             className="font-serif font-medium leading-none tracking-[-1.5px] m-0"
             style={{ fontSize: "clamp(40px, 5.2vw, 72px)" }}
           >
-            You, alone, vs. <span className="italic text-[#4d1b27]">you, with us.</span>
+            You, alone, vs. <span className="italic text-[var(--accent)]">you, with us.</span>
           </h2>
         </div>
 
@@ -22,7 +22,7 @@ export default function ComparisonTable() {
           >
             <div />
             <div className="text-[#a8a29e]">YOU, MANUALLY</div>
-            <div className="text-[#4d1b27]">WITH BFE AUTO·APPLY</div>
+            <div className="text-[var(--accent)]">WITH BFE AUTO·APPLY</div>
           </div>
           {/* Rows */}
           {COMPARISON.map((row, i) => (
@@ -50,7 +50,7 @@ export default function ComparisonTable() {
                   <span className="text-[#78716c]">{row.manual}</span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-[11px] tracking-wider font-bold text-[#4d1b27] block mb-0.5">WITH BFE</span>
+                  <span className="text-[11px] tracking-wider font-bold text-[var(--accent)] block mb-0.5">WITH BFE</span>
                   <span className="text-[#2a2828] font-semibold">
                     <span className="text-[#10b981] mr-1">✓</span>{row.us}
                   </span>

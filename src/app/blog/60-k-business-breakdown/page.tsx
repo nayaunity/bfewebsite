@@ -109,7 +109,7 @@ const chapters = [
 ];
 
 const highlights = [
-  { stat: "14", label: "pages of real strategy" },
+  { stat: "22", label: "pages of real strategy" },
   { stat: "11", label: "chapters from model to math" },
   { stat: "$0", label: "free download" },
 ];
@@ -125,7 +125,7 @@ export default function BlueprintBreakdownPage() {
         <section className="pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-6">
-              <Link href="/blog" className="hover:text-[#4d1b27]">
+              <Link href="/blog" className="hover:text-[var(--accent)]">
                 Blog
               </Link>
               <span>/</span>
@@ -139,7 +139,7 @@ export default function BlueprintBreakdownPage() {
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   The $60K/month{" "}
-                  <span className="italic text-[#4d1b27]">blueprint</span>
+                  <span className="italic text-[var(--accent)]">blueprint</span>
                 </h1>
                 <p className="mt-4 text-lg text-[var(--gray-600)] leading-relaxed">
                   The business model, systems, and AI leverage behind how I
@@ -161,7 +161,7 @@ export default function BlueprintBreakdownPage() {
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                       />
                     </svg>
-                    <span>14 pages</span>
+                    <span>22 pages</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <svg
@@ -267,7 +267,7 @@ export default function BlueprintBreakdownPage() {
                   className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-6 md:p-8 flex gap-6"
                 >
                   <div className="flex-shrink-0">
-                    <span className="font-serif text-3xl md:text-4xl text-[#4d1b27]">
+                    <span className="font-serif text-3xl md:text-4xl text-[var(--accent)]">
                       {chapter.number}
                     </span>
                   </div>
@@ -291,7 +291,7 @@ export default function BlueprintBreakdownPage() {
         {/* Key Quote */}
         <section className="bg-[var(--background)] py-16 md:py-24">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="border-l-2 border-[#4d1b27] pl-6 text-left">
+            <div className="border-l-2 border-[var(--accent)] pl-6 text-left">
               <p className="font-serif italic text-xl md:text-2xl text-[var(--foreground)]">
                 &ldquo;Your dream life gets easier to build when you stop
                 treating income like magic and start treating it like a

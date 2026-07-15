@@ -48,7 +48,7 @@ export default function CohortSignup({ variant = "light" }: { variant?: "light" 
           disabled={isLoading}
           className={`px-6 py-3 rounded-r-full transition-colors disabled:opacity-50 font-medium text-sm ${
             variant === "dark"
-              ? "bg-white text-[#4d1b27] hover:bg-white/90"
+              ? "bg-white text-[var(--accent)] hover:bg-white/90"
               : "bg-[#4d1b27] text-white hover:bg-[#4d383b]"
           }`}
         >

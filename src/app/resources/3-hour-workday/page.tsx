@@ -76,7 +76,7 @@ export default function ThreeHourWorkdayPage() {
         <section className="pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 text-sm text-[var(--gray-600)] mb-6">
-              <Link href="/resources" className="hover:text-[#4d1b27]">
+              <Link href="/resources" className="hover:text-[var(--accent)]">
                 Resources
               </Link>
               <span>/</span>
@@ -90,7 +90,7 @@ export default function ThreeHourWorkdayPage() {
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
                   The 3-Hour{" "}
-                  <span className="italic text-[#4d1b27]">Workday</span>
+                  <span className="italic text-[var(--accent)]">Workday</span>
                 </h1>
                 <p className="mt-4 text-lg text-[var(--gray-600)] leading-relaxed">
                   A step-by-step guide to using AI to reclaim your time. Learn
@@ -156,7 +156,7 @@ export default function ThreeHourWorkdayPage() {
 
               {/* Preview card */}
               <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-8 md:p-12">
-                <div className="border-b-2 border-[#4d1b27] w-12 mb-6"></div>
+                <div className="border-b-2 border-[var(--accent)] w-12 mb-6"></div>
                 <h2 className="font-serif text-3xl md:text-4xl leading-tight mb-2">
                   The 3-Hour
                   <br />
@@ -165,7 +165,7 @@ export default function ThreeHourWorkdayPage() {
                 <p className="text-[var(--gray-600)] text-sm mt-4">
                   A Step-by-Step Guide to Using AI to Reclaim Your Time
                 </p>
-                <div className="border-b-2 border-[#4d1b27] w-12 mt-6"></div>
+                <div className="border-b-2 border-[var(--accent)] w-12 mt-6"></div>
                 <p className="mt-8 text-xs tracking-widest text-[var(--gray-600)]">
                   THE BLACK FEMALE ENGINEER
                 </p>
@@ -205,7 +205,7 @@ export default function ThreeHourWorkdayPage() {
                   key={phase.number}
                   className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-6 md:p-8 flex gap-6"
                 >
-                  <div className="font-serif text-3xl md:text-4xl text-[#4d1b27] flex-shrink-0">
+                  <div className="font-serif text-3xl md:text-4xl text-[var(--accent)] flex-shrink-0">
                     {phase.number}
                   </div>
                   <div>
@@ -225,7 +225,7 @@ export default function ThreeHourWorkdayPage() {
         {/* Key Insight */}
         <section className="bg-[var(--background)] py-16 md:py-24">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="border-l-2 border-[#4d1b27] pl-6 text-left">
+            <div className="border-l-2 border-[var(--accent)] pl-6 text-left">
               <p className="font-serif italic text-xl md:text-2xl text-[var(--foreground)]">
                 &ldquo;The strategy: ruthlessly identify what you do, hand the
                 low-value work to AI, and protect your remaining time for

@@ -201,7 +201,7 @@ export default function AIMoneyQuiz() {
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8 md:p-12 text-center">
           <div className="text-6xl mb-6">🤖</div>
           <h2 className="font-serif text-3xl md:text-4xl mb-4">
-            Which AI Money Stack <span className="italic text-[#4d1b27]">fits you?</span>
+            Which AI Money Stack <span className="italic text-[var(--accent)]">fits you?</span>
           </h2>
           <p className="text-[var(--gray-600)] text-lg mb-2">
             Answer 5 quick questions to find out which AI tools + business model matches your skills, style, and goals.
@@ -275,7 +275,7 @@ export default function AIMoneyQuiz() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
           <button
             onClick={handleRestart}
-            className="px-6 py-3 rounded-full border border-[var(--card-border)] text-[var(--foreground)] font-medium hover:border-[#4d1b27] hover:text-[#4d1b27] transition-colors"
+            className="px-6 py-3 rounded-full border border-[var(--card-border)] text-[var(--foreground)] font-medium hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
           >
             Retake Quiz
           </button>
@@ -316,11 +316,11 @@ export default function AIMoneyQuiz() {
             <button
               key={index}
               onClick={() => handleAnswer(index)}
-              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[#4d1b27] hover:bg-[#4d1b2708] transition-all group"
+              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[#4d1b2708] transition-all group"
             >
               <div className="flex items-center gap-4">
                 <span className="text-2xl flex-shrink-0">{option.emoji}</span>
-                <span className="text-[var(--foreground)] group-hover:text-[#4d1b27] transition-colors">
+                <span className="text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
                   {option.text}
                 </span>
               </div>

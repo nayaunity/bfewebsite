@@ -57,7 +57,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[var(--foreground)] mb-4">
-            You&apos;re <span className="italic text-[#4d1b27]">in</span>.
+            You&apos;re <span className="italic text-[var(--accent)]">in</span>.
           </h1>
 
           <p className="text-[var(--gray-600)] text-lg mb-2">
@@ -97,7 +97,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
             Questions? Write to{" "}
             <a
               href="mailto:theblackfemaleengineer@gmail.com"
-              className="underline hover:text-[#4d1b27]"
+              className="underline hover:text-[var(--accent)]"
             >
               theblackfemaleengineer@gmail.com
             </a>
