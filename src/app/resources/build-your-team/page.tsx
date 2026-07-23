@@ -5,22 +5,22 @@ import BuildYourTeamQuiz from "./BuildYourTeamQuiz";
 import PageViewTracker from "./PageViewTracker";
 
 export const metadata = {
-  title: "Build Your Team Quiz | The Black Female Engineer",
+  title: "The Founder of Your Life Quiz | The Black Female Engineer",
   description:
-    "I make $60K/month running my life like a startup. Take this 60-second quiz to find out which 'team member' would give you the biggest time ROI right now.",
+    "I make $60K/month running my life like a startup. Take this quiz to find where you're leaking time and what your first 'hire' should be.",
   openGraph: {
-    title: "Build Your Team Quiz",
+    title: "The Founder of Your Life Quiz",
     description:
-      "I make $60K/month running my life like a startup. Find out which 'team member' to hire first.",
+      "Find where you're leaking time and what your first 'hire' should be to buy it back.",
     url: "/resources/build-your-team",
     type: "website",
     images: [{ url: "/images/bfeimage2.png", alt: "The Black Female Engineer" }],
   },
   twitter: {
     card: "summary_large_image" as const,
-    title: "Build Your Team Quiz",
+    title: "The Founder of Your Life Quiz",
     description:
-      "I make $60K/month running my life like a startup. Find out which 'team member' to hire first.",
+      "Find where you're leaking time and what your first 'hire' should be to buy it back.",
     images: ["/images/bfeimage2.png"],
   },
 };
@@ -36,10 +36,12 @@ export default function BuildYourTeamPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight">
-                Build your <span className="italic text-[var(--accent)]">team</span>
+                The Founder of Your Life{" "}
+                <span className="italic text-[var(--accent)]">Quiz</span>
               </h1>
               <p className="mt-4 text-lg text-[var(--gray-600)]">
-                I run my life like a startup. AI is my junior ops person. Cleaners are my facilities team. DoorDash is my kitchen staff. Find out which role you should hire for first.
+                I make $60K/month running my life like a startup. Find out where
+                you're leaking time and what your first "hire" should be.
               </p>
             </div>
           </div>

@@ -9,7 +9,7 @@ export default function PageViewTracker() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         slug: "build-your-team",
-        title: "Build Your Team Quiz",
+        title: "The Founder of Your Life Quiz",
       }),
     }).catch(() => {});
   }, []);
