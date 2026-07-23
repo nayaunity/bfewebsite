@@ -32,6 +32,7 @@ export default function ResourcesPage() {
         { name: "Claude Code 101", description: "Your beginner's guide to building with AI in the terminal", tag: "Beginner", href: "/resources/claude-code-101" },
         { name: "Claude Architect Mock Exam", description: "48-question practice exam for Claude Certified Architect certification", tag: "Featured", href: "/resources/claude-architect-exam" },
         { name: "AI Money Stack Quiz", description: "Find which AI tools + business model fits your skills and goals", tag: "Featured", href: "/resources/ai-money-quiz" },
+        { name: "Build Your Team Quiz", description: "Find your highest-ROI first 'hire' to buy back your time", tag: "New", href: "/resources/build-your-team" },
       ],
     },
     {

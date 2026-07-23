@@ -43,6 +43,7 @@ const NON_BLOG_SLUGS = [
   "onboarding-review",
   "building-a-tech-audience",
   "profile-account",
+  "build-your-team",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
