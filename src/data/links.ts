@@ -61,10 +61,10 @@ export const links: LinkItem[] = [
     category: "Career",
   },
   {
-    id: "work-with-us",
-    title: "Work With Me",
-    description: "Partnership and collaboration opportunities",
-    url: "/work-with-us",
+    id: "work-with-naya",
+    title: "Companies & Creators",
+    description: "Speaking, brand partnerships, and creator CEO partnerships",
+    url: "/work-with-naya",
     category: "Business",
   },
   {

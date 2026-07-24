@@ -53,7 +53,7 @@ export default function Footer() {
             <h4 className="text-sm tracking-widest mb-6">CONNECT</h4>
             <ul className="space-y-3">
               <li><Link href="/contact" className="text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors">Contact Me</Link></li>
-              <li><a href="/work-with-us" className="text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors">Work With Me</a></li>
+              <li><a href="/work-with-naya" className="text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors">Companies & Creators</a></li>
               <li><Link href="/resources/submit" className="text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors">Submit a Resource</Link></li>
               <li><Link href="/links" className="text-[var(--gray-600)] hover:text-[var(--accent)] transition-colors">Link In Bio</Link></li>
               {/* Hidden: Team uses /jobs/submit directly */}

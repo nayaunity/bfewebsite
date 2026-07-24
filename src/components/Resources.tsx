@@ -25,7 +25,7 @@ export default function Resources() {
       category: "Community",
       items: [
         { name: "Meet the Community", href: "/community" },
-        { name: "Work With Me", href: "/work-with-us" },
+        { name: "Companies & Creators", href: "/work-with-naya" },
         { name: "Contact Me", href: "/contact" },
       ],
     },

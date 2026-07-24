@@ -92,7 +92,7 @@ export default function About() {
 
           <p className="text-center mt-12 text-sm">
             WANT TO PARTNER WITH ME?{" "}
-            <a href="/work-with-us" className="underline hover:text-[var(--accent)]">
+            <a href="/work-with-naya" className="underline hover:text-[var(--accent)]">
               LET ME KNOW
             </a>
           </p>

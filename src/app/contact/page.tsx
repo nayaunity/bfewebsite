@@ -77,7 +77,7 @@ export default function ContactPage() {
                   Interested in collaborating, sponsorships, or business opportunities? Check out my partnership page.
                 </p>
                 <Link
-                  href="/work-with-us"
+                  href="/work-with-naya"
                   className="inline-flex items-center gap-2 text-[var(--accent)] hover:underline text-lg font-medium"
                 >
                   View Partnership Options

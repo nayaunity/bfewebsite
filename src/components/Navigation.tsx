@@ -37,6 +37,7 @@ export default function Navigation() {
     { href: "/resources", label: "RESOURCES" },
     { href: "/community", label: "COMMUNITY" },
     { href: "/blog", label: "BLOG" },
+    { href: "/work-with-naya", label: "COMPANIES & CREATORS" },
   ];
 
   const mobileNavLinks = [

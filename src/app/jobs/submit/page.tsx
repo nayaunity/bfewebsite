@@ -73,7 +73,7 @@ export default function SubmitJobPage() {
                 View Job Board
               </Link>
               <Link
-                href="/work-with-us"
+                href="/work-with-naya"
                 className="inline-block bg-[var(--card-bg)] text-[var(--foreground)] border border-[var(--card-border)] px-8 py-4 rounded-full font-medium hover:border-[var(--accent)] transition-colors"
               >
                 Other Partnerships
@@ -93,7 +93,7 @@ export default function SubmitJobPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-12">
-            <Link href="/work-with-us" className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] mb-4 inline-block">
+            <Link href="/work-with-naya" className="text-sm text-[var(--gray-600)] hover:text-[var(--foreground)] mb-4 inline-block">
               &larr; Back to Partnerships
             </Link>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight">
