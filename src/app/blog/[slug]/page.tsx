@@ -92,7 +92,7 @@ function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
           href={linkMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[var(--accent)] hover:underline"
+          className="text-[var(--accent)] underline"
         >
           {linkMatch[1]}
         </a>
@@ -105,7 +105,7 @@ function parseInlineMarkdown(text: string, keyPrefix: string): React.ReactNode {
           href={urlMatch[0]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[var(--accent)] hover:underline break-all"
+          className="text-[var(--accent)] underline break-all"
         >
           {urlMatch[0]}
         </a>
