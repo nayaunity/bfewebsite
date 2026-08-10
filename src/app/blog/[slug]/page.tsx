@@ -148,6 +148,27 @@ function renderContent(content: string) {
       continue;
     }
 
+    // Handle inline images: ![alt](url) on its own line
+    const imageMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imageMatch) {
+      const alt = imageMatch[1];
+      const src = imageMatch[2];
+      elements.push(
+        <div key={keyIndex++} className="my-8 rounded-2xl overflow-hidden border border-[var(--card-border)]">
+          <Image
+            src={src}
+            alt={alt || "Blog image"}
+            width={1200}
+            height={400}
+            className="w-full h-auto"
+            sizes="(max-width: 768px) 100vw, 768px"
+          />
+        </div>
+      );
+      i++;
+      continue;
+    }
+
     // Handle CTA button: [[Label|URL]] on its own line
     const buttonMatch = trimmed.match(/^\[\[([^|\]]+)\|([^\]]+)\]\]$/);
     if (buttonMatch) {
@@ -159,7 +180,7 @@ function renderContent(content: string) {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="my-8 flex items-center justify-between gap-4 bg-[#4d1b27] text-white px-8 py-5 rounded-2xl font-medium text-lg hover:bg-[#d94a24] transition-colors"
+          className="my-8 flex items-center justify-between gap-4 bg-[var(--cta-bg)] text-white px-8 py-5 rounded-2xl font-medium text-lg hover:bg-[#d94a24] transition-colors"
         >
           <span>{label}</span>
           <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,7 +352,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Meta */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs px-2 py-1 rounded-full bg-[#4d1b27] text-white font-medium">
+            <span className="text-xs px-2 py-1 rounded-full bg-[var(--cta-bg)] text-white font-medium">
               {post.category}
             </span>
             <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
@@ -402,7 +423,7 @@ export default async function BlogPostPage({ params }: Props) {
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors group"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--cta-bg)] transition-colors group"
               >
                 <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -412,7 +433,7 @@ export default async function BlogPostPage({ params }: Props) {
                 href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.theblackfemaleengineer.com/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors group"
+                className="w-10 h-10 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--cta-bg)] transition-colors group"
               >
                 <svg className="w-4 h-4 text-[var(--gray-600)] group-hover:text-black" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -469,7 +490,7 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
             <Link
               href="#newsletter"
-              className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+              className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
             >
               Subscribe to Newsletter
             </Link>
