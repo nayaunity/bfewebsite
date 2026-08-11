@@ -32,7 +32,7 @@ export default function WaitlistForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          tags: ["waitlist-community", `role:${role}`],
+          tags: ["skool-waitlist", `skool-role:${role}`],
         }),
       });
 
