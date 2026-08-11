@@ -19,7 +19,7 @@ export default function ValueProp() {
               key={step}
               className="flex items-center gap-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full px-6 py-3"
             >
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#4d1b27] text-white text-sm font-bold flex items-center justify-center">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--cta-bg)] text-white text-sm font-bold flex items-center justify-center">
                 {step}
               </span>
               <span className="font-medium text-sm text-[var(--foreground)]">

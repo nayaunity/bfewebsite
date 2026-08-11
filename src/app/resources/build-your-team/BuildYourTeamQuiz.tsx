@@ -311,7 +311,7 @@ export default function BuildYourTeamQuiz() {
           <div className="text-center">
             <button
               onClick={handleStart}
-              className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-[#d94d25] transition-colors"
+              className="bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-[#d94d25] transition-colors"
             >
               Find My First Hire
             </button>
@@ -479,7 +479,7 @@ export default function BuildYourTeamQuiz() {
           </button>
           <a
             href="/resources"
-            className="px-6 py-3 rounded-full bg-[#4d1b27] text-white font-medium hover:bg-[#d94d25] transition-colors text-center"
+            className="px-6 py-3 rounded-full bg-[var(--cta-bg)] text-white font-medium hover:bg-[#d94d25] transition-colors text-center"
           >
             Explore More Resources
           </a>
@@ -500,7 +500,7 @@ export default function BuildYourTeamQuiz() {
             </div>
             <div className="w-full h-2 bg-[var(--gray-100)] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#4d1b27] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-[var(--cta-bg)] rounded-full transition-all duration-500 ease-out"
                 style={{ width: "100%" }}
               />
             </div>
@@ -518,7 +518,7 @@ export default function BuildYourTeamQuiz() {
               <button
                 key={index}
                 onClick={() => handleIncomeAnswer(option.tier)}
-                className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[#4d1b2708] transition-all group"
+                className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[var(--cta-bg)]/[0.03] transition-all group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-2xl flex-shrink-0 mt-0.5">
@@ -557,7 +557,7 @@ export default function BuildYourTeamQuiz() {
           </div>
           <div className="w-full h-2 bg-[var(--gray-100)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#4d1b27] rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-[var(--cta-bg)] rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -572,7 +572,7 @@ export default function BuildYourTeamQuiz() {
             <button
               key={index}
               onClick={() => handleDiagnosticAnswer(index)}
-              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[#4d1b2708] transition-all group"
+              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[var(--cta-bg)]/[0.03] transition-all group"
             >
               <div className="flex items-center gap-4">
                 <span className="text-2xl flex-shrink-0">{option.emoji}</span>

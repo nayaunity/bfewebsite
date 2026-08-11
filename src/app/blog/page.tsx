@@ -57,7 +57,7 @@ export default async function BlogPage() {
                   key={category}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     category === "All"
-                      ? "bg-[#4d1b27] text-white"
+                      ? "bg-[var(--cta-bg)] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -93,7 +93,7 @@ export default async function BlogPage() {
                     )}
                     <div className="p-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-[#4d1b27] text-white font-medium">
+                        <span className="text-xs px-2 py-1 rounded-full bg-[var(--cta-bg)] text-white font-medium">
                           {post.category}
                         </span>
                         <span className="text-sm text-[var(--gray-600)]">{post.readTime}</span>
@@ -187,7 +187,7 @@ export default async function BlogPage() {
         </section>
 
         {/* Newsletter CTA */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
               Never miss an article
@@ -197,7 +197,7 @@ export default async function BlogPage() {
             </p>
             <Link
               href="#newsletter"
-              className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+              className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
             >
               Subscribe to Newsletter
             </Link>

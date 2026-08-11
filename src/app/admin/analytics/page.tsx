@@ -536,7 +536,7 @@ export default async function AnalyticsPage() {
           <h2 className="font-serif text-xl text-[var(--foreground)]">
             Claude Code Presale
           </h2>
-          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#4d1b27] text-white">
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)] text-white">
             PRESALE
           </span>
         </div>
@@ -594,7 +594,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
               <p className="text-xs text-[var(--gray-600)] mt-0.5">CTA clicks / unique visitors</p>
@@ -632,7 +632,7 @@ export default async function AnalyticsPage() {
           <h2 className="font-serif text-xl text-[var(--foreground)]">
             Building a Tech Audience Presale
           </h2>
-          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#4d1b27] text-white">
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)] text-white">
             PRESALE
           </span>
         </div>
@@ -690,7 +690,7 @@ export default async function AnalyticsPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Conversion Rate</p>
               <p className="text-xs text-[var(--gray-600)] mt-0.5">Tier CTA clicks / unique visitors</p>
@@ -776,7 +776,7 @@ export default async function AnalyticsPage() {
           <h2 className="font-serif text-xl text-[var(--foreground)]">
             Auto Apply Waitlist
           </h2>
-          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[var(--accent)]">
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)]/10 text-[var(--accent)]">
             BETA
           </span>
         </div>
@@ -1042,7 +1042,7 @@ export default async function AnalyticsPage() {
             </p>
           </div>
         </div>
-        <div className="mt-4 bg-[#4d1b27]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
+        <div className="mt-4 bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-[var(--foreground)]">Claude Code CTA</p>
             <p className="text-xs text-[var(--gray-600)] mt-0.5">Course enrollment button</p>

@@ -62,7 +62,7 @@ export default function WebinarSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27]/10 text-[var(--accent)] mb-4">
+          <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--cta-bg)]/10 text-[var(--accent)] mb-4">
             Free Webinar Recording
           </span>
           <h2 className="font-serif text-3xl md:text-4xl mb-3">
@@ -112,7 +112,7 @@ export default function WebinarSection() {
           /* Locked - Show Gate */
           <div className="relative">
             {/* Mobile-friendly card layout */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-[#2a2828]">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-[var(--dark-section-bg)]">
               {/* Background Image */}
               <div className="absolute inset-0">
                 <img
@@ -120,7 +120,7 @@ export default function WebinarSection() {
                   alt="Claude Code 101 Webinar Preview"
                   className="w-full h-full object-cover opacity-20 md:opacity-30"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#2a2828] via-[#2a2828]/90 to-[#2a2828]/80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--dark-section-bg)] via-[var(--dark-section-bg)]/90 to-[var(--dark-section-bg)]/80" />
               </div>
 
               {/* Content - flows naturally on mobile */}
@@ -154,7 +154,7 @@ export default function WebinarSection() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
+                      className="w-full bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
                     >
                       {isSubmitting ? "..." : "Watch Now"}
                     </button>

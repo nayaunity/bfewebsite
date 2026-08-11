@@ -94,7 +94,7 @@ export default async function LinksPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-12 h-12 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[#4d1b27] transition-colors"
+                  className="w-12 h-12 rounded-full border border-[var(--card-border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--cta-bg)] transition-colors"
                 >
                   <SocialIcon icon={social.icon} />
                 </a>
@@ -158,7 +158,7 @@ export default async function LinksPage() {
             </p>
             <Link
               href="/resources"
-              className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+              className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
             >
               Explore All Resources
             </Link>

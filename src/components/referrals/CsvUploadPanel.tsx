@@ -118,7 +118,7 @@ export default function CsvUploadPanel({
         onClick={() => inputRef.current?.click()}
         className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
           dragOver
-            ? "border-[var(--accent)] bg-[#4d1b27]/5"
+            ? "border-[var(--accent)] bg-[var(--cta-bg)]/5"
             : "border-[var(--card-border)] hover:border-[var(--accent)]/50"
         } ${state === "uploading" ? "pointer-events-none opacity-60" : ""}`}
       >

@@ -48,7 +48,7 @@ export default function MatchedJobsPreview({ onApply }: Props) {
     const timeouts: ReturnType<typeof setTimeout>[] = [];
     if (!prefersReducedMotion) {
       import("canvas-confetti").then(({ default: confetti }) => {
-        const colors = ["#4d1b27", "#4d1b27", "#ffffff"];
+        const colors = ["var(--cta-bg)", "var(--cta-bg)", "#ffffff"];
         timeouts.push(
           setTimeout(
             () =>
@@ -99,7 +99,7 @@ export default function MatchedJobsPreview({ onApply }: Props) {
 
   return (
     <section className="text-center">
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#4d1b27]/10 px-4 py-2 text-sm font-medium text-[var(--accent)]">
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[var(--cta-bg)]/10 px-4 py-2 text-sm font-medium text-[var(--accent)]">
         <span>✨</span>
         <span>Your matches are ready</span>
       </div>
@@ -132,7 +132,7 @@ export default function MatchedJobsPreview({ onApply }: Props) {
       <ul className="mx-auto mt-10 inline-flex flex-col gap-3 text-left">
         {BENEFITS.map((benefit) => (
           <li key={benefit} className="flex items-center gap-3 text-[var(--gray-800)]">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4d1b27] text-xs font-bold text-white">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--cta-bg)] text-xs font-bold text-white">
               ✓
             </span>
             <span className="text-base">{benefit}</span>
@@ -144,7 +144,7 @@ export default function MatchedJobsPreview({ onApply }: Props) {
         <button
           type="button"
           onClick={onApply}
-          className="rounded-full bg-[#4d1b27] px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-[#4d1b27]/30 transition hover:bg-[#d84a21] hover:shadow-xl"
+          className="rounded-full bg-[var(--cta-bg)] px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-[var(--cta-bg)]/30 transition hover:bg-[#d84a21] hover:shadow-xl"
         >
           Start 7-day free trial
         </button>

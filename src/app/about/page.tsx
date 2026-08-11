@@ -72,12 +72,12 @@ export default function AboutPage() {
         </section>
 
         {/* Mission */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white">
               My Mission
             </h2>
-            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             <p className="text-xl md:text-2xl text-white/80 font-serif italic">
               To equip you with the tools and strategies to build skills, grow your income, and create freedom with AI.
             </p>
@@ -124,7 +124,7 @@ export default function AboutPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {values.map((value, index) => (
                 <div key={index} className="bg-[var(--card-bg)] p-8 rounded-2xl">
-                  <div className="w-12 h-12 rounded-full bg-[#4d1b27] flex items-center justify-center mb-6">
+                  <div className="w-12 h-12 rounded-full bg-[var(--cta-bg)] flex items-center justify-center mb-6">
                     <span className="font-serif font-bold text-lg text-black">{index + 1}</span>
                   </div>
                   <h3 className="font-serif text-xl mb-3">{value.title}</h3>
@@ -151,7 +151,7 @@ export default function AboutPage() {
                     <span className="font-serif text-2xl text-[var(--accent)]">{item.year}</span>
                   </div>
                   <div className="flex-1 pb-8 border-l-2 border-[var(--card-border)] pl-6 relative">
-                    <div className="absolute left-[-5px] top-2 w-2 h-2 rounded-full bg-[#4d1b27]"></div>
+                    <div className="absolute left-[-5px] top-2 w-2 h-2 rounded-full bg-[var(--cta-bg)]"></div>
                     <p className="text-[var(--gray-600)]">{item.event}</p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function AboutPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/community"
-                className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+                className="bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
               >
                 Join the Community
               </Link>

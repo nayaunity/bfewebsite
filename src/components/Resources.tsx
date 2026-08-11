@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChromeStar, PinkFolder } from "@/components/brand";
 
 export default function Resources() {
   const resources = [
@@ -32,15 +33,18 @@ export default function Resources() {
   ];
 
   return (
-    <section id="resources" className="bg-[var(--background)] py-20 md:py-28">
+    <section id="resources" className="bg-[var(--surface-warm)] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 relative">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl">
             <span className="italic">what</span> THE RESOURCES
             <br />
             <span className="italic">can help you</span> BUILD
           </h2>
+          <ChromeStar size={52} rotate={10} className="absolute -top-6 right-1/4 hidden md:block animate-twinkle" />
+          <ChromeStar size={28} rotate={-15} className="absolute top-4 right-[15%] hidden md:block animate-twinkle [animation-delay:0.8s]" />
+          <PinkFolder size={64} rotate={8} className="absolute -top-2 left-[10%] hidden md:block" />
         </div>
 
         {/* Resources Grid */}
@@ -83,7 +87,7 @@ export default function Resources() {
         <div className="mt-16 text-center">
           <Link
             href="/resources"
-            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+            className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
           >
             View All Resources
           </Link>

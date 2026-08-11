@@ -88,7 +88,7 @@ function timeAgo(ts: Date | string | null): string {
 }
 
 const COMPANY_PALETTE = [
-  "#4d1b27", "#635bff", "#ff5a5f", "#a259ff", "#1f1f1f", "#5e6ad2", "#d97757",
+  "var(--cta-bg)", "#635bff", "#ff5a5f", "#a259ff", "#1f1f1f", "#5e6ad2", "#d97757",
   "#10a37f", "#ffcc00", "#632ca6", "#ff6600", "#1db954", "#f06a6a", "#58cc02",
   "#ff7a59", "#7b189f", "#0052cc", "#2164f3", "#f38020", "#95bf47", "#29b5e8",
   "#ff3008", "#43b02a", "#0052ff", "#5865f2", "#ff4500", "#ffd02f", "#00c4cc",
@@ -182,7 +182,7 @@ function StepRow({ done, active, label, detail }: { done: boolean; active: boole
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
         ) : active ? (
-          <div className="w-3 h-3 border-2 border-[#fef3ef] border-t-[#4d1b27] rounded-full animate-spin" />
+          <div className="w-3 h-3 border-2 border-[#fef3ef] border-t-[var(--cta-bg)] rounded-full animate-spin" />
         ) : (
           <div className="w-1.5 h-1.5 rounded-full bg-[var(--gray-200)]" />
         )}
@@ -231,7 +231,7 @@ function HeroStat({ label, value, accent, fill }: { label: string; value: string
           fill
             ? {
                 background: accent,
-                color: "#2a2828",
+                color: "var(--foreground)",
                 padding: "2px 10px",
                 borderRadius: 6,
                 display: "inline-block",
@@ -269,7 +269,7 @@ function MatchBar({ score }: { score: number }) {
       <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-[var(--gray-100)]">
         <div
           className="h-full rounded-full"
-          style={{ width: `${score}%`, background: "linear-gradient(90deg,#4d1b27,#ffb65e)" }}
+          style={{ width: `${score}%`, background: "linear-gradient(90deg,var(--cta-bg),#ffb65e)" }}
         />
       </div>
       <span className="font-mono text-[11px] tabular-nums text-[var(--gray-600)]">{score}</span>
@@ -630,7 +630,7 @@ export default function ApplicationsDashboard({
       {showResumeQuiz && (
         <Link
           href="/profile/resume-quiz"
-          className="group flex items-center justify-between w-full mb-6 px-5 py-4 bg-gradient-to-r from-[#4d1b27] to-[#897075] text-white rounded-2xl hover:opacity-95 transition-all hover:shadow-lg"
+          className="group flex items-center justify-between w-full mb-6 px-5 py-4 bg-gradient-to-r from-[var(--cta-bg)] to-[#897075] text-white rounded-2xl hover:opacity-95 transition-all hover:shadow-lg"
         >
           <div className="flex items-center gap-4">
             <div className="w-11 h-11 rounded-xl bg-black/10 flex items-center justify-center flex-shrink-0">
@@ -668,16 +668,16 @@ export default function ApplicationsDashboard({
             </p>
           </div>
           <div className="flex items-center gap-6 lg:gap-4 lg:justify-end flex-wrap">
-            <HeroStat label="This week" value={stats.thisWeek} accent="#4d1b27" />
+            <HeroStat label="This week" value={stats.thisWeek} accent="var(--cta-bg)" />
             {stats.streak > 0 && (
-              <HeroStat label="Streak" value={`${stats.streak}d`} accent="#4d1b27" fill />
+              <HeroStat label="Streak" value={`${stats.streak}d`} accent="var(--cta-bg)" fill />
             )}
             {stats.matchAvg > 0 && (
               <HeroStat label="Match avg" value={`${stats.matchAvg}%`} />
             )}
             {Object.keys(connectionCounts).length > 0 && (
               <Link href="/profile/referrals">
-                <HeroStat label="Referral cos." value={Object.keys(connectionCounts).length} accent="#4d1b27" />
+                <HeroStat label="Referral cos." value={Object.keys(connectionCounts).length} accent="var(--cta-bg)" />
               </Link>
             )}
           </div>
@@ -718,7 +718,7 @@ export default function ApplicationsDashboard({
                     className="h-full rounded-full"
                     style={{
                       width: `${Math.min(100, (usage.used / usage.limit) * 100)}%`,
-                      background: "linear-gradient(90deg, #4d1b27, #ffb65e)",
+                      background: "linear-gradient(90deg, var(--cta-bg), #ffb65e)",
                       transition: "width 1.2s ease",
                     }}
                   />
@@ -738,13 +738,13 @@ export default function ApplicationsDashboard({
           <div className="flex justify-start lg:justify-center">
             {hasActiveSession ? (
               <span className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.15em] rounded-xl bg-[#fef3ef] text-[var(--accent)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27] animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)] animate-pulse" />
                 Session running
               </span>
             ) : atLimit ? (
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[var(--accent)] hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[var(--dark-section-bg)] text-[var(--accent)] hover:opacity-90 transition-all"
               >
                 Limit reached. See plans
               </Link>
@@ -752,7 +752,7 @@ export default function ApplicationsDashboard({
               <button
                 onClick={handleStartApplying}
                 disabled={starting}
-                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#4d1b27] text-white hover:brightness-110 disabled:opacity-80 disabled:cursor-wait transition-all"
+                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[var(--cta-bg)] text-white hover:brightness-110 disabled:opacity-80 disabled:cursor-wait transition-all"
               >
                 {starting ? (
                   <>
@@ -774,7 +774,7 @@ export default function ApplicationsDashboard({
             ) : (
               <Link
                 href={missingRoles ? "/profile" : "/auto-apply/next-steps"}
-                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[#2a2828] text-[var(--accent)] hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-2.5 text-sm bg-[var(--dark-section-bg)] text-[var(--accent)] hover:opacity-90 transition-all"
               >
                 {missingRoles ? "Set target roles" : "Upload a resume"}
               </Link>
@@ -785,7 +785,7 @@ export default function ApplicationsDashboard({
           <div
             className="flex items-start gap-3 rounded-2xl px-4 py-3 bg-[var(--accent-blue-bg)] border border-[var(--card-border)]"
           >
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#4d1b27]/10 text-[var(--accent)]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[var(--cta-bg)]/10 text-[var(--accent)]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6" />
               </svg>
@@ -811,7 +811,7 @@ export default function ApplicationsDashboard({
                     className="h-[2px] rounded-full transition-all"
                     style={{
                       width: n === tipIndex ? 18 : 6,
-                      background: n === tipIndex ? "#4d1b27" : "var(--gray-200)",
+                      background: n === tipIndex ? "var(--cta-bg)" : "var(--gray-200)",
                     }}
                   />
                 ))}
@@ -838,13 +838,13 @@ export default function ApplicationsDashboard({
           <ul className="text-xs text-[var(--gray-600)] space-y-1.5 ml-1">
             {missingRoles && (
               <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)]" />
                 <Link href="/profile" className="hover:text-[var(--accent)] hover:underline">Set your target roles</Link>
               </li>
             )}
             {missingResume && (
               <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)]" />
                 <Link href="/auto-apply/next-steps" className="hover:text-[var(--accent)] hover:underline">Upload a resume</Link>
               </li>
             )}
@@ -881,7 +881,7 @@ export default function ApplicationsDashboard({
               </div>
               {isActive ? (
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-[#fef3ef] text-[var(--accent)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4d1b27] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)] animate-pulse" />
                   Running
                 </span>
               ) : isComplete ? (
@@ -908,7 +908,7 @@ export default function ApplicationsDashboard({
                     </div>
                     <div className="w-full h-1.5 bg-[var(--gray-100)] rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-[#4d1b27] to-[#f97316] transition-all duration-700 ease-out"
+                        className="h-full rounded-full bg-gradient-to-r from-[var(--cta-bg)] to-[#f97316] transition-all duration-700 ease-out"
                         style={{ width: `${progressPct}%` }}
                       />
                     </div>
@@ -917,7 +917,7 @@ export default function ApplicationsDashboard({
 
                 <div className="relative pl-4">
                   <div className={`absolute left-[23px] top-7 bottom-7 w-0.5 ${
-                    scanComplete ? "bg-green-400" : scanDone ? "bg-gradient-to-b from-[#4d1b27] via-[#4d1b27] to-[var(--gray-200)]" : "bg-[var(--gray-200)]"
+                    scanComplete ? "bg-green-400" : scanDone ? "bg-gradient-to-b from-[var(--cta-bg)] via-[var(--cta-bg)] to-[var(--gray-200)]" : "bg-[var(--gray-200)]"
                   }`} />
                   <StepRow
                     done={scanComplete}
@@ -1066,7 +1066,7 @@ export default function ApplicationsDashboard({
                       }
                       rows={task.personalizedWritingRequired ? 8 : 4}
                       placeholder={task.personalizedWritingRequired ? "Review and edit the draft before approval" : "Optional notes before approval"}
-                      className="w-full rounded-2xl border border-[var(--card-border)] bg-white px-4 py-3 text-sm text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[#4d1b27]/20"
+                      className="w-full rounded-2xl border border-[var(--card-border)] bg-white px-4 py-3 text-sm text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/20"
                     />
                   </div>
 
@@ -1074,7 +1074,7 @@ export default function ApplicationsDashboard({
                     <button
                       onClick={() => handleReviewAction(task, "approve")}
                       disabled={reviewActionId === task.id}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[#4d1b27] px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[var(--cta-bg)] px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
                     >
                       {reviewActionId === task.id ? "Saving..." : "Approve & queue"}
                     </button>
@@ -1099,7 +1099,7 @@ export default function ApplicationsDashboard({
 
       {/* Celebration Banner — shown after first success, before hitting limit */}
       {usage && usage.tier === "free" && stats.applied >= 1 && !atLimit && !celebrationDismissed && (
-        <div className="mb-8 relative bg-gradient-to-r from-[#4d1b27]/5 to-[#4d1b27]/10 border border-[var(--accent)]/20 rounded-2xl p-5">
+        <div className="mb-8 relative bg-gradient-to-r from-[var(--cta-bg)]/5 to-[var(--cta-bg)]/10 border border-[var(--accent)]/20 rounded-2xl p-5">
           <button
             onClick={() => setCelebrationDismissed(true)}
             className="absolute top-3 right-3 text-[var(--gray-600)] hover:text-[var(--foreground)] transition-colors"
@@ -1127,7 +1127,7 @@ export default function ApplicationsDashboard({
             <button
               onClick={() => handleCheckout("starter")}
               disabled={checkingOut}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#4d1b27] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--cta-bg)] rounded-lg hover:bg-[#d44a22] transition-colors disabled:opacity-50"
             >
               Unlock 100 Apps/Mo for $29
             </button>
@@ -1173,7 +1173,7 @@ export default function ApplicationsDashboard({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search company or role"
-                className="pl-9 pr-3 py-2 text-sm rounded-full outline-none w-full md:w-64 bg-transparent border border-[var(--card-border)] text-[var(--foreground)] focus:ring-2 focus:ring-[#4d1b27]/30"
+                className="pl-9 pr-3 py-2 text-sm rounded-full outline-none w-full md:w-64 bg-transparent border border-[var(--card-border)] text-[var(--foreground)] focus:ring-2 focus:ring-[var(--cta-bg)]/30"
               />
             </div>
           </div>
@@ -1210,7 +1210,7 @@ export default function ApplicationsDashboard({
                         const isApplied = app.status === "submitted" || app.status === "applied";
                         const isLive = app.status === "applying" || app.status === "pending";
                         const isReview = app.status === "review";
-                        const stampColor = isApplied ? "#2f7a3a" : isLive ? "#4d1b27" : isReview ? "#2457d6" : "#a39026";
+                        const stampColor = isApplied ? "#2f7a3a" : isLive ? "var(--cta-bg)" : isReview ? "#2457d6" : "#a39026";
                         const stampText = isApplied ? "APPLIED" : isLive ? "IN FLIGHT" : isReview ? "REVIEW" : "SKIPPED";
                         const ts = app.submittedAt ?? app.createdAt;
                         return (
@@ -1395,8 +1395,8 @@ export default function ApplicationsDashboard({
           <div className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)]">
             <div className="flex items-center gap-2 mb-3">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full rounded-full animate-ping bg-[#4d1b27] opacity-50" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4d1b27]" />
+                <span className="absolute inline-flex h-full w-full rounded-full animate-ping bg-[var(--cta-bg)] opacity-50" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--cta-bg)]" />
               </span>
               <h3 className="text-sm font-semibold text-[var(--foreground)]">Applying right now</h3>
             </div>
@@ -1451,7 +1451,7 @@ export default function ApplicationsDashboard({
 
           {/* Pro move tip */}
           <div className="p-5 rounded-2xl relative overflow-hidden bg-[var(--card-bg)] border border-[var(--card-border)]">
-            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-[#4d1b27]/30" />
+            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-[var(--cta-bg)]/30" />
             <div className="relative">
               <p className="text-[11px] font-mono uppercase tracking-[0.2em] mb-1 text-[var(--gray-600)]">Pro move</p>
               <p className="text-sm leading-snug text-[var(--foreground)]">

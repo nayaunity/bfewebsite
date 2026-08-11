@@ -50,7 +50,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       />
 
       {/* Modal */}
-      <div className="relative bg-[#2a2828] rounded-2xl p-8 md:p-10 max-w-md w-full mx-4 shadow-2xl">
+      <div className="relative bg-[var(--dark-section-bg)] rounded-2xl p-8 md:p-10 max-w-md w-full mx-4 shadow-2xl">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -89,7 +89,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 whitespace-nowrap"
+                  className="bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 whitespace-nowrap"
                 >
                   {isLoading ? "..." : "Subscribe"}
                 </button>

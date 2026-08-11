@@ -18,7 +18,7 @@ export default function LandingHero() {
 
         <Link
           href="/auto-apply/get-started"
-          className="inline-flex items-center gap-2 mt-10 bg-[#4d1b27] text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
+          className="inline-flex items-center gap-2 mt-10 bg-[var(--cta-bg)] text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
         >
           Get Started <span aria-hidden="true">&rarr;</span>
         </Link>

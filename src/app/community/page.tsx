@@ -91,7 +91,7 @@ export default function CommunityPage() {
               </div>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm text-sm"
+                className="inline-flex items-center gap-2 bg-[var(--cta-bg)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--accent-hover)] transition-colors shadow-sm text-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -120,7 +120,7 @@ export default function CommunityPage() {
               {/* Add Win Button */}
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 bg-[var(--cta-bg)] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -211,7 +211,7 @@ export default function CommunityPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="bg-[#4d1b27] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#4d383b] transition-colors shadow-sm"
+                  className="bg-[var(--cta-bg)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
                 >
                   Add the first win
                 </button>

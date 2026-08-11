@@ -97,7 +97,7 @@ export function MicroWinForm({
               onClick={() => setSelectedPrompt(key as PromptType)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedPrompt === key
-                  ? "bg-[#4d1b27] text-white"
+                  ? "bg-[var(--cta-bg)] text-white"
                   : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
               }`}
             >
@@ -159,7 +159,7 @@ export function MicroWinForm({
       <button
         type="submit"
         disabled={isSubmitting || isOverLimit || !content.trim()}
-        className="w-full bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Sharing..." : "Share your win"}
       </button>

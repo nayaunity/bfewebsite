@@ -98,12 +98,12 @@ export default function ClaudeCodeWorkshopPage() {
         </section>
 
         {/* What the Workshop Delivers */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white">
               <span className="italic">what your team</span> WALKS AWAY WITH
             </h2>
-            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             <div className="space-y-8 text-left max-w-2xl mx-auto">
               {[
                 "A working Claude Code setup tailored to your codebase, frameworks, and CI pipeline",
@@ -177,13 +177,13 @@ export default function ClaudeCodeWorkshopPage() {
         </section>
 
         {/* Testimonials */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
                 <span className="italic">what attendees</span> SAY
               </h2>
-              <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+              <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {[
@@ -235,7 +235,7 @@ export default function ClaudeCodeWorkshopPage() {
                   }`}
                 >
                   {tier.popular && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27] text-white">
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white">
                       MOST POPULAR
                     </span>
                   )}
@@ -273,7 +273,7 @@ export default function ClaudeCodeWorkshopPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4 text-white">
               Ready to upskill your team?

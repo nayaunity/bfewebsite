@@ -79,8 +79,8 @@ const STACKS: Record<StackId, StackResult> = {
     description: "You create digital planners, wedding templates, social media kits, and niche design products. Start with a specific audience (real estate agents, ER nurses, dog moms) and build the exact kit they would actually pay for. Niche templates sell on repeat.",
     income: "$500 - $3,000+/month",
     tip: "Don't start with \"a template.\" Start with who it's for. The more specific, the better it sells.",
-    color: "#4d1b27",
-    bg: "#4d1b2710",
+    color: "var(--accent)",
+    bg: "var(--cta-bg)/10",
     icon: "🎨",
   },
   1: {
@@ -211,7 +211,7 @@ export default function AIMoneyQuiz() {
           </p>
           <button
             onClick={handleStart}
-            className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-[#d94d25] transition-colors"
+            className="bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-[#d94d25] transition-colors"
           >
             Start the Quiz
           </button>
@@ -281,7 +281,7 @@ export default function AIMoneyQuiz() {
           </button>
           <a
             href="/blog"
-            className="px-6 py-3 rounded-full bg-[#4d1b27] text-white font-medium hover:bg-[#d94d25] transition-colors text-center"
+            className="px-6 py-3 rounded-full bg-[var(--cta-bg)] text-white font-medium hover:bg-[#d94d25] transition-colors text-center"
           >
             Read More on the Blog
           </a>
@@ -303,7 +303,7 @@ export default function AIMoneyQuiz() {
           </div>
           <div className="w-full h-2 bg-[var(--gray-100)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#4d1b27] rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-[var(--cta-bg)] rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -316,7 +316,7 @@ export default function AIMoneyQuiz() {
             <button
               key={index}
               onClick={() => handleAnswer(index)}
-              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[#4d1b2708] transition-all group"
+              className="w-full text-left p-4 md:p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-[var(--accent)] hover:bg-[var(--cta-bg)]/[0.03] transition-all group"
             >
               <div className="flex items-center gap-4">
                 <span className="text-2xl flex-shrink-0">{option.emoji}</span>

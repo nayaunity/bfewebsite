@@ -17,8 +17,8 @@ export default function PricingSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[880px] mx-auto">
           {/* Starter - Popular */}
-          <div className="bg-[#2a2828] text-white rounded-[22px] p-9 flex flex-col relative">
-            <div className="absolute top-5 right-6 bg-[#4d1b27] text-white text-[11px] font-bold px-3 py-[5px] rounded-full tracking-[0.8px]">
+          <div className="bg-[var(--dark-section-bg)] text-white rounded-[22px] p-9 flex flex-col relative">
+            <div className="absolute top-5 right-6 bg-[var(--cta-bg)] text-white text-[11px] font-bold px-3 py-[5px] rounded-full tracking-[0.8px]">
               MOST POPULAR
             </div>
             <div className="text-[13px] text-[#fbbf24] tracking-[1px] font-semibold">STARTER</div>
@@ -35,7 +35,7 @@ export default function PricingSection() {
             </ul>
             <Link
               href="/auto-apply/get-started"
-              className="block text-center bg-[#4d1b27] text-white py-3.5 px-6 rounded-full font-bold text-[15px] hover:bg-[#f0d800] transition-colors"
+              className="block text-center bg-[var(--cta-bg)] text-white py-3.5 px-6 rounded-full font-bold text-[15px] hover:bg-[#f0d800] transition-colors"
             >
               Start 7-day free trial
             </Link>
@@ -57,7 +57,7 @@ export default function PricingSection() {
             </ul>
             <Link
               href="/pricing"
-              className="block text-center bg-white text-[#2a2828] py-3.5 px-6 rounded-full font-semibold text-[15px] border-[1.5px] border-[#2a2828] hover:bg-[#f5f5f5] transition-colors"
+              className="block text-center bg-white text-[var(--foreground)] py-3.5 px-6 rounded-full font-semibold text-[15px] border-[1.5px] border-[var(--dark-section-bg)] hover:bg-[#f5f5f5] transition-colors"
             >
               Get Pro
             </Link>

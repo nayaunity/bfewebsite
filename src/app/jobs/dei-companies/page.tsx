@@ -74,7 +74,7 @@ export default function DEICompaniesPage() {
                   onClick={() => setSelectedIndustry(industry)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedIndustry === industry
-                      ? "bg-[#4d1b27] text-white"
+                      ? "bg-[var(--cta-bg)] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -148,7 +148,7 @@ export default function DEICompaniesPage() {
               </p>
               <a
                 href="mailto:naya@bfepartnerships.com?subject=DEI Company Suggestion"
-                className="inline-flex items-center gap-2 mt-8 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+                className="inline-flex items-center gap-2 mt-8 bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
               >
                 Suggest a Company
                 <svg

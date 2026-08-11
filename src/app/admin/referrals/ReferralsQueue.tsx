@@ -233,7 +233,7 @@ export default function ReferralsQueue({ initialRequests }: { initialRequests: R
                 onClick={() => setSelectedId(request.id)}
                 className={`mb-3 w-full rounded-2xl border p-4 text-left transition-colors ${
                   selectedId === request.id
-                    ? "border-[var(--accent)] bg-[#4d1b27]/5"
+                    ? "border-[var(--accent)] bg-[var(--cta-bg)]/5"
                     : "border-[var(--card-border)] hover:bg-[var(--gray-50)]"
                 }`}
               >

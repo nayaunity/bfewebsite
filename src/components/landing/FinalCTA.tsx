@@ -3,7 +3,7 @@ import { COMPANIES } from "./companyData";
 
 export default function FinalCTA() {
   return (
-    <section className="relative py-24 md:py-32 bg-[#2a2828] overflow-hidden">
+    <section className="relative py-24 md:py-32 bg-[var(--dark-section-bg)] overflow-hidden">
       {/* Background scattered company names */}
       <div className="absolute inset-0 select-none pointer-events-none" aria-hidden="true">
         {COMPANIES.map((company, i) => (
@@ -33,7 +33,7 @@ export default function FinalCTA() {
 
         <Link
           href="/auto-apply/get-started"
-          className="inline-flex items-center gap-2 mt-10 bg-[#4d1b27] text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
+          className="inline-flex items-center gap-2 mt-10 bg-[var(--cta-bg)] text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-[#f0d800] transition-colors"
         >
           Get Started
         </Link>

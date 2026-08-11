@@ -40,7 +40,7 @@ export default function NomuraClientServicesSummerAnalyst() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[var(--cta-bg)] text-white rounded-full">
                 Nomura
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
@@ -101,7 +101,7 @@ export default function NomuraClientServicesSummerAnalyst() {
               <div className="space-y-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                       </svg>
@@ -116,7 +116,7 @@ export default function NomuraClientServicesSummerAnalyst() {
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
@@ -131,7 +131,7 @@ export default function NomuraClientServicesSummerAnalyst() {
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                       </svg>
@@ -152,15 +152,15 @@ export default function NomuraClientServicesSummerAnalyst() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Requirements</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold">1</span>
                   <span>Outstanding academic qualifications with a strong GPA</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold">2</span>
                   <span>Pursuing a Bachelor&apos;s or Master&apos;s degree in Computer Science or related fields within the United States</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold">3</span>
                   <span>Rising juniors graduating between December 2027 and June 2028</span>
                 </li>
               </ul>
@@ -209,7 +209,7 @@ export default function NomuraClientServicesSummerAnalyst() {
                   href="https://nomuracampus.tal.net/vx/lang-en-GB/mobile-0/appcentre-1/brand-4/xf-3348347fc789/candidate/so/pm/1/pl/1/opp/1390-2026-Information-Technology-Summer-Analyst-Program-Client-Services-Technology/en-GB"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[var(--cta-bg)] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Apply on Nomura Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

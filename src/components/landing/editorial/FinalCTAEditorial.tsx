@@ -4,7 +4,7 @@ import ResumeDrop from "./ResumeDrop";
 
 export default function FinalCTAEditorial() {
   return (
-    <section className="bg-[#2a2828] py-20 md:py-[120px] px-4 sm:px-8 relative overflow-hidden">
+    <section className="bg-[var(--dark-section-bg)] py-20 md:py-[120px] px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-[920px] mx-auto text-center">
         <div className="text-[13px] text-white/60 tracking-[1.5px] font-bold mb-6">
           GET YOUR TIME BACK

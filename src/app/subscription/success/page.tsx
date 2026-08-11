@@ -46,7 +46,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#4d1b27"
+              stroke="var(--cta-bg)"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -81,7 +81,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: Props) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/profile/applications"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#4d1b27] hover:bg-[#d94a22] text-white font-semibold transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[var(--cta-bg)] hover:bg-[#d94a22] text-white font-semibold transition-colors"
             >
               Go to dashboard
             </Link>

@@ -5,7 +5,7 @@ export default function DownloadButton() {
     <a
       href="/downloads/60k-month-blueprint-breakdown.pdf"
       download="The-60K-Month-Blueprint-Breakdown.pdf"
-      className="inline-flex items-center gap-3 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+      className="inline-flex items-center gap-3 bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
     >
       <svg
         className="w-5 h-5"

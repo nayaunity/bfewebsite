@@ -65,7 +65,7 @@ export function PortfolioCustomizeClient({
           type="text"
           value={headline}
           onChange={(e) => setHeadline(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50"
+          className="w-full px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/50"
           placeholder="Your professional tagline"
         />
       </div>
@@ -79,7 +79,7 @@ export function PortfolioCustomizeClient({
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={8}
-          className="w-full px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/50 resize-none"
+          className="w-full px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/50 resize-none"
           placeholder="Your professional bio"
         />
       </div>
@@ -98,7 +98,7 @@ export function PortfolioCustomizeClient({
           <button
             onClick={() => setIsPublished(!isPublished)}
             className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${
-              isPublished ? "bg-[#4d1b27]" : "bg-[var(--gray-200)]"
+              isPublished ? "bg-[var(--cta-bg)]" : "bg-[var(--gray-200)]"
             }`}
           >
             <div
@@ -126,7 +126,7 @@ export function PortfolioCustomizeClient({
         <button
           onClick={handleSave}
           disabled={saving || !hasChanges}
-          className="px-6 py-3 bg-[#4d1b27] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="px-6 py-3 bg-[var(--cta-bg)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>

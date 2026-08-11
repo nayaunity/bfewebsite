@@ -134,7 +134,7 @@ export default function BlueprintBreakdownPage() {
 
             <div className="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
               <div>
-                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[#4d1b27] text-white mb-4">
+                <span className="inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white mb-4">
                   Free Ebook
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
@@ -203,7 +203,7 @@ export default function BlueprintBreakdownPage() {
               </div>
 
               {/* Preview card */}
-              <div className="bg-[#4d1b27] rounded-2xl p-8 md:p-12 text-white">
+              <div className="bg-[var(--cta-bg)] rounded-2xl p-8 md:p-12 text-white">
                 <p className="text-xs tracking-[0.2em] text-white/50 mb-8">
                   DISGUSTINGLY AMBITIOUS
                 </p>
@@ -232,7 +232,7 @@ export default function BlueprintBreakdownPage() {
         </section>
 
         {/* Stats */}
-        <section className="bg-[#2a2828] py-16 md:py-20">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-3 gap-8 text-center">
               {highlights.map((item, i) => (
@@ -302,7 +302,7 @@ export default function BlueprintBreakdownPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#4d1b27] py-16 md:py-24">
+        <section className="bg-[var(--cta-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
               You just need to start building.

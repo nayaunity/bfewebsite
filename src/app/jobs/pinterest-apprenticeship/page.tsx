@@ -47,7 +47,7 @@ export default function PinterestApprenticeship() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="px-3 py-1 text-sm font-medium bg-[#4d1b27] text-white rounded-full">
+              <span className="px-3 py-1 text-sm font-medium bg-[var(--cta-bg)] text-white rounded-full">
                 Pinterest
               </span>
               <span className="px-3 py-1 text-sm font-medium bg-emerald-100 text-emerald-800 rounded-full">
@@ -107,19 +107,19 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">What You&apos;ll Do</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">1</span>
                   <span>Work alongside Pinterest Engineers and key partners on Design, Research, and Product Management teams on a high-impact project</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">2</span>
                   <span>Collaborate with an assigned mentor who will help you navigate the expectations of being an Engineer at Pinterest</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">3</span>
                   <span>Leverage AI in your daily engineering workflow to accelerate delivery — brainstorming approaches, writing and refining code, and producing clear documentation</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">4</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">4</span>
                   <span>Continually grow through various learning and development opportunities</span>
                 </li>
               </ul>
@@ -130,23 +130,23 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Who Should Apply</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
                   <span><strong>Non-tech backgrounds:</strong> Coding bootcamp grads, self-taught developers, and those without a related degree or professional engineering experience</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
                   <span><strong>Self-motivated professionals</strong> pursuing a career in tech who are curious to learn what it&apos;s like to work and succeed as an Engineer at Pinterest</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
                   <span><strong>1+ years of professional work experience</strong> collaborating and clearly communicating in a work environment (preferred)</span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
                   <span><strong>Proficiency in at least one programming language</strong></span>
                 </li>
                 <li className="flex items-start gap-3 text-[var(--foreground)]">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4d1b27] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white text-sm font-bold mt-0.5">&#10003;</span>
                   <span><strong>Familiarity using AI</strong> as a learning and productivity tool, and as an iterative coding partner</span>
                 </li>
               </ul>
@@ -162,7 +162,7 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">What You&apos;ll Get</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -173,7 +173,7 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -184,7 +184,7 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
@@ -195,7 +195,7 @@ export default function PinterestApprenticeship() {
                   </p>
                 </div>
                 <div className="p-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#4d1b27]/10 flex items-center justify-center mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--cta-bg)]/10 flex items-center justify-center mb-3">
                     <svg className="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
@@ -213,7 +213,7 @@ export default function PinterestApprenticeship() {
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">How to Prepare</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">1</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white font-bold">1</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Update Your Resume</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -225,7 +225,7 @@ export default function PinterestApprenticeship() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">2</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white font-bold">2</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Showcase Your AI Skills</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -237,7 +237,7 @@ export default function PinterestApprenticeship() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center text-white font-bold">3</span>
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white font-bold">3</span>
                   <div>
                     <h3 className="font-semibold text-[var(--foreground)]">Prepare Your Story</h3>
                     <p className="text-sm text-[var(--gray-600)] mt-1">
@@ -252,12 +252,12 @@ export default function PinterestApprenticeship() {
             <section>
               <h2 className="font-serif text-2xl text-[var(--foreground)] mb-4">Key Dates</h2>
               <div className="grid sm:grid-cols-2 gap-4">
-                <div className="p-6 bg-[#4d1b27]/10 border border-[var(--accent)]/30 rounded-xl text-center">
+                <div className="p-6 bg-[var(--cta-bg)]/10 border border-[var(--accent)]/30 rounded-xl text-center">
                   <p className="text-sm text-[var(--gray-600)] mb-1">Application Deadline</p>
                   <p className="font-serif text-2xl text-[var(--foreground)]">March 27, 2026</p>
                   <p className="text-sm text-[var(--gray-600)] mt-1">5:00 PM PDT</p>
                 </div>
-                <div className="p-6 bg-[#4d1b27]/10 border border-[var(--accent)]/50 rounded-xl text-center">
+                <div className="p-6 bg-[var(--cta-bg)]/10 border border-[var(--accent)]/50 rounded-xl text-center">
                   <p className="text-sm text-[var(--gray-600)] mb-1">Program Start Date</p>
                   <p className="font-serif text-2xl text-[var(--foreground)]">July 27, 2026</p>
                   <p className="text-sm text-[var(--gray-600)] mt-1">Full-time, up to 1 year</p>
@@ -304,7 +304,7 @@ export default function PinterestApprenticeship() {
                   href="https://www.pinterestcareers.com/jobs/7558536/apprentice-engineer/?gh_jid=7558536"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
+                  className="inline-flex items-center gap-2 bg-[var(--cta-bg)] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#d94a24] transition-colors text-lg"
                 >
                   Apply on Pinterest Careers
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

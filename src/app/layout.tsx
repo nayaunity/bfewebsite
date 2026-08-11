@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Playfair_Display, Inter, Dancing_Script } from "next/font/google";
 import { SessionProvider } from "@/providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import JsonLd from "@/components/JsonLd";
@@ -13,6 +13,12 @@ const playfair = Playfair_Display({
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const dancingScript = Dancing_Script({
+  variable: "--font-dancing-script",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -45,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${playfair.variable} ${inter.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${playfair.variable} ${inter.variable} ${dancingScript.variable} antialiased`} suppressHydrationWarning>
         <JsonLd
           data={{
             "@context": "https://schema.org",

@@ -40,7 +40,7 @@ export default async function ResumeQuizPage() {
           </div>
 
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4d1b27]/10 text-[var(--accent)] text-xs font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--cta-bg)]/10 text-[var(--accent)] text-xs font-medium mb-4">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>

@@ -79,7 +79,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                   onClick={() => toggle(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm ${
                     on
-                      ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                      ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                       : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium ${
                   remote === opt
-                    ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                    ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                     : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                 }`}
               >
@@ -118,7 +118,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                   : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
@@ -129,7 +129,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                   : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
@@ -146,7 +146,7 @@ export default function ShortFallbackForm({ tempId, extraction, onConfirmed }: P
           type="button"
           onClick={submit}
           disabled={submitting}
-          className="rounded-full bg-[#4d1b27] px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-full bg-[var(--cta-bg)] px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
         >
           {submitting ? "Finding matches..." : "Show my matches"}
         </button>

@@ -55,7 +55,7 @@ export function QuizCard({ user }: QuizCardProps) {
                   user.subscriptionTier === "pro"
                     ? "bg-purple-100 text-purple-700"
                     : user.subscriptionTier === "starter"
-                      ? "bg-[#4d1b27]/10 text-[var(--accent)]"
+                      ? "bg-[var(--cta-bg)]/10 text-[var(--accent)]"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)]"
                 }`}
               >

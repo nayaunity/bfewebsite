@@ -109,7 +109,7 @@ export function PricingCards({
             }`}
           >
             {tier.highlighted && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4d1b27] text-white text-xs font-bold px-3 py-1 rounded-full">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--cta-bg)] text-white text-xs font-bold px-3 py-1 rounded-full">
                 Most Popular
               </span>
             )}
@@ -167,7 +167,7 @@ export function PricingCards({
                 disabled={loading === tier.key}
                 className={`w-full py-3 text-sm font-medium rounded-lg transition-opacity disabled:opacity-50 ${
                   tier.highlighted
-                    ? "bg-[#4d1b27] text-white hover:opacity-90"
+                    ? "bg-[var(--cta-bg)] text-white hover:opacity-90"
                     : "bg-[var(--foreground)] text-[var(--background)] hover:opacity-90"
                 }`}
               >

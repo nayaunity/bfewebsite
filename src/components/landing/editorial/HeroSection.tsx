@@ -66,7 +66,7 @@ export default function HeroSection() {
               ))}
             </div>
             <div className="text-[13px] text-[#52525b] leading-snug">
-              <b className="text-[#2a2828]">100+</b> people stopped staring<br />at LinkedIn this week.
+              <b className="text-[var(--foreground)]">100+</b> people stopped staring<br />at LinkedIn this week.
             </div>
           </div>
         </div>

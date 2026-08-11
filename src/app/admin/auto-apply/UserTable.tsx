@@ -87,7 +87,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 w-40"
+              className="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/30 w-40"
             />
           </div>
           <div className="flex gap-1">
@@ -145,7 +145,7 @@ export default function UserTable({ users }: { users: UserRow[] }) {
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
                       isPastDue(u) ? "bg-red-100 text-red-800" :
                       isTrial(u) ? "bg-amber-100 text-amber-800" :
-                      u.subscriptionTier === "pro" ? "bg-[#4d1b27]/10 text-[var(--accent)]" :
+                      u.subscriptionTier === "pro" ? "bg-[var(--cta-bg)]/10 text-[var(--accent)]" :
                       u.subscriptionTier === "starter" ? "bg-blue-100 text-blue-700" :
                       "bg-[var(--gray-100)] text-[var(--gray-600)]"
                     }`}>

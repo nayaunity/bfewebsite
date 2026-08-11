@@ -111,7 +111,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                   onClick={() => toggleRole(opt.label)}
                   className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
                     on
-                      ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                      ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                       : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                   }`}
                 >
@@ -132,7 +132,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
                 onClick={() => setRemote(opt)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   remote === opt
-                    ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                    ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                     : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
                 }`}
               >
@@ -173,7 +173,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               type="checkbox"
               checked={seekingInternship}
               onChange={(e) => setSeekingInternship(e.target.checked)}
-              className="mt-1 h-4 w-4 accent-[#4d1b27]"
+              className="mt-1 h-4 w-4 accent-[var(--cta-bg)]"
             />
             <span>
               <span className="block text-sm font-semibold">I&apos;m only looking for internships</span>
@@ -192,7 +192,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(true)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === true
-                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                   : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
@@ -203,7 +203,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
               onClick={() => setWorkAuth(false)}
               className={`rounded-full border px-4 py-2 text-sm font-medium ${
                 workAuth === false
-                  ? "border-[var(--accent)] bg-[#4d1b27] text-white"
+                  ? "border-[var(--accent)] bg-[var(--cta-bg)] text-white"
                   : "border-[var(--card-border)] bg-[var(--card-bg)] hover:border-[var(--accent)]"
               }`}
             >
@@ -220,7 +220,7 @@ export default function ConfirmExtractionStep({ extraction, tempId, onConfirmed 
           type="button"
           onClick={submit}
           disabled={submitting}
-          className="rounded-full bg-[#4d1b27] px-6 py-3 text-sm font-semibold text-white hover:bg-[#d84a21] disabled:opacity-60"
+          className="rounded-full bg-[var(--cta-bg)] px-6 py-3 text-sm font-semibold text-white hover:bg-[#d84a21] disabled:opacity-60"
         >
           {submitting ? "Finding matches..." : "Show my matches"}
         </button>

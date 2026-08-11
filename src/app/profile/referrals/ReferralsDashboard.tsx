@@ -147,7 +147,7 @@ const STATUS_STYLES: Record<ReferralStatus, string> = {
   queued: "bg-blue-100 text-blue-700",
   packet_ready: "bg-violet-100 text-violet-700",
   awaiting_send: "bg-amber-100 text-amber-800",
-  sent: "bg-[#4d1b27]/10 text-[var(--accent)]",
+  sent: "bg-[var(--cta-bg)]/10 text-[var(--accent)]",
   follow_up_due: "bg-yellow-100 text-yellow-800",
   intro_made: "bg-cyan-100 text-cyan-800",
   interview: "bg-emerald-100 text-emerald-800",
@@ -413,7 +413,7 @@ export default function ReferralsDashboard({
             </div>
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center rounded-full bg-[#4d1b27] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
+              className="inline-flex items-center justify-center rounded-full bg-[var(--cta-bg)] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
             >
               View paid plans
             </Link>
@@ -473,7 +473,7 @@ export default function ReferralsDashboard({
                 onClick={() => setSyncTab("csv")}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   syncTab === "csv"
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -484,7 +484,7 @@ export default function ReferralsDashboard({
                 onClick={() => setSyncTab("extension")}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   syncTab === "extension"
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -613,7 +613,7 @@ export default function ReferralsDashboard({
               connections.map((connection) => (
                 <div key={connection.id} className="rounded-2xl border border-[var(--card-border)] p-4">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#4d1b27] text-sm font-semibold text-white">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--cta-bg)] text-sm font-semibold text-white">
                       {initials(connection.fullName)}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -676,7 +676,7 @@ export default function ReferralsDashboard({
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-[#4d1b27]/10 px-2 py-1 text-[11px] font-semibold text-[var(--accent)]">
+                        <span className="rounded-full bg-[var(--cta-bg)]/10 px-2 py-1 text-[11px] font-semibold text-[var(--accent)]">
                           {match.score}% warm
                         </span>
                         <span className="text-[11px] text-[var(--gray-600)]">{match.matchReason}</span>
@@ -697,7 +697,7 @@ export default function ReferralsDashboard({
                   </div>
 
                   <div className="mt-4 flex items-center gap-3 rounded-2xl bg-[var(--gray-50)] p-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#4d1b27] text-sm font-semibold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--cta-bg)] text-sm font-semibold text-white">
                       {initials(match.connection.fullName)}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -826,7 +826,7 @@ export default function ReferralsDashboard({
                           setLoadingAi(false);
                         }
                       }}
-                      className="rounded-full bg-[#4d1b27] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#d84a21] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-full bg-[var(--cta-bg)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#d84a21] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {loadingAi ? "Generating..." : "Personalize with AI"}
                     </button>
@@ -862,7 +862,7 @@ export default function ReferralsDashboard({
                     type="button"
                     disabled={updatingId === selectedRequest.id || (status === "queued" && !access.canSubmitLive)}
                     onClick={() => handleStatusUpdate(selectedRequest.id, status)}
-                    className="rounded-full bg-[#4d1b27] px-4 py-2 text-sm font-medium text-white hover:bg-[#d84a21] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-full bg-[var(--cta-bg)] px-4 py-2 text-sm font-medium text-white hover:bg-[#d84a21] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {status === "queued" ? "Submit live request" : `Mark ${STATUS_LABELS[status].toLowerCase()}`}
                   </button>
@@ -911,7 +911,7 @@ export default function ReferralsDashboard({
                 onClick={() => setSelectedId(request.id)}
                 className={`rounded-2xl border p-4 text-left transition-colors ${
                     selectedId === request.id
-                      ? "border-[var(--accent)] bg-[#4d1b27]/5"
+                      ? "border-[var(--accent)] bg-[var(--cta-bg)]/5"
                       : "border-[var(--card-border)] hover:bg-[var(--gray-50)]"
                   }`}
                 >

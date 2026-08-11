@@ -344,7 +344,7 @@ export default function SubmitJobPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Submitting..." : "Submit Inquiry"}
               </button>
