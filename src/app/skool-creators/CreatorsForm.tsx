@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 const ROLE_OPTIONS = [
-  "Coach / consultant",
-  "Course creator / educator",
-  "Content creator",
+  "YouTube / video creator",
+  "Newsletter / blog writer",
+  "Podcast host",
+  "Social media creator",
+  "Coach / educator",
   "Author / speaker",
-  "Freelancer / agency",
-  "Therapist / practitioner",
   "Something else",
 ];
 
@@ -66,15 +66,16 @@ export default function CreatorsForm() {
         </p>
 
         <h1 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.15] text-[#4d1b27] mb-6">
-          You already teach it.
+          Your content is good.
           <br />
-          Now let AI help you sell it.
+          Now make it sell.
         </h1>
 
         <p className="text-lg leading-relaxed text-[#4d383b] mb-6">
-          A private community for coaches, course creators, and consultants
-          who want to turn what they already know into a digital product.
-          AI does the heavy lifting. You bring the expertise.
+          A private community for knowledge creators who want to turn
+          expertise-driven content into real revenue. Brand deals, digital
+          products, paid partnerships. AI helps you create faster and pitch
+          smarter.
         </p>
 
         <p className="text-2xl font-serif text-[#4d1b27] mb-12">
@@ -85,9 +86,9 @@ export default function CreatorsForm() {
 
         <ol className="space-y-4 mb-10 list-none p-0 m-0">
           {[
-            "Pick one thing you already teach or consult on.",
-            "Package it into a digital product with AI.",
-            "Your first sale in 90 days.",
+            "Create content around what you actually know.",
+            "Use AI to turn posts into products, pitches, and brand decks.",
+            "Land your first paid deal in 90 days.",
           ].map((text, i) => (
             <li key={i} className="flex gap-4 items-baseline">
               <span className="font-serif text-lg text-[#4d1b27] flex-shrink-0 w-6 text-right">
