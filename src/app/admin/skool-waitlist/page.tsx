@@ -196,6 +196,92 @@ async function getSkoolAnalytics() {
   };
 }
 
+async function getCreatorsAnalytics() {
+  const todayStart = getTodayStartDenver();
+  const weekStart = new Date(todayStart);
+  weekStart.setDate(weekStart.getDate() - 7);
+  const monthStart = new Date(todayStart);
+  monthStart.setDate(monthStart.getDate() - 30);
+
+  const [
+    uniqueAllTime,
+    viewsAllTime,
+    signupsAllTime,
+    uniqueToday,
+    viewsToday,
+    signupsToday,
+    signupsWeek,
+    signupsMonth,
+    recentSignups,
+    signupsByRole,
+  ] = await Promise.all([
+    prisma.pagePresence
+      .groupBy({
+        by: ["visitorId"],
+        where: { page: "skool-creators" },
+        _count: true,
+      })
+      .then((r) => r.length),
+    prisma.blogView.count({ where: { slug: "skool-creators" } }),
+    prisma.blogView.count({ where: { slug: "skool-creators-signup" } }),
+    prisma.pagePresence
+      .groupBy({
+        by: ["visitorId"],
+        where: { page: "skool-creators", lastSeenAt: { gte: todayStart } },
+        _count: true,
+      })
+      .then((r) => r.length),
+    prisma.blogView.count({
+      where: { slug: "skool-creators", viewedAt: { gte: todayStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "skool-creators-signup", viewedAt: { gte: todayStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "skool-creators-signup", viewedAt: { gte: weekStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "skool-creators-signup", viewedAt: { gte: monthStart } },
+    }),
+    prisma.blogView.findMany({
+      where: { slug: "skool-creators-signup" },
+      orderBy: { viewedAt: "desc" },
+      take: 20,
+      select: { id: true, title: true, viewedAt: true },
+    }),
+    prisma.blogView.groupBy({
+      by: ["title"],
+      where: { slug: "skool-creators-signup" },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+    }),
+  ]);
+
+  return {
+    uniqueAllTime,
+    viewsAllTime,
+    signupsAllTime,
+    uniqueToday,
+    viewsToday,
+    signupsToday,
+    signupsWeek,
+    signupsMonth,
+    conversionRate:
+      uniqueAllTime > 0
+        ? ((signupsAllTime / uniqueAllTime) * 100).toFixed(1)
+        : "0.0",
+    recentSignups: recentSignups.map((s) => ({
+      id: s.id,
+      role: s.title?.replace("Skool Creators Signup: ", "") || "Unknown",
+      signedUpAt: s.viewedAt,
+    })),
+    signupsByRole: signupsByRole.map((r) => ({
+      role: r.title?.replace("Skool Creators Signup: ", "") || "Unknown",
+      count: r._count.id,
+    })),
+  };
+}
+
 function formatTimeAgo(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -212,7 +298,10 @@ function formatTimeAgo(date: Date): string {
 
 export default async function SkoolWaitlistAnalyticsPage() {
   await requireFullAdmin();
-  const data = await getSkoolAnalytics();
+  const [data, creators] = await Promise.all([
+    getSkoolAnalytics(),
+    getCreatorsAnalytics(),
+  ]);
 
   const maxDailyCount = Math.max(...data.dailyViews.map((d) => d.count), 1);
 
@@ -228,7 +317,7 @@ export default async function SkoolWaitlistAnalyticsPage() {
           </span>
         </div>
         <p className="mt-2 text-[var(--gray-600)]">
-          Traffic and engagement for /skool-waitlist
+          Traffic and engagement for /skool-waitlist and /skool-creators
           <span className="ml-2 text-xs bg-[var(--gray-100)] px-2 py-1 rounded-full">
             Mountain Time
           </span>
@@ -534,6 +623,130 @@ export default async function SkoolWaitlistAnalyticsPage() {
                 </div>
               ))
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Creators Page Section */}
+      <div className="mt-12 pt-8 border-t-2 border-[var(--card-border)]">
+        <div className="mb-8">
+          <div className="flex items-center gap-3">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)]">
+              Creators Page
+            </h2>
+            <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+              /skool-creators
+            </span>
+            <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--accent-blue-bg)] text-[var(--foreground)]">
+              $67/mo
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Visitors Today</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {creators.uniqueToday}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Views Today</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {creators.viewsToday}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Signups Today</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {creators.signupsToday}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Signups All Time</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {creators.signupsAllTime}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Conversion</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {creators.conversionRate}%
+            </p>
+            <p className="text-xs text-[var(--gray-600)] mt-1">
+              {creators.signupsAllTime} / {creators.uniqueAllTime} visitors
+            </p>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--card-border)]">
+              <h3 className="font-semibold text-[var(--foreground)]">
+                Signups by Role
+              </h3>
+            </div>
+            <div className="divide-y divide-[var(--card-border)] max-h-60 overflow-y-auto">
+              {creators.signupsByRole.length === 0 ? (
+                <p className="px-4 py-8 text-center text-[var(--gray-600)]">
+                  No signups yet
+                </p>
+              ) : (
+                creators.signupsByRole.map((r) => {
+                  const pct =
+                    creators.signupsAllTime > 0
+                      ? ((r.count / creators.signupsAllTime) * 100).toFixed(0)
+                      : "0";
+                  return (
+                    <div
+                      key={r.role}
+                      className="px-4 py-3 flex items-center justify-between"
+                    >
+                      <span className="text-sm text-[var(--foreground)] truncate">
+                        {r.role}
+                      </span>
+                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                        <span className="text-xs text-[var(--gray-600)]">
+                          {pct}%
+                        </span>
+                        <span className="text-sm font-semibold text-[var(--foreground)]">
+                          {r.count}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--card-border)]">
+              <h3 className="font-semibold text-[var(--foreground)]">
+                Recent Signups
+              </h3>
+            </div>
+            <div className="divide-y divide-[var(--card-border)] max-h-60 overflow-y-auto">
+              {creators.recentSignups.length === 0 ? (
+                <p className="px-4 py-8 text-center text-[var(--gray-600)]">
+                  No signups yet
+                </p>
+              ) : (
+                creators.recentSignups.map((s) => (
+                  <div
+                    key={s.id}
+                    className="px-4 py-2.5 flex items-center justify-between"
+                  >
+                    <span className="text-sm text-[var(--foreground)] truncate">
+                      {s.role}
+                    </span>
+                    <span className="text-xs text-[var(--gray-600)] flex-shrink-0 ml-2">
+                      {formatTimeAgo(new Date(s.signedUpAt))}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

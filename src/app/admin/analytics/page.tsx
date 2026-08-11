@@ -46,6 +46,8 @@ const NON_BLOG_SLUGS = [
   "build-your-team",
   "skool-waitlist",
   "skool-waitlist-signup",
+  "skool-creators",
+  "skool-creators-signup",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
