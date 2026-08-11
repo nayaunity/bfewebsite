@@ -128,14 +128,6 @@ async function getAnalytics() {
     paViewsToday,
     paViewsWeek,
     paViewsAllTime,
-    // Skool Waitlist metrics
-    swUniqueToday,
-    swUniqueWeek,
-    swUniqueAllTime,
-    swViewsToday,
-    swViewsWeek,
-    swViewsAllTime,
-    swByCountry,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -323,32 +315,6 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "profile-account" } }),
-    // Skool Waitlist metrics
-    prisma.pagePresence.groupBy({
-      by: ["visitorId"],
-      where: { page: "skool-waitlist", lastSeenAt: { gte: todayStart } },
-      _count: true,
-    }).then(r => r.length),
-    prisma.pagePresence.groupBy({
-      by: ["visitorId"],
-      where: { page: "skool-waitlist", lastSeenAt: { gte: weekStart } },
-      _count: true,
-    }).then(r => r.length),
-    prisma.pagePresence.groupBy({
-      by: ["visitorId"],
-      where: { page: "skool-waitlist" },
-      _count: true,
-    }).then(r => r.length),
-    prisma.blogView.count({ where: { slug: "skool-waitlist", viewedAt: { gte: todayStart } } }),
-    prisma.blogView.count({ where: { slug: "skool-waitlist", viewedAt: { gte: weekStart } } }),
-    prisma.blogView.count({ where: { slug: "skool-waitlist" } }),
-    prisma.pagePresence.groupBy({
-      by: ["country"],
-      where: { page: "skool-waitlist", country: { not: null } },
-      _count: { visitorId: true },
-      orderBy: { _count: { visitorId: "desc" } },
-      take: 10,
-    }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -491,21 +457,6 @@ async function getAnalytics() {
       viewsToday: paViewsToday,
       viewsWeek: paViewsWeek,
       viewsAllTime: paViewsAllTime,
-    },
-    skoolWaitlist: {
-      uniqueToday: swUniqueToday,
-      uniqueWeek: swUniqueWeek,
-      uniqueAllTime: swUniqueAllTime,
-      viewsToday: swViewsToday,
-      viewsWeek: swViewsWeek,
-      viewsAllTime: swViewsAllTime,
-      byCountry: swByCountry
-        .filter((c) => c.country)
-        .map((c) => ({
-          country: c.country as string,
-          countryName: getCountryName(c.country as string),
-          visitors: c._count.visitorId,
-        })),
     },
   };
 }
@@ -674,74 +625,6 @@ export default async function AnalyticsPage() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Skool Community Waitlist */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <h2 className="font-serif text-xl text-[var(--foreground)]">
-            Skool Community Waitlist
-          </h2>
-          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)] text-white">
-            LAUNCH AUG 17
-          </span>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
-            <div className="flex gap-4">
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.uniqueToday}</p>
-                <p className="text-xs text-[var(--gray-600)]">Today</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.uniqueWeek}</p>
-                <p className="text-xs text-[var(--gray-600)]">Week</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.uniqueAllTime}</p>
-                <p className="text-xs text-[var(--gray-600)]">All Time</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
-            <div className="flex gap-4">
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.viewsToday}</p>
-                <p className="text-xs text-[var(--gray-600)]">Today</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.viewsWeek}</p>
-                <p className="text-xs text-[var(--gray-600)]">Week</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skoolWaitlist.viewsAllTime}</p>
-                <p className="text-xs text-[var(--gray-600)]">All Time</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        {analytics.skoolWaitlist.byCountry.length > 0 && (
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden max-w-md">
-            <div className="px-4 py-3 border-b border-[var(--card-border)]">
-              <h3 className="font-semibold text-sm text-[var(--foreground)]">Waitlist Visitors by Country</h3>
-            </div>
-            <div className="divide-y divide-[var(--card-border)] max-h-48 overflow-y-auto">
-              {analytics.skoolWaitlist.byCountry.map((country, index) => (
-                <div key={country.country} className="px-4 py-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs text-[var(--gray-600)]">
-                      {index + 1}
-                    </span>
-                    <span className="truncate text-sm text-[var(--foreground)]">{country.countryName}</span>
-                  </div>
-                  <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">{country.visitors}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Building a Tech Audience Presale */}
