@@ -39,6 +39,14 @@ export default function WaitlistForm() {
       const data = await res.json();
       if (res.ok || data.alreadySubscribed) {
         setSubmitted(true);
+        fetch("/api/blog/view", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            slug: "skool-waitlist-signup",
+            title: `Skool Signup: ${role}`,
+          }),
+        }).catch(() => {});
       } else {
         setError(data.error || "Something went wrong. Please try again.");
       }

@@ -66,6 +66,12 @@ async function getSkoolAnalytics() {
     byCountry,
     recentViews,
     dailyViews,
+    signupsToday,
+    signupsWeek,
+    signupsMonth,
+    signupsAllTime,
+    recentSignups,
+    signupsByRole,
   ] = await Promise.all([
     prisma.pagePresence
       .groupBy({
@@ -123,6 +129,29 @@ async function getSkoolAnalytics() {
       `SELECT DATE(viewedAt) as day, COUNT(*) as count FROM BlogView WHERE slug = 'skool-waitlist' AND viewedAt >= ? GROUP BY DATE(viewedAt) ORDER BY day DESC LIMIT 14`,
       monthStart
     ),
+    // Form submissions
+    prisma.blogView.count({
+      where: { slug: "skool-waitlist-signup", viewedAt: { gte: todayStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "skool-waitlist-signup", viewedAt: { gte: weekStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "skool-waitlist-signup", viewedAt: { gte: monthStart } },
+    }),
+    prisma.blogView.count({ where: { slug: "skool-waitlist-signup" } }),
+    prisma.blogView.findMany({
+      where: { slug: "skool-waitlist-signup" },
+      orderBy: { viewedAt: "desc" },
+      take: 30,
+      select: { id: true, title: true, viewedAt: true },
+    }),
+    prisma.blogView.groupBy({
+      by: ["title"],
+      where: { slug: "skool-waitlist-signup" },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+    }),
   ]);
 
   return {
@@ -148,6 +177,21 @@ async function getSkoolAnalytics() {
     dailyViews: dailyViews.map((d) => ({
       day: String(d.day),
       count: Number(d.count),
+    })),
+    signups: {
+      today: signupsToday,
+      week: signupsWeek,
+      month: signupsMonth,
+      allTime: signupsAllTime,
+    },
+    recentSignups: recentSignups.map((s) => ({
+      id: s.id,
+      role: s.title?.replace("Skool Signup: ", "") || "Unknown",
+      signedUpAt: s.viewedAt,
+    })),
+    signupsByRole: signupsByRole.map((r) => ({
+      role: r.title?.replace("Skool Signup: ", "") || "Unknown",
+      count: r._count.id,
     })),
   };
 }
@@ -257,6 +301,50 @@ export default async function SkoolWaitlistAnalyticsPage() {
         </div>
       </div>
 
+      {/* Form Submissions */}
+      <div className="mb-8">
+        <h2 className="font-serif text-xl text-[var(--foreground)] mb-4">
+          Form Submissions
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">Today</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {data.signups.today}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Week</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {data.signups.week}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">This Month</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {data.signups.month}
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">All Time</p>
+            <p className="text-3xl font-bold text-[var(--foreground)] mt-1">
+              {data.signups.allTime}
+            </p>
+          </div>
+        </div>
+        {data.uniqueAllTime > 0 && (
+          <div className="mt-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4 inline-block">
+            <p className="text-sm text-[var(--gray-600)]">Conversion Rate</p>
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+              {((data.signups.allTime / data.uniqueAllTime) * 100).toFixed(1)}%
+            </p>
+            <p className="text-xs text-[var(--gray-600)] mt-1">
+              {data.signups.allTime} signups / {data.uniqueAllTime} unique visitors
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Daily Views Chart */}
       {data.dailyViews.length > 0 && (
         <div className="mb-8">
@@ -299,6 +387,83 @@ export default async function SkoolWaitlistAnalyticsPage() {
           </div>
         </div>
       )}
+
+      {/* Signups by Role + Recent Signups */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
+              Signups by Role
+            </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">
+              All time breakdown
+            </p>
+          </div>
+          <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
+            {data.signupsByRole.length === 0 ? (
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
+                No signups yet
+              </p>
+            ) : (
+              data.signupsByRole.map((r) => {
+                const pct = data.signups.allTime > 0
+                  ? ((r.count / data.signups.allTime) * 100).toFixed(0)
+                  : "0";
+                return (
+                  <div
+                    key={r.role}
+                    className="px-4 py-3 flex items-center justify-between"
+                  >
+                    <span className="text-sm text-[var(--foreground)] truncate">
+                      {r.role}
+                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      <span className="text-xs text-[var(--gray-600)]">
+                        {pct}%
+                      </span>
+                      <span className="text-sm font-semibold text-[var(--foreground)]">
+                        {r.count}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)]">
+            <h3 className="font-semibold text-[var(--foreground)]">
+              Recent Signups
+            </h3>
+            <p className="text-xs text-[var(--gray-600)] mt-0.5">
+              Last 30 form submissions
+            </p>
+          </div>
+          <div className="divide-y divide-[var(--card-border)] max-h-80 overflow-y-auto">
+            {data.recentSignups.length === 0 ? (
+              <p className="px-4 py-8 text-center text-[var(--gray-600)]">
+                No signups yet
+              </p>
+            ) : (
+              data.recentSignups.map((s) => (
+                <div
+                  key={s.id}
+                  className="px-4 py-2.5 flex items-center justify-between"
+                >
+                  <span className="text-sm text-[var(--foreground)] truncate">
+                    {s.role}
+                  </span>
+                  <span className="text-xs text-[var(--gray-600)] flex-shrink-0 ml-2">
+                    {formatTimeAgo(new Date(s.signedUpAt))}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         {/* Visitors by Country */}
