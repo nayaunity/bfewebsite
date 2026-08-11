@@ -85,7 +85,7 @@ export default async function PortfolioPage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/portfolio/${portfolio.slug}`}
-                    className="px-4 py-2 bg-[#4d1b27] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    className="px-4 py-2 bg-[var(--cta-bg)] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
                   >
                     View
                   </Link>

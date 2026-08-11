@@ -49,16 +49,16 @@ export default function ResourcesPage() {
 
   const getTagColor = (tag: string) => {
     const colors: Record<string, string> = {
-      "Popular": "bg-[#4d1b27] text-white",
+      "Popular": "bg-[var(--cta-bg)] text-white",
       "Free": "bg-[var(--accent-green-bg)] text-[var(--accent-green-text)]",
       "Essential": "bg-[var(--gray-100)] text-[var(--foreground)]",
       "Advanced": "bg-[var(--accent-purple-bg)] text-[var(--accent-purple-text)]",
       "Beginner": "bg-[var(--accent-blue-bg)] text-[var(--accent-blue-text)]",
-      "In-Demand": "bg-[#4d1b27]/10 text-[var(--accent)]",
+      "In-Demand": "bg-[var(--cta-bg)]/10 text-[var(--accent)]",
       "Trending": "bg-pink-100 text-pink-800",
       "Growth": "bg-teal-100 text-teal-800",
       "Hot": "bg-red-100 text-red-800",
-      "Featured": "bg-[#4d1b27] text-white",
+      "Featured": "bg-[var(--cta-bg)] text-white",
       "New": "bg-emerald-100 text-emerald-800",
       "Goal": "bg-indigo-100 text-indigo-800",
     };
@@ -130,7 +130,7 @@ export default function ResourcesPage() {
         ))}
 
         {/* CTA */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
               Have something to share?
@@ -140,7 +140,7 @@ export default function ResourcesPage() {
             </p>
             <Link
               href="/resources/submit"
-              className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+              className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
             >
               Submit a Resource
             </Link>

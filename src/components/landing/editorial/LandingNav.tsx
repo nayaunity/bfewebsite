@@ -15,7 +15,7 @@ export default function LandingNav() {
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-4 flex items-center justify-between gap-8">
         <div className="flex items-baseline gap-3.5">
-          <Link href="/" className="font-serif text-[22px] font-bold tracking-tight no-underline text-[#2a2828]">
+          <Link href="/" className="font-serif text-[22px] font-bold tracking-tight no-underline text-[var(--foreground)]">
             BFE<span className="text-[var(--accent)]">.</span>
           </Link>
           <div className="text-xs text-[#9a3412] tracking-[1.2px] font-semibold hidden sm:block">
@@ -24,10 +24,10 @@ export default function LandingNav() {
         </div>
 
         <nav className="hidden md:flex gap-7 text-sm text-[#3a3a3a]">
-          <a href="#how" className="hover:text-[#2a2828] transition-colors">How it works</a>
-          <a href="#companies" className="hover:text-[#2a2828] transition-colors">Companies</a>
-          <a href="#pricing" className="hover:text-[#2a2828] transition-colors">Pricing</a>
-          <a href="#faq" className="hover:text-[#2a2828] transition-colors">FAQ</a>
+          <a href="#how" className="hover:text-[var(--foreground)] transition-colors">How it works</a>
+          <a href="#companies" className="hover:text-[var(--foreground)] transition-colors">Companies</a>
+          <a href="#pricing" className="hover:text-[var(--foreground)] transition-colors">Pricing</a>
+          <a href="#faq" className="hover:text-[var(--foreground)] transition-colors">FAQ</a>
         </nav>
 
         {status === "loading" ? (
@@ -37,9 +37,9 @@ export default function LandingNav() {
             <button
               onClick={() => setShowMenu(!showMenu)}
               onBlur={() => setTimeout(() => setShowMenu(false), 150)}
-              className="flex items-center gap-2 text-sm font-medium text-[#3a3a3a] hover:text-[#2a2828] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-[#3a3a3a] hover:text-[var(--foreground)] transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-[#2a2828] text-white flex items-center justify-center text-xs font-semibold">
+              <div className="w-8 h-8 rounded-full bg-[var(--dark-section-bg)] text-white flex items-center justify-center text-xs font-semibold">
                 {session.user?.email?.[0]?.toUpperCase() || "U"}
               </div>
               <svg
@@ -59,7 +59,7 @@ export default function LandingNav() {
               >
                 <div className="px-4 py-2 border-b border-[#f0e6d6]">
                   <p className="text-xs text-[#78716c]">Signed in as</p>
-                  <p className="text-sm font-medium text-[#2a2828] truncate">
+                  <p className="text-sm font-medium text-[var(--foreground)] truncate">
                     {session.user?.email}
                   </p>
                 </div>
@@ -93,7 +93,7 @@ export default function LandingNav() {
         ) : (
           <Link
             href="/auto-apply/get-started"
-            className="bg-[#2a2828] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#333] transition-colors"
+            className="bg-[var(--dark-section-bg)] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#333] transition-colors"
           >
             Start free →
           </Link>

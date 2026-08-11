@@ -186,7 +186,7 @@ export function RolesAndResumesSection({
                   type="checkbox"
                   checked={isSelected}
                   onChange={() => toggleRole(role.label)}
-                  className="accent-[#4d1b27] mt-0.5"
+                  className="accent-[var(--cta-bg)] mt-0.5"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -276,7 +276,7 @@ export function RolesAndResumesSection({
                       <button
                         onClick={() => handleUploadForRole(role)}
                         disabled={isUploading || atLimit}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[#4d1b27] text-white hover:opacity-90 transition-opacity disabled:opacity-50 flex-shrink-0"
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--cta-bg)] text-white hover:opacity-90 transition-opacity disabled:opacity-50 flex-shrink-0"
                       >
                         {isUploading ? "Uploading..." : "Upload PDF"}
                       </button>

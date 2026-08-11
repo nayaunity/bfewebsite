@@ -263,7 +263,7 @@ export default async function ApplicationsPage() {
                 </div>
                 <Link
                   href="/profile/referrals"
-                  className="inline-flex items-center justify-center rounded-full bg-[#4d1b27] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
+                  className="inline-flex items-center justify-center rounded-full bg-[var(--cta-bg)] px-5 py-3 text-sm font-semibold text-white hover:bg-[#d84a21]"
                 >
                   {referralConnectionCount > 0 ? "View referrals" : "Sync LinkedIn"}
                 </Link>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import { communityMembers } from "@/data/communityMembers";
+import { BrandSignature, ChromeStar, MatchaDrink } from "@/components/brand";
 
 export default function Community() {
   const [email, setEmail] = useState("");
@@ -20,12 +21,12 @@ export default function Community() {
   return (
     <section id="community">
       {/* Dark Section - Who are we - COMMENTED OUT
-      <div className="bg-[#2a2828] py-20 md:py-32">
+      <div className="bg-[var(--dark-section-bg)] py-20 md:py-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white">
             Who are we?
           </h2>
-          <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+          <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
           <p className="text-xl md:text-2xl text-white/80 font-serif italic">
             We&apos;re engineers, creators, leaders, and{" "}
             <span className="text-[var(--accent)]">out-of-the-box</span> thinkers.
@@ -50,7 +51,7 @@ export default function Community() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#4d1b27] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
+                  className="bg-[var(--cta-bg)] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "..." : "Join"}
                 </button>
@@ -65,7 +66,7 @@ export default function Community() {
       */}
 
       {/* Community Members Grid - COMMENTED OUT
-      <div className="bg-[#2a2828] py-16 md:py-24">
+      <div className="bg-[var(--dark-section-bg)] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {communityMembers.map((member) => (
@@ -82,7 +83,7 @@ export default function Community() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#4d1b27]/20 flex items-center justify-center group-hover:bg-[#4d1b27]/30 transition-colors">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--cta-bg)]/20 flex items-center justify-center group-hover:bg-[var(--cta-bg)]/30 transition-colors">
                       <span className="font-serif text-2xl md:text-3xl text-white/60">
                         {member.name.split(' ').map(n => n[0]).join('')}
                       </span>
@@ -106,7 +107,7 @@ export default function Community() {
       */}
 
       {/* Newsletter Section */}
-      <div id="newsletter" className="bg-[#2a2828] py-16 md:py-20">
+      <div id="newsletter" className="bg-[var(--dark-section-bg)] py-16 md:py-20">
         <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Stay in the loop
@@ -133,7 +134,7 @@ export default function Community() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-[#4d1b27] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[#4d383b] transition-colors disabled:opacity-50"
+                  className="bg-[var(--cta-bg)] text-white px-6 py-4 rounded-r-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "..." : "Subscribe"}
                 </button>
@@ -147,30 +148,32 @@ export default function Community() {
       </div>
 
       {/* Community Stats - White Section */}
-      <div className="bg-[var(--background)] py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-16">
+      <div className="bg-[var(--background)] py-20 md:py-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+          <ChromeStar size={72} rotate={12} className="absolute -top-4 right-8 hidden md:block animate-twinkle" />
+          <ChromeStar size={36} rotate={-20} className="absolute top-20 left-8 hidden md:block animate-twinkle [animation-delay:0.5s]" />
+          <ChromeStar size={48} rotate={5} className="absolute bottom-8 right-16 hidden md:block animate-twinkle [animation-delay:1.2s]" />
+          <MatchaDrink size={80} rotate={10} className="absolute bottom-4 left-4 hidden md:block opacity-80" />
+
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-4">
             <span className="italic">what</span> THIS COMMUNITY
             <br />
             <span className="italic">has been</span> UP TO
           </h2>
+          <BrandSignature size="sm" className="mb-16 inline-block opacity-70" />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="bg-[var(--surface-warm)] rounded-2xl p-6 md:p-8">
               <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">250K+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Community Members</div>
             </div>
-            <div>
+            <div className="bg-[var(--surface-warm)] rounded-2xl p-6 md:p-8">
               <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">100+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Resources Shared</div>
             </div>
-            <div>
+            <div className="bg-[var(--surface-warm)] rounded-2xl p-6 md:p-8">
               <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">50+</div>
               <div className="mt-2 text-sm text-[var(--gray-600)]">Partnered Companies</div>
-            </div>
-            <div>
-              {/* <div className="font-serif text-4xl md:text-5xl text-[var(--accent)]">50+</div>
-              <div className="mt-2 text-sm text-[var(--gray-600)]">Events/Year</div> */}
             </div>
           </div>
         </div>

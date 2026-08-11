@@ -15,7 +15,7 @@ export default function CourseThankYouPage() {
       <Navigation />
       <main className="pt-42 md:pt-50 min-h-screen bg-[var(--background)] text-[var(--foreground)]">
         <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
-          <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#4d1b27] text-white mb-6 tracking-wide">
+          <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[var(--cta-bg)] text-white mb-6 tracking-wide">
             PAYMENT RECEIVED
           </span>
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
@@ -68,7 +68,7 @@ export default function CourseThankYouPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+            className="inline-flex items-center gap-2 bg-[var(--cta-bg)] text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
           >
             Back to home
           </Link>

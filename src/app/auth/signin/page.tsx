@@ -250,7 +250,7 @@ function AuthForm() {
               placeholder="you@example.com"
               required
               autoFocus
-              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
+              className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/30 focus:border-[var(--accent)]"
             />
           </div>
           <button
@@ -281,7 +281,7 @@ function AuthForm() {
                 placeholder="Enter your password"
                 required
                 autoFocus
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button
@@ -324,7 +324,7 @@ function AuthForm() {
                 required
                 autoFocus
                 minLength={8}
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button
@@ -364,7 +364,7 @@ function AuthForm() {
                 required
                 autoFocus
                 minLength={8}
-                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[#4d1b27]/30 focus:border-[var(--accent)]"
+                className="w-full px-4 py-3 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)]/30 focus:border-[var(--accent)]"
               />
             </div>
             <button

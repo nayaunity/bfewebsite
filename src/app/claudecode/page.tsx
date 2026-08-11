@@ -175,7 +175,7 @@ export default function CertificationPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
               <div>
-                <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[#4d1b27] text-white mb-6 tracking-wide">
+                <span className="inline-block text-xs font-medium px-4 py-1.5 rounded-full bg-[var(--cta-bg)] text-white mb-6 tracking-wide">
                   PRESALE · ONLY 30 SEATS
                 </span>
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight">
@@ -209,12 +209,12 @@ export default function CertificationPage() {
         </section>
 
         {/* Why This Course */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white">
               <span className="italic">why this</span> COURSE
             </h2>
-            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             <div className="space-y-8 text-left max-w-2xl mx-auto">
               {[
                 "Claude Code is the fastest-growing AI development tool on the market, and there is no structured, beginner-accessible course for it. Until now.",
@@ -256,7 +256,7 @@ export default function CertificationPage() {
                   key={mod.number}
                   className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8"
                 >
-                  <div className="w-12 h-12 rounded-full bg-[#4d1b27] flex items-center justify-center font-serif text-xl font-bold text-white mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[var(--cta-bg)] flex items-center justify-center font-serif text-xl font-bold text-white mb-4">
                     {mod.number}
                   </div>
                   <h3 className="font-serif text-xl mb-4">{mod.title}</h3>
@@ -287,13 +287,13 @@ export default function CertificationPage() {
         </section>
 
         {/* What You Get — Deliverables */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
                 <span className="italic">what you</span> GET
               </h2>
-              <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+              <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {deliverables.map((item, i) => (
@@ -301,7 +301,7 @@ export default function CertificationPage() {
                   key={i}
                   className="border border-white/10 rounded-2xl p-8"
                 >
-                  <div className="w-14 h-14 rounded-full bg-[#4d1b27] flex items-center justify-center text-white mb-4">
+                  <div className="w-14 h-14 rounded-full bg-[var(--cta-bg)] flex items-center justify-center text-white mb-4">
                     {item.icon}
                   </div>
                   <h3 className="font-serif text-xl text-white mb-2">
@@ -369,13 +369,13 @@ export default function CertificationPage() {
         </section>
 
         {/* Testimonials */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
                 <span className="italic">what students</span> SAY
               </h2>
-              <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+              <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {[
@@ -417,7 +417,7 @@ export default function CertificationPage() {
             </div>
             <div className="max-w-lg mx-auto">
               <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-8 md:p-10 relative text-center">
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[#4d1b27] text-white tracking-wide">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide">
                   FOUNDING CLASS
                 </span>
                 <div className="mb-6">
@@ -446,7 +446,7 @@ export default function CertificationPage() {
                     </li>
                   ))}
                 </ul>
-                <EnrollCTA className="inline-flex items-center justify-center gap-2 bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-lg w-full" />
+                <EnrollCTA className="inline-flex items-center justify-center gap-2 bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors text-lg w-full" />
                 <div className="mt-4 flex justify-center">
                   <CountdownBadge />
                 </div>
@@ -459,20 +459,20 @@ export default function CertificationPage() {
         </section>
 
         {/* FAQ */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl md:text-4xl text-white">
                 <span className="italic">frequently asked</span> QUESTIONS
               </h2>
-              <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+              <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             </div>
             <FAQAccordion />
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="bg-[#2a2828] border-t border-white/10 py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] border-t border-white/10 py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-4 text-white">
               Secure your founding seat

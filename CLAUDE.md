@@ -180,14 +180,15 @@ Do NOT skip this step. Every new page must be trackable from `/admin/analytics`.
 
 All new pages, components, and assets **must** follow the site's theme system. Never use hardcoded colors or inline styles for colors/backgrounds/borders.
 
-- **Use CSS variables** for all colors: `var(--background)`, `var(--foreground)`, `var(--card-bg)`, `var(--card-border)`, `var(--gray-50)`, `var(--gray-100)`, `var(--gray-200)`, `var(--gray-600)`, `var(--gray-800)`, accent variables like `var(--accent-blue-bg)`, etc.
+- **Use CSS variables** for all colors: `var(--background)`, `var(--foreground)`, `var(--card-bg)`, `var(--card-border)`, `var(--cta-bg)`, `var(--accent)`, `var(--accent-hover)`, `var(--surface-warm)`, `var(--border-warm)`, `var(--dark-section-bg)`, `var(--dark-card-bg)`, `var(--dark-card-hover)`, `var(--gray-50)` through `var(--gray-800)`, accent variables like `var(--accent-blue-bg)`, etc.
 - **Use Tailwind classes** for layout, spacing, and typography rather than inline styles.
-- **Primary accent**: `#ef562a` (orange) for CTAs, highlights, active states, and hover effects.
-- **Secondary accent**: `#ffe500` (yellow) for badges, CTAs on dark backgrounds.
-- **Headings**: Use `font-serif` class (Playfair Display). Body text inherits Inter.
+- **Primary accent**: `#4d1b27` (burgundy) for CTAs, highlights, active states, and hover effects. Use `var(--cta-bg)` for button backgrounds, `var(--accent)` for text/border accents.
+- **Background**: `#fdfaf6` (warm cream) in light mode. Never use cold white `#ffffff` for page backgrounds.
+- **Headings**: Use `font-serif` class (Playfair Display). Body text inherits Inter. Script/signature text uses `font-script` (Dancing Script).
 - **Cards**: `bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl`
-- **Dark mode**: The site supports light/dark via `data-theme` attribute on `<html>`. CSS variables automatically switch. Never hardcode light-only colors like `#ffffff` or `#111827`.
-- **Page structure**: Navigation + hero section + content sections + Footer. Hero uses serif headings with orange italic accent span.
+- **Dark mode**: The site supports light/dark via `data-theme` attribute on `<html>`. CSS variables automatically switch. Never hardcode colors; always use CSS variables.
+- **Brand elements**: Decorative components in `src/components/brand/`: `ChromeStar`, `SparkleGroup`, `PolaroidFrame`, `BrandSignature`. Use sparingly for visual accents.
+- **Page structure**: Navigation + hero section + content sections + Footer. Hero uses serif headings with burgundy italic accent span.
 
 See `src/app/globals.css` for the full variable list.
 

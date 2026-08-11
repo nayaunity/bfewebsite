@@ -93,7 +93,7 @@ export default function ClaudeCode101Page() {
                 {firstLesson && (
                   <Link
                     href={`/resources/claude-code-101/${firstLesson.slug}`}
-                    className="block w-full bg-[#4d1b27] text-white px-6 py-3 rounded-full font-medium hover:bg-[#4d383b] transition-colors text-center"
+                    className="block w-full bg-[var(--cta-bg)] text-white px-6 py-3 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors text-center"
                   >
                     Start Learning &rarr;
                   </Link>

@@ -100,7 +100,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                         key={lesson.id}
                         href={`/resources/salary-negotiation/${lesson.slug}`}
                         className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[var(--gray-50)] transition-colors text-sm block ${
-                          currentSlug === lesson.slug ? "bg-[#4d1b27]/20" : ""
+                          currentSlug === lesson.slug ? "bg-[var(--cta-bg)]/20" : ""
                         }`}
                       >
                         {lesson.free || hasAccess ? (
@@ -125,7 +125,7 @@ export default function LessonSidebar({ course, currentSlug }: LessonSidebarProp
                             // Not completed circle
                             <div className="w-6 h-6 rounded-full border-2 border-[var(--card-border)] flex items-center justify-center flex-shrink-0">
                               {currentSlug === lesson.slug && (
-                                <div className="w-2 h-2 rounded-full bg-[#4d1b27]"></div>
+                                <div className="w-2 h-2 rounded-full bg-[var(--cta-bg)]"></div>
                               )}
                             </div>
                           )

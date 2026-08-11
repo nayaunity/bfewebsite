@@ -103,7 +103,7 @@ export default function CohortPage() {
                   key={i}
                   className="flex items-start gap-4 p-6 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-full bg-[var(--cta-bg)] flex items-center justify-center flex-shrink-0 mt-0.5">
                     <svg
                       className="w-4 h-4 text-white"
                       fill="none"
@@ -128,7 +128,7 @@ export default function CohortPage() {
         </section>
 
         {/* Details + CTA */}
-        <section className="bg-[#4d1b27] py-16 md:py-24">
+        <section className="bg-[var(--cta-bg)] py-16 md:py-24">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-white mb-6">
               Launching Fall 2026

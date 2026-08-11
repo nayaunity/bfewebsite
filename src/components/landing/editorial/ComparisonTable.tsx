@@ -30,9 +30,9 @@ export default function ComparisonTable() {
               key={i}
               className="grid grid-cols-[1.5fr_1fr_1fr] px-8 py-5 border-b border-[#f5ede0] last:border-b-0 items-center"
             >
-              <div className="font-semibold text-base text-[#2a2828]">{row.row}</div>
+              <div className="font-semibold text-base text-[var(--foreground)]">{row.row}</div>
               <div className="text-[#78716c] text-[15px]">{row.manual}</div>
-              <div className="text-[#2a2828] text-[15px] font-semibold">
+              <div className="text-[var(--foreground)] text-[15px] font-semibold">
                 <span className="text-[#10b981] mr-1.5">✓</span>{row.us}
               </div>
             </div>
@@ -43,7 +43,7 @@ export default function ComparisonTable() {
         <div className="md:hidden flex flex-col gap-4">
           {COMPARISON.map((row, i) => (
             <div key={i} className="bg-white border border-[#f0e6d6] rounded-2xl p-5">
-              <div className="font-semibold text-base text-[#2a2828] mb-3">{row.row}</div>
+              <div className="font-semibold text-base text-[var(--foreground)] mb-3">{row.row}</div>
               <div className="flex flex-col gap-2">
                 <div className="text-sm">
                   <span className="text-[11px] tracking-wider font-bold text-[#a8a29e] block mb-0.5">MANUALLY</span>
@@ -51,7 +51,7 @@ export default function ComparisonTable() {
                 </div>
                 <div className="text-sm">
                   <span className="text-[11px] tracking-wider font-bold text-[var(--accent)] block mb-0.5">WITH BFE</span>
-                  <span className="text-[#2a2828] font-semibold">
+                  <span className="text-[var(--foreground)] font-semibold">
                     <span className="text-[#10b981] mr-1">✓</span>{row.us}
                   </span>
                 </div>

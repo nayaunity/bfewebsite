@@ -39,7 +39,7 @@ export function UsageMeter({
                 ? "bg-red-500"
                 : percentage > 80
                 ? "bg-yellow-500"
-                : "bg-[#4d1b27]"
+                : "bg-[var(--cta-bg)]"
             }`}
             style={{ width: `${percentage}%` }}
           />

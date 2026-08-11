@@ -289,14 +289,14 @@ export default function JobBoard() {
               {session?.user && (
                 <a
                   href="/profile/referrals"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#d84a21] transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cta-bg)] text-white font-medium rounded-full hover:bg-[#d84a21] transition-colors"
                 >
                   Get Referrals <span aria-hidden="true">&rarr;</span>
                 </a>
               )}
               <a
                 href="/auto-apply/landing"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cta-bg)] text-white font-medium rounded-full hover:bg-[#e6cf00] transition-colors"
               >
                 Auto-Apply to Jobs <span aria-hidden="true">&rarr;</span>
               </a>
@@ -318,7 +318,7 @@ export default function JobBoard() {
                   onClick={() => handleMobileFilterChange(filter.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedMobileFilter === filter.value
-                      ? "bg-[#4d1b27] text-white"
+                      ? "bg-[var(--cta-bg)] text-white"
                       : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                   }`}
                 >
@@ -329,7 +329,7 @@ export default function JobBoard() {
                 onClick={handleRemoteToggle}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   remoteOnly
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -339,7 +339,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(false)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -349,7 +349,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(true)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--card-bg)] text-[var(--gray-600)] border border-[var(--card-border)]"
                 }`}
               >
@@ -373,7 +373,7 @@ export default function JobBoard() {
                   onClick={() => handleCategoryChange(category)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedCategory === category
-                      ? "bg-[#4d1b27] text-white"
+                      ? "bg-[var(--cta-bg)] text-white"
                       : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                   }`}
                 >
@@ -388,7 +388,7 @@ export default function JobBoard() {
               <select
                 value={selectedCompany}
                 onChange={handleCompanyChange}
-                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[#4d1b27] focus:border-transparent"
+                className="px-4 py-2 rounded-lg border border-[var(--gray-200)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--cta-bg)] focus:border-transparent"
               >
                 <option value="">All Companies</option>
                 {companies.map((company) => (
@@ -403,7 +403,7 @@ export default function JobBoard() {
                 onClick={handleRemoteToggle}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   remoteOnly
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -415,7 +415,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(false)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   !isInternational
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -427,7 +427,7 @@ export default function JobBoard() {
                 onClick={() => handleInternationalToggle(true)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   isInternational
-                    ? "bg-[#4d1b27] text-white"
+                    ? "bg-[var(--cta-bg)] text-white"
                     : "bg-[var(--gray-100)] text-[var(--gray-600)] hover:bg-[var(--gray-200)]"
                 }`}
               >
@@ -452,13 +452,13 @@ export default function JobBoard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <button
             onClick={() => router.push("/jobs/anthropic-fellows-program")}
-            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
+            className="block w-full text-left bg-[var(--cta-bg)]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-[var(--accent)] font-medium">Anthropic</span>
-                  <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
+                  <span className="text-xs px-3 py-1 bg-[var(--cta-bg)] text-white rounded-full font-semibold">
                     APPLY BY APR 26
                   </span>
                 </div>
@@ -484,13 +484,13 @@ export default function JobBoard() {
 
           <button
             onClick={() => router.push("/jobs/anthropic-ai-stem-fellows")}
-            className="block w-full text-left bg-[#4d1b27]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
+            className="block w-full text-left bg-[var(--cta-bg)]/10 p-6 md:p-8 rounded-2xl hover:shadow-lg transition-shadow group border-2 border-[var(--accent)] cursor-pointer"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-[var(--accent)] font-medium">Anthropic</span>
-                  <span className="text-xs px-3 py-1 bg-[#4d1b27] text-white rounded-full font-semibold">
+                  <span className="text-xs px-3 py-1 bg-[var(--cta-bg)] text-white rounded-full font-semibold">
                     APPLY BY MAY 15
                   </span>
                 </div>
@@ -517,7 +517,7 @@ export default function JobBoard() {
       </section>
 
       {/* Referral + Auto-Apply Banner */}
-      <section className="bg-[#4d1b27] py-10">
+      <section className="bg-[var(--cta-bg)] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="font-serif text-2xl md:text-3xl text-white">
@@ -530,7 +530,7 @@ export default function JobBoard() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/profile/referrals"
-              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#4d1b27] text-white font-medium rounded-full hover:bg-[#f0d800] transition-colors"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[var(--cta-bg)] text-white font-medium rounded-full hover:bg-[#f0d800] transition-colors"
             >
               Start Referrals <span aria-hidden="true">&rarr;</span>
             </a>
@@ -607,7 +607,7 @@ export default function JobBoard() {
                           {job.company}
                         </span>
                         {connectionCounts[job.companySlug] > 0 && (
-                          <span className="text-xs px-2 py-1 bg-[#4d1b27]/10 text-[var(--accent)] rounded-full font-medium">
+                          <span className="text-xs px-2 py-1 bg-[var(--cta-bg)]/10 text-[var(--accent)] rounded-full font-medium">
                             You know {connectionCounts[job.companySlug]} {connectionCounts[job.companySlug] === 1 ? "person" : "people"} here
                           </span>
                         )}
@@ -645,7 +645,7 @@ export default function JobBoard() {
                         <a
                           href="/profile/referrals"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[#4d1b27] hover:text-white transition-colors"
+                          className="px-5 py-2 text-sm font-medium rounded-full border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--cta-bg)] hover:text-white transition-colors"
                         >
                           Get Referred
                         </a>
@@ -654,7 +654,7 @@ export default function JobBoard() {
                         <a
                           href="/auto-apply/landing"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-5 py-2 text-sm font-medium rounded-full bg-[#4d1b27] text-white hover:opacity-90 transition-opacity"
+                          className="px-5 py-2 text-sm font-medium rounded-full bg-[var(--cta-bg)] text-white hover:opacity-90 transition-opacity"
                         >
                           Auto Apply
                         </a>

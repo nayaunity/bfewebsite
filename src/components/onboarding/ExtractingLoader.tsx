@@ -28,9 +28,9 @@ export default function ExtractingLoader() {
           the<span className="text-[var(--accent)]">BFE</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "0ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "150ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#4d1b27]" style={{ animationDelay: "300ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--cta-bg)]" style={{ animationDelay: "0ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--cta-bg)]" style={{ animationDelay: "150ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--cta-bg)]" style={{ animationDelay: "300ms" }} />
         </div>
       </div>
 
@@ -43,7 +43,7 @@ export default function ExtractingLoader() {
           <span
             key={i}
             className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-8 bg-[#4d1b27]" : "w-1.5 bg-[var(--gray-200)]"
+              i === index ? "w-8 bg-[var(--cta-bg)]" : "w-1.5 bg-[var(--gray-200)]"
             }`}
           />
         ))}
@@ -137,7 +137,7 @@ function ApplySlide() {
           <div className="h-2 w-24 rounded bg-[var(--gray-100)]" />
         </div>
         <span className="flex items-center gap-1.5 text-xs text-[var(--gray-600)]">
-          <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--gray-200)] border-t-[#4d1b27]" />
+          <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--gray-200)] border-t-[var(--cta-bg)]" />
           Applying...
         </span>
       </div>
@@ -153,7 +153,7 @@ function AutopilotSlide() {
       subtitle="BFE works around the clock — you wake up to fresh applications submitted overnight. Being early gives you a real edge."
     >
       <div className="mb-4 flex items-center justify-center gap-2">
-        <div className="relative h-5 w-10 rounded-full bg-[#4d1b27]">
+        <div className="relative h-5 w-10 rounded-full bg-[var(--cta-bg)]">
           <div className="absolute right-0.5 top-0.5 h-4 w-4 rounded-full bg-white" />
         </div>
         <span className="text-sm font-medium">Autopilot on</span>

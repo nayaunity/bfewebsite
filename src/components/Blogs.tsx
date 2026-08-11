@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getAllPostsMeta } from "@/lib/blog";
+import { ChromeStar } from "@/components/brand";
 
 export default async function Blogs() {
   const allPosts = await getAllPostsMeta();
@@ -8,13 +9,15 @@ export default async function Blogs() {
   const posts = allPosts.filter(post => post.featured).slice(0, 3);
 
   return (
-    <section id="blog" className="bg-[#2a2828] py-20 md:py-28">
+    <section id="blog" className="bg-[var(--dark-section-bg)] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white">
-            <span className="italic">from the</span> BLOG
+        <div className="text-center mb-16 relative">
+          <h2 className="font-serif font-bold text-4xl md:text-5xl lg:text-6xl text-white">
+            <span className="italic font-normal">from the</span> BLOG
           </h2>
+          <ChromeStar size={56} rotate={15} className="absolute -top-4 right-1/3 hidden md:block animate-twinkle" />
+          <ChromeStar size={28} rotate={-10} className="absolute top-6 right-[25%] hidden md:block animate-twinkle [animation-delay:0.7s]" />
           <p className="mt-4 text-white/60 max-w-xl mx-auto">
             Insights on AI, career growth, and building income on your own terms.
           </p>
@@ -27,10 +30,10 @@ export default async function Blogs() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="bg-[#333131] rounded-2xl overflow-hidden hover:bg-[#3d3a3a] transition-colors group border border-white/10 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
+                className="bg-[var(--dark-card-bg)] rounded-2xl overflow-hidden hover:bg-[var(--dark-card-hover)] transition-colors group border border-white/10 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
               >
                 {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-[#3d3a3a]">
+                <div className="relative aspect-[16/10] overflow-hidden bg-[var(--dark-card-hover)]">
                   {post.image ? (
                     <Image
                       src={post.image}
@@ -75,7 +78,7 @@ export default async function Blogs() {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+            className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
           >
             View All Posts
           </Link>

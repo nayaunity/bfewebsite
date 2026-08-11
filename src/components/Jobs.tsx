@@ -124,7 +124,7 @@ export default function Jobs() {
         <div className="mt-12 text-center">
           <Link
             href="/jobs"
-            className="inline-block bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+            className="inline-block bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
           >
             View All Jobs
           </Link>
@@ -135,7 +135,7 @@ export default function Jobs() {
           <p className="text-sm tracking-wide mb-4">ARE YOU HIRING?</p>
           <Link
             href="/jobs/submit"
-            className="inline-block border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors"
+            className="inline-block border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[var(--cta-bg)] hover:text-white transition-colors"
           >
             Post a Job
           </Link>

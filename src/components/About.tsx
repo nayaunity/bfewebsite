@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ChromeStar, SparkleGroup } from "@/components/brand";
 
 export default function About() {
   return (
@@ -17,8 +18,10 @@ export default function About() {
           />
         </div>
 
-        {/* Yellow Block */}
-        <div className="bg-[#4d1b27] p-8 md:p-12 flex flex-col justify-center text-white">
+        {/* Burgundy Block */}
+        <div className="bg-[var(--cta-bg)] p-8 md:p-12 flex flex-col justify-center text-white relative overflow-hidden">
+          <ChromeStar size={56} className="absolute top-4 right-4 opacity-60" rotate={15} />
+          <ChromeStar size={24} className="absolute bottom-6 left-6 opacity-40" rotate={-10} />
           <p className="text-sm tracking-wide">
             HELPING YOU BUILD
             <br />
@@ -29,8 +32,8 @@ export default function About() {
           </p>
         </div>
 
-        {/* Beige/Cream Block */}
-        <div className="bg-[var(--gray-100)] p-8 md:p-12 flex flex-col justify-center">
+        {/* Warm Cream Block */}
+        <div className="bg-[var(--surface-warm)] p-8 md:p-12 flex flex-col justify-center">
           <p className="text-sm tracking-wide leading-relaxed">
             EQUIPPING YOU WITH
             <br />
@@ -52,7 +55,7 @@ export default function About() {
         <div className="bg-[var(--background)] p-8 md:p-12 flex items-center justify-center border-l border-[var(--card-border)]">
           <Link
             href="#community"
-            className="border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[#4d1b27] hover:text-white transition-colors text-center"
+            className="border-2 border-[var(--accent)] text-[var(--foreground)] px-8 py-4 rounded-full font-medium hover:bg-[var(--cta-bg)] hover:text-white transition-colors text-center"
           >
             JOIN US
           </Link>
@@ -62,9 +65,13 @@ export default function About() {
       {/* Partners Section */}
       <div className="py-16 md:py-20 border-t border-[var(--card-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm tracking-widest mb-12">
-            I&apos;VE PARTNERED WITH SOME PRETTY GREAT COMPANIES
-          </p>
+          <div className="text-center mb-12 relative">
+            <p className="text-sm tracking-widest">
+              I&apos;VE PARTNERED WITH SOME PRETTY GREAT COMPANIES
+            </p>
+            <ChromeStar size={40} rotate={12} className="absolute -top-4 right-1/4 hidden md:block animate-twinkle" />
+            <ChromeStar size={24} rotate={-20} className="absolute top-0 left-1/4 hidden md:block animate-twinkle [animation-delay:1s]" />
+          </div>
 
           {/* Partner Logos as Text - Row 1 */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 mb-6 font-serif text-3xl md:text-5xl text-[var(--gray-300)]">

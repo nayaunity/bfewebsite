@@ -93,7 +93,7 @@ export default async function MemberPage({ params }: PageProps) {
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[#4d1b27] flex items-center justify-center">
+                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--cta-bg)] flex items-center justify-center">
                         <span className="font-serif text-4xl text-black">
                           {member.name.split(' ').map(n => n[0]).join('')}
                         </span>
@@ -126,7 +126,7 @@ export default async function MemberPage({ params }: PageProps) {
                   <span>{member.company}</span>
                 </div>
 
-                <div className="mt-6 inline-block bg-[#4d1b27] text-white px-4 py-2 rounded-full text-sm font-medium">
+                <div className="mt-6 inline-block bg-[var(--cta-bg)] text-white px-4 py-2 rounded-full text-sm font-medium">
                   {member.specialty}
                 </div>
 
@@ -142,7 +142,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.linkedinUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[var(--cta-bg)] transition-colors"
                         aria-label="LinkedIn"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.twitterUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[var(--cta-bg)] transition-colors"
                         aria-label="Twitter"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@ export default async function MemberPage({ params }: PageProps) {
                         href={member.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[#4d1b27] transition-colors"
+                        className="w-12 h-12 rounded-full bg-[var(--gray-100)] flex items-center justify-center hover:bg-[var(--cta-bg)] transition-colors"
                         aria-label="Website"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,12 +189,12 @@ export default async function MemberPage({ params }: PageProps) {
         </section>
 
         {/* Story Section */}
-        <section className="bg-[#2a2828] py-16 md:py-24">
+        <section className="bg-[var(--dark-section-bg)] py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="font-serif text-3xl md:text-4xl text-white text-center">
               My Story
             </h2>
-            <div className="w-px h-12 bg-[#4d1b27] mx-auto my-8"></div>
+            <div className="w-px h-12 bg-[var(--cta-bg)] mx-auto my-8"></div>
             <div className="space-y-6">
               {member.story.map((paragraph, index) => (
                 <p key={index} className="text-xl md:text-2xl text-white/80 leading-relaxed">
@@ -215,7 +215,7 @@ export default async function MemberPage({ params }: PageProps) {
             <div className="space-y-6">
               {member.experience.map((item, index) => (
                 <div key={index} className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded-full bg-[#4d1b27] flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 rounded-full bg-[var(--cta-bg)] flex items-center justify-center flex-shrink-0 mt-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -269,7 +269,7 @@ export default async function MemberPage({ params }: PageProps) {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 rounded-full bg-[#4d1b27]/20 flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full bg-[var(--cta-bg)]/20 flex items-center justify-center">
                         <span className="font-serif text-3xl text-white/60">
                           {otherMember.name.split(' ').map(n => n[0]).join('')}
                         </span>
@@ -303,7 +303,7 @@ export default async function MemberPage({ params }: PageProps) {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/community"
-                className="bg-[#4d1b27] text-white px-8 py-4 rounded-full font-medium hover:bg-[#4d383b] transition-colors"
+                className="bg-[var(--cta-bg)] text-white px-8 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors"
               >
                 Join the Community
               </Link>

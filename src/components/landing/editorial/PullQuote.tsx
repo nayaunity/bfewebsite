@@ -1,6 +1,6 @@
 export default function PullQuote() {
   return (
-    <section className="bg-[#2a2828] text-white py-20 md:py-[120px] px-4 sm:px-8">
+    <section className="bg-[var(--dark-section-bg)] text-white py-20 md:py-[120px] px-4 sm:px-8">
       <div className="max-w-[1100px] mx-auto">
         <div className="text-sm text-[#9a3412] tracking-[1.5px] font-bold mb-5">WHY BOTHER</div>
         <p
