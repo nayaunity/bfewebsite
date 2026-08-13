@@ -6,11 +6,11 @@ import CreatorsForm from "./CreatorsForm";
 export const metadata: Metadata = {
   title: "For Knowledge Creators | The Black Female Engineer",
   description:
-    "A private community for knowledge creators turning expertise-driven content into brand deals, digital products, and paid partnerships. $67/mo. First cohort opens August 17.",
+    "Your first winning post is 3 moves away. A private community with AI systems for creators turning expertise-driven content into real revenue.",
   openGraph: {
     title: "For Knowledge Creators | The Black Female Engineer",
     description:
-      "A private community for knowledge creators turning expertise-driven content into brand deals, digital products, and paid partnerships. $67/mo. First cohort opens August 17.",
+      "Your first winning post is 3 moves away. A private community with AI systems for creators turning expertise-driven content into real revenue.",
     images: [
       {
         url: "/images/waitlist-og.png",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "For Knowledge Creators | The Black Female Engineer",
     description:
-      "A private community for knowledge creators turning expertise-driven content into brand deals, digital products, and paid partnerships. $67/mo. First cohort opens August 17.",
+      "Your first winning post is 3 moves away. A private community with AI systems for creators turning expertise-driven content into real revenue.",
     images: ["/images/waitlist-og.png"],
   },
 };

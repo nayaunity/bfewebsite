@@ -62,49 +62,66 @@ export default function CreatorsForm() {
     >
       <div className="mx-auto max-w-[580px] px-6 pt-12 pb-8 md:pt-20 md:pb-12">
         <p className="text-xs tracking-[0.25em] uppercase text-[#897075] mb-8">
-          Doors open August 17
+          The Black Female Engineer
         </p>
 
         <h1 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.15] text-[#4d1b27] mb-6">
-          Your content is good.
+          The AI systems
           <br />
-          Now make it sell.
+          behind the content.
         </h1>
 
         <p className="text-lg leading-relaxed text-[#4d383b] mb-6">
-          A private community for knowledge creators who want to turn
-          expertise-driven content into real revenue. Brand deals, digital
-          products, paid partnerships. AI helps you create faster and pitch
-          smarter.
+          You already know what to talk about. The hard part is turning that
+          into posts that land, products people buy, and pitches that close.
         </p>
 
-        <p className="text-2xl font-serif text-[#4d1b27] mb-12">
-          $67/mo
+        <p className="text-lg leading-relaxed text-[#4d383b] mb-12">
+          I built AI systems this year that handle the heavy lifting: finding
+          what works in your niche, writing hooks that convert, and repurposing
+          one idea across platforms. They&apos;re the reason my content grew
+          and my income followed.
         </p>
 
         <hr className="border-[#4d1b27]/15 mb-10" />
 
-        <ol className="space-y-4 mb-10 list-none p-0 m-0">
+        <h2 className="font-serif text-xl text-[#4d1b27] mb-6">
+          What&apos;s inside
+        </h2>
+
+        <div className="space-y-4 mb-10">
           {[
-            "Create content around what you actually know.",
-            "Use AI to turn posts into products, pitches, and brand decks.",
-            "Land your first paid deal in 90 days.",
-          ].map((text, i) => (
-            <li key={i} className="flex gap-4 items-baseline">
-              <span className="font-serif text-lg text-[#4d1b27] flex-shrink-0 w-6 text-right">
-                {i + 1}.
-              </span>
-              <span className="font-serif text-lg">{text}</span>
-            </li>
+            {
+              label: "The Playbook",
+              text: "Done-for-you AI prompts that reverse-engineer winning posts, write for a specific person, and test hooks across a week. The same systems from my emails, ready to use.",
+            },
+            {
+              label: "Content to revenue",
+              text: "Templates for turning posts into digital products, brand decks, and paid partnership pitches. AI does the drafting. You do the deciding.",
+            },
+            {
+              label: "A room of creators",
+              text: "A private community of knowledge creators building in public. Share what's working, get feedback on drafts, and find collaborators who actually understand the work.",
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="p-5 bg-[#e9e7e4] border-l-[3px] border-[#4d1b27]"
+            >
+              <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#4d1b27] mb-1.5">
+                {item.label}
+              </p>
+              <p className="text-base leading-relaxed">{item.text}</p>
+            </div>
           ))}
-        </ol>
+        </div>
 
         <hr className="border-[#4d1b27]/15 mb-10" />
 
         <div>
           <p className="font-medium mb-1">Get in before the public launch.</p>
           <p className="text-sm text-[#897075] mb-6">
-            Founding members lock this rate for life. Cancel anytime.
+            Founding members get early access and lock their rate for life.
           </p>
 
           {submitted ? (
