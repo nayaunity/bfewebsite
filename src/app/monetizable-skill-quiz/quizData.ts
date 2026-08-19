@@ -1,426 +1,450 @@
-// AI Income Lab — Monetizable Skill Quiz content.
-// Copy carried over from the source spec, with em-dashes restructured per
-// the site-wide copy rule (no em-dashes in user-facing copy).
+// AI Income Lab — "What's Your PHASE Path?" skill diagnostic.
+// Content from the PHASE Path spec (two scored axes plus an entry check),
+// with em-dashes restructured per the site-wide copy rule.
 
-export type ArchetypeKey =
-  | "builder"
-  | "maker"
-  | "artist"
-  | "translator"
-  | "operator"
-  | "guide";
+export type FamilyKey = "s" | "w" | "v" | "p" | "t" | "k";
+export type Visibility = "visible" | "invisible";
+export type Repeatability = "bespoke" | "repeatable";
+export type ModeKey =
+  | "invisible-repeatable"
+  | "invisible-bespoke"
+  | "visible-repeatable"
+  | "visible-bespoke";
+export type Evidence = "three-plus" | "one-two" | "none";
+export type EntryPhase = "phase2" | "phase3";
 
-export type Play = {
-  label: string;
-  text: string;
+export type Family = {
+  key: FamilyKey;
+  letter: string;
+  label: string; // e.g. "Systems & Numbers"
+  name: string; // e.g. "The Operator"
+  oneLine: string;
+  undersell: string;
+  builds: Record<ModeKey, string>;
+  gathers: string;
+  priceBand: string;
+  trap: string;
 };
 
-export type Archetype = {
-  key: ArchetypeKey;
-  name: string;
-  identity: string;
-  selling: string;
-  plays: Play[];
-  firstMove: string;
-  watchOut: string;
-};
-
-export const ARCHETYPES: Record<ArchetypeKey, Archetype> = {
-  builder: {
-    key: "builder",
-    name: "The Builder",
-    identity: "You make things work. If it can be built, you'll figure out how.",
-    selling:
-      "Not code. Speed. You compress months of someone's problem into a working thing they can use on Monday.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use ChatGPT or Perplexity to research what your competitors ship and where they're weak, then position your build around the gap they're ignoring.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Run a coding agent (Claude Code, Cursor) as your dev team so you ship features and client projects in days instead of weeks.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "Use Canva AI or Claude to design the logo and landing page for the thing you built, and turn your one custom build into a template other people buy.",
-      },
-    ],
-    firstMove:
-      "Pick the one thing you've already built or half-built and put a price and a landing page on it this week. Not a new project. The one that exists.",
-    watchOut:
-      "Building instead of selling. Your next build is not the bottleneck. Your offer is.",
-  },
-  maker: {
-    key: "maker",
-    name: "The Maker",
-    identity: "You work with your hands and leave something real behind.",
-    selling:
-      "A transformation people can stand in. Nobody can outsource your hands. That's exactly why your expertise, written down, is worth more than your hours.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use a coding agent to build a simple landing page with photos of your work, then wire Zapier plus ChatGPT to read incoming quote requests and suggest what to charge.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Record a call with a client where you assess their space, use Wispr Flow to talk out exactly how you'd do the work, then have Claude turn that into a custom digital guide. You just became a consultant who gets paid without traveling.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "After a few of those custom guides, have Claude merge them into one master guide anyone who lands on your page can buy on repeat.",
-      },
-    ],
-    firstMove:
-      "Photograph your last three finished jobs and write down what you'd charge to do each one again. That's your first offer page.",
-    watchOut:
-      "Trading only hours for money. Your knowledge scales even when your hands can't.",
-  },
-  artist: {
-    key: "artist",
-    name: "The Artist",
-    identity: "You make things people want to look at, wear, and keep.",
-    selling:
-      "Taste. It's the least automatable thing you own. AI can produce infinite output, but it can't decide what's good.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use AI to write the story behind each piece so your work sells while you sleep, and build a simple landing page for commissions with clear tiers and prices.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Pair ChatGPT's image tools with Canva to turn your original work into digital products: prints, greeting cards, postcards, graphic tees, printed and shipped on demand.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "Turn your style into a system: templates, packs, or presets people buy to get a piece of your eye without hiring you.",
-      },
-    ],
-    firstMove:
-      "Take one existing piece and turn it into one buyable product this week. One piece, one product, one price.",
-    watchOut:
-      "Undercharging because it felt fun to make. Ease is not a discount.",
-  },
-  translator: {
-    key: "translator",
-    name: "The Translator",
-    identity: "You take the complicated thing and make it obvious.",
-    selling: "Time. People pay to skip the confusion you already walked through.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use AI to mine the exact questions your people ask (comments, Reddit, reviews) and make content that answers them so specifically it feels illegal.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Talk your knowledge out loud with Wispr Flow, have Claude structure it into a guide, workshop, or curriculum, and stop staring at blank documents.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "Build a custom GPT trained on your method so people get your thinking on demand, and package the rest as a paid guide or mini-course.",
-      },
-    ],
-    firstMove:
-      "Write the one-page explainer only you could write, and give it away in exchange for an email address.",
-    watchOut:
-      "Teaching for free forever. Free builds trust; paid builds freedom. You need both.",
-  },
-  operator: {
-    key: "operator",
+export const FAMILIES: Record<FamilyKey, Family> = {
+  s: {
+    key: "s",
+    letter: "S",
+    label: "Systems & Numbers",
     name: "The Operator",
-    identity: "You bring order to chaos. Plans, systems, logistics, numbers.",
-    selling:
-      "Calm. Founders and busy people pay a lot to stop holding everything in their head.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use AI to audit a prospect's public presence or process and send a short “here are the three leaks I found” message. This closes clients faster than any pitch.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Build your service on Zapier plus ChatGPT so intake, tracking, and reporting run themselves and you only do the judgment work.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "Turn the system you keep rebuilding for clients into a Notion template, dashboard, or SOP pack you sell once and again and again.",
-      },
-    ],
-    firstMove:
-      "Document the system you've already built for yourself. That doc is the product.",
-    watchOut:
-      "Optimizing your own setup instead of selling it. Ship the messy version.",
+    oneLine: "You make chaos legible.",
+    undersell:
+      "You don't just do the admin, you can see the shape of the mess. That's the part people pay for.",
+    builds: {
+      "invisible-repeatable":
+        "A GPT trained on your categorisation rules, plus a template pack she runs monthly",
+      "invisible-bespoke":
+        "A one-off clean-up and rebuild of her records, delivered as a working file",
+      "visible-repeatable":
+        "A 90-minute “get your numbers straight” workshop, run monthly",
+      "visible-bespoke":
+        "A diagnostic call plus a rebuilt system, priced as one engagement",
+    },
+    gathers:
+      "Seller and freelancer communities at the point of tax deadlines; small-practice owners; anyone posting a screenshot of a spreadsheet asking for help.",
+    priceBand: "£120–£400 to start. Raise after three.",
+    trap: "Taking on the whole finance function. Sell the one recurring mess, not “operations”.",
   },
-  guide: {
-    key: "guide",
+  w: {
+    key: "w",
+    letter: "W",
+    label: "Words",
+    name: "The Translator",
+    oneLine: "You make people sound like the competent version of themselves.",
+    undersell:
+      "Rewriting isn't a favour you do quickly, it's a set of rules you apply consistently. Those rules are the product.",
+    builds: {
+      "invisible-repeatable":
+        "A GPT trained on your rules and five before/afters, plus one review pass",
+      "invisible-bespoke":
+        "A full rewrite delivered in a week, one round of revisions",
+      "visible-repeatable":
+        "A live rewrite session where six people bring one document each",
+      "visible-bespoke": "A 60-minute extraction call, then you write it",
+    },
+    gathers:
+      "Career-change groups; people posting “I've applied 40 times and heard nothing”; founders drafting their own sales pages badly.",
+    priceBand: "£150–£500 to start.",
+    trap: "Competing with free AI on output. You're not selling the words, you're selling knowing which words are wrong.",
+  },
+  v: {
+    key: "v",
+    letter: "V",
+    label: "Visual & Craft",
+    name: "The Maker",
+    oneLine: "You make things people trust on sight.",
+    undersell:
+      "Taste is a rule set too. You can name why the ugly version fails, and that naming is teachable.",
+    builds: {
+      "invisible-repeatable":
+        "A template pack plus a GPT that writes the copy to drop into it",
+      "invisible-bespoke":
+        "One asset rebuilt properly: deck, brand kit, or launch set",
+      "visible-repeatable":
+        "A “make yours not look homemade” workshop with live fixes",
+      "visible-bespoke":
+        "Art direction: a call, a critique, and a rebuilt master file",
+    },
+    gathers:
+      "Anyone about to pitch, launch or apply; course creators with good content and bad slides; local businesses with strong word of mouth and a weak site.",
+    priceBand: "£200–£600 to start.",
+    trap: "Endless revisions. Sell one round, name it in the offer line.",
+  },
+  p: {
+    key: "p",
+    letter: "P",
+    label: "People & Process",
     name: "The Guide",
-    identity: "People change after they talk to you.",
-    selling:
-      "Belief plus a plan. That's the most expensive thing on the market and the hardest to fake.",
-    plays: [
-      {
-        label: "GET CLIENTS",
-        text: "Use AI to turn your real client stories into content that names the exact problem your person is living in, so booking a call feels like the obvious next step.",
-      },
-      {
-        label: "SCALE DELIVERY",
-        text: "Use a meeting notetaker on every session, then have Claude produce the recap, action plan, and homework so clients feel held without doubling your hours.",
-      },
-      {
-        label: "PRODUCTIZE",
-        text: "Turn your repeated advice into a program, workbook, or custom GPT so the people who can't afford you one-on-one can still pay you.",
-      },
-    ],
-    firstMove:
-      "Offer your process to three people at a real price this week. Not free. Real.",
-    watchOut:
-      "Over-giving in sessions and under-charging in general. Structure is a kindness.",
+    oneLine: "You get humans through something difficult.",
+    undersell:
+      "You already know the emotional order of the journey: what people panic about first, second, third. Almost nobody documents that, and it's the whole product.",
+    builds: {
+      "invisible-repeatable":
+        "A structured self-guided path plus a GPT that answers the 20 predictable questions in your voice",
+      "invisible-bespoke":
+        "A written plan built from one intake form, delivered in 48 hours",
+      "visible-repeatable":
+        "A four-week small group, same six milestones every time",
+      "visible-bespoke":
+        "One-to-one guidance through a specific transition, fixed number of sessions",
+    },
+    gathers:
+      "Wherever people describe a transition in the present tense: “I'm three weeks in and drowning”.",
+    priceBand: "£250–£900 to start.",
+    trap: "Unlimited access. Cap the container or you'll resent it by week three.",
+  },
+  t: {
+    key: "t",
+    letter: "T",
+    label: "Technical & Automation",
+    name: "The Builder",
+    oneLine: "You make things work without a person in the loop.",
+    undersell:
+      "The buyer doesn't want automation, she wants the task gone. Sell the disappearance, not the stack.",
+    builds: {
+      "invisible-repeatable":
+        "One automation productised: same setup, same price, deployed per client",
+      "invisible-bespoke":
+        "A custom build with a Loom walkthrough and a handover doc",
+      "visible-repeatable":
+        "A build-along where everyone leaves with the same working system",
+      "visible-bespoke": "An audit call, then you build what you found",
+    },
+    gathers:
+      "People posting about copying data between two tools; agencies drowning in onboarding admin; anyone whose “system” is a group chat.",
+    priceBand: "£300–£1,200 to start.",
+    trap: "Naming the tools in your offer. She doesn't care that it's Zapier. She cares that Monday mornings stop.",
+  },
+  k: {
+    key: "k",
+    letter: "K",
+    label: "Insider Knowledge",
+    name: "The Insider",
+    oneLine: "You've survived a world other people are trying to enter.",
+    undersell:
+      "Everything. You think it's “just your job” because everyone around you knows it too. Step one metre outside that building and it's the scarcest thing in the room.",
+    builds: {
+      "invisible-repeatable":
+        "The real map, what actually gets you through, plus a GPT trained on how insiders phrase things",
+      "invisible-bespoke":
+        "A review of her attempt by someone who's been on the other side of the table",
+      "visible-repeatable":
+        "A monthly “ask someone who's actually done it” session",
+      "visible-bespoke":
+        "One call where you tell her the truth about her chances and what to change",
+    },
+    gathers:
+      "The forums for people trying to get into your field; the subreddit where they ask questions your colleagues would find obvious.",
+    priceBand:
+      "£150–£800 to start. Insider access carries a premium; don't price it like information.",
+    trap: "Assuming it's common knowledge. Test the assumption before you discount yourself.",
   },
 };
 
-// Deterministic tiebreak order
-export const TIEBREAK: ArchetypeKey[] = [
-  "builder",
-  "maker",
-  "artist",
-  "translator",
-  "operator",
-  "guide",
-];
-
-export type Option = {
-  text: string;
-  scores: Partial<Record<ArchetypeKey, number>>;
+export type Mode = {
+  key: ModeKey;
+  label: string;
+  sells: string;
+  priceShape: string;
+  gptRule: string;
 };
 
-export type Question = {
+export const MODES: Record<ModeKey, Mode> = {
+  "invisible-repeatable": {
+    key: "invisible-repeatable",
+    label: "Invisible + Repeatable",
+    sells: "A GPT, template or system she uses herself",
+    priceShape: "Low price, high volume",
+    gptRule:
+      "In your mode, the GPT is the product. A version of your judgement gets trained into it. Nobody sells hours here.",
+  },
+  "invisible-bespoke": {
+    key: "invisible-bespoke",
+    label: "Invisible + Bespoke",
+    sells: "A done-for-you build, delivered async",
+    priceShape: "Mid price, few clients",
+    gptRule:
+      "Whatever your build is, a version of your judgement gets trained into a GPT. It's how you deliver in a third of the time. Nobody sells hours here.",
+  },
+  "visible-repeatable": {
+    key: "visible-repeatable",
+    label: "Visible + Repeatable",
+    sells: "A short cohort, workshop or group program",
+    priceShape: "Mid price, batched",
+    gptRule:
+      "Whatever your build is, a version of your judgement gets trained into a GPT. It's how you deliver in a third of the time. Nobody sells hours here.",
+  },
+  "visible-bespoke": {
+    key: "visible-bespoke",
+    label: "Visible + Bespoke",
+    sells: "Consulting, coaching, or a diagnostic call plus fix",
+    priceShape: "High price, low volume",
+    gptRule:
+      "Whatever your build is, a version of your judgement gets trained into a GPT. It's how you deliver in a third of the time. Nobody sells hours here.",
+  },
+};
+
+// Part A — each option scores one family letter.
+export type FamilyQuestion = {
   q: string;
-  options: Option[];
+  options: { text: string; family: FamilyKey }[];
 };
 
-export const QUESTIONS: Question[] = [
+export const FAMILY_QUESTIONS: FamilyQuestion[] = [
   {
-    q: "Pick the compliment you've gotten most in your life.",
+    q: "When something at work or at home is a mess, what do you instinctively do first?",
     options: [
-      { text: "“How did you even build that?”", scores: { builder: 3 } },
-      { text: "“Wait, you made this yourself?”", scores: { maker: 3 } },
+      { text: "Build a spreadsheet or a tracker for it", family: "s" },
+      { text: "Write it out so it finally makes sense", family: "w" },
       {
-        text: "“This is beautiful. Where can I get one?”",
-        scores: { artist: 3 },
+        text: "Redesign how it looks so people actually use it",
+        family: "v",
       },
+      { text: "Get the right people on a call and sort it out", family: "p" },
+      { text: "Automate it so nobody has to touch it again", family: "t" },
       {
-        text: "“You explained that better than my professor.”",
-        scores: { translator: 3 },
+        text: "Explain what's actually going on, because you've seen this before",
+        family: "k",
       },
     ],
   },
   {
-    q: "It's a free Saturday, no obligations. What are you actually doing?",
+    q: "What do people come to you for, unprompted?",
     options: [
+      { text: "“Can you check my numbers?”", family: "s" },
+      { text: "“Can you read this before I send it?”", family: "w" },
+      { text: "“Can you make this look better?”", family: "v" },
+      { text: "“Can you talk to them for me?”", family: "p" },
+      { text: "“Can you make this thing work?”", family: "t" },
       {
-        text: "Poking at a side project or a tool idea",
-        scores: { builder: 3, operator: 1 },
-      },
-      {
-        text: "Fixing, building, or improving something in your physical space",
-        scores: { maker: 3 },
-      },
-      {
-        text: "Making something visual just because you felt like it",
-        scores: { artist: 3 },
-      },
-      {
-        text: "Deep in a conversation helping a friend figure their life out",
-        scores: { guide: 3 },
+        text: "“You've done this. How does it actually work?”",
+        family: "k",
       },
     ],
   },
   {
-    q: "Your friends text you when...",
+    q: "Which of these have you done more than five times?",
     options: [
       {
-        text: "Something is broken and needs to be fixed",
-        scores: { maker: 2, builder: 2 },
+        text: "Cleaned up someone else's data, budget or process",
+        family: "s",
+      },
+      { text: "Rewritten someone's CV, bio, email or post", family: "w" },
+      {
+        text: "Made a deck, a template, a video or a brand look right",
+        family: "v",
       },
       {
-        text: "They need their event, move, or trip organized",
-        scores: { operator: 3 },
+        text: "Managed a group of people, clients or patients through something",
+        family: "p",
       },
-      { text: "They need something to look good", scores: { artist: 3 } },
+      { text: "Set up a tool, integration, site or script", family: "t" },
       {
-        text: "They're spiraling and need a plan",
-        scores: { guide: 2, translator: 1 },
+        text: "Guided someone through a system you know from the inside",
+        family: "k",
       },
     ],
   },
   {
-    q: "Which mess bothers you the most?",
+    q: "What kind of praise do you get that you brush off?",
     options: [
+      { text: "“You're so organised, it's unreal”", family: "s" },
+      { text: "“You just say it better than I can”", family: "w" },
+      { text: "“You have such a good eye”", family: "v" },
       {
-        text: "A slow, manual process that should be automated",
-        scores: { builder: 3 },
-      },
-      { text: "Something built badly or falling apart", scores: { maker: 3 } },
-      {
-        text: "Ugly design, bad layout, clashing everything",
-        scores: { artist: 3 },
+        text: "“Everyone always calms down when you're there”",
+        family: "p",
       },
       {
-        text: "A disorganized calendar, budget, or plan",
-        scores: { operator: 3 },
+        text: "“You're the only one who could figure that out”",
+        family: "t",
+      },
+      { text: "“You know this industry inside out”", family: "k" },
+    ],
+  },
+  {
+    q: "Pick the task you'd genuinely rather do on a Sunday.",
+    options: [
+      { text: "Reconcile a messy set of records", family: "s" },
+      { text: "Cut a rambling 800 words down to 200", family: "w" },
+      { text: "Rebuild an ugly slide deck", family: "v" },
+      { text: "Run a workshop for eight people", family: "p" },
+      {
+        text: "Wire two apps together so a report sends itself",
+        family: "t",
+      },
+      {
+        text: "Answer 20 questions from people new to your field",
+        family: "k",
       },
     ],
   },
   {
-    q: "You have to teach a room of 50 people something for an hour. What's the topic?",
+    q: "What have you already been paid for, even once, even badly?",
     options: [
       {
-        text: "How to build the thing I built",
-        scores: { builder: 2, translator: 2 },
+        text: "Anything involving numbers, admin or operations",
+        family: "s",
       },
+      { text: "Anything involving words", family: "w" },
+      { text: "Anything visual", family: "v" },
       {
-        text: "How to do the physical work properly, hands-on",
-        scores: { maker: 2, translator: 2 },
+        text: "Anything involving managing or caring for people",
+        family: "p",
       },
+      { text: "Anything technical", family: "t" },
       {
-        text: "How to develop your eye and your style",
-        scores: { artist: 2, translator: 2 },
-      },
-      {
-        text: "How to get your life or business in order",
-        scores: { operator: 2, guide: 2 },
-      },
-    ],
-  },
-  {
-    q: "Which of these has someone already offered to pay you for, even casually?",
-    options: [
-      {
-        text: "Building or setting something up technical",
-        scores: { builder: 4 },
-      },
-      {
-        text: "Physical work: repair, renovation, install, styling a space, food, hair, fitness",
-        scores: { maker: 4 },
-      },
-      {
-        text: "Something you designed, drew, wrote, filmed, or made",
-        scores: { artist: 4 },
-      },
-      {
-        text: "Your advice, coaching, or time to think through their problem",
-        scores: { guide: 4 },
-      },
-    ],
-  },
-  {
-    q: "What do you lose track of time doing?",
-    options: [
-      {
-        text: "Building, debugging, tinkering until it works",
-        scores: { builder: 3 },
-      },
-      {
-        text: "Working with materials, tools, or my hands",
-        scores: { maker: 3 },
-      },
-      { text: "Designing, drawing, editing, styling", scores: { artist: 3 } },
-      {
-        text: "Researching, organizing, planning, optimizing",
-        scores: { operator: 3 },
-      },
-    ],
-  },
-  {
-    q: "Someone hands you a blank page and says “make me something valuable.” You...",
-    options: [
-      { text: "Build a tool that saves them hours", scores: { builder: 3 } },
-      {
-        text: "Build or fix a physical thing they'll use daily",
-        scores: { maker: 3 },
-      },
-      {
-        text: "Create something original they'll want to show off",
-        scores: { artist: 3 },
-      },
-      {
-        text: "Write them the exact step-by-step they've been missing",
-        scores: { translator: 3 },
-      },
-    ],
-  },
-  {
-    q: "Which sentence sounds most like you?",
-    options: [
-      {
-        text: "“I can figure out how to build almost anything.”",
-        scores: { builder: 3 },
-      },
-      {
-        text: "“Give me the tools and I'll handle it.”",
-        scores: { maker: 3 },
-      },
-      {
-        text: "“I have a very specific taste and I trust it.”",
-        scores: { artist: 3 },
-      },
-      {
-        text: "“Give me a mess and I'll give you a system.”",
-        scores: { operator: 3 },
-      },
-    ],
-  },
-  {
-    q: "What's the part of work you'd happily never do again?",
-    options: [
-      {
-        text: "Client small talk and hand-holding",
-        scores: { builder: 2, maker: 2 },
-      },
-      {
-        text: "Detailed admin, invoicing, tracking",
-        scores: { artist: 2, guide: 1 },
-      },
-      {
-        text: "Repetitive execution once the plan is clear",
-        scores: { operator: 2, translator: 1 },
-      },
-      {
-        text: "Being the one who has to make it look good",
-        scores: { builder: 1, guide: 2 },
-      },
-    ],
-  },
-  {
-    q: "When you learn something new, what do you immediately want to do?",
-    options: [
-      { text: "Build something with it", scores: { builder: 3 } },
-      {
-        text: "Try it with my hands and see how it feels",
-        scores: { maker: 3 },
-      },
-      { text: "Make my own version of it", scores: { artist: 3 } },
-      { text: "Teach it to someone else", scores: { translator: 3 } },
-    ],
-  },
-  {
-    q: "Be honest: what's actually stopping you from being paid for your skill?",
-    options: [
-      {
-        text: "I keep building and never launching",
-        scores: { builder: 2, artist: 1 },
-      },
-      {
-        text: "I don't know how to price or find clients",
-        scores: { maker: 2, operator: 1 },
-      },
-      {
-        text: "I don't think what I do is “valuable” enough",
-        scores: { artist: 2, guide: 1 },
-      },
-      {
-        text: "I'm good at too many things and can't pick one",
-        scores: { operator: 2, translator: 2 },
+        text: "Your job title itself: the expertise, not the tasks",
+        family: "k",
       },
     ],
   },
 ];
+
+// Part B — two axes, three questions each. Majority answer wins the axis.
+export type VisibilityQuestion = {
+  q: string;
+  options: { text: string; value: Visibility }[];
+};
+
+export const VISIBILITY_QUESTIONS: VisibilityQuestion[] = [
+  {
+    q: "A client asks for a live call to walk through your work. Honest reaction?",
+    options: [
+      { text: "Fine, that's the part I like", value: "visible" },
+      {
+        text: "I'd rather send it and answer questions in writing",
+        value: "invisible",
+      },
+    ],
+  },
+  {
+    q: "Which sounds more like a good week?",
+    options: [
+      { text: "Four calls where I actually helped someone", value: "visible" },
+      { text: "Four days uninterrupted, one thing shipped", value: "invisible" },
+    ],
+  },
+  {
+    q: "Selling requires you to post about yourself. Where do you land?",
+    options: [
+      { text: "I'll do it, it's a muscle", value: "visible" },
+      { text: "I'd rather the work spoke for itself", value: "invisible" },
+    ],
+  },
+];
+
+export type RepeatabilityQuestion = {
+  q: string;
+  options: { text: string; value: Repeatability }[];
+};
+
+export const REPEATABILITY_QUESTIONS: RepeatabilityQuestion[] = [
+  {
+    q: "Would you rather solve one hard problem for one person, or the same problem for fifty?",
+    options: [
+      { text: "One hard problem, properly", value: "bespoke" },
+      {
+        text: "Same problem, fifty times, refined each round",
+        value: "repeatable",
+      },
+    ],
+  },
+  {
+    q: "How much do the details vary in your work?",
+    options: [
+      { text: "Every case is genuinely different", value: "bespoke" },
+      {
+        text: "Honestly, it's the same five things every time",
+        value: "repeatable",
+      },
+    ],
+  },
+  {
+    q: "Which annoys you more?",
+    options: [
+      {
+        text: "Doing something repetitive I've already solved",
+        value: "repeatable",
+      },
+      { text: "Being boxed into one narrow deliverable", value: "bespoke" },
+    ],
+  },
+];
+
+// Part C — entry point.
+export const ENTRY_QUESTIONS = [
+  {
+    q: "Can you name five real people who'd recognise themselves in your buyer description right now?",
+    options: [
+      { text: "Yes, I could list them", value: "phase3" as EntryPhase },
+      { text: "No", value: "phase2" as EntryPhase },
+    ],
+  },
+  {
+    q: "Do you have examples of this work you could show, even unpaid?",
+    options: [
+      { text: "Yes, three or more", value: "three-plus" as Evidence },
+      { text: "One or two", value: "one-two" as Evidence },
+      { text: "None", value: "none" as Evidence },
+    ],
+  },
+];
+
+export const EVIDENCE_HOMEWORK: Record<Evidence, string> = {
+  "three-plus":
+    "You have three or more examples. Your Phase 4 build starts with those as GPT training examples.",
+  "one-two":
+    "You have one or two examples. Use them, and Phase 5's first two clients become the rest.",
+  none: "No examples yet. Phase 4 starts with one free build in exchange for permission to use it.",
+};
+
+export const EVIDENCE_PROMPT_LINE: Record<Evidence, string> = {
+  "three-plus": "three or more people (I have examples I can show)",
+  "one-two": "one or two people (I have a couple of examples)",
+  none: "nobody paid yet",
+};
+
+export const ENTRY_COPY: Record<EntryPhase, string> = {
+  phase3:
+    "You can already name five real buyers. Skip straight to Phase 3: run the prompt below to sharpen the list, then go sell to them.",
+  phase2:
+    "Start at Phase 2. Your first job is finding the buyers, and the prompt below does exactly that.",
+};
+
+// Tie-break order for family scoring (K is checked separately; the spec says
+// Insider Knowledge nearly always beats whichever other letter you scored).
+export const FAMILY_ORDER: FamilyKey[] = ["s", "w", "v", "p", "t", "k"];
+
+// Named combinations from the spec, shown when two letters tie even after
+// the Q6 tie-break.
+export const COMBO_NOTES: Partial<Record<string, string>> = {
+  "s+w": "S+W is documentation.",
+  "v+k": "V+K is explaining your industry visually.",
+  "p+t": "P+T is automated client onboarding.",
+};
