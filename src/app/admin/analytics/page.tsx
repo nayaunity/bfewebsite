@@ -48,6 +48,8 @@ const NON_BLOG_SLUGS = [
   "skool-waitlist-signup",
   "skool-creators",
   "skool-creators-signup",
+  "monetizable-skill-quiz",
+  "monetizable-skill-quiz-complete",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -131,6 +133,16 @@ async function getAnalytics() {
     paViewsToday,
     paViewsWeek,
     paViewsAllTime,
+    // Monetizable Skill Quiz (unlisted) metrics
+    msqUniqueToday,
+    msqUniqueWeek,
+    msqUniqueAllTime,
+    msqViewsToday,
+    msqViewsWeek,
+    msqViewsAllTime,
+    msqCompletionsToday,
+    msqCompletionsWeek,
+    msqCompletionsAllTime,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -318,6 +330,28 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "profile-account", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "profile-account" } }),
+    // Monetizable Skill Quiz (unlisted) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "monetizable-skill-quiz", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "monetizable-skill-quiz", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "monetizable-skill-quiz" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz" } }),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -460,6 +494,17 @@ async function getAnalytics() {
       viewsToday: paViewsToday,
       viewsWeek: paViewsWeek,
       viewsAllTime: paViewsAllTime,
+    },
+    skillQuiz: {
+      uniqueToday: msqUniqueToday,
+      uniqueWeek: msqUniqueWeek,
+      uniqueAllTime: msqUniqueAllTime,
+      viewsToday: msqViewsToday,
+      viewsWeek: msqViewsWeek,
+      viewsAllTime: msqViewsAllTime,
+      completionsToday: msqCompletionsToday,
+      completionsWeek: msqCompletionsWeek,
+      completionsAllTime: msqCompletionsAllTime,
     },
   };
 }
@@ -767,6 +812,71 @@ export default async function AnalyticsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.profileAccount.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Monetizable Skill Quiz (unlisted) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Monetizable Skill Quiz
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /monetizable-skill-quiz · unlisted
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Quiz Completions</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.completionsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.completionsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.completionsAllTime}</p>
                 <p className="text-xs text-[var(--gray-600)]">All Time</p>
               </div>
             </div>
