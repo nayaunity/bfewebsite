@@ -4,9 +4,9 @@ import QuizPageViewTracker from "./PageViewTracker";
 import QuizClient from "./QuizClient";
 
 export const metadata: Metadata = {
-  title: "What's Your Monetizable Skill? | AI Income Lab",
+  title: "What's Your PHASE Path? | AI Income Lab",
   description:
-    "In 12 questions, find the one skill you should be getting paid for, and exactly how AI turns it into income.",
+    "A 14-question skill diagnostic. Find your skill family, your delivery mode, and the exact buyer-finding prompt to run today.",
   robots: {
     index: false,
     follow: false,

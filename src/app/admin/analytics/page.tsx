@@ -823,7 +823,7 @@ export default async function AnalyticsPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
           <h2 className="font-serif text-xl text-[var(--foreground)]">
-            Monetizable Skill Quiz
+            PHASE Path Quiz
           </h2>
           <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
             /monetizable-skill-quiz · unlisted

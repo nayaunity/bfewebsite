@@ -9,7 +9,7 @@ export default function QuizPageViewTracker() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         slug: "monetizable-skill-quiz",
-        title: "Monetizable Skill Quiz",
+        title: "PHASE Path Quiz",
       }),
     }).catch(() => {});
   }, []);
