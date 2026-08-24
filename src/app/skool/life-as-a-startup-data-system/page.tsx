@@ -24,6 +24,19 @@ function InlineCode({ children }: { children: React.ReactNode }) {
   );
 }
 
+function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-[var(--accent)] underline"
+    >
+      {children}
+    </a>
+  );
+}
+
 function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="font-serif text-2xl md:text-3xl mt-12 mb-4 text-[var(--foreground)]">
@@ -60,6 +73,11 @@ const vaultTree = `Blueprint/
 ├── 05 Ideas/                 ← Startup Ideas, Content Ideas, Experiments
 ├── 06 Resources/             ← People, Quotes, Articles
 └── 07 Proof/                 ← Highlight Reel, Money & Business, Praise & Receipts, ...`;
+
+const folderSetup = `cd ~/Documents/Blueprint
+mkdir "0 - Daily Notes" "01 Life OS" "03 Learning" "05 Ideas" "06 Resources" "07 Proof"
+mkdir -p "02 Content Engine/Instagram" "04 Business/Partnerships" "04 Business/Products"
+touch CLAUDE.md`;
 
 const gitSetup = `cd ~/Documents/Blueprint
 git init
@@ -203,6 +221,7 @@ const th = "px-4 py-3 font-semibold text-[var(--foreground)] align-top";
 const td = "px-4 py-3 text-[var(--foreground)] align-top";
 
 const checklist = [
+  "Tools installed: Obsidian, Claude Code (paid Claude plan), Wisprflow, Granola, git + gh (Step 0)",
   "Obsidian vault with 0 - Daily Notes/ + numbered bucket folders",
   "Daily Notes plugin pointed at 0 - Daily Notes",
   "git init, private GitHub repo, GitHub Sync plugin at 5 min",
@@ -265,7 +284,9 @@ export default function LifeAsAStartupPage() {
               <tbody>
                 <tr className="border-t border-[var(--card-border)]">
                   <td className={`${td} font-semibold whitespace-nowrap`}>Data warehouse</td>
-                  <td className={`${td} whitespace-nowrap`}>Obsidian</td>
+                  <td className={`${td} whitespace-nowrap`}>
+                    <ExtLink href="https://obsidian.md">Obsidian</ExtLink>
+                  </td>
                   <td className={td}>
                     A folder of plain markdown files. One file per day, plus "bucket" files
                     per topic. Nothing proprietary. Claude can read/write it like any code
@@ -274,7 +295,9 @@ export default function LifeAsAStartupPage() {
                 </tr>
                 <tr className="border-t border-[var(--card-border)]">
                   <td className={`${td} font-semibold whitespace-nowrap`}>Data analyst</td>
-                  <td className={`${td} whitespace-nowrap`}>Claude Code</td>
+                  <td className={`${td} whitespace-nowrap`}>
+                    <ExtLink href="https://claude.com/claude-code">Claude Code</ExtLink>
+                  </td>
                   <td className={td}>
                     Runs in the vault folder. Nightly: reads the day's note and files it
                     into buckets. On demand: answers questions from your own history.
@@ -283,7 +306,10 @@ export default function LifeAsAStartupPage() {
                 </tr>
                 <tr className="border-t border-[var(--card-border)]">
                   <td className={`${td} font-semibold whitespace-nowrap`}>Data collector</td>
-                  <td className={`${td} whitespace-nowrap`}>Wisprflow (+ Granola)</td>
+                  <td className={`${td} whitespace-nowrap`}>
+                    <ExtLink href="https://wisprflow.ai">Wisprflow</ExtLink> (+{" "}
+                    <ExtLink href="https://go.granola.ai/naya-bere">Granola</ExtLink>)
+                  </td>
                   <td className={td}>
                     Wisprflow turns every voice note / end-of-day brain-dump into text.
                     Granola records calls and produces a transcript + summary. Both get
@@ -307,12 +333,125 @@ export default function LifeAsAStartupPage() {
             </h2>
           </div>
 
+          <H3>Step 0. Install the tools (15 minutes, one time)</H3>
+          <P>Everything in this tutorial builds on these. Install them all up front:</P>
+          <div className={tableWrap}>
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="bg-[var(--gray-50)]">
+                  <th className={th}>Tool</th>
+                  <th className={th}>Get it</th>
+                  <th className={th}>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t border-[var(--card-border)]">
+                  <td className={`${td} font-semibold whitespace-nowrap`}>Obsidian</td>
+                  <td className={td}>
+                    <ExtLink href="https://obsidian.md">obsidian.md</ExtLink>
+                  </td>
+                  <td className={td}>
+                    Free. Download the desktop app for Mac or Windows. The mobile app is
+                    optional but nice for reading on the go.
+                  </td>
+                </tr>
+                <tr className="border-t border-[var(--card-border)]">
+                  <td className={`${td} font-semibold whitespace-nowrap`}>Claude Code</td>
+                  <td className={td}>
+                    <ExtLink href="https://claude.com/claude-code">
+                      claude.com/claude-code
+                    </ExtLink>
+                  </td>
+                  <td className={td}>
+                    Needs a paid Claude plan (Pro or Max). Install the CLI with{" "}
+                    <InlineCode>npm install -g @anthropic-ai/claude-code</InlineCode>, then
+                    run <InlineCode>claude</InlineCode> in any folder and sign in. The
+                    cloud routines live at{" "}
+                    <ExtLink href="https://claude.ai/code">claude.ai/code</ExtLink>.
+                  </td>
+                </tr>
+                <tr className="border-t border-[var(--card-border)]">
+                  <td className={`${td} font-semibold whitespace-nowrap`}>Wisprflow</td>
+                  <td className={td}>
+                    <ExtLink href="https://wisprflow.ai">wisprflow.ai</ExtLink>
+                  </td>
+                  <td className={td}>
+                    Voice-to-text dictation that works in any app. Free tier to start;
+                    paid for unlimited dictation.
+                  </td>
+                </tr>
+                <tr className="border-t border-[var(--card-border)]">
+                  <td className={`${td} font-semibold whitespace-nowrap`}>Granola</td>
+                  <td className={td}>
+                    <ExtLink href="https://go.granola.ai/naya-bere">granola.ai</ExtLink>
+                  </td>
+                  <td className={td}>
+                    AI call recorder. Optional but strongly recommended if calls are part
+                    of your work. Free trial, then paid.
+                  </td>
+                </tr>
+                <tr className="border-t border-[var(--card-border)]">
+                  <td className={`${td} font-semibold whitespace-nowrap`}>
+                    GitHub + gh CLI
+                  </td>
+                  <td className={td}>
+                    <ExtLink href="https://github.com">github.com</ExtLink> ·{" "}
+                    <ExtLink href="https://cli.github.com">cli.github.com</ExtLink>
+                  </td>
+                  <td className={td}>
+                    Free account (private repos included). On Mac:{" "}
+                    <InlineCode>brew install gh</InlineCode> then{" "}
+                    <InlineCode>gh auth login</InlineCode>. If git itself isn't installed,
+                    macOS will prompt you the first time you run{" "}
+                    <InlineCode>git</InlineCode> (or run{" "}
+                    <InlineCode>xcode-select --install</InlineCode>).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <H3>Step 1. Build the vault (10 minutes)</H3>
           <P>
-            Create an Obsidian vault. Mine is called <InlineCode>Blueprint</InlineCode>.
-            The structure that has held up for 3 months:
+            A vault is just a folder on your computer that Obsidian watches. Mine is
+            called <InlineCode>Blueprint</InlineCode>. Set it up like this:
           </P>
+          <ol className="list-decimal ml-6 mb-4">
+            <li className="text-[var(--foreground)] mb-2">
+              Open Obsidian. On the welcome screen choose{" "}
+              <strong className="font-semibold">Create new vault</strong>, name it{" "}
+              <InlineCode>Blueprint</InlineCode>, and set the location to{" "}
+              <InlineCode>~/Documents</InlineCode>. (Already using Obsidian? Any vault
+              works. The folder names are the only thing the automation cares about.)
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Create the folder structure. Either right-click in Obsidian's file sidebar
+              and choose <strong className="font-semibold">New folder</strong> for each,
+              or paste this into Terminal:
+            </li>
+          </ol>
+          <CopyableCodeBlock code={folderSetup} />
+          <P>The structure that has held up for 3 months:</P>
           <CopyableCodeBlock code={vaultTree} />
+          <ol className="list-decimal ml-6 mb-4" start={3}>
+            <li className="text-[var(--foreground)] mb-2">
+              Turn on daily notes: <strong className="font-semibold">Settings (gear
+              icon) → Core plugins → Daily notes</strong> → toggle it on. Then open{" "}
+              <strong className="font-semibold">Daily notes</strong> in the sidebar of
+              Settings and set <strong className="font-semibold">New file location</strong>{" "}
+              to <InlineCode>0 - Daily Notes</InlineCode>. Leave the date format as{" "}
+              <InlineCode>YYYY-MM-DD</InlineCode>. (This writes the{" "}
+              <InlineCode>{"{\"folder\": \"0 - Daily Notes\"}"}</InlineCode> setting into{" "}
+              <InlineCode>.obsidian/daily-notes.json</InlineCode> for you.)
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Give it a hotkey: <strong className="font-semibold">Settings → Hotkeys</strong>{" "}
+              → search "daily" → assign <InlineCode>Cmd+D</InlineCode> to{" "}
+              <strong className="font-semibold">Daily notes: Open today's daily note</strong>.
+              Now Cmd+D (or the calendar icon in the left ribbon) opens today's file from
+              anywhere.
+            </li>
+          </ol>
           <P>Two rules that make this work:</P>
           <ol className="list-decimal ml-6 mb-4">
             <li className="text-[var(--foreground)] mb-2">
@@ -328,36 +467,58 @@ export default function LifeAsAStartupPage() {
               retrieval possible later.
             </li>
           </ol>
-          <P>
-            Turn on the <strong className="font-semibold">Daily Notes</strong> core plugin
-            and point it at <InlineCode>0 - Daily Notes</InlineCode>{" "}
-            (<InlineCode>.obsidian/daily-notes.json</InlineCode> →{" "}
-            <InlineCode>{"{\"folder\": \"0 - Daily Notes\"}"}</InlineCode>). Cmd+D / the
-            calendar icon now opens today's file.
-          </P>
-
           <H3>Step 2. Put the vault in git and push it to GitHub</H3>
           <P>
             This matters for two reasons: it's your backup, and it lets a{" "}
             <strong className="font-semibold">cloud</strong> Claude routine read the vault
             while your laptop is asleep.
           </P>
+          <P>
+            With git and the <InlineCode>gh</InlineCode> CLI installed and signed in
+            (Step 0), run this in Terminal. It creates a{" "}
+            <strong className="font-semibold">private</strong> GitHub repo and pushes the
+            vault to it:
+          </P>
           <CopyableCodeBlock code={gitSetup} />
           <P>
             Then install the <strong className="font-semibold">GitHub Sync</strong>{" "}
-            community plugin in Obsidian{" "}
-            (<InlineCode>.obsidian/community-plugins.json</InlineCode> →{" "}
-            <InlineCode>["github-sync"]</InlineCode>) and configure it:
+            community plugin so Obsidian keeps pushing automatically:
           </P>
-          <ul className="list-disc ml-6 mb-4">
+          <ol className="list-decimal ml-6 mb-4">
             <li className="text-[var(--foreground)] mb-2">
-              Remote URL: <InlineCode>{"https://github.com/<you>/blueprint"}</InlineCode>
+              <strong className="font-semibold">Settings → Community plugins</strong> →{" "}
+              <strong className="font-semibold">Turn on community plugins</strong> (Obsidian
+              ships with them off).
             </li>
             <li className="text-[var(--foreground)] mb-2">
-              Sync interval: <InlineCode>5</InlineCode> minutes
+              <strong className="font-semibold">Browse</strong> → search{" "}
+              <InlineCode>GitHub Sync</InlineCode> →{" "}
+              <strong className="font-semibold">Install</strong> →{" "}
+              <strong className="font-semibold">Enable</strong>.
             </li>
-            <li className="text-[var(--foreground)] mb-2">Sync on load: on</li>
-          </ul>
+            <li className="text-[var(--foreground)] mb-2">
+              Open the plugin's settings and configure:
+              <ul className="list-disc ml-6 mt-2">
+                <li className="text-[var(--foreground)] mb-2">
+                  Remote URL:{" "}
+                  <InlineCode>{"https://github.com/<you>/blueprint"}</InlineCode>
+                </li>
+                <li className="text-[var(--foreground)] mb-2">
+                  Sync interval: <InlineCode>5</InlineCode> minutes
+                </li>
+                <li className="text-[var(--foreground)] mb-2">Sync on load: on</li>
+              </ul>
+            </li>
+          </ol>
+          <P>
+            If the plugin asks for authentication (or pushes fail), create a personal
+            access token at{" "}
+            <ExtLink href="https://github.com/settings/tokens">
+              github.com/settings/tokens
+            </ExtLink>{" "}
+            with repo access and use it in the remote URL:{" "}
+            <InlineCode>{"https://<token>@github.com/<you>/blueprint.git"}</InlineCode>.
+          </P>
           <P>
             That's why my commit log looks like{" "}
             <InlineCode>Nyaradzos-MacBook-Air.local 2026-8-24:13:21:53</InlineCode> every 5
@@ -369,9 +530,16 @@ export default function LifeAsAStartupPage() {
           <P>
             Claude Code reads <InlineCode>CLAUDE.md</InlineCode> in the folder it's
             launched from. This file is what turns a generic assistant into{" "}
-            <em>your</em> analyst. Here is mine, verbatim:
+            <em>your</em> analyst. Open the empty <InlineCode>CLAUDE.md</InlineCode> that
+            the Step 1 script created (any text editor works, or Obsidian itself) and
+            paste this in, swapping the folder map for yours. Here is mine, verbatim:
           </P>
           <CopyableCodeBlock code={claudeMd} />
+          <P>
+            To use it: open Terminal, <InlineCode>cd ~/Documents/Blueprint</InlineCode>,
+            run <InlineCode>claude</InlineCode>. It picks up CLAUDE.md automatically every
+            session.
+          </P>
           <P>
             Why the "First Rule" exists: the first time I asked Claude "what were the goals
             I wanted to discuss with my manager?" it went to the web. I typed "bruh check
@@ -381,13 +549,20 @@ export default function LifeAsAStartupPage() {
 
           <H3>Step 4. Collect the data (Wisprflow + Granola)</H3>
           <P>
-            <strong className="font-semibold">Wisprflow</strong> (voice → text, system-wide
-            dictation):
+            <strong className="font-semibold">
+              <ExtLink href="https://wisprflow.ai">Wisprflow</ExtLink>
+            </strong>{" "}
+            (voice → text, system-wide dictation):
           </P>
           <ul className="list-disc ml-6 mb-4">
             <li className="text-[var(--foreground)] mb-2">
-              Install, set the hotkey, and use it <em>inside Obsidian's daily note</em>.
-              Hold key, talk, release. The transcript drops in at the cursor.
+              Install the desktop app, grant the microphone and accessibility permissions
+              it asks for (System Settings → Privacy &amp; Security on Mac), and set the
+              hold-to-talk hotkey in its preferences.
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Use it <em>inside Obsidian's daily note</em>. Hold key, talk, release. The
+              transcript drops in at the cursor.
             </li>
             <li className="text-[var(--foreground)] mb-2">
               Voice notes to friends: dictate them with Wisprflow in the messaging app,
@@ -404,11 +579,18 @@ export default function LifeAsAStartupPage() {
             </li>
           </ul>
           <P>
-            <strong className="font-semibold">Granola</strong> (call recorder):
+            <strong className="font-semibold">
+              <ExtLink href="https://go.granola.ai/naya-bere">Granola</ExtLink>
+            </strong>{" "}
+            (call recorder):
           </P>
           <ul className="list-disc ml-6 mb-4">
             <li className="text-[var(--foreground)] mb-2">
-              Runs on every call that touches business, money, health, or a mentor
+              Install the app and connect your calendar. It records from your computer's
+              audio, so nothing joins the call as a bot.
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Run it on every call that touches business, money, health, or a mentor
               conversation.
             </li>
             <li className="text-[var(--foreground)] mb-2">
@@ -436,7 +618,8 @@ export default function LifeAsAStartupPage() {
           <P>
             Not on the laptop. It's a{" "}
             <strong className="font-semibold">Claude Code cloud routine</strong>{" "}
-            (claude.ai/code → Routines). Anthropic spins up a sandbox, clones the vault's
+            (<ExtLink href="https://claude.ai/code">claude.ai/code</ExtLink> → Routines).
+            Anthropic spins up a sandbox, clones the vault's
             GitHub repo, runs the prompt, commits, pushes, and shuts down. The laptop can
             be closed. Mine has run 30 for 30 since Jun 8.
           </P>
@@ -547,8 +730,10 @@ export default function LifeAsAStartupPage() {
           <ol className="list-decimal ml-6 mb-4">
             <li className="text-[var(--foreground)] mb-2">
               Connect GitHub and any connectors at{" "}
-              <InlineCode>claude.ai/customize/connectors</InlineCode> (Granola if you use
-              it).
+              <ExtLink href="https://claude.ai/customize/connectors">
+                claude.ai/customize/connectors
+              </ExtLink>{" "}
+              (Granola if you use it).
             </li>
             <li className="text-[var(--foreground)] mb-2">
               In Claude Code, run <InlineCode>/schedule</InlineCode> and say:{" "}
@@ -771,11 +956,33 @@ export default function LifeAsAStartupPage() {
             structure. Step 4 is delivery:
           </P>
           <CopyableCodeBlock code={slackDelivery} />
+          <P>To get the two Slack values (5 minutes, one time):</P>
+          <ol className="list-decimal ml-6 mb-4">
+            <li className="text-[var(--foreground)] mb-2">
+              Create an app at{" "}
+              <ExtLink href="https://api.slack.com/apps">api.slack.com/apps</ExtLink> →{" "}
+              <strong className="font-semibold">Create New App → From scratch</strong>,
+              pick your workspace.
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Under <strong className="font-semibold">OAuth &amp; Permissions</strong>, add
+              the bot scope <InlineCode>chat:write</InlineCode>, then{" "}
+              <strong className="font-semibold">Install to Workspace</strong> and copy the{" "}
+              <strong className="font-semibold">Bot User OAuth Token</strong> (starts with{" "}
+              <InlineCode>xoxb-</InlineCode>).
+            </li>
+            <li className="text-[var(--foreground)] mb-2">
+              Your user ID: in Slack, click your profile photo →{" "}
+              <strong className="font-semibold">Profile</strong> → the three-dot menu →{" "}
+              <strong className="font-semibold">Copy member ID</strong> (starts with{" "}
+              <InlineCode>U</InlineCode>). DMing your own member ID makes the message land
+              as a DM from the bot.
+            </li>
+          </ol>
           <P>
-            (Bot token from a Slack app you create; DMing your own user ID makes it land
-            as a DM from the bot. If you'd rather not touch Slack, have the routine write
-            the analysis to <InlineCode>01 Life OS/Reviews/YYYY-MM-DD.md</InlineCode> and
-            commit. Then the analysis becomes data in the vault too.)
+            (If you'd rather not touch Slack, have the routine write the analysis to{" "}
+            <InlineCode>01 Life OS/Reviews/YYYY-MM-DD.md</InlineCode> and commit. Then the
+            analysis becomes data in the vault too.)
           </P>
           <P>
             The single most important instruction across all of them:{" "}
