@@ -926,7 +926,7 @@ export default async function AnalyticsPage() {
             Content Intelligence Prompt Pack
           </h2>
           <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
-            /skool/content-intelligence-prompt-pack · unlisted
+            /skool/prompt-pack-1-content-creation-workflow · unlisted
           </span>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
