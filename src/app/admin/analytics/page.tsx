@@ -923,10 +923,10 @@ export default async function AnalyticsPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
           <h2 className="font-serif text-xl text-[var(--foreground)]">
-            AI Income Lab Prompt Pack #1
+            Content Intelligence Prompt Pack
           </h2>
           <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
-            /skool/prompt-pack-1-content-creation-workflow · unlisted
+            /skool/content-intelligence-prompt-pack · unlisted
           </span>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

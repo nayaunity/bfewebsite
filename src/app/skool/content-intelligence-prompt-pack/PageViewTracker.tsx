@@ -9,7 +9,7 @@ export default function PromptPackPageViewTracker() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         slug: "skool-prompt-pack-1",
-        title: "AI Income Lab: Prompt Pack #1",
+        title: "The Content Intelligence Prompt Pack",
       }),
     }).catch(() => {});
   }, []);
