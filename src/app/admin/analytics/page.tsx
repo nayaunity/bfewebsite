@@ -51,6 +51,7 @@ const NON_BLOG_SLUGS = [
   "monetizable-skill-quiz",
   "monetizable-skill-quiz-complete",
   "skool-prompt-pack-1",
+  "skool-life-as-a-startup",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -151,6 +152,13 @@ async function getAnalytics() {
     pp1ViewsToday,
     pp1ViewsWeek,
     pp1ViewsAllTime,
+    // Life as a Startup (unlisted) metrics
+    lasUniqueToday,
+    lasUniqueWeek,
+    lasUniqueAllTime,
+    lasViewsToday,
+    lasViewsWeek,
+    lasViewsAllTime,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -379,6 +387,25 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "skool-prompt-pack-1", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "skool-prompt-pack-1", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "skool-prompt-pack-1" } }),
+    // Life as a Startup (unlisted) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-life-as-a-startup", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-life-as-a-startup", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-life-as-a-startup" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "skool-life-as-a-startup", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-life-as-a-startup", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-life-as-a-startup" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -540,6 +567,14 @@ async function getAnalytics() {
       viewsToday: pp1ViewsToday,
       viewsWeek: pp1ViewsWeek,
       viewsAllTime: pp1ViewsAllTime,
+    },
+    lifeStartup: {
+      uniqueToday: lasUniqueToday,
+      uniqueWeek: lasUniqueWeek,
+      uniqueAllTime: lasUniqueAllTime,
+      viewsToday: lasViewsToday,
+      viewsWeek: lasViewsWeek,
+      viewsAllTime: lasViewsAllTime,
     },
   };
 }
@@ -960,6 +995,54 @@ export default async function AnalyticsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Life as a Startup (unlisted) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Life as a Startup Tutorial
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /skool/life-as-a-startup-data-system · unlisted
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.viewsAllTime}</p>
                 <p className="text-xs text-[var(--gray-600)]">All Time</p>
               </div>
             </div>
