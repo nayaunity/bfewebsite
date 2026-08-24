@@ -50,6 +50,7 @@ const NON_BLOG_SLUGS = [
   "skool-creators-signup",
   "monetizable-skill-quiz",
   "monetizable-skill-quiz-complete",
+  "skool-prompt-pack-1",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -143,6 +144,13 @@ async function getAnalytics() {
     msqCompletionsToday,
     msqCompletionsWeek,
     msqCompletionsAllTime,
+    // Skool Prompt Pack #1 (unlisted) metrics
+    pp1UniqueToday,
+    pp1UniqueWeek,
+    pp1UniqueAllTime,
+    pp1ViewsToday,
+    pp1ViewsWeek,
+    pp1ViewsAllTime,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -352,6 +360,25 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "monetizable-skill-quiz-complete" } }),
+    // Skool Prompt Pack #1 (unlisted) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-prompt-pack-1", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-prompt-pack-1", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-prompt-pack-1" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "skool-prompt-pack-1", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-prompt-pack-1", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-prompt-pack-1" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -505,6 +532,14 @@ async function getAnalytics() {
       completionsToday: msqCompletionsToday,
       completionsWeek: msqCompletionsWeek,
       completionsAllTime: msqCompletionsAllTime,
+    },
+    promptPack1: {
+      uniqueToday: pp1UniqueToday,
+      uniqueWeek: pp1UniqueWeek,
+      uniqueAllTime: pp1UniqueAllTime,
+      viewsToday: pp1ViewsToday,
+      viewsWeek: pp1ViewsWeek,
+      viewsAllTime: pp1ViewsAllTime,
     },
   };
 }
@@ -877,6 +912,54 @@ export default async function AnalyticsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.skillQuiz.completionsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Skool Prompt Pack #1 (unlisted) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            AI Income Lab Prompt Pack #1
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /skool/prompt-pack-1-content-creation-workflow · unlisted
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.promptPack1.viewsAllTime}</p>
                 <p className="text-xs text-[var(--gray-600)]">All Time</p>
               </div>
             </div>
