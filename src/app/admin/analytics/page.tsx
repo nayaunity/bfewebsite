@@ -52,6 +52,8 @@ const NON_BLOG_SLUGS = [
   "monetizable-skill-quiz-complete",
   "skool-prompt-pack-1",
   "skool-life-as-a-startup",
+  "skool-how-i-make-content",
+  "talks-content-to-company",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -159,6 +161,20 @@ async function getAnalytics() {
     lasViewsToday,
     lasViewsWeek,
     lasViewsAllTime,
+    // How I Make Content (unlisted) metrics
+    himcUniqueToday,
+    himcUniqueWeek,
+    himcUniqueAllTime,
+    himcViewsToday,
+    himcViewsWeek,
+    himcViewsAllTime,
+    // Content to Company keynote metrics
+    ctcUniqueToday,
+    ctcUniqueWeek,
+    ctcUniqueAllTime,
+    ctcViewsToday,
+    ctcViewsWeek,
+    ctcViewsAllTime,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -406,6 +422,44 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "skool-life-as-a-startup", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "skool-life-as-a-startup", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "skool-life-as-a-startup" } }),
+    // How I Make Content (unlisted) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-how-i-make-content", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-how-i-make-content", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "skool-how-i-make-content" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "skool-how-i-make-content", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-how-i-make-content", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "skool-how-i-make-content" } }),
+    // Content to Company keynote metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "talks-content-to-company", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "talks-content-to-company", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "talks-content-to-company" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "talks-content-to-company", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "talks-content-to-company", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "talks-content-to-company" } }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -575,6 +629,22 @@ async function getAnalytics() {
       viewsToday: lasViewsToday,
       viewsWeek: lasViewsWeek,
       viewsAllTime: lasViewsAllTime,
+    },
+    howIMakeContent: {
+      uniqueToday: himcUniqueToday,
+      uniqueWeek: himcUniqueWeek,
+      uniqueAllTime: himcUniqueAllTime,
+      viewsToday: himcViewsToday,
+      viewsWeek: himcViewsWeek,
+      viewsAllTime: himcViewsAllTime,
+    },
+    contentToCompany: {
+      uniqueToday: ctcUniqueToday,
+      uniqueWeek: ctcUniqueWeek,
+      uniqueAllTime: ctcUniqueAllTime,
+      viewsToday: ctcViewsToday,
+      viewsWeek: ctcViewsWeek,
+      viewsAllTime: ctcViewsAllTime,
     },
   };
 }
@@ -1043,6 +1113,102 @@ export default async function AnalyticsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.lifeStartup.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* How I Make Content (unlisted) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            How I Make Content Q&amp;A
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /skool/how-i-make-content · unlisted
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.howIMakeContent.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content to Company keynote */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            Content to Company Keynote
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /talks/content-to-company
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.contentToCompany.viewsAllTime}</p>
                 <p className="text-xs text-[var(--gray-600)]">All Time</p>
               </div>
             </div>

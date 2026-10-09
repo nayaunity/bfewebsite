@@ -46,6 +46,16 @@ html[data-theme="light"] {
   --blockquote-text: #9a3412;
   /* Hero gradient */
   --hero-gradient-from: #fdf8f0;
+  /* Keynote deck palette: fixed in both themes so slides render like a PDF */
+  --deck-primary: #4d1b27;
+  --deck-primary-deep: #3d1520;
+  --deck-ink: #2a2628;
+  --deck-cream: #fdfaf6;
+  --deck-rose: #e9a3a9;
+  --deck-rose-soft: #f3c9cc;
+  --deck-text: #f3f3f1;
+  --deck-muted: #7a706a;
+  --deck-backdrop: #141114;
 }
 
 html[data-theme="dark"] {
