@@ -52,10 +52,15 @@ export function MicAndCamera({ className = "" }: SvgProps) {
   );
 }
 
-/** Phone on a desk mount. Opening hook. */
-export function PhoneOnStand({ className = "" }: SvgProps) {
+/**
+ * Phone on a desk mount. Opening hook.
+ * `tight` crops the viewBox to the artwork (x 88..332, y 36..390) so the phone
+ * can fill its container; the screen then sits at 18.03% / 4.52% with a
+ * 63.93% x 69.49% footprint.
+ */
+export function PhoneOnStand({ className = "", tight = false }: SvgProps & { tight?: boolean }) {
   return (
-    <svg viewBox="0 0 420 420" className={className} aria-hidden="true">
+    <svg viewBox={tight ? "88 36 244 354" : "0 0 420 420"} className={className} aria-hidden="true">
       {/* base and arm */}
       <rect x="150" y="360" width="140" height="26" rx="13" fill={P.ink} />
       <rect x="206" y="300" width="28" height="70" rx="10" fill={P.ink} />

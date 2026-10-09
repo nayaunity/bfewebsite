@@ -13,6 +13,8 @@ import {
 
 export const SLIDE_COUNT = 10;
 
+const SKOOL_URL = "https://www.skool.com/startup-life-os-7440/about";
+
 /* Shared type styles. Headings are heavy sans to match the reference deck. */
 const H = "font-black tracking-tight leading-[0.95]";
 const eyebrow = "text-xs md:text-sm font-semibold uppercase tracking-[0.18em] text-[var(--deck-rose)]";
@@ -43,6 +45,32 @@ function Card({
     >
       {children}
     </section>
+  );
+}
+
+/**
+ * The phone-on-a-stand illustration with a muted video playing on its screen.
+ * The tight viewBox is 244x354 with the screen at x44 y16 w156 h246, so the
+ * video is positioned with matching percentages. The wrapper takes the full
+ * container height, or the full width when the container is narrower.
+ */
+function PhoneVideo({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="h-full w-full flex items-center justify-center [container-type:size]">
+      <div className="relative aspect-[244/354] h-[min(100%,calc(100cqw*354/244))]">
+        <PhoneOnStand tight className="absolute inset-0 w-full h-full" />
+        <video
+          src={src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={label}
+          className="absolute left-[18.03%] top-[4.52%] w-[63.93%] h-[69.49%] object-cover rounded-[9%] bg-[var(--deck-ink)]"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -226,8 +254,11 @@ export default function Deck() {
       {/* 2. Opening hook */}
       <Card index={1} presenting={presenting} active={current === 1} className="bg-[var(--deck-primary)] text-[var(--deck-text)]">
         <div className="flex-1 grid md:grid-cols-[0.9fr_1.1fr] items-center">
-          <div className="hidden md:block h-full p-8">
-            <PhoneOnStand className="w-full h-full" />
+          <div className="hidden md:block self-stretch p-5 md:p-6">
+            <PhoneVideo
+              src="/videos/building-a-community.mp4"
+              label="A reel about building a community, playing muted on a phone"
+            />
           </div>
           <div className="p-8 md:p-12 lg:pr-14 flex flex-col justify-center">
             <h2 className={`${H} text-3xl md:text-4xl lg:text-5xl`}>
@@ -268,6 +299,21 @@ export default function Deck() {
                   <p className="opacity-85 leading-snug">{v}</p>
                 </li>
               ))}
+              <li className="sm:col-span-2 border-l-[3px] border-[var(--deck-rose)] pl-4">
+                <p className="font-semibold">
+                  <a
+                    href={SKOOL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--deck-rose)] underline underline-offset-4 decoration-[var(--deck-rose)]/50 hover:decoration-[var(--deck-rose)]"
+                  >
+                    Disgustingly Paid
+                  </a>
+                </p>
+                <p className="opacity-85 leading-snug">
+                  My Skool community, where I teach these exact workflows hands on.
+                </p>
+              </li>
             </ul>
           </div>
           <div className="bg-[var(--deck-ink)] p-8 md:p-10 flex flex-col justify-end">
@@ -474,7 +520,24 @@ export default function Deck() {
             <p className={`${H} mt-6 text-2xl md:text-3xl lg:text-4xl`}>
               And with what&apos;s available right now, so can you.
             </p>
-            <p className="font-script text-3xl md:text-4xl mt-8 text-[var(--deck-rose)]">Naya</p>
+            <div className="mt-6 border-l-[3px] border-[var(--deck-rose)] pl-4 md:pl-5">
+              <p className="text-base md:text-lg font-semibold">
+                Want to build it with me? Join{" "}
+                <a
+                  href={SKOOL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--deck-rose)] underline underline-offset-4 decoration-[var(--deck-rose)]/50 hover:decoration-[var(--deck-rose)]"
+                >
+                  Disgustingly Paid
+                </a>
+                .
+              </p>
+              <p className="mt-1 text-sm md:text-base opacity-85">
+                My Skool community, where I teach these workflows hands on.
+              </p>
+            </div>
+            <p className="font-script text-3xl md:text-4xl mt-6 text-[var(--deck-rose)]">Naya</p>
           </div>
           <div className="relative bg-[var(--deck-ink)] hidden md:block">
             <Sparkles className="absolute inset-0 w-full h-full p-10" />
