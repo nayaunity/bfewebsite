@@ -114,17 +114,77 @@ export function FilmCamera({ className = "" }: SvgProps) {
   );
 }
 
-/** Rising bars with a star. The reveal. */
-export function RisingBars({ className = "" }: SvgProps) {
+/** Two-bar comparison, $170K to $700K, drawn for a cream panel. The reveal. */
+export function JumpChart({ className = "" }: SvgProps) {
+  // Baseline y=330. Tall bar 240 high; short bar scaled by 170/700.
+  const base = 330;
+  const tallH = 240;
+  const shortH = Math.round(tallH * (170 / 700));
   return (
     <svg viewBox="0 0 420 420" className={className} aria-hidden="true">
-      <rect x="40" y="300" width="70" height="80" rx="14" fill={P.soft} />
-      <rect x="130" y="240" width="70" height="140" rx="14" fill={P.rose} />
-      <rect x="220" y="150" width="70" height="230" rx="14" fill={P.cream} />
-      <rect x="310" y="60" width="70" height="320" rx="14" fill={P.cream} />
-      <path d="M345 20 l9 24 24 9 -24 9 -9 24 -9 -24 -24 -9 24 -9z" fill={P.rose} />
-      <text x="40" y="408" fill={P.text} fontSize="22" fontWeight="700" opacity="0.7">$170K</text>
-      <text x="300" y="408" fill={P.text} fontSize="22" fontWeight="700" opacity="0.7">$700K</text>
+      {/* gridlines */}
+      {[0, 1, 2, 3].map((i) => (
+        <line key={i} x1="40" x2="380" y1={base - (tallH / 3) * i} y2={base - (tallH / 3) * i} stroke={P.ink} strokeOpacity="0.08" strokeWidth="2" />
+      ))}
+      {/* short bar */}
+      <rect x="70" y={base - shortH} width="110" height={shortH} rx="14" fill={P.rose} />
+      <text x="125" y={base - shortH - 14} textAnchor="middle" fill={P.ink} fontSize="26" fontWeight="800">$170K</text>
+      <text x="125" y={base + 32} textAnchor="middle" fill={P.ink} fillOpacity="0.65" fontSize="16" fontWeight="600">LAST YEAR</text>
+      {/* tall bar */}
+      <rect x="240" y={base - tallH} width="110" height={tallH} rx="14" fill={P.primary} />
+      <text x="295" y={base - tallH - 14} textAnchor="middle" fill={P.ink} fontSize="26" fontWeight="800">$700K</text>
+      <text x="295" y={base + 32} textAnchor="middle" fill={P.ink} fillOpacity="0.65" fontSize="16" fontWeight="600">THIS YEAR</text>
+      {/* arrow from short to tall */}
+      <path d={`M185 ${base - shortH - 40} C 215 ${base - tallH - 10}, 225 ${base - tallH - 10}, 232 ${base - tallH + 8}`} fill="none" stroke={P.primary} strokeWidth="5" strokeLinecap="round" strokeDasharray="2 10" />
+      {/* 4X badge */}
+      <rect x="150" y={base - tallH - 70} width="90" height="48" rx="24" fill={P.primary} />
+      <text x="195" y={base - tallH - 37} textAnchor="middle" fill={P.text} fontSize="26" fontWeight="900">4X</text>
+      {/* sparkle */}
+      <path d="M372 46 l7 18 18 7 -18 7 -7 18 -7 -18 -18 -7 18 -7z" fill={P.rose} />
+    </svg>
+  );
+}
+
+/** A winding path with four stops, for the story slide's dark panel. */
+export function WindingPath({ className = "" }: SvgProps) {
+  const stops: Array<[number, number, string]> = [
+    [70, 350, "code"],
+    [170, 250, "studios"],
+    [250, 310, "CTO"],
+    [340, 120, "media company"],
+  ];
+  return (
+    <svg viewBox="0 0 420 420" className={className} aria-hidden="true">
+      <path
+        d="M70 350 C 110 300, 130 240, 170 250 S 230 330, 250 310 S 290 200, 340 120"
+        fill="none"
+        stroke={P.rose}
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray="2 12"
+        opacity="0.9"
+      />
+      {stops.map(([x, y, label], i) => (
+        <g key={label}>
+          <circle cx={x} cy={y} r={i === stops.length - 1 ? 22 : 14} fill={i === stops.length - 1 ? P.rose : P.cream} />
+          {i === stops.length - 1 && <circle cx={x} cy={y} r="9" fill={P.ink} />}
+          <text
+            x={x}
+            y={y + (i === stops.length - 1 ? 46 : 36)}
+            textAnchor="middle"
+            fill={P.text}
+            fillOpacity="0.8"
+            fontSize="15"
+            fontWeight="600"
+          >
+            {label}
+          </text>
+        </g>
+      ))}
+      <path d="M372 54 l8 20 20 8 -20 8 -8 20 -8 -20 -20 -8 20 -8z" fill={P.rose} />
+      <text x="42" y="60" fill={P.rose} fontSize="14" fontWeight="700" letterSpacing="3">THE PLAN</text>
+      <line x1="42" x2="124" y1="66" y2="66" stroke={P.rose} strokeWidth="2" />
+      <text x="42" y="92" fill={P.text} fillOpacity="0.7" fontSize="14" fontWeight="600" letterSpacing="3">WHAT HAPPENED</text>
     </svg>
   );
 }

@@ -5,11 +5,19 @@ import {
   FilmCamera,
   MagnifierChart,
   MicAndCamera,
+  JumpChart,
   PhoneOnStand,
-  RisingBars,
   Sparkles,
   Target,
 } from "./Illustrations";
+import Image from "next/image";
+
+const ORIGIN_THUMBS = [
+  { src: "/images/talks/bootcamp-survival-guide.jpg", alt: "YouTube thumbnail: Coding bootcamp survival guide, this is so hard", tilt: "-rotate-2" },
+  { src: "/images/talks/bootcamp-what-it-was-like.jpg", alt: "YouTube thumbnail: My coding bootcamp experience, what it was like", tilt: "rotate-2 translate-y-2" },
+  { src: "/images/talks/bootcamp-if-only-i-had-known.jpg", alt: "YouTube thumbnail: If only I had known, before choosing a coding bootcamp", tilt: "rotate-1" },
+  { src: "/images/talks/bootcamp-one-year-later.jpg", alt: "YouTube thumbnail: I went to a coding bootcamp and this is what happened", tilt: "-rotate-1 translate-y-1" },
+];
 
 export const SLIDE_COUNT = 10;
 
@@ -285,14 +293,14 @@ export default function Deck() {
           <div className="p-8 md:p-12 lg:p-12 flex flex-col justify-center">
             <p className={eyebrow}>My story</p>
             <h2 className={`${H} mt-4 text-4xl md:text-5xl lg:text-6xl`}>
-              I&apos;m an engineer who happens to run a media company.
+              Engineer turned media company founder. <span className="text-[var(--deck-rose)]">That was never the plan.</span>
             </h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm md:text-base">
               {[
                 ["2020", "Taught myself to code. No CS degree."],
                 ["First builds", "Tools for my dad's small business, then 2 to 3 person teams. Those became my resume."],
                 ["Studios", "DreamWorks Animation. NBCUniversal."],
-                ["Startup", "CTO at a venture-backed company. Left to build my own media company."],
+                ["Startup", "CTO at a venture-backed company. Left to build my own thing. It turned into a media company."],
               ].map(([k, v]) => (
                 <li key={k} className="border-l-[3px] border-[var(--deck-rose)] pl-4">
                   <p className="font-semibold">{k}</p>
@@ -317,11 +325,27 @@ export default function Deck() {
             </ul>
           </div>
           <div className="bg-[var(--deck-ink)] p-8 md:p-10 flex flex-col justify-end">
+            <div className="flex-1 flex flex-col justify-center mb-5">
+              <p className={eyebrow}>2021 · Where this started</p>
+              <div className="mt-3 grid grid-cols-2 gap-3 md:gap-4">
+                {ORIGIN_THUMBS.map((t) => (
+                  <div
+                    key={t.src}
+                    className={`rounded-md overflow-hidden border-[3px] border-[var(--deck-cream)] shadow-[0_8px_24px_-10px_rgba(0,0,0,0.6)] ${t.tilt}`}
+                  >
+                    <Image src={t.src} alt={t.alt} width={640} height={360} className="w-full h-auto block" />
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs md:text-sm opacity-70">
+                The first channel. Bootcamp vlogs, filmed on a phone, before any of this was a business.
+              </p>
+            </div>
             <p className="text-lg md:text-xl lg:text-2xl font-semibold leading-snug">
               Not a creator who picked up AI tools.
             </p>
             <p className="mt-3 text-base md:text-lg opacity-85 leading-snug">
-              An engineer who could see what AI made possible here before most creators could.
+              An engineer who ended up running a media business. That is exactly why I could see what AI made possible here before most creators could.
             </p>
           </div>
         </div>
@@ -363,18 +387,34 @@ export default function Deck() {
 
       {/* 5. The reveal */}
       <Card index={4} presenting={presenting} active={current === 4} className="bg-[var(--deck-primary)] text-[var(--deck-text)]">
-        <div className="flex-1 grid md:grid-cols-[1.1fr_0.9fr]">
+        <div className="flex-1 grid md:grid-cols-[1.05fr_0.95fr]">
           <div className="p-8 md:p-12 lg:p-12 flex flex-col justify-center">
-            <h2 className={`${H} text-5xl md:text-6xl lg:text-7xl`}>
+            <p className={eyebrow}>The reveal</p>
+            <h2 className={`${H} mt-3 text-4xl md:text-5xl lg:text-6xl`}>
               A 4X jump, and AI was the only variable
             </h2>
-            <p className="mt-6 text-base md:text-lg lg:text-xl opacity-85 max-w-md">
+            <p className="mt-5 text-base md:text-lg opacity-85 max-w-md">
               The media-company model you just saw is now buildable by one person.
             </p>
+            <div className="mt-6 grid grid-cols-3 gap-4">
+              <div className="border-l-[3px] border-[var(--deck-rose)] pl-3">
+                <p className={`${H} text-2xl md:text-3xl`}>$170K</p>
+                <p className="mt-1 text-xs md:text-sm opacity-75 uppercase tracking-[0.12em]">Last year</p>
+              </div>
+              <div className="border-l-[3px] border-[var(--deck-rose)] pl-3">
+                <p className={`${H} text-2xl md:text-3xl`}>$700K</p>
+                <p className="mt-1 text-xs md:text-sm opacity-75 uppercase tracking-[0.12em]">This year, so far</p>
+              </div>
+              <div className="border-l-[3px] border-[var(--deck-rose)] pl-3">
+                <p className={`${H} text-2xl md:text-3xl text-[var(--deck-rose)]`}>AI</p>
+                <p className="mt-1 text-xs md:text-sm opacity-75 uppercase tracking-[0.12em]">The only change</p>
+              </div>
+            </div>
           </div>
-          <div className="relative min-h-[260px]">
-            <div className="absolute right-0 bottom-0 w-[85%] h-[80%] bg-[var(--deck-cream)] rounded-tl-[48px]" />
-            <RisingBars className="absolute inset-0 w-full h-full p-8" />
+          <div className="relative min-h-[300px] md:pt-8 md:pl-2">
+            <div className="absolute inset-0 md:top-8 md:left-2 bg-[var(--deck-cream)] md:rounded-tl-[40px]">
+              <JumpChart className="absolute inset-0 w-full h-full p-5 md:p-6" />
+            </div>
           </div>
         </div>
       </Card>
