@@ -1,6 +1,9 @@
 "use client";
 
-const faqs = [
+const GROK_URL =
+  "https://x.ai/bot?utm_source=naya-bere&utm_medium=creator&utm_campaign=evergreen_oct2026&utm_content=instagram_post1";
+
+const faqs: { question: string; answer: React.ReactNode }[] = [
   {
     question: "I'm not technical. Can I actually build this?",
     answer:
@@ -8,8 +11,21 @@ const faqs = [
   },
   {
     question: "What do I need to have ready?",
-    answer:
-      "A Grok account. My team runs as a Grok Bot, and the bonus template drops straight into it. Bring 10 to 20 raw clips and a few voice memos from a recent Reel.",
+    answer: (
+      <>
+        A Grok account. My team runs on Grok Bot, and the bonus template
+        drops straight into it. You can start with Grok Bot for as low as $0.{" "}
+        <a
+          href={GROK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--deck-rose)] underline underline-offset-4 hover:opacity-80"
+        >
+          Click here
+        </a>{" "}
+        to set it up.
+      </>
+    ),
   },
   {
     question: "What if I can't make it live on October 24?",

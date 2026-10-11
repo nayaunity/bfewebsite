@@ -37,12 +37,10 @@ export default function EventCountdown({
 
   const muted = variant === "dark" ? "text-white/70" : "text-[var(--gray-600)]";
   const strong = variant === "dark" ? "text-white" : "text-[var(--foreground)]";
-  const dot = variant === "dark" ? "bg-[var(--deck-rose)]" : "bg-[var(--cta-bg)]";
 
   if (state.phase === "over") {
     return (
-      <div className={`flex items-center gap-2 text-sm ${muted}`}>
-        <span className={`inline-block w-2 h-2 rounded-full ${dot}`} />
+      <div className={`text-sm ${muted}`}>
         <span>
           The live session has ended. Registrants get the{" "}
           <strong className={strong}>full recording</strong>.
@@ -53,8 +51,7 @@ export default function EventCountdown({
 
   if (state.phase === "live") {
     return (
-      <div className={`flex items-center gap-2 text-sm ${muted}`}>
-        <span className={`inline-block w-2 h-2 rounded-full ${dot} animate-pulse`} />
+      <div className={`text-sm ${muted}`}>
         <span>
           <strong className={strong}>Happening right now.</strong> Register to
           get the recording.
@@ -71,8 +68,7 @@ export default function EventCountdown({
       : `${state.hours}h ${state.minutes}m`;
 
   return (
-    <div className={`flex items-center gap-2 text-sm ${muted}`}>
-      <span className={`inline-block w-2 h-2 rounded-full ${dot} animate-pulse`} />
+    <div className={`text-sm ${muted}`}>
       <span>
         We go live in <strong className={strong}>{label}</strong>. Seats close
         when the session starts.

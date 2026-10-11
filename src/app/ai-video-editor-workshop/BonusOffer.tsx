@@ -56,15 +56,14 @@ export default function BonusOffer({
 
   if (variant === "compact") {
     return (
-      <div className="rounded-2xl border border-[var(--accent)]/40 bg-[var(--surface-warm)] px-4 py-3 text-sm">
+      <div className="rounded-xl border border-[var(--card-border)] bg-[var(--surface-warm)] px-4 py-3.5 text-sm">
         <div className="flex items-start gap-3">
           <span className="text-xl leading-none" aria-hidden="true">🎁</span>
           <div className="flex-1 min-w-0">
             {running && (
-              <p className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-wide text-[var(--accent)] mb-1">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)] animate-pulse" />
-                BONUS ENDS IN{" "}
-                <span className="font-serif text-sm tabular-nums">{format(left)}</span>
+              <p className="text-xs font-medium text-[var(--accent)] mb-1">
+                Bonus ends in{" "}
+                <span className="font-poppins font-bold tabular-nums">{format(left)}</span>
               </p>
             )}
             {closed ? (
@@ -92,48 +91,45 @@ export default function BonusOffer({
   }
 
   return (
-    <div className="relative max-w-xl rounded-3xl border-2 border-[var(--accent)] bg-[var(--card-bg)] p-6 shadow-[0_16px_40px_rgba(42,38,37,0.12)]">
-      <span className="absolute -top-3 left-6 inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide">
-        <span className="inline-block w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+    <div className="rounded-2xl border border-[var(--accent)] bg-[var(--card-bg)] p-6 md:p-7">
+      <span className="inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-1 rounded-full bg-[var(--cta-bg)] text-white">
         {running ? (
           <>
-            BONUS ENDS IN{" "}
-            <span className="font-serif text-sm tabular-nums">{format(left)}</span>
+            Bonus ends in{" "}
+            <span className="font-poppins font-bold tabular-nums">{format(left)}</span>
           </>
         ) : closed ? (
-          "BONUS WINDOW CLOSED"
+          "Bonus window closed"
         ) : (
-          "10-MINUTE BONUS"
+          "10-minute bonus"
         )}
       </span>
-      <div className="flex items-start gap-4 mt-1">
-        <span className="text-3xl leading-none" aria-hidden="true">🎁</span>
-        <div>
-          {closed ? (
-            <p className="text-[var(--foreground)] leading-relaxed">
-              The 10-minute bonus window has closed. Your seat still includes
-              everything in the stack below, and the live build on October 24
-              is where we set up your team together.
-            </p>
-          ) : (
-          <>
+      <div className="mt-4">
+        {closed ? (
           <p className="text-[var(--foreground)] leading-relaxed">
-            Register in the next 10 minutes and I&apos;ll send you{" "}
-            <strong>the exact setup behind my AI editing team</strong> NOW.
+            The 10-minute bonus window has closed. Your seat still includes
+            everything in the stack below, and the live build on October 24
+            is where we set up your team together.
           </p>
-          <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
-            It is my AI Video Editor Bot, ready to use: the five roles already
-            written, the hand-offs between them, and my rules for picking
-            clips, assembling the voiceover, and placing captions. Open it,
-            point it at your footage, and it starts working. No blank page.
-          </p>
-          <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
-            Start setting up your own team today. Then we&apos;ll customize it
-            to your content and style together in the workshop. 🤎
-          </p>
+        ) : (
+          <>
+            <p className="text-lg text-[var(--foreground)] leading-relaxed">
+              <span className="mr-2" aria-hidden="true">🎁</span>
+              Register in the next 10 minutes and I&apos;ll send you{" "}
+              <strong>the exact setup behind my AI editing team</strong> NOW.
+            </p>
+            <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
+              It is my AI Video Editor Bot, ready to use: the five roles already
+              written, the hand-offs between them, and my rules for picking
+              clips, assembling the voiceover, and placing captions. Open it,
+              point it at your footage, and it starts working. No blank page.
+            </p>
+            <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
+              Start setting up your own team today. Then we&apos;ll customize it
+              to your content and style together in the workshop. 🤎
+            </p>
           </>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
