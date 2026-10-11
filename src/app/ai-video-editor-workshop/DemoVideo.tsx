@@ -31,7 +31,7 @@ export default function DemoVideo() {
         onClick={toggle}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        aria-label="Walkthrough of Naya's AI Video Editor Bot in Grok Bot, from footage to final cut"
+        aria-label="Walkthrough of Naya's AI Video Editor Bot in Grok Bot: a folder of clips in, a finished Reel out"
       />
       {!playing && (
         <button

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_COMMUNITY } from "@/lib/stripe";
+import { stripe, STRIPE_COMMUNITY, STRIPE_PLUGIN } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { buildCommunityWelcomeDraft } from "@/lib/community-welcome";
 import { buildWorkshopWelcomeDraft } from "@/lib/workshop-welcome";
+import { buildPluginWelcomeDraft } from "@/lib/plugin-welcome";
 import { logError } from "@/lib/error-logger";
 import { activateSubscription, tierFromPriceId } from "@/lib/subscription";
 import Stripe from "stripe";
@@ -77,7 +78,10 @@ export async function POST(request: NextRequest) {
           const to = session.customer_details?.email;
           if (to && process.env.RESEND_API_KEY) {
             try {
-              const draft = buildCommunityWelcomeDraft(session.customer_details?.name);
+              const draft = buildCommunityWelcomeDraft(session.customer_details?.name, {
+                firstChargeCents: session.amount_total,
+                pluginUrl: process.env.AIVE_WORKSHOP_BONUS_URL ?? null,
+              });
               const resend = new Resend(process.env.RESEND_API_KEY);
               await resend.emails.send({
                 from: "Naya <naya@theblackfemaleengineer.com>",
@@ -100,22 +104,27 @@ export async function POST(request: NextRequest) {
           break;
         }
 
-        // AI Video Editor Workshop seat: send the confirmation with the bonus
-        // link right away (the page promises "instant" access).
-        if (session.metadata?.product === "ai-video-editor-workshop") {
+        // AI Video Editor Workshop seat ($147, plugin included) or the plugin
+        // on its own ($97): send the plugin link right away. The thank-you
+        // page never shows the link because it is reachable without paying.
+        const product = session.metadata?.product;
+        if (product === "ai-video-editor-workshop" || product === STRIPE_PLUGIN.product) {
+          const isPlugin = product === STRIPE_PLUGIN.product;
           const to = session.customer_details?.email;
-          const bonusUrl = process.env.AIVE_WORKSHOP_BONUS_URL;
-          if (!bonusUrl) {
+          const pluginUrl = process.env.AIVE_WORKSHOP_BONUS_URL;
+          if (!pluginUrl) {
             await logError({
               endpoint: "/api/stripe/webhook",
               method: "POST",
               status: 500,
-              error: "AIVE_WORKSHOP_BONUS_URL not set; workshop welcome email skipped",
+              error: `AIVE_WORKSHOP_BONUS_URL not set; ${isPlugin ? "plugin" : "workshop"} welcome email skipped`,
               detail: `session ${session.id} email ${to ?? "unknown"}`,
             }).catch(() => {});
           } else if (to && process.env.RESEND_API_KEY) {
             try {
-              const draft = buildWorkshopWelcomeDraft(session.customer_details?.name, bonusUrl);
+              const draft = isPlugin
+                ? buildPluginWelcomeDraft(session.customer_details?.name, pluginUrl)
+                : buildWorkshopWelcomeDraft(session.customer_details?.name, pluginUrl);
               const resend = new Resend(process.env.RESEND_API_KEY);
               await resend.emails.send({
                 from: "Naya <naya@theblackfemaleengineer.com>",
@@ -130,7 +139,7 @@ export async function POST(request: NextRequest) {
                 endpoint: "/api/stripe/webhook",
                 method: "POST",
                 status: 500,
-                error: "workshop welcome email failed",
+                error: `${isPlugin ? "plugin" : "workshop"} welcome email failed`,
                 detail: err instanceof Error ? err.message : String(err),
               }).catch(() => {});
             }

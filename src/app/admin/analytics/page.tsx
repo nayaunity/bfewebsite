@@ -56,6 +56,8 @@ const NON_BLOG_SLUGS = [
   "talks-content-to-company",
   "ai-video-editor-workshop",
   "ai-video-editor-workshop-registered",
+  "ai-video-editor-plugin-purchased",
+  "ai-video-editor-membership-joined",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -192,6 +194,18 @@ async function getAnalytics() {
     aiveUpsellToday,
     aiveUpsellWeek,
     aiveUpsellAllTime,
+    aivePluginCtaToday,
+    aivePluginCtaWeek,
+    aivePluginCtaAllTime,
+    aivePluginPaidToday,
+    aivePluginPaidWeek,
+    aivePluginPaidAllTime,
+    aiveMemberCtaToday,
+    aiveMemberCtaWeek,
+    aiveMemberCtaAllTime,
+    aiveMemberJoinedToday,
+    aiveMemberJoinedWeek,
+    aiveMemberJoinedAllTime,
     aiveByCountry,
     // Job clicks
     totalJobClicks,
@@ -506,6 +520,20 @@ async function getAnalytics() {
     prisma.linkClick.count({ where: { linkId: "aive-community-upsell", clickedAt: { gte: todayStart } } }),
     prisma.linkClick.count({ where: { linkId: "aive-community-upsell", clickedAt: { gte: weekStart } } }),
     prisma.linkClick.count({ where: { linkId: "aive-community-upsell" } }),
+    // $97 plugin (sales page buy clicks + paid thank-you views)
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-plugin-buy-" }, clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-plugin-buy-" }, clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-plugin-buy-" } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-plugin-purchased", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-plugin-purchased", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-plugin-purchased" } }),
+    // $99/month membership from the sales page card
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-membership-join-" }, clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-membership-join-" }, clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-membership-join-" } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-membership-joined", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-membership-joined", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-membership-joined" } }),
     prisma.pagePresence.groupBy({
       by: ["country"],
       where: { page: "ai-video-editor-workshop", country: { not: null } },
@@ -715,8 +743,26 @@ async function getAnalytics() {
       upsellToday: aiveUpsellToday,
       upsellWeek: aiveUpsellWeek,
       upsellAllTime: aiveUpsellAllTime,
-      ctaRate: aiveUniqueAllTime > 0 ? Math.round((aiveCtaAllTime / aiveUniqueAllTime) * 100) : 0,
-      conversionRate: aiveUniqueAllTime > 0 ? Math.round((aiveRegAllTime / aiveUniqueAllTime) * 1000) / 10 : 0,
+      pluginCtaToday: aivePluginCtaToday,
+      pluginCtaWeek: aivePluginCtaWeek,
+      pluginCtaAllTime: aivePluginCtaAllTime,
+      pluginPaidToday: aivePluginPaidToday,
+      pluginPaidWeek: aivePluginPaidWeek,
+      pluginPaidAllTime: aivePluginPaidAllTime,
+      memberCtaToday: aiveMemberCtaToday,
+      memberCtaWeek: aiveMemberCtaWeek,
+      memberCtaAllTime: aiveMemberCtaAllTime,
+      memberJoinedToday: aiveMemberJoinedToday,
+      memberJoinedWeek: aiveMemberJoinedWeek,
+      memberJoinedAllTime: aiveMemberJoinedAllTime,
+      ctaRate:
+        aiveUniqueAllTime > 0
+          ? Math.round(((aiveCtaAllTime + aivePluginCtaAllTime + aiveMemberCtaAllTime) / aiveUniqueAllTime) * 100)
+          : 0,
+      conversionRate:
+        aiveUniqueAllTime > 0
+          ? Math.round(((aiveRegAllTime + aivePluginPaidAllTime + aiveMemberJoinedAllTime) / aiveUniqueAllTime) * 1000) / 10
+          : 0,
       byCountry: aiveByCountry
         .filter((c) => c.country)
         .map((c) => ({
@@ -1295,14 +1341,14 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      {/* AI Video Editor Workshop (live, $147) */}
+      {/* AI Video Editor offer page: $97 plugin, $147 workshop, $99/mo membership */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
           <h2 className="font-serif text-xl text-[var(--foreground)]">
-            AI Video Editor Workshop
+            AI Video Editor Offers
           </h2>
           <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)] text-white">
-            LIVE OCT 24 · $147
+            $97 PLUGIN · $147 WORKSHOP OCT 24 · $99/MO
           </span>
           <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
             /ai-video-editor-workshop
@@ -1344,7 +1390,7 @@ export default async function AnalyticsPage() {
             </div>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Register Clicks</p>
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Workshop Clicks ($147)</p>
             <div className="flex gap-4">
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.ctaToday}</p>
@@ -1361,7 +1407,7 @@ export default async function AnalyticsPage() {
             </div>
           </div>
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
-            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Paid Registrations</p>
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Workshop Paid ($147)</p>
             <div className="flex gap-4">
               <div>
                 <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.registrationsToday}</p>
@@ -1378,11 +1424,37 @@ export default async function AnalyticsPage() {
             </div>
           </div>
         </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+          {[
+            { label: "Plugin Clicks ($97)", today: analytics.aiveWorkshop.pluginCtaToday, week: analytics.aiveWorkshop.pluginCtaWeek, all: analytics.aiveWorkshop.pluginCtaAllTime },
+            { label: "Plugin Paid ($97)", today: analytics.aiveWorkshop.pluginPaidToday, week: analytics.aiveWorkshop.pluginPaidWeek, all: analytics.aiveWorkshop.pluginPaidAllTime },
+            { label: "Membership Clicks ($99/mo)", today: analytics.aiveWorkshop.memberCtaToday, week: analytics.aiveWorkshop.memberCtaWeek, all: analytics.aiveWorkshop.memberCtaAllTime },
+            { label: "Membership Joined (page card)", today: analytics.aiveWorkshop.memberJoinedToday, week: analytics.aiveWorkshop.memberJoinedWeek, all: analytics.aiveWorkshop.memberJoinedAllTime },
+          ].map((card) => (
+            <div key={card.label} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+              <p className="text-sm font-medium text-[var(--gray-600)] mb-3">{card.label}</p>
+              <div className="flex gap-4">
+                <div>
+                  <p className="text-2xl font-bold text-[var(--foreground)]">{card.today}</p>
+                  <p className="text-xs text-[var(--gray-600)]">Today</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-[var(--foreground)]">{card.week}</p>
+                  <p className="text-xs text-[var(--gray-600)]">Week</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-[var(--foreground)]">{card.all}</p>
+                  <p className="text-xs text-[var(--gray-600)]">All Time</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Click Rate</p>
-              <p className="text-xs text-[var(--gray-600)] mt-0.5">Register clicks / unique visitors</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">All buy clicks / unique visitors</p>
             </div>
             <p className="text-3xl font-bold text-[var(--foreground)]">
               {analytics.aiveWorkshop.ctaRate}%
@@ -1400,7 +1472,7 @@ export default async function AnalyticsPage() {
           <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--foreground)]">Paid Conversion</p>
-              <p className="text-xs text-[var(--gray-600)] mt-0.5">Thank-you page views / unique visitors</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">All paid thank-you views / unique visitors</p>
             </div>
             <p className="text-3xl font-bold text-[var(--foreground)]">
               {analytics.aiveWorkshop.conversionRate}%

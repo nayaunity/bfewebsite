@@ -1,20 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_COMMUNITY } from "@/lib/stripe";
+import { stripe, STRIPE_COMMUNITY, STRIPE_PLUGIN } from "@/lib/stripe";
 
-const THANK_YOU = "/ai-video-editor-workshop/thank-you";
+const PAGE = "/ai-video-editor-workshop";
+const THANK_YOU = `${PAGE}/thank-you`;
+
+const PAID_PRODUCTS = new Set(["ai-video-editor-workshop", STRIPE_PLUGIN.product]);
 
 /**
- * Starts a subscription checkout for Disgustingly Paid ($49 first month via
- * a once-only coupon, then $99/month). Called from the workshop thank-you
- * page. If the caller passes the workshop Checkout Session id, we reuse the
- * Stripe Customer it created so email and saved card are prefilled.
+ * Starts a Disgustingly Paid subscription checkout ($99/month).
+ *
+ * Two callers:
+ * - The thank-you page after a workshop or plugin purchase (source
+ *   "thank-you", the default). Applies the once-only $50 intro coupon that
+ *   buyers are promised there, and reuses the Stripe Customer from the
+ *   purchase so email is prefilled.
+ * - The sales page offer card (source "sales-page"). Full $99/month, no
+ *   coupon, no prior customer.
  */
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
-  const { sessionId } = body as { sessionId?: string };
+  const { sessionId, source } = body as {
+    sessionId?: string;
+    source?: "thank-you" | "sales-page";
+  };
+  const fromSalesPage = source === "sales-page";
 
-  if (!STRIPE_COMMUNITY.monthlyPriceId || !STRIPE_COMMUNITY.introCouponId) {
-    console.error("Community checkout: price or coupon env var not set");
+  if (!STRIPE_COMMUNITY.monthlyPriceId) {
+    console.error("Community checkout: STRIPE_DP_MONTHLY_PRICE_ID not set");
+    return NextResponse.json(
+      { error: "Membership checkout is not open yet. Try again in a moment." },
+      { status: 500 }
+    );
+  }
+  if (!fromSalesPage && !STRIPE_COMMUNITY.introCouponId) {
+    console.error("Community checkout: STRIPE_DP_INTRO_COUPON_ID not set");
     return NextResponse.json(
       { error: "Membership checkout is not open yet. Try again in a moment." },
       { status: 500 }
@@ -28,7 +47,7 @@ export async function POST(request: NextRequest) {
       const prior = await stripe.checkout.sessions.retrieve(sessionId);
       if (
         prior.payment_status === "paid" &&
-        prior.metadata?.product === "ai-video-editor-workshop"
+        PAID_PRODUCTS.has(prior.metadata?.product ?? "")
       ) {
         customerId =
           typeof prior.customer === "string"
@@ -43,30 +62,41 @@ export async function POST(request: NextRequest) {
   }
 
   const origin = request.nextUrl.origin;
-  const back = sessionId ? `${THANK_YOU}?session_id=${sessionId}` : THANK_YOU;
+  const successUrl = fromSalesPage
+    ? `${origin}${THANK_YOU}?offer=membership&community=joined`
+    : `${origin}${THANK_YOU}?${sessionId ? `session_id=${sessionId}&` : ""}community=joined`;
+  const cancelUrl = fromSalesPage
+    ? `${origin}${PAGE}#choose-your-option`
+    : `${origin}${THANK_YOU}${sessionId ? `?session_id=${sessionId}` : ""}`;
+  const source_label = fromSalesPage
+    ? "ai-video-editor-sales-page"
+    : "ai-video-editor-thank-you";
 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: STRIPE_COMMUNITY.monthlyPriceId, quantity: 1 }],
-      discounts: [{ coupon: STRIPE_COMMUNITY.introCouponId }],
+      ...(fromSalesPage
+        ? { allow_promotion_codes: true }
+        : { discounts: [{ coupon: STRIPE_COMMUNITY.introCouponId }] }),
       ...(customerId
         ? { customer: customerId }
         : customerEmail
           ? { customer_email: customerEmail }
           : {}),
-      success_url: `${origin}${back}${back.includes("?") ? "&" : "?"}community=joined`,
-      cancel_url: `${origin}${back}`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         product: STRIPE_COMMUNITY.product,
-        source: "ai-video-editor-workshop",
+        source: source_label,
+        intro: fromSalesPage ? "no" : "yes",
         workshopSessionId: sessionId ?? "",
       },
       subscription_data: {
         description: "Disgustingly Paid membership (Skool community)",
         metadata: {
           product: STRIPE_COMMUNITY.product,
-          source: "ai-video-editor-workshop",
+          source: source_label,
         },
       },
     });
