@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
-import { ChromeStar, PinkFolder, PolaroidFrame } from "@/components/brand";
+import Image from "next/image";
 import PageViewTracker from "./PageViewTracker";
 import RegisterButton from "./RegisterButton";
 import EventCountdown from "./EventCountdown";
@@ -10,6 +10,7 @@ import FAQAccordion from "./FAQAccordion";
 import StickyBar from "./StickyBar";
 import PhoneVideo from "./PhoneVideo";
 import BonusOffer from "./BonusOffer";
+import DemoVideo from "./DemoVideo";
 
 const TITLE = "Build Your AI Video Editing Team | Live Workshop with Naya";
 const DESCRIPTION =
@@ -131,33 +132,47 @@ const included = [
   },
 ];
 
-function Sticker({
-  children,
-  className = "",
-  rotate = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  rotate?: number;
-}) {
+const LABEL = "text-sm font-medium";
+
+function Label({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div
-      className={`inline-flex items-center gap-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full px-4 py-2 shadow-[0_8px_24px_rgba(42,38,37,0.14)] text-sm font-medium text-[var(--foreground)] whitespace-nowrap ${className}`}
-      style={{ transform: `rotate(${rotate}deg)` }}
-    >
+    <p className={`${LABEL} mb-3 ${dark ? "text-[var(--deck-rose)]" : "text-[var(--accent)]"}`}>
       {children}
+    </p>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  lede,
+  dark = false,
+  align = "center",
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  lede?: React.ReactNode;
+  dark?: boolean;
+  align?: "center" | "left";
+}) {
+  const centered = align === "center";
+  return (
+    <div className={`${centered ? "text-center mx-auto" : ""} max-w-2xl mb-12 md:mb-16`}>
+      <Label dark={dark}>{eyebrow}</Label>
+      <h2 className={`font-serif font-bold text-3xl md:text-5xl leading-[1.1] ${dark ? "text-white" : "text-[var(--foreground)]"}`}>
+        {title}
+      </h2>
+      {lede && (
+        <p className={`mt-5 text-base md:text-lg leading-relaxed ${dark ? "text-white/60" : "text-[var(--gray-600)]"}`}>
+          {lede}
+        </p>
+      )}
     </div>
   );
 }
 
-function Stripes({ className = "" }: { className?: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`pointer-events-none absolute bg-[repeating-linear-gradient(135deg,var(--cta-bg)_0_10px,transparent_10px_22px)] opacity-[0.07] ${className}`}
-    />
-  );
-}
+const SECTION = "py-16 md:py-28";
+const CONTAINER = "max-w-6xl mx-auto px-5 sm:px-6 lg:px-8";
 
 export default function AIVideoEditorWorkshopPage() {
   return (
@@ -197,269 +212,228 @@ export default function AIVideoEditorWorkshopPage() {
       />
       <StickyBar />
       <main className="bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden">
-        {/* Hero */}
-        <section id="hero" className="relative bg-gradient-to-b from-[var(--background)] to-[var(--surface-warm)] pt-36 md:pt-48 pb-20 md:pb-28 overflow-hidden">
-          <Stripes className="-top-10 -right-24 w-[420px] h-[420px] rounded-full hidden lg:block" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-              <div className="relative lg:col-span-7">
-                <ChromeStar
-                  size={56}
-                  rotate={15}
-                  className="absolute -top-12 right-2 md:right-16 lg:right-24 animate-twinkle"
-                />
-                <div className="inline-flex items-center gap-2 text-xs font-medium px-4 py-1.5 rounded-full bg-[var(--cta-bg)] text-white mb-6 tracking-wide">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  LIVE WORKSHOP · SAT, OCT 24 · 3:00 PM ET
-                </div>
-                <h1 className="font-serif font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-                  Stop editing your Reels.
-                  <br />
-                  Start{" "}
-                  <span className="italic font-normal text-[var(--accent)]">
-                    approving
-                  </span>{" "}
-                  them.
-                </h1>
-                <p className="mt-7 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-xl">
-                  Build a five-assistant AI editing team with me, live. It
-                  finds your footage, assembles your voiceover, screens every
-                  clip, and cuts the video. You keep the final say.
-                </p>
-                <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  <RegisterButton location="hero" />
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center gap-2 text-[var(--accent)] font-medium hover:underline"
-                  >
-                    See the team work
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </a>
-                </div>
-                <div className="mt-5">
-                  <EventCountdown />
-                </div>
-                <div className="mt-8">
-                  <BonusOffer variant="card" />
-                </div>
-                <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm text-[var(--gray-600)]">
-                  <span>
-                    <strong className="block text-[var(--foreground)] font-serif text-3xl leading-none mb-1">
-                      200k+
-                    </strong>
-                    followers built on video
-                  </span>
-                  <span>
-                    <strong className="block text-[var(--foreground)] font-serif text-3xl leading-none mb-1">
-                      $500k+
-                    </strong>
-                    earned as a creator
-                  </span>
-                  <span>
-                    <strong className="block text-[var(--foreground)] font-serif text-3xl leading-none mb-1">
-                      $147
-                    </strong>
-                    one time, recording included
-                  </span>
-                </div>
+        {/* Hero: the walkthrough */}
+        <section id="hero" className="pt-32 md:pt-44 pb-16 md:pb-24">
+          <div className={CONTAINER}>
+            <div className="max-w-3xl mx-auto text-center">
+              <div className="inline-flex items-center text-sm font-medium px-4 py-1.5 rounded-full bg-[var(--cta-bg)] text-white mb-7">
+                <span className="sm:hidden">Live workshop, Sat Oct 24, 3 PM ET</span>
+                <span className="hidden sm:inline">Live workshop, Saturday October 24, 3:00 PM ET</span>
               </div>
-
-              {/* Phone mock */}
-              <div className="lg:col-span-5 flex justify-center py-8 lg:py-4">
-               <div className="relative w-[270px] sm:w-[300px]">
-                <ChromeStar size={72} rotate={12} className="absolute -top-8 -right-10 z-20 animate-twinkle" />
-                <ChromeStar size={28} rotate={-20} className="absolute top-1/2 -left-12 z-20 animate-twinkle [animation-delay:0.9s]" />
-                <PinkFolder size={96} rotate={-8} className="absolute -bottom-4 -left-16 sm:-left-20 z-20" />
-                <p className="absolute -bottom-11 -left-16 sm:-left-20 w-24 text-center z-20 font-poppins font-bold tracking-[-0.02em] text-sm leading-tight text-[var(--accent)] rotate-[-8deg]">
-                  the project folder
-                </p>
-
-                <div className="relative w-full aspect-[9/19] rounded-[2.6rem] bg-[var(--dark-section-bg)] p-2.5 shadow-[0_30px_80px_rgba(42,38,37,0.35)] rotate-[3deg]">
-                  <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[var(--dark-card-bg)]">
-                    <PhoneVideo />
-                    <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
-                    <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
-                      <span className="bg-white/20 backdrop-blur px-2.5 py-1 rounded-full">
-                        v1c · approved
-                      </span>
-                      <span className="bg-[var(--cta-bg)] px-2.5 py-1 rounded-full">
-                        QA: pass
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <Sticker rotate={-5} className="absolute top-[30%] -left-6 sm:-left-20 z-20">
-                  <span className="text-[var(--accent)] font-serif">Clip 3:</span> brighter clip
-                </Sticker>
-                <Sticker rotate={4} className="absolute top-[62%] -right-12 sm:-right-24 z-20">
-                  <ChromeStar size={16} /> no chewing footage
-                </Sticker>
-                <Sticker rotate={-3} className="absolute bottom-[21%] -left-10 sm:-left-24 z-20">
-                  <span className="text-[var(--accent)] font-serif">Clip 7:</span> different angle
-                </Sticker>
-               </div>
+              <h1 className="font-serif font-bold text-[2.75rem] leading-[1.05] sm:text-5xl lg:text-6xl">
+                Stop editing your Reels.
+                <br />
+                Start approving them.
+              </h1>
+              <p className="mt-6 md:mt-7 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
+                Build a five-assistant AI editing team with me, live. It finds
+                your footage, assembles your voiceover, screens every clip, and
+                cuts the video. You keep the final say.
+              </p>
+              <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <RegisterButton location="hero" />
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center gap-2 text-[var(--foreground)] font-medium px-2 py-3 hover:text-[var(--accent)] transition-colors"
+                >
+                  Meet the team
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </a>
+              </div>
+              <div className="mt-5 flex justify-center">
+                <EventCountdown />
               </div>
             </div>
+
+            <div className="mt-12 md:mt-16">
+              <DemoVideo />
+              <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
+                My AI Video Editor Bot in Grok Bot, from folder to finished Reel.
+                This is the setup we build together.
+              </p>
+            </div>
+
+            <div className="mt-10 md:mt-14 max-w-2xl mx-auto">
+              <BonusOffer variant="card" />
+            </div>
+
+            <dl className="mt-12 md:mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto border-t border-[var(--card-border)] pt-8">
+              {[
+                ["200k+", "followers built on video"],
+                ["$500k+", "earned as a creator"],
+                ["$147", "one time, recording included"],
+              ].map(([n, l]) => (
+                <div key={n} className="text-center">
+                  <dt className="font-poppins font-bold tracking-[-0.02em] text-2xl md:text-4xl leading-none text-[var(--foreground)]">{n}</dt>
+                  <dd className="mt-2 text-xs md:text-sm text-[var(--gray-600)] leading-snug">{l}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
 
-        {/* The Problem + comparison */}
-        <section className="bg-[var(--dark-section-bg)] py-14 md:py-24 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl mx-auto text-center mb-12">
-              <div>
-                <h2 className="font-serif text-4xl md:text-5xl text-white leading-tight">
-                  <span className="italic">your standards</span>
-                  <br />
-                  ARE EXPENSIVE.
-                </h2>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+        {/* The cost of your standards */}
+        <section className={`bg-[var(--dark-section-bg)] ${SECTION}`}>
+          <div className={CONTAINER}>
+            <SectionHeading
+              dark
+              eyebrow="The math"
+              title={<>Your standards are expensive.</>}
+              lede="Good light, flattering angles, captions that match every word. Three ways to get them."
+            />
+            <div className="grid md:grid-cols-3 gap-4 md:gap-5">
               {options.map((opt, idx) => (
                 <div
                   key={opt.name}
-                  className={`rounded-2xl p-7 ${
+                  className={`rounded-2xl p-7 md:p-8 flex flex-col ${
                     opt.highlight
-                      ? "bg-[var(--cta-bg)] text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] md:-translate-y-3"
-                      : "border border-white/10 text-white/80"
+                      ? "bg-[var(--cta-bg)] text-white"
+                      : "bg-white/[0.03] border border-white/10 text-white/80"
                   }`}
                 >
-                  <p className="text-xs tracking-widest opacity-70 mb-2">
-                    OPTION {idx + 1}{opt.highlight ? " · THE ONE THAT SCALES" : ""}
+                  <p className={`${LABEL} ${opt.highlight ? "text-white/70" : "text-white/50"}`}>
+                    Option {idx + 1}
                   </p>
-                  <h3 className="font-serif text-2xl mb-1 text-white">{opt.name}</h3>
-                  <p className={`font-serif text-lg italic mb-5 ${opt.highlight ? "text-white" : "text-[var(--deck-rose)]"}`}>
+                  <h3 className="font-serif font-bold text-2xl md:text-[1.7rem] mt-3 text-white leading-tight">
+                    {opt.name}
+                  </h3>
+                  <p className={`mt-1 text-sm ${opt.highlight ? "text-white/80" : "text-[var(--deck-rose)]"}`}>
                     {opt.cost}
                   </p>
-                  <ul className="space-y-2 text-sm">
+                  <ul className="mt-6 pt-5 border-t border-white/15 space-y-2.5 text-sm leading-relaxed">
                     {opt.lines.map((line, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className={`mt-2 w-1 h-1 rounded-full flex-shrink-0 ${opt.highlight ? "bg-white" : "bg-white/40"}`} />
+                      <li key={i} className="flex items-start gap-2.5">
+                        <span className={`mt-[9px] w-1 h-1 rounded-full flex-shrink-0 ${opt.highlight ? "bg-white" : "bg-white/40"}`} />
                         <span>{line}</span>
                       </li>
                     ))}
                   </ul>
+                  {opt.highlight && (
+                    <p className="mt-auto pt-6 text-sm font-medium text-white/80">
+                      The one that scales.
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* The Team */}
-        <section id="how-it-works" className="bg-[var(--gray-50)] py-14 md:py-24 scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10 md:mb-14">
-              <h2 className="font-serif text-4xl md:text-5xl">
-                <span className="italic">meet the team</span> YOU WILL BUILD
-              </h2>
-              <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                Four specialists, one job each. One coordinator, the only one
-                you ever talk to.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-              <div className="relative col-span-2 lg:col-span-3 bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-6 md:p-10 grid md:grid-cols-[1fr_auto] gap-6 md:gap-8 items-center shadow-[0_16px_40px_rgba(42,38,37,0.10)]">
-                <span className="absolute -top-3 left-8 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide whitespace-nowrap">
-                  THE ONLY ONE YOU TALK TO
-                </span>
-                <div>
-                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-3xl md:text-4xl text-[var(--accent)] leading-none mb-2">
-                    Coordinator
-                  </h3>
-                  <p className="text-xs tracking-widest text-[var(--gray-600)] mb-4">
-                    YOUR SINGLE POINT OF CONTACT
-                  </p>
-                  <p className="text-[var(--gray-600)] leading-relaxed">
-                    You never need to brief Voice, Scout, QA, or Cuts. Drop
-                    your folder and notes with the coordinator. It assigns the
-                    work, checks it against your rules, and hands you one
-                    version to review.
-                  </p>
-                </div>
-                <div className="bg-[var(--surface-warm)] border border-[var(--border-warm)] rounded-2xl p-5 text-sm min-w-[240px]">
-                  <p className="text-xs tracking-widest text-[var(--gray-600)] mb-3">
-                    HOW A NOTE TRAVELS
-                  </p>
-                  <ol className="space-y-2 text-[var(--foreground)]">
-                    <li className="flex gap-2"><span className="font-serif text-[var(--accent)]">1.</span> You: &ldquo;Clip 7: different angle.&rdquo;</li>
-                    <li className="flex gap-2"><span className="font-serif text-[var(--accent)]">2.</span> Coordinator sends it to Scout, then QA.</li>
-                    <li className="flex gap-2"><span className="font-serif text-[var(--accent)]">3.</span> Cuts re-renders. Coordinator checks it.</li>
-                    <li className="flex gap-2"><span className="font-serif text-[var(--accent)]">4.</span> You get v1b with a phone preview.</li>
-                  </ol>
+        {/* The team */}
+        <section id="how-it-works" className={`${SECTION} scroll-mt-24`}>
+          <div className={CONTAINER}>
+            <SectionHeading
+              eyebrow="How it works"
+              title="Meet the team you will build."
+              lede="Four specialists, one job each. One coordinator, the only one you ever talk to."
+            />
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              <div className="lg:col-span-4 flex justify-center lg:sticky lg:top-32">
+                <div className="relative w-[240px] sm:w-[260px] aspect-[9/19] rounded-[2.4rem] bg-[var(--dark-section-bg)] p-2 shadow-[0_24px_60px_rgba(42,38,37,0.22)]">
+                  <div className="relative w-full h-full rounded-[1.9rem] overflow-hidden bg-[var(--dark-card-bg)]">
+                    <PhoneVideo />
+                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
+                    <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
+                      <span className="bg-white/20 backdrop-blur px-2.5 py-1 rounded-full">v1c · approved</span>
+                      <span className="bg-[var(--cta-bg)] px-2.5 py-1 rounded-full">QA: pass</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              {team.map((member, i) => (
-                <div
-                  key={member.name}
-                  className="relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 md:p-8 hover:-translate-y-1 hover:shadow-xl transition-all"
-                >
-                  <span className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[var(--cta-bg)] text-white font-serif flex items-center justify-center text-sm rotate-[-8deg] shadow">
-                    {i + 1}
-                  </span>
-                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-2xl md:text-3xl text-[var(--accent)] leading-none mb-2">
-                    {member.name}
+
+              <div className="lg:col-span-8">
+                <div className="rounded-2xl border border-[var(--accent)] bg-[var(--card-bg)] p-6 md:p-8">
+                  <p className={`${LABEL} text-[var(--accent)]`}>The only one you talk to</p>
+                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-3xl md:text-4xl mt-3 leading-none">
+                    Coordinator
                   </h3>
-                  <p className="text-xs tracking-widest text-[var(--gray-600)] mb-4">
-                    {member.role.toUpperCase()}
+                  <p className="mt-4 text-[var(--gray-600)] leading-relaxed">
+                    You never need to brief Voice, Scout, QA, or Cuts. Drop your
+                    folder and notes with the coordinator. It assigns the work,
+                    checks it against your rules, and hands you one version to
+                    review.
                   </p>
-                  <p className="text-[var(--gray-600)] leading-relaxed text-sm md:mb-5">
-                    {member.description}
-                  </p>
-                  <p className="hidden md:inline-block text-xs text-[var(--foreground)] bg-[var(--surface-warm)] border border-[var(--border-warm)] rounded-full px-3 py-1.5">
-                    <span className="text-[var(--gray-600)]">{member.blame}</span>{" "}
-                    <strong>The coordinator sends it to {member.name}.</strong>
-                  </p>
+                  <ol className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-[var(--foreground)]">
+                    {[
+                      <>You: &ldquo;Clip 7: different angle.&rdquo;</>,
+                      <>Coordinator sends it to Scout, then QA.</>,
+                      <>Cuts re-renders. Coordinator checks it.</>,
+                      <>You get v1b with a phone preview.</>,
+                    ].map((step, i) => (
+                      <li key={i} className="flex gap-3">
+                        <span className="font-medium text-[var(--accent)] w-4 flex-shrink-0">{i + 1}.</span>
+                        <span className="text-[var(--gray-600)]">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-              ))}
-              <div className="relative col-span-2 bg-[var(--cta-bg)] text-white rounded-2xl p-6 md:p-8 flex flex-col justify-between overflow-hidden">
-                <ChromeStar size={90} rotate={15} className="absolute -top-6 -right-6 opacity-30" />
-                <div>
-                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-3xl leading-none mb-2">You</h3>
-                  <p className="text-xs tracking-widest text-white/70 mb-4">FINAL SAY</p>
-                  <p className="text-white/90 leading-relaxed text-sm">
-                    You talk to one assistant. You approve the storyboard and
-                    the mockups, and give notes by clip number. You handle the
-                    taste.
-                  </p>
+
+                <ul className="mt-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] divide-y divide-[var(--card-border)]">
+                  {team.map((member) => (
+                    <li key={member.name} className="grid sm:grid-cols-[9rem_1fr] gap-1 sm:gap-6 px-6 md:px-8 py-5 md:py-6">
+                      <div>
+                        <h3 className="font-poppins font-bold tracking-[-0.02em] text-xl md:text-2xl leading-none">
+                          {member.name}
+                        </h3>
+                        <p className="mt-1.5 text-xs text-[var(--gray-600)]">{member.role}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm md:text-[15px] text-[var(--gray-600)] leading-relaxed">
+                          {member.description}
+                        </p>
+                        <p className="hidden md:block mt-2 text-xs text-[var(--gray-600)]">
+                          {member.blame}{" "}
+                          <span className="text-[var(--foreground)] font-medium">
+                            The coordinator sends it to {member.name}.
+                          </span>
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                  <li className="grid sm:grid-cols-[9rem_1fr] gap-1 sm:gap-6 px-6 md:px-8 py-5 md:py-6 bg-[var(--surface-warm)] rounded-b-2xl">
+                    <div>
+                      <h3 className="font-poppins font-bold tracking-[-0.02em] text-xl md:text-2xl leading-none text-[var(--accent)]">
+                        You
+                      </h3>
+                      <p className="mt-1.5 text-xs text-[var(--gray-600)]">Final say</p>
+                    </div>
+                    <p className="text-sm md:text-[15px] text-[var(--gray-600)] leading-relaxed">
+                      You talk to one assistant. You approve the storyboard and
+                      the mockups, and give notes by clip number. You handle the
+                      taste.
+                    </p>
+                  </li>
+                </ul>
+
+                <div className="mt-8">
+                  <RegisterButton location="team" label="Build mine for $147" />
                 </div>
-                <RegisterButton
-                  location="team"
-                  label="Build mine for $147"
-                  className="mt-8 inline-flex w-full items-center justify-center gap-2 bg-white text-[var(--cta-bg)] px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity disabled:opacity-70"
-                />
               </div>
             </div>
           </div>
         </section>
 
         {/* Schedule */}
-        <section className="bg-[var(--background)] py-14 md:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-14">
-              <h2 className="font-serif text-4xl md:text-5xl">
-                <span className="italic">the afternoon,</span> MINUTE BY MINUTE
-              </h2>
-              <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                Saturday, October 24. All times Eastern.
-              </p>
-            </div>
-            <div className="max-w-3xl mx-auto relative">
-              <div className="absolute left-[4.25rem] sm:left-24 top-2 bottom-2 w-px bg-[var(--card-border)]" aria-hidden="true" />
-              <ol className="space-y-6">
+        <section className={`bg-[var(--gray-50)] ${SECTION}`}>
+          <div className={CONTAINER}>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+              <div className="lg:col-span-4">
+                <SectionHeading
+                  align="left"
+                  eyebrow="The afternoon"
+                  title="Three hours, minute by minute."
+                  lede="Saturday, October 24. All times Eastern."
+                />
+              </div>
+              <ol className="lg:col-span-8 divide-y divide-[var(--card-border)] border-y border-[var(--card-border)]">
                 {schedule.map((item, i) => (
-                  <li key={i} className="grid grid-cols-[3.5rem_1.5rem_1fr] sm:grid-cols-[5rem_2rem_1fr] gap-x-2 sm:gap-x-4 items-start">
-                    <span className="font-serif text-xl text-[var(--accent)] pt-3 text-right pr-1">{item.time}</span>
-                    <span className="relative flex justify-center pt-5">
-                      <span className={`w-3 h-3 rounded-full ${i === 0 || i === schedule.length - 1 ? "bg-[var(--cta-bg)]" : "bg-[var(--card-bg)] border-2 border-[var(--accent)]"}`} />
-                    </span>
-                    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl px-6 py-4">
-                      <p className="font-serif text-lg">{item.title}</p>
-                      <p className="text-sm text-[var(--gray-600)] mt-1 leading-relaxed">{item.detail}</p>
+                  <li key={i} className="grid grid-cols-[4rem_1fr] sm:grid-cols-[6rem_1fr] gap-4 py-5 md:py-6">
+                    <span className="font-poppins font-bold tracking-[-0.02em] text-lg md:text-xl text-[var(--accent)] leading-none pt-1">{item.time}</span>
+                    <div>
+                      <p className="font-medium text-lg leading-snug">{item.title}</p>
+                      <p className="mt-1 text-sm md:text-[15px] text-[var(--gray-600)] leading-relaxed">{item.detail}</p>
                     </div>
                   </li>
                 ))}
@@ -469,86 +443,71 @@ export default function AIVideoEditorWorkshopPage() {
         </section>
 
         {/* Register */}
-        <section id="register" className="relative bg-[var(--gray-50)] py-14 md:py-24 scroll-mt-24 overflow-hidden">
-          <Stripes className="-top-20 -left-20 w-[360px] h-[360px] rounded-full hidden lg:block" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-14">
-              <h2 className="font-serif text-4xl md:text-5xl">
-                <span className="italic">save your</span> SEAT
-              </h2>
-              <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                One session. One price. Everything included.
-              </p>
-            </div>
-            <div className="grid lg:grid-cols-5 gap-8 max-w-6xl mx-auto items-start">
-              <div className="lg:col-span-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-8 md:p-10">
-                <p className="text-xs tracking-widest text-[var(--gray-600)] mb-7">
-                  WHAT YOU GET
-                </p>
-                <ul className="space-y-5">
+        <section id="register" className={`${SECTION} scroll-mt-24`}>
+          <div className={CONTAINER}>
+            <SectionHeading
+              eyebrow="Register"
+              title="Save your seat."
+              lede="One session. One price. Everything included."
+            />
+            <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              <div className="lg:col-span-7 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6 md:p-10">
+                <p className={`${LABEL} text-[var(--gray-600)] mb-6`}>What you get</p>
+                <ul className="divide-y divide-[var(--card-border)]">
                   {included.map((item, i) => (
-                    <li key={i} className="flex items-start gap-4">
-                      <span className="w-9 h-9 rounded-full bg-[var(--cta-bg)] text-white flex items-center justify-center font-serif text-sm flex-shrink-0">
+                    <li key={i} className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
+                      <span className="w-6 h-6 rounded-full bg-[var(--cta-bg)] text-white text-xs font-medium flex items-center justify-center flex-shrink-0 mt-0.5">
                         {i + 1}
                       </span>
                       <div>
-                        <p className="font-medium text-[var(--foreground)] text-lg leading-snug">
-                          {item.title}
-                        </p>
-                        <p className="text-sm text-[var(--gray-600)] leading-relaxed mt-1">
-                          {item.detail}
-                        </p>
+                        <p className="font-medium text-[var(--foreground)] leading-snug">{item.title}</p>
+                        <p className="mt-1 text-sm text-[var(--gray-600)] leading-relaxed">{item.detail}</p>
                       </div>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="lg:col-span-2 relative bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-3xl p-8 lg:sticky lg:top-32 shadow-[0_24px_70px_rgba(42,38,37,0.18)]">
-                <ChromeStar size={44} rotate={15} className="absolute -top-5 -right-4 animate-twinkle" />
-                <span className="absolute -top-3 left-8 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide whitespace-nowrap">
-                  LIVE · OCTOBER 24
-                </span>
-                <div className="mt-3 mb-5">
-                  <h3 className="font-serif text-2xl leading-tight mb-1">
-                    Build Your AI Video Editing Team
-                  </h3>
-                  <p className="text-sm text-[var(--gray-600)]">
-                    Saturday, October 24, 2026 · 3:00 PM ET · 3 hours
-                  </p>
+              <div className="lg:col-span-5 rounded-2xl border border-[var(--accent)] bg-[var(--card-bg)] p-6 md:p-8 lg:sticky lg:top-32">
+                <p className={`${LABEL} text-[var(--accent)]`}>Live on October 24</p>
+                <h3 className="font-serif font-bold text-2xl leading-tight mt-2">
+                  Build Your AI Video Editing Team
+                </h3>
+                <p className="mt-1.5 text-sm text-[var(--gray-600)]">
+                  Saturday, October 24, 2026 · 3:00 PM ET · 3 hours
+                </p>
+                <div className="mt-6 flex items-baseline gap-2">
+                  <span className="font-poppins font-bold tracking-[-0.02em] text-6xl leading-none text-[var(--foreground)]">$147</span>
+                  <span className="text-sm text-[var(--gray-600)]">one time</span>
                 </div>
-                <div className="flex items-end gap-3 mb-1">
-                  <span className="font-serif text-7xl text-[var(--accent)] leading-none">
-                    $147
-                  </span>
-                  <span className="text-sm text-[var(--gray-600)] pb-2">one time</span>
-                </div>
-                <p className="text-sm text-[var(--gray-600)] mb-5">
+                <p className="mt-2 text-sm text-[var(--gray-600)]">
                   Less than one Reel from most editors. No subscription.
                 </p>
-                <div className="mb-5">
+                <div className="mt-6">
                   <BonusOffer variant="compact" />
                 </div>
-                <RegisterButton
-                  location="card"
-                  label="Save my seat"
-                  className="inline-flex w-full items-center justify-center gap-2 bg-[var(--cta-bg)] text-white px-6 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors text-lg disabled:opacity-70 disabled:cursor-not-allowed"
-                />
+                <div className="mt-5">
+                  <RegisterButton
+                    location="card"
+                    label="Save my seat"
+                    wrapperClassName="w-full"
+                    className="inline-flex w-full items-center justify-center gap-2 bg-[var(--cta-bg)] text-white px-6 py-4 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors text-base disabled:opacity-70 disabled:cursor-not-allowed"
+                  />
+                </div>
                 <div className="mt-4">
                   <EventCountdown />
                 </div>
-                <div className="mt-6 pt-6 border-t border-[var(--card-border)] flex items-start gap-4">
-                  <div className="flex-shrink-0 w-20 h-20 rounded-full border-2 border-dashed border-[var(--accent)] flex items-center justify-center text-center rotate-[-10deg]">
-                    <span className="font-serif text-[10px] leading-tight text-[var(--accent)] uppercase tracking-wide">
-                      Show-up<br />guarantee
-                    </span>
-                  </div>
-                  <p className="text-sm text-[var(--gray-600)] leading-relaxed">
-                    Show up live. If you leave without your team set up, email
-                    me within 48 hours for a full refund.
+                <div className="mt-6 pt-6 border-t border-[var(--card-border)] flex items-start gap-3 text-sm text-[var(--gray-600)] leading-relaxed">
+                  <svg className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                  </svg>
+                  <p>
+                    <span className="font-medium text-[var(--foreground)]">Show-up guarantee.</span>{" "}
+                    If you leave without your team set up, email me within 48
+                    hours for a full refund.
                   </p>
                 </div>
-                <p className="mt-5 text-xs text-[var(--gray-600)] text-center">
+                <p className="mt-5 text-xs text-[var(--gray-600)]">
                   Secure checkout by Stripe. Receipt and calendar details arrive
                   by email right after.
                 </p>
@@ -558,81 +517,72 @@ export default function AIVideoEditorWorkshopPage() {
         </section>
 
         {/* Instructor */}
-        <section className="bg-[var(--background)] py-14 md:py-24 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-              <div className="relative flex justify-center order-last lg:order-first">
-                <ChromeStar size={64} rotate={10} className="absolute -top-6 right-6 z-10 animate-twinkle" />
-                <ChromeStar size={28} rotate={-25} className="absolute bottom-10 -left-2 z-10 animate-twinkle [animation-delay:0.7s]" />
-                <PolaroidFrame
-                  src="/images/nyaradzo.jpg"
-                  alt="Nyaradzo"
-                  rotation={-2}
-                  className="w-full max-w-sm"
-                />
+        <section className={`bg-[var(--gray-50)] ${SECTION}`}>
+          <div className={CONTAINER}>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+              <div className="lg:col-span-5">
+                <div className="relative aspect-[4/5] w-full max-w-sm mx-auto rounded-2xl overflow-hidden bg-[var(--card-bg)]">
+                  <Image
+                    src="/images/nyaradzo.jpg"
+                    alt="Naya"
+                    fill
+                    sizes="(max-width: 1024px) 384px, 40vw"
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div>
-                <h2 className="font-serif text-4xl md:text-5xl mb-6">
-                  <span className="italic">who is</span> TEACHING THIS
+              <div className="lg:col-span-7">
+                <Label>Your instructor</Label>
+                <h2 className="font-serif font-bold text-3xl md:text-5xl leading-[1.1]">
+                  Who is teaching this.
                 </h2>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
+                <p className="mt-6 text-lg text-[var(--gray-600)] leading-relaxed">
                   I&apos;m Naya. I built a 200,000+ person audience on video
                   while working as a software engineer, then as an AI engineer.
                   My platform has earned me over $500,000 and put me in rooms
                   with Microsoft, Adobe, HP, and Anthropic.
                 </p>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed">
+                <p className="mt-4 text-lg text-[var(--gray-600)] leading-relaxed">
                   I have disgustingly high standards for how I look online, so
                   I built a team that edits my way. This workshop is that
                   build, start to finish, with you doing it alongside me.
                 </p>
-              </div>
-            </div>
-            <div className="text-center mt-20">
-              <p className="text-sm tracking-widest mb-8 text-[var(--gray-600)]">
-                PREVIOUS PARTNERSHIPS
-              </p>
-              <div className="flex flex-wrap justify-center items-center gap-x-8 md:gap-x-16 gap-y-4 font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--gray-400)]">
-                <span>AMAZON</span>
-                <span className="text-[var(--accent)]">MICROSOFT</span>
-                <span>ADOBE</span>
-                <span className="text-[var(--accent)]">LINKEDIN</span>
-                <span>HP</span>
-                <span className="text-[var(--accent)]">ANTHROPIC</span>
+                <div className="mt-10 pt-8 border-t border-[var(--card-border)]">
+                  <p className={`${LABEL} text-[var(--gray-600)] mb-4`}>Previous partnerships</p>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 font-poppins font-bold tracking-[-0.02em] text-lg text-[var(--gray-400)]">
+                    <span>Amazon</span>
+                    <span>Microsoft</span>
+                    <span>Adobe</span>
+                    <span>LinkedIn</span>
+                    <span>HP</span>
+                    <span>Anthropic</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="bg-[var(--dark-section-bg)] py-14 md:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-4xl md:text-5xl text-white">
-                <span className="italic">frequently asked</span> QUESTIONS
-              </h2>
-              <div className="w-px h-12 bg-[var(--deck-rose)] mx-auto my-8"></div>
-            </div>
+        <section className={`bg-[var(--dark-section-bg)] ${SECTION}`}>
+          <div className={CONTAINER}>
+            <SectionHeading dark eyebrow="FAQ" title="Questions, answered." />
             <FAQAccordion />
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="relative bg-[var(--dark-section-bg)] border-t border-white/10 py-24 md:py-32 overflow-hidden">
-          <ChromeStar size={120} rotate={15} className="absolute -top-10 -left-10 opacity-20" />
-          <ChromeStar size={80} rotate={-20} className="absolute bottom-6 right-10 opacity-25 animate-twinkle" />
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <p className="font-poppins font-bold tracking-[-0.02em] text-xl text-[var(--deck-rose)] mb-4">
-              one afternoon
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-6 text-white leading-tight">
+        <section className="bg-[var(--dark-section-bg)] border-t border-white/10 py-24 md:py-32">
+          <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 text-center">
+            <Label dark>One afternoon</Label>
+            <h2 className="font-serif font-bold text-4xl md:text-6xl leading-[1.08] text-white">
               Your next Reel, edited by a team that already knows your rules.
             </h2>
-            <p className="text-white/60 mb-10 text-lg max-w-2xl mx-auto">
+            <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">
               Saturday, October 24 at 3:00 PM ET. Bring your footage. Leave
               with your team.
             </p>
-            <div className="flex justify-center">
+            <div className="mt-10 flex justify-center">
               <RegisterButton location="final" />
             </div>
             <div className="mt-6 flex justify-center">
