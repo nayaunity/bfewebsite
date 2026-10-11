@@ -276,9 +276,6 @@ export default function AIVideoEditorWorkshopPage() {
                 <ChromeStar size={72} rotate={12} className="absolute -top-8 -right-10 z-20 animate-twinkle" />
                 <ChromeStar size={28} rotate={-20} className="absolute top-1/2 -left-12 z-20 animate-twinkle [animation-delay:0.9s]" />
                 <PinkFolder size={96} rotate={-8} className="absolute -bottom-4 -left-16 sm:-left-20 z-20" />
-                <p className="absolute -bottom-11 -left-16 sm:-left-20 w-24 text-center z-20 font-poppins font-bold tracking-[-0.02em] text-sm leading-tight text-[var(--accent)] rotate-[-8deg]">
-                  the project folder
-                </p>
 
                 <div className="relative w-full aspect-[9/19] rounded-[2.6rem] bg-[var(--dark-section-bg)] p-2.5 shadow-[0_30px_80px_rgba(42,38,37,0.35)] rotate-[3deg]">
                   <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[var(--dark-card-bg)]">
