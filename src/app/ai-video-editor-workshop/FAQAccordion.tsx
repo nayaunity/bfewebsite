@@ -9,12 +9,12 @@ const faqs = [
   {
     question: "What do I need to have ready?",
     answer:
-      "An AI assistant with custom instructions and skills. I build mine with Claude, so that is what we use. Bring 10 to 20 raw clips and a few voice memos from a recent Reel.",
+      "A Grok account. My team runs as a Grok Bot, and the bonus template drops straight into it. Bring 10 to 20 raw clips and a few voice memos from a recent Reel.",
   },
   {
     question: "What if I can't make it live on October 24?",
     answer:
-      "Register anyway. The full recording and templates land in your inbox within 24 hours, and you keep them.",
+      "Register anyway. The full recording and templates land in your inbox within 24 hours after the workshop ends, and you keep them.",
   },
   {
     question: "Does the AI edit everything for me? I don't want to lose control.",

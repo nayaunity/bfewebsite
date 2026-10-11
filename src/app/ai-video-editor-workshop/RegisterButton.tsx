@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const PRICE_LABEL = "$147";
 
@@ -17,6 +17,20 @@ export default function RegisterButton({
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Safari and Chrome restore this page from the back-forward cache when the
+  // visitor presses Back on Stripe Checkout, which would leave the button
+  // stuck on "Opening secure checkout...". Reset it on restore.
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(false);
+        setError(null);
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
 
   const handleClick = async () => {
     setLoading(true);

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 // Saturday, October 24, 2026 at 3:00 PM Eastern (daylight time in October).
 export const WORKSHOP_START = new Date("2026-10-24T15:00:00-04:00");
-// Assume roughly two hours live, then the replay goes out to registrants.
-const WORKSHOP_END = new Date(WORKSHOP_START.getTime() + 2 * 60 * 60 * 1000);
+// Three hours live, then the replay goes out to registrants.
+const WORKSHOP_END = new Date(WORKSHOP_START.getTime() + 3 * 60 * 60 * 1000);
 
 type State =
   | { phase: "upcoming"; days: number; hours: number; minutes: number }

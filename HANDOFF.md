@@ -10,7 +10,7 @@ Built `/ai-video-editor-workshop`, a sales + registration page for the live "Bui
 
 | File | Purpose |
 |------|---------|
-| `src/app/ai-video-editor-workshop/page.tsx` | Sales page (v2 redesign, same session): phone-mock hero with sticker notes, burgundy marquee, DIY vs editor vs team comparison, pipeline flow diagram (PinkFolder + DoodleArrow), script-font team cards with "who to blame" chips, rules on notebook paper, review-loop chat bubbles with v1/v1b/v1c, minute-by-minute timeline (3:00 to 4:50 ET, assumed), register card with guarantee stamp, Polaroid instructor, FAQ, final CTA. Event JSON-LD. |
+| `src/app/ai-video-editor-workshop/page.tsx` | Sales page (v2 redesign, same session): phone-mock hero with sticker notes, burgundy marquee, DIY vs editor vs team comparison, pipeline flow diagram (PinkFolder + DoodleArrow), script-font team cards with "who to blame" chips, rules on notebook paper, review-loop chat bubbles with v1/v1b/v1c, minute-by-minute timeline (3:00 to 6:00 ET), register card with guarantee stamp, Polaroid instructor, FAQ, final CTA. Event JSON-LD. |
 | `src/app/ai-video-editor-workshop/BonusOffer.tsx` | 10-minute bonus ("the exact setup behind my AI editing team"). Per Naya, the copy ALWAYS opens with "Register in the next 10 minutes and I'll send you..." to push action now; the clock restarts on every page load (no localStorage) and the countdown badge simply disappears at 0:00. Rendered in the hero (card) and the register card (compact). Thank-you page says the setup "lands in your inbox shortly." |
 | `src/app/ai-video-editor-workshop/PhoneVideo.tsx` | Client video in the hero phone mock: `public/videos/ai-video-editor-reel.mp4` (4.4 MB, 480x854 h264, encoded from `~/Downloads/1010(2).mov`, Naya's actual AI-edited Reel) + poster jpg. Autoplays muted, loops, "Tap for sound" toggle. |
 | `src/app/ai-video-editor-workshop/StickyBar.tsx` | Floating "Save my seat" pill that appears after the hero scrolls out and hides while the register card is on screen. Sits above the mobile bottom nav. Tracks `linkId = aive-workshop-register-sticky`. |
@@ -52,10 +52,10 @@ Skool has no discount codes and cannot run a paid add-on, so the community is so
 ### Copy assumptions to confirm before deploying
 
 These are promises made on the page that Naya has to actually deliver:
-1. Session length "roughly two hours" with live Q&A.
+1. Session length: 3 hours (3:00 to 6:00 PM ET) with live Q&A, per Naya. Timeline, countdown, JSON-LD, and calendar links all use 3 hours.
 2. Deliverables: the 5 job-description templates, the full rules playbook, the review workflow, and the recording within 24 hours.
 3. Refund: "show up live, email within 48 hours of the workshop, full refund."
-4. Tooling: "I build my team with Claude, and that is what we use live." Air described as optional.
+4. Tooling: the team runs as a Grok Bot (the bonus link is an x.ai bot template). FAQ says buyers need a Grok account. Not Claude.
 5. The user said "3pm EST". October 24 is still daylight time, so the page says **3:00 PM ET** and the ISO/calendar times use **EDT (UTC-4)**, i.e. 19:00 UTC. If she literally meant 3 PM EST (= 4 PM EDT), change `WORKSHOP_START` in `EventCountdown.tsx`, the JSON-LD dates in `page.tsx`, and `CALENDAR_URL` in `thank-you/page.tsx`.
 6. **Welcome email copy for Disgustingly Paid** (`src/lib/community-welcome.ts`) goes out automatically from the webhook. Naya should read it once before deploy.
 7. **Bonus delivery is wired but needs the link.** The webhook now sends `src/lib/workshop-welcome.ts` (seat confirmed, bonus link, calendar link, prep list, join-link-coming note) on every paid workshop checkout. It reads the bonus resource URL from `AIVE_WORKSHOP_BONUS_URL`, set in Vercel Production (and local `.env.vercel-prod`) to the AI Video Editor Bot template: https://x.ai/bot/s-C0W63b4a9ysxbk1GjTI. If the var is ever missing, the email is skipped and an error is logged to `/admin/errors` so no buyer gets a broken link. The link is only ever sent by email, never rendered on the thank-you page, because that page is reachable without paying.

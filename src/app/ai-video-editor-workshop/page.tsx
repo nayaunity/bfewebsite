@@ -101,21 +101,17 @@ const team = [
 
 const schedule = [
   { time: "3:00", title: "Doors open", detail: "Watch my team edit a real Reel, start to finish." },
-  { time: "3:10", title: "Set up the five roles", detail: "Paste my job descriptions, then make them yours." },
-  { time: "3:45", title: "Your folder, your rules", detail: "Voice memos line by line. Start your playbook from mine." },
-  { time: "4:20", title: "Teach it your style", detail: "Reference Reel, then mockups before renders." },
-  { time: "4:35", title: "Build the review loop", detail: "Versions, phone previews, notes by clip number." },
-  { time: "4:50", title: "Live Q&A", detail: "Bring the edit you are stuck on." },
+  { time: "3:15", title: "Set up the five roles", detail: "Paste my job descriptions, then make them yours." },
+  { time: "3:50", title: "Your folder, your rules", detail: "Voice memos line by line. Start your playbook from mine." },
+  { time: "4:30", title: "Teach it your style", detail: "Reference Reel, then mockups before renders." },
+  { time: "5:00", title: "Build the review loop", detail: "Versions, phone previews, notes by clip number." },
+  { time: "5:30", title: "Live Q&A", detail: "Bring the edit you are stuck on. We wrap at 6:00." },
 ];
 
 const included = [
   {
-    title: "Bonus: my exact editing team setup, sent the moment you register",
-    detail: "Start building tonight. We customize it together live.",
-  },
-  {
     title: "The live build, October 24 at 3:00 PM ET",
-    detail: "About two hours, with live Q&A.",
+    detail: "Three hours, with live Q&A.",
   },
   {
     title: "Five job descriptions, ready to paste",
@@ -131,7 +127,7 @@ const included = [
   },
   {
     title: "The full recording, yours to keep",
-    detail: "In your inbox within 24 hours.",
+    detail: "In your inbox within 24 hours after the workshop.",
   },
 ];
 
@@ -176,7 +172,7 @@ export default function AIVideoEditorWorkshopPage() {
           name: "Build Your AI Video Editing Team: Live Workshop",
           description: DESCRIPTION,
           startDate: "2026-10-24T15:00:00-04:00",
-          endDate: "2026-10-24T17:00:00-04:00",
+          endDate: "2026-10-24T18:00:00-04:00",
           eventStatus: "https://schema.org/EventScheduled",
           eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
           location: {
@@ -518,7 +514,7 @@ export default function AIVideoEditorWorkshopPage() {
                     Build Your AI Video Editing Team
                   </h3>
                   <p className="text-sm text-[var(--gray-600)]">
-                    Saturday, October 24, 2026 · 3:00 PM ET · about 2 hours
+                    Saturday, October 24, 2026 · 3:00 PM ET · 3 hours
                   </p>
                 </div>
                 <div className="flex items-end gap-3 mb-1">
