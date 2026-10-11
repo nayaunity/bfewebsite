@@ -3,15 +3,32 @@
 import { useEffect, useState } from "react";
 
 const WINDOW_MS = 10 * 60 * 1000;
+const KEY = "aive-bonus-deadline";
+// Once the window has run out, keep it closed for this long before a
+// returning visitor gets a fresh 10 minutes.
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
-// A fresh 10-minute window starts on every page load. The copy always asks
-// the visitor to register in the next 10 minutes; the clock just makes it
-// concrete and disappears once it reaches zero.
+// The 10-minute window starts on the visitor's first view and is stored in
+// the browser, so a refresh or a second tab keeps the same deadline instead
+// of restarting from 10:00. The copy always asks the visitor to register in
+// the next 10 minutes; the clock makes it concrete and disappears at zero.
 function useBonusClock(): number | null {
   const [left, setLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    const deadline = Date.now() + WINDOW_MS;
+    let deadline = 0;
+    try {
+      const stored = Number(window.localStorage.getItem(KEY));
+      const now = Date.now();
+      if (stored && stored > now - COOLDOWN_MS) {
+        deadline = stored;
+      } else {
+        deadline = now + WINDOW_MS;
+        window.localStorage.setItem(KEY, String(deadline));
+      }
+    } catch {
+      deadline = Date.now() + WINDOW_MS;
+    }
     const tick = () => setLeft(Math.max(0, deadline - Date.now()));
     tick();
     const id = setInterval(tick, 1000);
@@ -35,6 +52,7 @@ export default function BonusOffer({
 }) {
   const left = useBonusClock();
   const running = left !== null && left > 0;
+  const closed = left === 0;
 
   if (variant === "compact") {
     return (
@@ -49,16 +67,24 @@ export default function BonusOffer({
                 <span className="font-serif text-sm tabular-nums">{format(left)}</span>
               </p>
             )}
-            <p className="text-[var(--foreground)] leading-snug">
-              Register in the next 10 minutes and I&apos;ll send you{" "}
-              <strong>the exact setup behind my AI editing team</strong> NOW:
-              my AI Video Editor Bot with the five roles, the hand-offs, and my
-              rules already written.{" "}
-              <strong>
-                It lands in your inbox right away, so you can start building
-                your team tonight instead of waiting for the session.
-              </strong>
-            </p>
+            {closed ? (
+              <p className="text-[var(--gray-600)] leading-snug">
+                The 10-minute bonus window has closed. Your seat still includes
+                everything listed, and the live build is where we set up your
+                team together.
+              </p>
+            ) : (
+              <p className="text-[var(--foreground)] leading-snug">
+                Register in the next 10 minutes and I&apos;ll send you{" "}
+                <strong>the exact setup behind my AI editing team</strong> NOW:
+                my AI Video Editor Bot with the five roles, the hand-offs, and my
+                rules already written.{" "}
+                <strong>
+                  It lands in your inbox right away, so you can start building
+                  your team tonight instead of waiting for the session.
+                </strong>
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -74,6 +100,8 @@ export default function BonusOffer({
             BONUS ENDS IN{" "}
             <span className="font-serif text-sm tabular-nums">{format(left)}</span>
           </>
+        ) : closed ? (
+          "BONUS WINDOW CLOSED"
         ) : (
           "10-MINUTE BONUS"
         )}
@@ -81,6 +109,14 @@ export default function BonusOffer({
       <div className="flex items-start gap-4 mt-1">
         <span className="text-3xl leading-none" aria-hidden="true">🎁</span>
         <div>
+          {closed ? (
+            <p className="text-[var(--foreground)] leading-relaxed">
+              The 10-minute bonus window has closed. Your seat still includes
+              everything in the stack below, and the live build on October 24
+              is where we set up your team together.
+            </p>
+          ) : (
+          <>
           <p className="text-[var(--foreground)] leading-relaxed">
             Register in the next 10 minutes and I&apos;ll send you{" "}
             <strong>the exact setup behind my AI editing team</strong> NOW.
@@ -95,6 +131,8 @@ export default function BonusOffer({
             Start setting up your own team today. Then we&apos;ll customize it
             to your content and style together in the workshop. 🤎
           </p>
+          </>
+          )}
         </div>
       </div>
     </div>
