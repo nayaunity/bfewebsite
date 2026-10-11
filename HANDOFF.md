@@ -1,3 +1,73 @@
+# Session Handoff — October 10, 2026 (AI Video Editor Workshop registration page, $147)
+
+## What Was Done Oct 10
+
+### New paid live-workshop registration page (NOT yet committed or deployed)
+
+Built `/ai-video-editor-workshop`, a sales + registration page for the live "Build Your AI Video Editing Team" workshop on **Saturday, October 24, 2026 at 3:00 PM ET**, priced at **$147**. Copy is adapted from Naya's essay "I built an AI video editing team because I'm disgustingly particular" (`~/Downloads/how_i_built_my_ai_video_editor_team (1).md`).
+
+**Files (branch `rebrand`):**
+
+| File | Purpose |
+|------|---------|
+| `src/app/ai-video-editor-workshop/page.tsx` | Sales page (v2 redesign, same session): phone-mock hero with sticker notes, burgundy marquee, DIY vs editor vs team comparison, pipeline flow diagram (PinkFolder + DoodleArrow), script-font team cards with "who to blame" chips, rules on notebook paper, review-loop chat bubbles with v1/v1b/v1c, minute-by-minute timeline (3:00 to 4:50 ET, assumed), register card with guarantee stamp, Polaroid instructor, FAQ, final CTA. Event JSON-LD. |
+| `src/app/ai-video-editor-workshop/BonusOffer.tsx` | 10-minute bonus ("the exact setup behind my AI editing team"). Per Naya, the copy ALWAYS opens with "Register in the next 10 minutes and I'll send you..." to push action now; the clock restarts on every page load (no localStorage) and the countdown badge simply disappears at 0:00. Rendered in the hero (card) and the register card (compact). Thank-you page says the setup "lands in your inbox shortly." |
+| `src/app/ai-video-editor-workshop/PhoneVideo.tsx` | Client video in the hero phone mock: `public/videos/ai-video-editor-reel.mp4` (4.4 MB, 480x854 h264, encoded from `~/Downloads/1010(2).mov`, Naya's actual AI-edited Reel) + poster jpg. Autoplays muted, loops, "Tap for sound" toggle. |
+| `src/app/ai-video-editor-workshop/StickyBar.tsx` | Floating "Save my seat" pill that appears after the hero scrolls out and hides while the register card is on screen. Sits above the mobile bottom nav. Tracks `linkId = aive-workshop-register-sticky`. |
+| `src/app/ai-video-editor-workshop/RegisterButton.tsx` | Client CTA. Logs `linkClick` with `linkId = aive-workshop-register-<hero|team|card|final>`, then POSTs to `/api/stripe/workshop-checkout` and redirects to Stripe. |
+| `src/app/ai-video-editor-workshop/EventCountdown.tsx` | Live countdown to `2026-10-24T15:00:00-04:00`. Switches to "happening now" during the session and "recording for registrants" after. |
+| `src/app/ai-video-editor-workshop/FAQAccordion.tsx` | 7 FAQs incl. refund policy and timezone conversions. |
+| `src/app/ai-video-editor-workshop/PageViewTracker.tsx` | Slug `ai-video-editor-workshop` |
+| `src/app/ai-video-editor-workshop/thank-you/page.tsx` + `RegisteredTracker.tsx` | Post-purchase page (noindex). Google Calendar link, prep checklist. Tracks slug `ai-video-editor-workshop-registered` so thank-you views = paid registrations in admin. |
+| `src/app/api/stripe/workshop-checkout/route.ts` | Stripe Checkout, `mode: "payment"`, uses the **main** BFE Stripe account (`stripe`, not `stripeCourse`). Promo codes allowed. Success → thank-you, cancel → `#register`. |
+| `src/lib/stripe.ts` | Added `STRIPE_WORKSHOP_PRICES.aiVideoEditor = STRIPE_AIVE_WORKSHOP_PRICE_ID` |
+| `src/app/admin/analytics/page.tsx` | New "AI Video Editor Workshop" section: unique visitors, views, register clicks, paid registrations, click rate, paid conversion, by-country. Both slugs added to `NON_BLOG_SLUGS`. |
+| `src/app/admin/page.tsx` | Quick-stat card: visitors today, register clicks, paid. |
+| `src/app/sitemap.ts` | Added `/ai-video-editor-workshop`. |
+
+**Stripe + Vercel state changes (already live):**
+- Created product `prod_VQ06lK70hhi9oz` "Build Your AI Video Editing Team: Live Workshop (Oct 24, 2026)" and price `price_1UPA69AbS888QtQNa75Ktt7g` ($147 one-time, live mode) in the **main** BFE Stripe account.
+- Added `STRIPE_AIVE_WORKSHOP_PRICE_ID` to Vercel **Production** env (preview env add failed non-interactively; not needed for `vercel --prod`). Also appended to local `.env.vercel-prod`.
+- The webhook already ignores `checkout.session.completed`, so one-time payments don't touch the subscription logic. Registrations are visible in the Stripe dashboard (search metadata `product=ai-video-editor-workshop`) and as thank-you page views in `/admin/analytics`.
+
+**Dark-section accents** use `var(--deck-rose)` (not `--accent`, which is near-black burgundy in light mode and invisible on `--dark-section-bg`).
+
+**Tested locally (port 3001 with live Stripe key injected):** page renders light/dark, desktop + 390px mobile, no console errors, no horizontal overflow. Clicking "Save my seat" opened a real live-mode Stripe Checkout showing the $147 line item. Thank-you page renders. `tsc --noEmit` and eslint clean.
+
+### Disgustingly Paid upsell (Skool community billed through Stripe)
+
+Skool has no discount codes and cannot run a paid add-on, so the community is sold as a **Stripe subscription** and access is granted with a **free Skool invite** (Skool never charges the member). Stripe will not allow a recurring optional item inside the one-time workshop checkout (verified by two rejected test sessions), so the offer lives on the thank-you page as a second, prefilled checkout.
+
+- **Stripe objects (live, main account):** product `prod_VQ28JTqQw7wmsk` "Disgustingly Paid (monthly membership)", price `price_1UPC4gAbS888QtQNIBpJZ9wF` $99/month, coupon `1KRY8eL1` $50 off once (so first invoice is $49). Both IDs are in Vercel Production as `STRIPE_DP_MONTHLY_PRICE_ID` / `STRIPE_DP_INTRO_COUPON_ID` and in local `.env.vercel-prod`. Exposed via `STRIPE_COMMUNITY` in `src/lib/stripe.ts`.
+- `src/app/api/stripe/workshop-checkout/route.ts` now sets `setup_future_usage: off_session` so the card is saved for the upsell.
+- `src/app/api/stripe/community-checkout/route.ts` (new): subscription-mode checkout with the coupon applied, reusing the workshop session's Customer (email + card prefilled). Metadata `product=disgustingly-paid` on both session and subscription. Success → thank-you `?community=joined`.
+- `src/app/ai-video-editor-workshop/thank-you/CommunityUpsell.tsx` (new): "Keep building with me 🤎" card (Naya's copy) with the Join button; shows a confirmation state after `community=joined`. Tracks `linkId = aive-community-upsell`.
+- `src/app/api/stripe/webhook/route.ts`: on `checkout.session.completed` with `product=disgustingly-paid`, sends the welcome email from `src/lib/community-welcome.ts` via Resend (from naya@, reply-to gmail). All subscription handlers early-return for community subscriptions so they never touch `User` rows.
+- `/admin/community-members` (new, in sidebar): lists every subscription on the DP price straight from Stripe (source of truth, no DB migration). Shows who still needs a Skool invite and who has ended but is still in Skool. "Mark invited" / "Mark removed" write `skool_invited` / `skool_removed` into the subscription metadata via `/api/admin/community-members/mark`.
+- **Manual step for Naya:** invite each new member for free from Skool → Settings → Invite, then click "Mark invited". When a subscription ends, remove them in Skool and click "Mark removed". Zapier Stripe→Skool "invite member" can replace the manual invite later.
+- Verified locally: the Join button opens a real live-mode subscription checkout showing $49 due today and $99/month after; the test session was expired immediately.
+- **Full end-to-end test in Stripe TEST mode (Oct 10, in Naya's Chrome):** workshop checkout with card 4242 → thank-you page → "Join for $49 today" → subscription checkout showing "$49.00, then $99.00 per month starting next month" with email prefilled → `community=joined` confirmation. Stripe test subscription `sub_1UPCSsAbS888QtQNbOTcf9Rw` is active with $49 paid and metadata `product=disgustingly-paid`. All forwarded webhooks returned 200. Note: Stripe does NOT prefill the saved card on the second checkout (it needs a full billing address on the payment method), so the buyer re-enters the card; the upsell footnote was reworded accordingly. Test-mode objects created: workshop price `price_1UPCFaAbS888QtQNFyUxWT4b`, DP price `price_1UPCFaAbS888QtQNxht5ummv`, coupon `8MzJyPn8`. Local test setup lives in the session scratchpad (`run-dev.sh` on port 3005 + `stripe listen`); port 3001 got wedged on this machine during testing.
+
+### Copy assumptions to confirm before deploying
+
+These are promises made on the page that Naya has to actually deliver:
+1. Session length "roughly two hours" with live Q&A.
+2. Deliverables: the 5 job-description templates, the full rules playbook, the review workflow, and the recording within 24 hours.
+3. Refund: "show up live, email within 48 hours of the workshop, full refund."
+4. Tooling: "I build my team with Claude, and that is what we use live." Air described as optional.
+5. The user said "3pm EST". October 24 is still daylight time, so the page says **3:00 PM ET** and the ISO/calendar times use **EDT (UTC-4)**, i.e. 19:00 UTC. If she literally meant 3 PM EST (= 4 PM EDT), change `WORKSHOP_START` in `EventCountdown.tsx`, the JSON-LD dates in `page.tsx`, and `CALENDAR_URL` in `thank-you/page.tsx`.
+6. **Welcome email copy for Disgustingly Paid** (`src/lib/community-welcome.ts`) goes out automatically from the webhook. Naya should read it once before deploy.
+7. **Bonus delivery is wired but needs the link.** The webhook now sends `src/lib/workshop-welcome.ts` (seat confirmed, bonus link, calendar link, prep list, join-link-coming note) on every paid workshop checkout. It reads the bonus resource URL from `AIVE_WORKSHOP_BONUS_URL`, set in Vercel Production (and local `.env.vercel-prod`) to the AI Video Editor Bot template: https://x.ai/bot/s-C0W63b4a9ysxbk1GjTI. If the var is ever missing, the email is skipped and an error is logged to `/admin/errors` so no buyer gets a broken link. The link is only ever sent by email, never rendered on the thank-you page, because that page is reachable without paying.
+8. No join link is emailed automatically. Naya needs to send the Zoom/stream link to registrants manually (pull emails from Stripe) or wire a Resend email on checkout completion.
+
+### Known Issues / Next Steps
+
+1. **Building a Tech Audience checkout is broken on prod.** `STRIPE_COURSE_SECRET_KEY` and all three `STRIPE_BTA_*_PRICE_ID` vars are **empty strings** in Vercel Production, so `/api/stripe/course-checkout` returns 500. Discovered while checking which Stripe account to use. Not touched this session.
+2. Deploy flow when ready: commit on `rebrand`, push, merge to `main`, `vercel --prod` from `main`, switch back.
+3. Optional follow-ups: Resend confirmation email with the join link on `checkout.session.completed` for `metadata.product === "ai-video-editor-workshop"`; an `/admin` list of registrants pulled from Stripe.
+
+---
+
 # Session Handoff — May 10, 2026 (Resume archive layer + upload-failure visibility; Kimberly resume recovery)
 
 ## What Was Done May 10 (Late Evening Session)
