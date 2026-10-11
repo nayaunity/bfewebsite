@@ -48,7 +48,7 @@ export default function DemoVideo() {
         </button>
       )}
       <span className="absolute bottom-3 right-3 md:bottom-4 md:right-4 bg-black/55 backdrop-blur text-white text-[11px] font-medium px-2.5 py-1 rounded-full pointer-events-none">
-        53 sec · no sound
+        51 sec · no sound
       </span>
     </div>
   );
