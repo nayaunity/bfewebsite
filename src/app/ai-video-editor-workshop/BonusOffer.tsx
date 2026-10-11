@@ -41,24 +41,25 @@ export default function BonusOffer({
       <div className="rounded-2xl border border-[var(--accent)]/40 bg-[var(--surface-warm)] px-4 py-3 text-sm">
         <div className="flex items-start gap-3">
           <span className="text-xl leading-none" aria-hidden="true">🎁</span>
-          <p className="flex-1 min-w-0 text-[var(--foreground)] leading-snug">
-            Register in the next{" "}
-            {running ? (
-              <strong className="font-serif text-base text-[var(--accent)] tabular-nums">
-                {format(left)}
+          <div className="flex-1 min-w-0">
+            {running && (
+              <p className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-wide text-[var(--accent)] mb-1">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)] animate-pulse" />
+                BONUS ENDS IN{" "}
+                <span className="font-serif text-sm tabular-nums">{format(left)}</span>
+              </p>
+            )}
+            <p className="text-[var(--foreground)] leading-snug">
+              Register in the next 10 minutes and I&apos;ll send you{" "}
+              <strong>the exact setup behind my AI editing team</strong> NOW:
+              my AI Video Editor Bot with the five roles, the hand-offs, and my
+              rules already written.{" "}
+              <strong>
+                It lands in your inbox right away, so you can start building
+                your team tonight instead of waiting for the session.
               </strong>
-            ) : (
-              <strong>10 minutes</strong>
-            )}{" "}
-            and I&apos;ll send you{" "}
-            <strong>the exact setup behind my AI editing team</strong>: the
-            exact instructions I use to make AI find my best clips, assemble
-            my voiceover, and edit my videos.{" "}
-            <strong>
-              It lands in your inbox right away, so you can start building
-              your team tonight instead of waiting for the session.
-            </strong>
-          </p>
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -82,12 +83,13 @@ export default function BonusOffer({
         <div>
           <p className="text-[var(--foreground)] leading-relaxed">
             Register in the next 10 minutes and I&apos;ll send you{" "}
-            <strong>the exact setup behind my AI editing team</strong>.
+            <strong>the exact setup behind my AI editing team</strong> NOW.
           </p>
           <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
-            You&apos;ll get the exact instructions I use to make AI find my
-            best clips, assemble my voiceover, and edit my videos, so you
-            don&apos;t have to figure it all out from scratch.
+            It is my AI Video Editor Bot, ready to use: the five roles already
+            written, the hand-offs between them, and my rules for picking
+            clips, assembling the voiceover, and placing captions. Open it,
+            point it at your footage, and it starts working. No blank page.
           </p>
           <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
             Start setting up your own team today. Then we&apos;ll customize it
