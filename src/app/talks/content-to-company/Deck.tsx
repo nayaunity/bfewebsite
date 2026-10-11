@@ -21,7 +21,7 @@ const ORIGIN_THUMBS = [
 
 export const SLIDE_COUNT = 10;
 
-const SKOOL_URL = "https://www.skool.com/startup-life-os-7440/about";
+const SKOOL_URL = "https://www.skool.com/disgustingly-paid/about";
 
 /* Shared type styles. Headings are heavy sans to match the reference deck. */
 const H = "font-black tracking-tight leading-[0.95]";

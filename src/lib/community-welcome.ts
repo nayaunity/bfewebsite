@@ -1,4 +1,4 @@
-const SKOOL_URL = "https://www.skool.com/bigstage";
+const SKOOL_URL = "https://www.skool.com/disgustingly-paid/about";
 
 function firstNameFrom(name: string | null | undefined): string {
   const raw = (name || "").trim().split(/\s+/)[0];
@@ -27,7 +27,7 @@ export function buildCommunityWelcomeDraft(name: string | null | undefined): Com
 
 Your Disgustingly Paid membership just went through: $49 for your first month, then $99 a month after that, billed through Stripe. Thank you for joining.
 
-Here is what happens next. I send your invite to the Skool community myself, usually within 24 hours. Watch for an email from Skool with a Join button. Click it and you are in. You never pay anything on Skool itself. Your membership is handled entirely through Stripe.
+Here is what happens next. Your invite to the Skool community comes from me within the next 24 hours. Watch for an email from Skool with a Join button. Click it and you are in. You never pay anything on Skool itself. Your membership is handled entirely through Stripe.
 
 Inside, you get the workflows I teach hands on, including the AI editing team we are building together at the workshop on October 24.
 
@@ -40,7 +40,7 @@ Community: ${SKOOL_URL}`;
 
   const html = `<p>Hi ${firstName},</p>
 <p>Your Disgustingly Paid membership just went through: <strong>$49 for your first month, then $99 a month</strong> after that, billed through Stripe. Thank you for joining.</p>
-<p>Here is what happens next. I send your invite to the Skool community myself, usually within 24 hours. Watch for an email from Skool with a <strong>Join</strong> button. Click it and you are in. You never pay anything on Skool itself. Your membership is handled entirely through Stripe.</p>
+<p>Here is what happens next. Your invite to the Skool community comes from me within the next 24 hours. Watch for an email from Skool with a <strong>Join</strong> button. Click it and you are in. You never pay anything on Skool itself. Your membership is handled entirely through Stripe.</p>
 <p>Inside, you get the workflows I teach hands on, including the AI editing team we are building together at the workshop on October 24.</p>
 <p>If you ever need to pause or cancel, reply to this email and I will take care of it the same day. No forms.</p>
 <p>See you inside,<br/>Naya</p>
