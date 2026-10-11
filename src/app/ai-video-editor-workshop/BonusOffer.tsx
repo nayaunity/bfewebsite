@@ -55,40 +55,48 @@ export default function BonusOffer({
   const closed = left === 0;
 
   if (variant === "compact") {
+    if (closed) {
+      return (
+        <p className="text-xs text-[var(--gray-600)] leading-snug">
+          The 10-minute bonus window has closed. Everything listed is still
+          included with your seat.
+        </p>
+      );
+    }
     return (
       <div className="rounded-xl border border-[var(--card-border)] bg-[var(--surface-warm)] px-4 py-3.5 text-sm">
         <div className="flex items-start gap-3">
-          <span className="text-xl leading-none" aria-hidden="true">🎁</span>
+          <span className="text-xl leading-none" aria-hidden="true">
+            🎁
+          </span>
           <div className="flex-1 min-w-0">
             {running && (
               <p className="text-xs font-medium text-[var(--accent)] mb-1">
                 Bonus ends in{" "}
-                <span className="font-poppins font-bold tabular-nums">{format(left)}</span>
+                <span className="font-poppins font-bold tabular-nums">
+                  {format(left)}
+                </span>
               </p>
             )}
-            {closed ? (
-              <p className="text-[var(--gray-600)] leading-snug">
-                The 10-minute bonus window has closed. Your seat still includes
-                everything listed, and the live build is where we set up your
-                team together.
-              </p>
-            ) : (
-              <p className="text-[var(--foreground)] leading-snug">
-                Register in the next 10 minutes and I&apos;ll send you{" "}
-                <strong>the exact setup behind my AI editing team</strong> NOW:
-                my AI Video Editor Bot with the five roles, the hand-offs, and my
-                rules already written.{" "}
-                <strong>
-                  It lands in your inbox right away, so you can start building
-                  your team tonight instead of waiting for the session.
-                </strong>
-              </p>
-            )}
+            <p className="text-[var(--foreground)] leading-snug">
+              Register in the next 10 minutes and I&apos;ll send you{" "}
+              <strong>the exact setup behind my AI editing team</strong> NOW: my
+              AI Video Editor Bot with the five roles, the hand-offs, and my
+              rules already written.{" "}
+              <strong>
+                It lands in your inbox right away, so you can start building
+                your team tonight instead of waiting for the session.
+              </strong>
+            </p>
           </div>
         </div>
       </div>
     );
   }
+
+  // Once the window has closed, the hero space goes back to the offer itself.
+  // The price card carries the one small clarification.
+  if (closed) return null;
 
   return (
     <div className="rounded-2xl border border-[var(--accent)] bg-[var(--card-bg)] p-6 md:p-7">
@@ -96,40 +104,32 @@ export default function BonusOffer({
         {running ? (
           <>
             Bonus ends in{" "}
-            <span className="font-poppins font-bold tabular-nums">{format(left)}</span>
+            <span className="font-poppins font-bold tabular-nums">
+              {format(left)}
+            </span>
           </>
-        ) : closed ? (
-          "Bonus window closed"
         ) : (
           "10-minute bonus"
         )}
       </span>
       <div className="mt-4">
-        {closed ? (
-          <p className="text-[var(--foreground)] leading-relaxed">
-            The 10-minute bonus window has closed. Your seat still includes
-            everything in the stack below, and the live build on October 24
-            is where we set up your team together.
-          </p>
-        ) : (
-          <>
-            <p className="text-lg text-[var(--foreground)] leading-relaxed">
-              <span className="mr-2" aria-hidden="true">🎁</span>
-              Register in the next 10 minutes and I&apos;ll send you{" "}
-              <strong>the exact setup behind my AI editing team</strong> NOW.
-            </p>
-            <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
-              It is my AI Video Editor Bot, ready to use: the five roles already
-              written, the hand-offs between them, and my rules for picking
-              clips, assembling the voiceover, and placing captions. Open it,
-              point it at your footage, and it starts working. No blank page.
-            </p>
-            <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
-              Start setting up your own team today. Then we&apos;ll customize it
-              to your content and style together in the workshop. 🤎
-            </p>
-          </>
-        )}
+        <p className="text-lg text-[var(--foreground)] leading-relaxed">
+          <span className="mr-2" aria-hidden="true">
+            🎁
+          </span>
+          Register in the next 10 minutes and I&apos;ll send you{" "}
+          <strong>the exact setup behind my AI editing team</strong> NOW.
+        </p>
+        <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
+          It is my AI Video Editor Bot, ready to use: the five roles already
+          written, the hand-offs between them, and my rules for picking clips,
+          assembling the voiceover, and placing captions. Open it, point it at
+          your footage, and it starts working. No blank page.
+        </p>
+        <p className="mt-3 text-sm text-[var(--gray-600)] leading-relaxed">
+          Start setting up your own team today. Then we&apos;ll customize it to
+          your content and style together in the workshop. 🤎
+        </p>
       </div>
     </div>
   );
