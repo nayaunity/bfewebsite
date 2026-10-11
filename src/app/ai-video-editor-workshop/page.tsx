@@ -2,12 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
-import {
-  ChromeStar,
-  DoodleArrow,
-  PinkFolder,
-  PolaroidFrame,
-} from "@/components/brand";
+import { ChromeStar, PinkFolder, PolaroidFrame } from "@/components/brand";
 import PageViewTracker from "./PageViewTracker";
 import RegisterButton from "./RegisterButton";
 import EventCountdown from "./EventCountdown";
@@ -43,45 +38,12 @@ export const metadata = {
   },
 };
 
-const CHECK = (
-  <svg
-    className="w-5 h-5 text-[var(--accent)] flex-shrink-0 mt-0.5"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    aria-hidden="true"
-  >
-    <path
-      fillRule="evenodd"
-      d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
-const marquee = [
-  "Voice assembles the voiceover",
-  "Scout finds the footage",
-  "QA screens every clip",
-  "Cuts edits the video",
-  "The Coordinator runs the room",
-  "You keep the final say",
-];
-
-const pains = [
-  "Scrubbing through 100+ clips for the one with decent light.",
-  "Re-recording a voiceover because the last word got clipped.",
-  "Dragging the same caption out from under the same sticker. Again.",
-  "Watching the same three seconds until you cannot tell what a normal video looks like.",
-  "Explaining your taste to an editor, then fixing the edit yourself anyway.",
-];
-
 const options = [
   {
     name: "Do it yourself",
     cost: "Hours per Reel, forever",
     lines: [
-      "Three to five hours per video, every video",
-      "Your best ideas wait while you scrub clips",
+      "Three to five hours per video",
       "Every project starts from a blank timeline",
     ],
     highlight: false,
@@ -90,9 +52,8 @@ const options = [
     name: "Hire an editor",
     cost: "Thousands per month",
     lines: [
-      "Hundreds per Reel. Thousands a month. Forever.",
-      "Still explaining your taste on every brief",
-      "Still fixing the edit yourself at the end",
+      "Hundreds per Reel, thousands a month",
+      "Still explaining your taste every time",
     ],
     highlight: false,
   },
@@ -100,9 +61,8 @@ const options = [
     name: "Build your team",
     cost: "$147, once",
     lines: [
-      "One afternoon to set up. Then it runs on every project.",
-      "Your rules written down and applied automatically",
-      "Your hours go to what you are good at. The team does the rest.",
+      "One afternoon to set up, then it runs on every project",
+      "Your rules applied automatically. You approve.",
     ],
     highlight: true,
   },
@@ -113,93 +73,66 @@ const team = [
     name: "Voice",
     role: "Assembles your voiceover",
     description:
-      "Takes your voice memos one script line at a time, picks the best take of each, and layers them so the next line starts the moment the last word ends.",
+      "Picks the best take of each line and layers them so the next line starts as the last word ends.",
     blame: "A word cut off halfway through?",
   },
   {
     name: "Scout",
     role: "Finds the footage",
     description:
-      "Reads what the script and storyboard need, then searches your project folder and your footage library. Older footage finally gets used.",
+      "Searches your project folder and footage library for the clips the storyboard needs.",
     blame: "Bad angle?",
   },
   {
     name: "QA",
     role: "Screens every clip",
     description:
-      "Checks lighting, sharpness, angles, and your written rules. Each clip gets a pass or a fail. Only the shortlist moves on.",
+      "Checks light, sharpness, angles, and your rules. Pass or fail.",
     blame: "Chewing footage made it in?",
   },
   {
     name: "Cuts",
     role: "Edits the video",
     description:
-      "Takes the shortlist, the voiceover, and your style reference. Builds the storyboard, mockups, render, captions, and stickers.",
+      "Storyboard, mockups, render, captions, stickers.",
     blame: "Sticker covering a word?",
   },
 ];
 
 const schedule = [
-  { time: "3:00", title: "Doors open", detail: "Meet the team you are about to build and see one of mine edit a real Reel, start to finish." },
-  { time: "3:10", title: "Give everyone a job", detail: "Set up the five roles so when something goes wrong you know exactly where to look." },
-  { time: "3:25", title: "Write the job descriptions", detail: "What each assistant receives, what it does, and where its work goes next. You paste mine, then edit." },
-  { time: "3:45", title: "Make the starting point obvious", detail: "One project folder. Voice memos recorded line by line. Three jobs kick off at the same time." },
-  { time: "4:00", title: "Write down your taste", detail: "Turn the notes you keep repeating into rules. You start your list live, using my full playbook as the template." },
-  { time: "4:20", title: "Teach it your styles", detail: "Document a reference Reel frame by frame so you can ask for a style by name. Mockups before renders." },
-  { time: "4:35", title: "Build the review loop", detail: "Numbered storyboards, version names, phone previews, and notes by clip number." },
-  { time: "4:50", title: "Live Q&A", detail: "Bring the edit you are stuck on. We fix the workflow together." },
-];
-
-const rules = [
-  "Good natural light in every shot.",
-  "Eye-level, flattering angles. No up-the-chin footage.",
-  "Never open on me walking into frame.",
-  "No shots of me chewing.",
-  "Captions must match what I actually say, word for word.",
-  "Stars and stickers cannot cover words.",
-  "A statistic can only appear on screen when I am actually saying it.",
-  "The final word has to play in full.",
-  "Any pop-up claiming to show proof has to be true.",
+  { time: "3:00", title: "Doors open", detail: "Watch my team edit a real Reel, start to finish." },
+  { time: "3:10", title: "Set up the five roles", detail: "Paste my job descriptions, then make them yours." },
+  { time: "3:45", title: "Your folder, your rules", detail: "Voice memos line by line. Start your playbook from mine." },
+  { time: "4:20", title: "Teach it your style", detail: "Reference Reel, then mockups before renders." },
+  { time: "4:35", title: "Build the review loop", detail: "Versions, phone previews, notes by clip number." },
+  { time: "4:50", title: "Live Q&A", detail: "Bring the edit you are stuck on." },
 ];
 
 const included = [
   {
-    title: "Bonus: the exact setup behind my AI editing team, sent when you register",
-    detail: "The exact instructions I use to make AI find my best clips, assemble my voiceover, and edit my videos. Start setting up your own team today, then we customize it together in the workshop.",
+    title: "Bonus: my exact editing team setup, sent the moment you register",
+    detail: "Start building tonight. We customize it together live.",
   },
   {
-    title: "The live build on Saturday, October 24 at 3:00 PM ET",
-    detail: "About two hours. You build alongside me, step by step, with live Q&A at the end.",
+    title: "The live build, October 24 at 3:00 PM ET",
+    detail: "About two hours, with live Q&A.",
   },
   {
-    title: "The five job descriptions, ready to paste",
-    detail: "Voice, Scout, QA, Cuts, and the Coordinator, each written as what it receives, what it does, and where its work goes.",
+    title: "Five job descriptions, ready to paste",
+    detail: "Voice, Scout, QA, Cuts, and the Coordinator.",
   },
   {
     title: "My full rules playbook",
-    detail: "Every rule I have written for lighting, angles, captions, stickers, proof, and pacing. Delete what does not apply.",
+    detail: "Light, angles, captions, stickers, proof, pacing.",
   },
   {
     title: "The review workflow",
-    detail: "Storyboard approvals, mockup checks, version naming, phone previews, and notes by clip number.",
+    detail: "Storyboards, versions, phone previews, notes by clip number.",
   },
   {
     title: "The full recording, yours to keep",
-    detail: "Sent to every registrant within 24 hours. Rebuild at your pace or catch up if you cannot make it live.",
+    detail: "In your inbox within 24 hours.",
   },
-];
-
-const forYou = [
-  "You post Reels or short vertical video and have opinions about how you look.",
-  "You have given the same editing note at least twice.",
-  "You want AI to do the repetitive work while you keep the final say.",
-  "You would rather spend the weekend filming the next video than fixing the last one.",
-];
-
-const notForYou = [
-  "You want AI to invent footage, stats, or receipts. It does not get to.",
-  "You want to never look at a video before it posts.",
-  "You are hoping to skip the part where you write down what you actually want.",
 ];
 
 function Sticker({
@@ -293,10 +226,9 @@ export default function AIVideoEditorWorkshopPage() {
                   them.
                 </h1>
                 <p className="mt-7 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-xl">
-                  In one live afternoon, build a five-assistant AI editing team
-                  that finds your footage, assembles your voiceover, screens
-                  every clip against your standards, and cuts the video. You
-                  give notes by clip number. You keep the final say.
+                  Build a five-assistant AI editing team with me, live. It
+                  finds your footage, assembles your voiceover, screens every
+                  clip, and cuts the video. You keep the final say.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <RegisterButton location="hero" />
@@ -378,69 +310,16 @@ export default function AIVideoEditorWorkshopPage() {
           </div>
         </section>
 
-        {/* Marquee */}
-        <div className="bg-[var(--cta-bg)] text-white py-3 overflow-hidden marquee-mask">
-          <div className="flex w-max animate-marquee-editorial whitespace-nowrap">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="flex items-center" aria-hidden={dup === 1}>
-                {marquee.map((item, i) => (
-                  <span key={i} className="flex items-center gap-6 px-6 text-sm tracking-wide uppercase">
-                    {item}
-                    <ChromeStar size={16} />
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* The Problem + comparison */}
-        <section className="bg-[var(--dark-section-bg)] py-20 md:py-28 relative overflow-hidden">
+        <section className="bg-[var(--dark-section-bg)] py-14 md:py-24 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start mb-16">
+            <div className="max-w-2xl mx-auto text-center mb-12">
               <div>
                 <h2 className="font-serif text-4xl md:text-5xl text-white leading-tight">
                   <span className="italic">your standards</span>
                   <br />
                   ARE EXPENSIVE.
                 </h2>
-                <div className="w-px h-12 bg-[var(--deck-rose)] my-8"></div>
-                <p className="text-white/70 text-lg leading-relaxed mb-4">
-                  Right now you have two ways to get a Reel out the door, and
-                  both of them are robbing you.
-                </p>
-                <p className="text-white/70 text-lg leading-relaxed mb-4">
-                  <strong className="text-white">Hire an editor</strong> and
-                  you are paying hundreds per video and thousands a month for
-                  someone who still needs you to explain your taste on every
-                  brief. Then you open the export and fix it yourself anyway.
-                </p>
-                <p className="text-white/70 text-lg leading-relaxed mb-4">
-                  <strong className="text-white">Edit it yourself</strong> and
-                  every Reel eats three, four, five hours. That is time you
-                  were supposed to spend on the thing you are actually good
-                  at: the idea, the camera, the business, the audience.
-                  Instead you are nudging captions at 11 PM.
-                </p>
-                <p className="text-white text-lg leading-relaxed">
-                  Your taste is the asset. Scrubbing through clips is not. This
-                  workshop puts the first one in charge and hands the second
-                  one to a team that costs less than one month of an editor.
-                </p>
-              </div>
-              <div className="relative border border-white/10 rounded-3xl p-8 bg-white/[0.03]">
-                <ChromeStar size={40} rotate={20} className="absolute -top-5 -right-3 animate-twinkle" />
-                <p className="text-xs tracking-widest text-white/50 mb-6">
-                  IF YOU HAVE DONE ANY OF THESE THIS MONTH, KEEP READING
-                </p>
-                <ul className="space-y-4">
-                  {pains.map((pain, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[var(--deck-rose)] flex-shrink-0" />
-                      <span className="text-white/85 leading-relaxed">{pain}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
 
@@ -475,72 +354,20 @@ export default function AIVideoEditorWorkshopPage() {
           </div>
         </section>
 
-        {/* How the work flows */}
-        <section id="how-it-works" className="bg-[var(--background)] py-20 md:py-28 scroll-mt-24 relative overflow-hidden">
-          <Stripes className="-bottom-24 -left-24 w-[380px] h-[380px] rounded-full hidden lg:block" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-14">
-              <h2 className="font-serif text-4xl md:text-5xl">
-                <span className="italic">how the work</span> FLOWS
-              </h2>
-              <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                You drop a folder. Three jobs start at once. Nothing reaches you
-                until it has been checked.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] gap-6 items-center max-w-6xl mx-auto">
-              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 text-center">
-                <PinkFolder size={64} className="mx-auto mb-3" />
-                <p className="font-serif text-xl">Your folder</p>
-                <p className="text-sm text-[var(--gray-600)] mt-1">Raw clips. Voice memos, one line each.</p>
-              </div>
-              <DoodleArrow size={64} className="hidden lg:block opacity-70" />
-              <div className="space-y-3">
-                {["Voice builds the voiceover", "Scout pulls candidate clips", "QA passes or fails each one"].map((t, i) => (
-                  <div key={i} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl px-5 py-3 flex items-center gap-3">
-                    <ChromeStar size={18} />
-                    <span className="text-sm font-medium">{t}</span>
-                  </div>
-                ))}
-                <p className="text-xs text-center text-[var(--gray-600)]">all three at the same time</p>
-              </div>
-              <DoodleArrow size={64} className="hidden lg:block opacity-70" />
-              <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 text-center">
-                <p className="font-serif text-xl">Cuts edits</p>
-                <p className="text-sm text-[var(--gray-600)] mt-1">Storyboard, mockups, render, captions, stickers.</p>
-                <div className="mt-3 flex justify-center gap-1.5">
-                  {["v1", "v1b", "v1c"].map((v) => (
-                    <span key={v} className="text-[11px] px-2 py-0.5 rounded-full bg-[var(--surface-warm)] border border-[var(--border-warm)] text-[var(--gray-600)]">{v}</span>
-                  ))}
-                </div>
-              </div>
-              <DoodleArrow size={64} className="hidden lg:block opacity-70" />
-              <div className="bg-[var(--cta-bg)] text-white rounded-2xl p-6 text-center">
-                <p className="text-xs tracking-widest text-white/70 mb-1">COORDINATOR CHECKS, THEN</p>
-                <p className="font-serif text-2xl">You approve</p>
-                <p className="text-sm text-white/80 mt-1">Notes by clip number. Final say, always.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* The Team */}
-        <section className="bg-[var(--gray-50)] py-20 md:py-28">
+        <section id="how-it-works" className="bg-[var(--gray-50)] py-14 md:py-24 scroll-mt-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-14">
+            <div className="text-center mb-10 md:mb-14">
               <h2 className="font-serif text-4xl md:text-5xl">
                 <span className="italic">meet the team</span> YOU WILL BUILD
               </h2>
               <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                Four specialists with one job each, and one coordinator who
-                is the only one you ever talk to. You give a note. The
-                coordinator routes it to the right assistant, checks the fix,
-                and brings it back.
+                Four specialists, one job each. One coordinator, the only one
+                you ever talk to.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="relative md:col-span-2 lg:col-span-3 bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-8 md:p-10 grid md:grid-cols-[1fr_auto] gap-8 items-center shadow-[0_16px_40px_rgba(42,38,37,0.10)]">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+              <div className="relative col-span-2 lg:col-span-3 bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-6 md:p-10 grid md:grid-cols-[1fr_auto] gap-6 md:gap-8 items-center shadow-[0_16px_40px_rgba(42,38,37,0.10)]">
                 <span className="absolute -top-3 left-8 inline-block text-xs px-4 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide whitespace-nowrap">
                   THE ONLY ONE YOU TALK TO
                 </span>
@@ -552,12 +379,10 @@ export default function AIVideoEditorWorkshopPage() {
                     YOUR SINGLE POINT OF CONTACT
                   </p>
                   <p className="text-[var(--gray-600)] leading-relaxed">
-                    You never need to brief Voice, Scout, QA, or Cuts
-                    directly. You drop your folder and your notes with the coordinator. It
-                    assigns the work, checks every result against your rules,
-                    and hands you one finished version to review. When you say
-                    &ldquo;Clip 3: brighter clip,&rdquo; the coordinator knows
-                    that goes to Scout and QA, and you never think about it.
+                    You never need to brief Voice, Scout, QA, or Cuts. Drop
+                    your folder and notes with the coordinator. It assigns the
+                    work, checks it against your rules, and hands you one
+                    version to review.
                   </p>
                 </div>
                 <div className="bg-[var(--surface-warm)] border border-[var(--border-warm)] rounded-2xl p-5 text-sm min-w-[240px]">
@@ -575,35 +400,35 @@ export default function AIVideoEditorWorkshopPage() {
               {team.map((member, i) => (
                 <div
                   key={member.name}
-                  className="relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8 hover:-translate-y-1 hover:shadow-xl transition-all"
+                  className="relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 md:p-8 hover:-translate-y-1 hover:shadow-xl transition-all"
                 >
                   <span className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[var(--cta-bg)] text-white font-serif flex items-center justify-center text-sm rotate-[-8deg] shadow">
                     {i + 1}
                   </span>
-                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-3xl text-[var(--accent)] leading-none mb-2">
+                  <h3 className="font-poppins font-bold tracking-[-0.02em] text-2xl md:text-3xl text-[var(--accent)] leading-none mb-2">
                     {member.name}
                   </h3>
                   <p className="text-xs tracking-widest text-[var(--gray-600)] mb-4">
-                    {member.role.toUpperCase()} · REPORTS TO THE COORDINATOR
+                    {member.role.toUpperCase()}
                   </p>
-                  <p className="text-[var(--gray-600)] leading-relaxed text-sm mb-5">
+                  <p className="text-[var(--gray-600)] leading-relaxed text-sm md:mb-5">
                     {member.description}
                   </p>
-                  <p className="text-xs text-[var(--foreground)] bg-[var(--surface-warm)] border border-[var(--border-warm)] rounded-full px-3 py-1.5 inline-block">
+                  <p className="hidden md:inline-block text-xs text-[var(--foreground)] bg-[var(--surface-warm)] border border-[var(--border-warm)] rounded-full px-3 py-1.5">
                     <span className="text-[var(--gray-600)]">{member.blame}</span>{" "}
                     <strong>The coordinator sends it to {member.name}.</strong>
                   </p>
                 </div>
               ))}
-              <div className="relative lg:col-span-2 bg-[var(--cta-bg)] text-white rounded-2xl p-8 flex flex-col justify-between overflow-hidden">
+              <div className="relative col-span-2 bg-[var(--cta-bg)] text-white rounded-2xl p-6 md:p-8 flex flex-col justify-between overflow-hidden">
                 <ChromeStar size={90} rotate={15} className="absolute -top-6 -right-6 opacity-30" />
                 <div>
                   <h3 className="font-poppins font-bold tracking-[-0.02em] text-3xl leading-none mb-2">You</h3>
                   <p className="text-xs tracking-widest text-white/70 mb-4">FINAL SAY</p>
                   <p className="text-white/90 leading-relaxed text-sm">
-                    You talk to one assistant. You approve the storyboard, you
-                    approve the mockups, and you give notes by clip number. The
-                    coordinator does the delegating. You handle the taste.
+                    You talk to one assistant. You approve the storyboard and
+                    the mockups, and give notes by clip number. You handle the
+                    taste.
                   </p>
                 </div>
                 <RegisterButton
@@ -616,124 +441,15 @@ export default function AIVideoEditorWorkshopPage() {
           </div>
         </section>
 
-        {/* Rules on notebook paper */}
-        <section className="bg-[var(--background)] py-20 md:py-28 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div>
-                <h2 className="font-serif text-4xl md:text-5xl mb-6">
-                  <span className="italic">you get my</span> ACTUAL RULES.
-                </h2>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  &ldquo;Make it look good&rdquo; leaves a lot open to
-                  interpretation. So I wrote my taste down in an almost
-                  embarrassing amount of detail, and my team applies it on
-                  every project.
-                </p>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-6">
-                  Some of it is vanity. Some of it is readability. Some of it is
-                  making sure a video never implies something happened when it
-                  did not.
-                </p>
-                <blockquote className="border-l-4 border-[var(--accent)] pl-5 font-serif text-2xl italic leading-snug mb-6">
-                  AI does not get to invent my receipts.
-                </blockquote>
-                <p className="text-lg text-[var(--foreground)] leading-relaxed">
-                  You leave with my full playbook as your starting point. Start
-                  your own list with the notes you keep repeating. If you have
-                  said it twice, it belongs in the instructions.
-                </p>
-              </div>
-              <div className="relative">
-                <ChromeStar size={48} rotate={-12} className="absolute -top-6 -left-4 z-10 animate-twinkle" />
-                <div className="relative bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-2xl rotate-[1.5deg] overflow-hidden">
-                  <div className="absolute inset-y-0 left-10 w-px bg-[var(--accent)] opacity-40" aria-hidden="true" />
-                  <div className="absolute inset-y-0 left-12 w-px bg-[var(--accent)] opacity-40" aria-hidden="true" />
-                  <div className="bg-[repeating-linear-gradient(transparent_0_31px,var(--card-border)_31px_32px)] pl-16 pr-8 pt-6 pb-8">
-                    <p className="font-poppins font-bold tracking-[-0.02em] text-2xl text-[var(--accent)] leading-8 mb-2">
-                      the playbook
-                    </p>
-                    <ul>
-                      {rules.map((rule, i) => (
-                        <li key={i} className="flex items-start gap-3 leading-8 text-[var(--foreground)]">
-                          <ChromeStar size={14} className="mt-[9px]" />
-                          <span className="text-[15px]">{rule}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <Sticker rotate={-6} className="absolute -bottom-5 left-6 z-10">
-                  said it twice? it&apos;s a rule.
-                </Sticker>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Review loop */}
-        <section className="bg-[var(--surface-warm)] border-y border-[var(--border-warm)] py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div className="order-last lg:order-first relative min-h-[320px]">
-                <div className="absolute top-0 left-0 sm:left-6 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl rounded-bl-sm px-5 py-3 shadow-lg rotate-[-2deg] max-w-[260px]">
-                  <p className="text-xs text-[var(--gray-600)] mb-1">you, 9:14 PM</p>
-                  <p className="font-medium">Clip 3: brighter clip.</p>
-                </div>
-                <div className="absolute top-24 right-0 sm:right-6 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl rounded-bl-sm px-5 py-3 shadow-lg rotate-[2deg] max-w-[260px]">
-                  <p className="text-xs text-[var(--gray-600)] mb-1">you, 9:15 PM</p>
-                  <p className="font-medium">Clip 7: different angle.</p>
-                </div>
-                <div className="absolute top-48 left-4 sm:left-14 bg-[var(--cta-bg)] text-white rounded-2xl rounded-br-sm px-5 py-3 shadow-lg rotate-[-1deg] max-w-[280px]">
-                  <p className="text-xs text-white/70 mb-1">coordinator, 9:31 PM</p>
-                  <p className="font-medium">v1c is ready. Scout swapped cut 3, QA passed cut 7. Phone preview attached.</p>
-                </div>
-                <div className="absolute bottom-0 right-2 sm:right-10 flex gap-1.5">
-                  {["v1", "v1b", "v1c"].map((v, i) => (
-                    <span key={v} className={`text-xs px-3 py-1 rounded-full border ${i === 2 ? "bg-[var(--cta-bg)] text-white border-[var(--cta-bg)]" : "bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--gray-600)]"}`}>{v}</span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h2 className="font-serif text-4xl md:text-5xl mb-6">
-                  <span className="italic">a review loop</span> YOU CAN STAND.
-                </h2>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  Cuts starts with a numbered storyboard. You approve the plan
-                  while it is still a plan. Every render gets a version name
-                  and a vertical phone preview, because that is how people are
-                  going to watch it.
-                </p>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-6">
-                  Then you give notes by clip number. A specific note gives the
-                  team something specific to fix. When a correction reveals a
-                  rule, it goes in the playbook.
-                </p>
-                <div className="rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] p-5">
-                  <p className="font-medium text-[var(--foreground)] mb-1">
-                    What this means for you
-                  </p>
-                  <p className="text-sm text-[var(--gray-600)] leading-relaxed">
-                    Every correction you give once becomes a rule the team
-                    follows forever. By your third Reel, you are approving
-                    edits, not making them.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Schedule */}
-        <section className="bg-[var(--background)] py-20 md:py-28">
+        <section className="bg-[var(--background)] py-14 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
               <h2 className="font-serif text-4xl md:text-5xl">
                 <span className="italic">the afternoon,</span> MINUTE BY MINUTE
               </h2>
               <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                Saturday, October 24. All times Eastern. You follow along with
-                your own footage and leave with your team running.
+                Saturday, October 24. All times Eastern.
               </p>
             </div>
             <div className="max-w-3xl mx-auto relative">
@@ -757,7 +473,7 @@ export default function AIVideoEditorWorkshopPage() {
         </section>
 
         {/* Register */}
-        <section id="register" className="relative bg-[var(--gray-50)] py-20 md:py-28 scroll-mt-24 overflow-hidden">
+        <section id="register" className="relative bg-[var(--gray-50)] py-14 md:py-24 scroll-mt-24 overflow-hidden">
           <Stripes className="-top-20 -left-20 w-[360px] h-[360px] rounded-full hidden lg:block" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
@@ -765,7 +481,7 @@ export default function AIVideoEditorWorkshopPage() {
                 <span className="italic">save your</span> SEAT
               </h2>
               <p className="mt-4 text-[var(--gray-600)] max-w-2xl mx-auto text-lg">
-                One session. One price. Everything below is included.
+                One session. One price. Everything included.
               </p>
             </div>
             <div className="grid lg:grid-cols-5 gap-8 max-w-6xl mx-auto items-start">
@@ -773,7 +489,7 @@ export default function AIVideoEditorWorkshopPage() {
                 <p className="text-xs tracking-widest text-[var(--gray-600)] mb-7">
                   WHAT YOU GET
                 </p>
-                <ul className="space-y-6">
+                <ul className="space-y-5">
                   {included.map((item, i) => (
                     <li key={i} className="flex items-start gap-4">
                       <span className="w-9 h-9 rounded-full bg-[var(--cta-bg)] text-white flex items-center justify-center font-serif text-sm flex-shrink-0">
@@ -790,32 +506,6 @@ export default function AIVideoEditorWorkshopPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 pt-6 border-t border-[var(--card-border)] grid sm:grid-cols-2 gap-6">
-                  <div>
-                    <p className="font-serif text-lg mb-3">Yes, if</p>
-                    <ul className="space-y-2">
-                      {forYou.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--gray-600)]">
-                          {CHECK}
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="font-serif text-lg mb-3">Skip it, if</p>
-                    <ul className="space-y-2">
-                      {notForYou.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--gray-600)]">
-                          <svg className="w-5 h-5 text-[var(--gray-400)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          </svg>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
               </div>
 
               <div className="lg:col-span-2 relative bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-3xl p-8 lg:sticky lg:top-32 shadow-[0_24px_70px_rgba(42,38,37,0.18)]">
@@ -838,8 +528,7 @@ export default function AIVideoEditorWorkshopPage() {
                   <span className="text-sm text-[var(--gray-600)] pb-2">one time</span>
                 </div>
                 <p className="text-sm text-[var(--gray-600)] mb-5">
-                  Less than most editors charge for a single Reel. No
-                  subscription. Recording included.
+                  Less than one Reel from most editors. No subscription.
                 </p>
                 <div className="mb-5">
                   <BonusOffer variant="compact" />
@@ -859,9 +548,8 @@ export default function AIVideoEditorWorkshopPage() {
                     </span>
                   </div>
                   <p className="text-sm text-[var(--gray-600)] leading-relaxed">
-                    Show up live. If you do not leave with your team set up and
-                    your first rules written, email me within 48 hours and I
-                    refund every cent.
+                    Show up live. If you leave without your team set up, email
+                    me within 48 hours for a full refund.
                   </p>
                 </div>
                 <p className="mt-5 text-xs text-[var(--gray-600)] text-center">
@@ -874,7 +562,7 @@ export default function AIVideoEditorWorkshopPage() {
         </section>
 
         {/* Instructor */}
-        <section className="bg-[var(--background)] py-20 md:py-28 overflow-hidden">
+        <section className="bg-[var(--background)] py-14 md:py-24 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
               <div className="relative flex justify-center order-last lg:order-first">
@@ -893,21 +581,14 @@ export default function AIVideoEditorWorkshopPage() {
                 </h2>
                 <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
                   I&apos;m Naya. I built a 200,000+ person audience on video
-                  while working as a software engineer, then as an AI engineer
-                  and educator. My platform has earned me over $500,000 and
-                  put me in rooms with Microsoft, Adobe, HP, and Anthropic.
+                  while working as a software engineer, then as an AI engineer.
+                  My platform has earned me over $500,000 and put me in rooms
+                  with Microsoft, Adobe, HP, and Anthropic.
                 </p>
-                <p className="text-lg text-[var(--gray-600)] leading-relaxed mb-4">
-                  I also have disgustingly high standards for how I look on the
-                  internet, which is how I ended up spending more time fixing
-                  edits than filming. So I built a team to do it my way. This
-                  workshop is that build, start to finish, with you doing it
-                  alongside me.
-                </p>
-                <p className="text-lg text-[var(--foreground)] leading-relaxed">
-                  I still review every video. I still make the creative
-                  decisions. I just stopped doing the parts that did not need
-                  me.
+                <p className="text-lg text-[var(--gray-600)] leading-relaxed">
+                  I have disgustingly high standards for how I look online, so
+                  I built a team that edits my way. This workshop is that
+                  build, start to finish, with you doing it alongside me.
                 </p>
               </div>
             </div>
@@ -928,7 +609,7 @@ export default function AIVideoEditorWorkshopPage() {
         </section>
 
         {/* FAQ */}
-        <section className="bg-[var(--dark-section-bg)] py-20 md:py-28">
+        <section className="bg-[var(--dark-section-bg)] py-14 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="font-serif text-4xl md:text-5xl text-white">
