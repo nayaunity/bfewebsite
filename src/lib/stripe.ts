@@ -33,3 +33,12 @@ export const STRIPE_COMMUNITY = {
   monthlyPriceId: process.env.STRIPE_DP_MONTHLY_PRICE_ID!,
   introCouponId: process.env.STRIPE_DP_INTRO_COUPON_ID!,
 };
+
+// AI Video Editing Plugin: Naya's configured Grok Bot editing team, sold on
+// its own for $97 one time. The same bot template is included with the $147
+// workshop and with Disgustingly Paid, and is delivered by email from the
+// webhook using AIVE_WORKSHOP_BONUS_URL (the x.ai bot template link).
+export const STRIPE_PLUGIN = {
+  product: "ai-video-editor-plugin",
+  priceId: process.env.STRIPE_AIVE_PLUGIN_PRICE_ID!,
+};

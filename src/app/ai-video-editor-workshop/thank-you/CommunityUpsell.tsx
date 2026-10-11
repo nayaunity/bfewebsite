@@ -56,7 +56,7 @@ export default function CommunityUpsell() {
       const res = await fetch("/api/stripe/community-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
+        body: JSON.stringify({ sessionId, source: "thank-you" }),
       });
       const data = await res.json();
       if (res.ok && data.url) {
@@ -74,7 +74,7 @@ export default function CommunityUpsell() {
   return (
     <div className="relative bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-2xl p-6 mb-8 text-left">
       <span className="absolute -top-3 left-6 inline-block text-xs px-3 py-1 rounded-full font-medium bg-[var(--cta-bg)] text-white tracking-wide">
-        ATTENDEE OFFER
+        BUYER OFFER
       </span>
       <div className="flex items-start gap-4 mt-1">
         <span className="text-3xl leading-none" aria-hidden="true">🤎</span>

@@ -10,7 +10,7 @@ const WORKSHOPS: Record<
   aiVideoEditor: {
     slug: "ai-video-editor-workshop",
     successPath: "/ai-video-editor-workshop/thank-you",
-    cancelPath: "/ai-video-editor-workshop#register",
+    cancelPath: "/ai-video-editor-workshop#workshop",
   },
 };
 

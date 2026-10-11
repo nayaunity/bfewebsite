@@ -110,10 +110,26 @@ async function getStats() {
       _count: true,
     }).then(r => r.length),
     prisma.linkClick.count({
-      where: { linkId: { startsWith: "aive-workshop-register-" }, clickedAt: { gte: todayStart } },
+      where: {
+        OR: [
+          { linkId: { startsWith: "aive-workshop-register-" } },
+          { linkId: { startsWith: "aive-plugin-buy-" } },
+          { linkId: { startsWith: "aive-membership-join-" } },
+        ],
+        clickedAt: { gte: todayStart },
+      },
     }),
     prisma.blogView.count({
-      where: { slug: "ai-video-editor-workshop-registered", viewedAt: { gte: todayStart } },
+      where: {
+        slug: {
+          in: [
+            "ai-video-editor-workshop-registered",
+            "ai-video-editor-plugin-purchased",
+            "ai-video-editor-membership-joined",
+          ],
+        },
+        viewedAt: { gte: todayStart },
+      },
     }),
   ]);
 
@@ -361,11 +377,11 @@ export default async function AdminDashboard() {
             <p className="text-xs text-[var(--gray-600)]">{stats.analytics.btaPresaleCtaToday} CTA clicks</p>
           </div>
           <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
-            <p className="text-sm text-[var(--gray-600)]">AI Video Editor Workshop</p>
+            <p className="text-sm text-[var(--gray-600)]">AI Video Editor page</p>
             <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
               {stats.analytics.aiveWorkshopVisitorsToday}
             </p>
-            <p className="text-xs text-[var(--gray-600)]">{stats.analytics.aiveWorkshopCtaToday} register clicks · {stats.analytics.aiveWorkshopRegistrationsToday} paid</p>
+            <p className="text-xs text-[var(--gray-600)]">{stats.analytics.aiveWorkshopCtaToday} buy clicks · {stats.analytics.aiveWorkshopRegistrationsToday} paid</p>
           </div>
         </div>
       </div>
