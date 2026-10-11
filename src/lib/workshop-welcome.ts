@@ -2,7 +2,7 @@ const CALENDAR_URL =
   "https://calendar.google.com/calendar/render?action=TEMPLATE" +
   "&text=" +
   encodeURIComponent("Build Your AI Video Editing Team (Live Workshop with Naya)") +
-  "&dates=20261024T190000Z/20261024T210000Z" +
+  "&dates=20261024T190000Z/20261024T220000Z" +
   "&details=" +
   encodeURIComponent(
     "Live build-along workshop. The join link arrives by email from Naya before the session. Bring a folder with 10 to 20 raw clips and a few voice memos.\n\nhttps://www.theblackfemaleengineer.com/ai-video-editor-workshop"
