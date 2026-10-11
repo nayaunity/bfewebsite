@@ -278,11 +278,6 @@ export default function AIVideoEditorWorkshopPage() {
               <div className="mt-5 flex justify-center">
                 <EventCountdown />
               </div>
-              <p className="mt-8 text-sm text-[var(--gray-600)] leading-relaxed max-w-xl mx-auto">
-                Taught by Naya, who built a 200,000-follower audience on video,
-                earned over $500,000 from it, and has partnered with Microsoft,
-                Adobe, LinkedIn, HP, and Anthropic.
-              </p>
             </div>
 
 
