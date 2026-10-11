@@ -14,7 +14,7 @@ import DemoVideo from "./DemoVideo";
 
 const TITLE = "Build Your AI Video Editing Team | Live Workshop with Naya";
 const DESCRIPTION =
-  "A live build-along workshop on Saturday, October 24 at 3:00 PM ET. Leave with five AI assistants that find your footage, assemble your voiceover, screen every clip against your standards, and edit your Reels. $147.";
+  "A live three-hour build on Saturday, October 24 at 3:00 PM ET. Leave with five AI assistants that find your clips, assemble your voiceover, reject footage that breaks your rules, and cut your Reels. $147, recording included, show-up guarantee.";
 
 export const metadata = {
   title: TITLE,
@@ -44,7 +44,7 @@ const options = [
     name: "Do it yourself",
     cost: "Hours per Reel, forever",
     lines: [
-      "Three to five hours per video",
+      "Three to five hours per Reel: finding clips, picking takes, moving captions",
       "Every project starts from a blank timeline",
     ],
     highlight: false,
@@ -54,7 +54,7 @@ const options = [
     cost: "Thousands per month",
     lines: [
       "Hundreds per Reel, thousands a month",
-      "Still explaining your taste every time",
+      "You explain your taste on every project and still get chewing footage back",
     ],
     highlight: false,
   },
@@ -63,7 +63,7 @@ const options = [
     cost: "$147, once",
     lines: [
       "One afternoon to set up, then it runs on every project",
-      "Your rules applied automatically. You approve.",
+      "Your rules apply on every clip. You approve the storyboard, the mockup, and the render.",
     ],
     highlight: true,
   },
@@ -112,23 +112,23 @@ const schedule = [
 const included = [
   {
     title: "The live build, October 24 at 3:00 PM ET",
-    detail: "Three hours, with live Q&A.",
+    detail: "Three hours with live Q&A. You leave with your team already running on your footage.",
   },
   {
     title: "Five job descriptions, ready to paste",
-    detail: "Voice, Scout, QA, Cuts, and the Coordinator.",
+    detail: "Voice, Scout, QA, Cuts, and the Coordinator. Paste them in and they work tonight.",
   },
   {
     title: "My full rules playbook",
-    detail: "Light, angles, captions, stickers, proof, pacing.",
+    detail: "Light, angles, captions, stickers, proof, pacing. Keep what fits your face and delete the rest.",
   },
   {
     title: "The review workflow",
-    detail: "Storyboards, versions, phone previews, notes by clip number.",
+    detail: "Storyboards, versions, phone previews. You review one version and send notes by clip number.",
   },
   {
     title: "The full recording, yours to keep",
-    detail: "In your inbox within 24 hours after the workshop.",
+    detail: "In your inbox within 24 hours after the workshop, so you can rebuild any step at your own pace.",
   },
 ];
 
@@ -220,15 +220,48 @@ export default function AIVideoEditorWorkshopPage() {
                 <span className="sm:hidden">Live workshop, Sat Oct 24, 3 PM ET</span>
                 <span className="hidden sm:inline">Live workshop, Saturday October 24, 3:00 PM ET</span>
               </div>
-              <h1 className="font-serif font-bold text-[2.75rem] leading-[1.05] sm:text-5xl lg:text-6xl">
-                Stop editing your Reels.
-                <br />
-                Start approving them.
+              <h1 className="font-serif font-bold text-[2.6rem] leading-[1.05] sm:text-5xl lg:text-6xl">
+                Editing has become the worst part of content creation.
               </h1>
-              <p className="mt-6 md:mt-7 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
-                Build a five-assistant AI editing team with me, live. It finds
-                your footage, assembles your voiceover, screens every clip, and
-                cuts the video. You keep the final say.
+              <p className="mt-5 md:mt-6 text-xl md:text-2xl text-[var(--accent)] font-medium">
+                That&apos;s why I stopped doing it.
+              </p>
+            </div>
+
+            <div className="mt-10 md:mt-14">
+              <DemoVideo />
+              <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
+                My AI Video Editor Bot in Grok Bot, from folder to finished Reel.
+                On October 24 you build the same team, tuned to your rules.
+              </p>
+            </div>
+
+            <div className="max-w-3xl mx-auto text-center">
+              <p className="mt-10 md:mt-14 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
+                Holding an audience&apos;s attention now takes:
+              </p>
+              <ul className="mt-5 flex flex-wrap justify-center gap-2 md:gap-2.5 max-w-3xl mx-auto">
+                {[
+                  "A cut every few seconds",
+                  "Text on screen",
+                  "Sound effects",
+                  "Pop-ups",
+                  "Zooms",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-2 text-sm md:text-base font-medium text-[var(--foreground)]"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
+                It is too much for one person who also has to film the thing.
+              </p>
+              <p className="mt-4 text-lg md:text-xl text-[var(--foreground)] font-medium leading-relaxed max-w-2xl mx-auto">
+                What if you could give AI the content you love and have it edit
+                your videos in that exact same style?
               </p>
               <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <RegisterButton location="hero" />
@@ -245,32 +278,86 @@ export default function AIVideoEditorWorkshopPage() {
               <div className="mt-5 flex justify-center">
                 <EventCountdown />
               </div>
-            </div>
-
-            <div className="mt-12 md:mt-16">
-              <DemoVideo />
-              <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
-                My AI Video Editor Bot in Grok Bot, from folder to finished Reel.
-                This is the setup we build together.
+              <p className="mt-8 text-sm text-[var(--gray-600)] leading-relaxed max-w-xl mx-auto">
+                Taught by Naya, who built a 200,000-follower audience on video,
+                earned over $500,000 from it, and has partnered with Microsoft,
+                Adobe, LinkedIn, HP, and Anthropic.
               </p>
             </div>
+
 
             <div className="mt-10 md:mt-14 max-w-2xl mx-auto">
               <BonusOffer variant="card" />
             </div>
 
-            <dl className="mt-12 md:mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto border-t border-[var(--card-border)] pt-8">
-              {[
-                ["200k+", "followers built on video"],
-                ["$500k+", "earned as a creator"],
-                ["$147", "one time, recording included"],
-              ].map(([n, l]) => (
-                <div key={n} className="text-center">
-                  <dt className="font-poppins font-bold tracking-[-0.02em] text-2xl md:text-4xl leading-none text-[var(--foreground)]">{n}</dt>
-                  <dd className="mt-2 text-xs md:text-sm text-[var(--gray-600)] leading-snug">{l}</dd>
+          </div>
+        </section>
+
+        {/* The problem, in her words */}
+        <section className={`bg-[var(--gray-50)] ${SECTION}`}>
+          <div className={CONTAINER}>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+              <div className="lg:col-span-5">
+                <Label>For creators with opinions about how they look on camera</Label>
+                <h2 className="font-serif font-bold text-3xl md:text-5xl leading-[1.1]">
+                  One Reel costs you three to five hours.
+                </h2>
+                <div className="mt-6 space-y-4 text-lg text-[var(--gray-600)] leading-relaxed">
+                  <p>
+                    A folder with 100 clips. A voice memo with seven takes of
+                    one line. The same three seconds on loop until you can no
+                    longer tell what a normal video looks like.
+                  </p>
+                  <p>
+                    You have rules. Eye-level angles. Natural light. No footage
+                    of you chewing. Each one costs you another hour, because
+                    you are the only person enforcing them.
+                  </p>
+                  <p className="text-[var(--foreground)] font-medium">
+                    That is the job the team takes over.
+                  </p>
                 </div>
-              ))}
-            </dl>
+              </div>
+              <div className="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6 md:p-7">
+                  <p className={`${LABEL} text-[var(--gray-600)]`}>A Reel, today</p>
+                  <ul className="mt-4 space-y-3 text-sm md:text-[15px] text-[var(--gray-600)] leading-relaxed">
+                    {[
+                      "Scrub 100 clips looking for the good angle",
+                      "Pick the best take of every line by ear",
+                      "Lay captions, move captions, fix captions",
+                      "Render, watch, notice the sticker over a word, render again",
+                      "Three to five hours, then post it unsure",
+                    ].map((line) => (
+                      <li key={line} className="flex gap-3">
+                        <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[var(--gray-400)] flex-shrink-0" />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-2xl border border-[var(--accent)] bg-[var(--card-bg)] p-6 md:p-7">
+                  <p className={`${LABEL} text-[var(--accent)]`}>A Reel, after October 24</p>
+                  <ul className="mt-4 space-y-3 text-sm md:text-[15px] text-[var(--foreground)] leading-relaxed">
+                    {[
+                      "Drop the folder and your notes with the coordinator",
+                      "Approve a storyboard and a mockup",
+                      "Get v1 with a phone preview",
+                      "Send one note: \u201cClip 7: different angle.\u201d",
+                      "Approve v1b. Post it.",
+                    ].map((line) => (
+                      <li key={line} className="flex gap-3">
+                        <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[var(--cta-bg)] flex-shrink-0" />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6">
+                    <RegisterButton location="problem" label="Build my team for $147" wrapperClassName="w-full" className="inline-flex w-full items-center justify-center gap-2 bg-[var(--cta-bg)] text-white px-6 py-3.5 rounded-full font-medium hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-70" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -281,7 +368,7 @@ export default function AIVideoEditorWorkshopPage() {
               dark
               eyebrow="The math"
               title={<>Your standards are expensive.</>}
-              lede="Good light, flattering angles, captions that match every word. Three ways to get them."
+              lede="At three Reels a week, editing them yourself is 10 to 15 hours. Every week. Three ways to get that time back."
             />
             <div className="grid md:grid-cols-3 gap-4 md:gap-5">
               {options.map((opt, idx) => (
@@ -327,7 +414,7 @@ export default function AIVideoEditorWorkshopPage() {
             <SectionHeading
               eyebrow="How it works"
               title="Meet the team you will build."
-              lede="Four specialists, one job each. One coordinator, the only one you ever talk to."
+              lede="Four specialists, one job each. One coordinator, the only one you ever talk to. When something is wrong, you know exactly who to send it back to."
             />
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
               <div className="lg:col-span-4 flex justify-center lg:sticky lg:top-32">
@@ -448,7 +535,7 @@ export default function AIVideoEditorWorkshopPage() {
             <SectionHeading
               eyebrow="Register"
               title="Save your seat."
-              lede="One session. One price. Everything included."
+              lede="One live session, one payment, and everything below is yours to keep."
             />
             <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
               <div className="lg:col-span-7 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6 md:p-10">
@@ -481,7 +568,8 @@ export default function AIVideoEditorWorkshopPage() {
                   <span className="text-sm text-[var(--gray-600)]">one time</span>
                 </div>
                 <p className="mt-2 text-sm text-[var(--gray-600)]">
-                  Less than one Reel from most editors. No subscription.
+                  Less than most editors charge for one Reel. No subscription,
+                  and the team you build edits every Reel after this one.
                 </p>
                 <div className="mt-6">
                   <BonusOffer variant="compact" />
@@ -511,6 +599,28 @@ export default function AIVideoEditorWorkshopPage() {
                   Secure checkout by Stripe. Receipt and calendar details arrive
                   by email right after.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Guarantee */}
+        <section className="pb-16 md:pb-28">
+          <div className={CONTAINER}>
+            <div className="rounded-2xl bg-[var(--cta-bg)] text-white p-8 md:p-12 grid md:grid-cols-12 gap-6 md:gap-10 items-center">
+              <div className="md:col-span-8">
+                <p className={`${LABEL} text-white/70`}>The show-up guarantee</p>
+                <h2 className="font-serif font-bold text-2xl md:text-4xl leading-tight mt-2">
+                  Leave with your team running, or get the $147 back.
+                </h2>
+                <p className="mt-4 text-white/80 leading-relaxed max-w-2xl">
+                  Come to the live session. If you walk out without your five
+                  assistants set up and working on your footage, email me within
+                  48 hours and I refund the full amount. No form, no call.
+                </p>
+              </div>
+              <div className="md:col-span-4 md:justify-self-end">
+                <RegisterButton location="guarantee" label="Save my seat for $147" wrapperClassName="w-full md:w-auto" className="inline-flex w-full items-center justify-center gap-2 bg-white text-[var(--cta-bg)] px-6 py-3.5 rounded-full font-medium hover:opacity-90 transition-opacity disabled:opacity-70" />
               </div>
             </div>
           </div>
@@ -579,8 +689,9 @@ export default function AIVideoEditorWorkshopPage() {
               Your next Reel, edited by a team that already knows your rules.
             </h2>
             <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">
-              Saturday, October 24 at 3:00 PM ET. Bring your footage. Leave
-              with your team.
+              Saturday, October 24 at 3:00 PM ET. Bring your footage and leave
+              with your team set up. If you show up live and leave without it,
+              email me within 48 hours for a full refund.
             </p>
             <div className="mt-10 flex justify-center">
               <RegisterButton location="final" />

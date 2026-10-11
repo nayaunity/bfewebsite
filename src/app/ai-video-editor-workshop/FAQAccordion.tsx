@@ -33,6 +33,16 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
       "Register anyway. The full recording and templates land in your inbox within 24 hours after the workshop ends, and you keep them.",
   },
   {
+    question: "Will it match my style, or will it look like AI?",
+    answer:
+      "You hand it one reference Reel and it studies the fonts, caption placement, and pacing frame by frame. Cuts shows you a mockup before it renders anything, so you catch a wrong look before it costs you a render.",
+  },
+  {
+    question: "My footage is a mess. Does that matter?",
+    answer:
+      "Bring what you have. Scout searches your project folder and your footage library, and QA rejects any clip that breaks your rules before it reaches the edit. You stop sorting clips by hand.",
+  },
+  {
     question: "Does the AI edit everything for me? I don't want to lose control.",
     answer:
       "It edits exactly what you tell it to: the whole video, one section, just the voiceover, or just the B-roll. You approve the storyboard, the mockups, and the final render. You make the creative decisions.",
