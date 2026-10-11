@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter, Dancing_Script } from "next/font/google";
+import { Playfair_Display, Inter, Dancing_Script, Poppins } from "next/font/google";
 import { SessionProvider } from "@/providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import JsonLd from "@/components/JsonLd";
@@ -19,6 +19,12 @@ const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
   subsets: ["latin"],
   weight: ["400", "700"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -51,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${playfair.variable} ${inter.variable} ${dancingScript.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${playfair.variable} ${inter.variable} ${dancingScript.variable} ${poppins.variable} antialiased`} suppressHydrationWarning>
         <JsonLd
           data={{
             "@context": "https://schema.org",
