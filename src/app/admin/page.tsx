@@ -45,6 +45,10 @@ async function getStats() {
     // Building a Tech Audience presale
     btaPresaleVisitorsToday,
     btaPresaleCtaToday,
+    // AI Video Editor Workshop
+    aiveWorkshopVisitorsToday,
+    aiveWorkshopCtaToday,
+    aiveWorkshopRegistrationsToday,
   ] = await Promise.all([
     prisma.job.count(),
     prisma.job.count({ where: { isActive: true } }),
@@ -99,6 +103,18 @@ async function getStats() {
     prisma.linkClick.count({
       where: { linkId: { startsWith: "bta-presale-" }, clickedAt: { gte: todayStart } },
     }),
+    // AI Video Editor Workshop
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "ai-video-editor-workshop", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.linkClick.count({
+      where: { linkId: { startsWith: "aive-workshop-register-" }, clickedAt: { gte: todayStart } },
+    }),
+    prisma.blogView.count({
+      where: { slug: "ai-video-editor-workshop-registered", viewedAt: { gte: todayStart } },
+    }),
   ]);
 
   return {
@@ -122,6 +138,9 @@ async function getStats() {
       autoApplyVisitorsToday,
       btaPresaleVisitorsToday,
       btaPresaleCtaToday,
+      aiveWorkshopVisitorsToday,
+      aiveWorkshopCtaToday,
+      aiveWorkshopRegistrationsToday,
     },
   };
 }
@@ -340,6 +359,13 @@ export default async function AdminDashboard() {
               {stats.analytics.btaPresaleVisitorsToday}
             </p>
             <p className="text-xs text-[var(--gray-600)]">{stats.analytics.btaPresaleCtaToday} CTA clicks</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border-2 border-[var(--accent)] rounded-xl p-4">
+            <p className="text-sm text-[var(--gray-600)]">AI Video Editor Workshop</p>
+            <p className="text-2xl font-bold text-[var(--foreground)] mt-1">
+              {stats.analytics.aiveWorkshopVisitorsToday}
+            </p>
+            <p className="text-xs text-[var(--gray-600)]">{stats.analytics.aiveWorkshopCtaToday} register clicks · {stats.analytics.aiveWorkshopRegistrationsToday} paid</p>
           </div>
         </div>
       </div>

@@ -54,6 +54,8 @@ const NON_BLOG_SLUGS = [
   "skool-life-as-a-startup",
   "skool-how-i-make-content",
   "talks-content-to-company",
+  "ai-video-editor-workshop",
+  "ai-video-editor-workshop-registered",
 ];
 
 // Get start of today in Denver timezone (Mountain Time)
@@ -175,6 +177,22 @@ async function getAnalytics() {
     ctcViewsToday,
     ctcViewsWeek,
     ctcViewsAllTime,
+    aiveUniqueToday,
+    aiveUniqueWeek,
+    aiveUniqueAllTime,
+    aiveViewsToday,
+    aiveViewsWeek,
+    aiveViewsAllTime,
+    aiveCtaToday,
+    aiveCtaWeek,
+    aiveCtaAllTime,
+    aiveRegToday,
+    aiveRegWeek,
+    aiveRegAllTime,
+    aiveUpsellToday,
+    aiveUpsellWeek,
+    aiveUpsellAllTime,
+    aiveByCountry,
     // Job clicks
     totalJobClicks,
     todayJobClicks,
@@ -460,6 +478,41 @@ async function getAnalytics() {
     prisma.blogView.count({ where: { slug: "talks-content-to-company", viewedAt: { gte: todayStart } } }),
     prisma.blogView.count({ where: { slug: "talks-content-to-company", viewedAt: { gte: weekStart } } }),
     prisma.blogView.count({ where: { slug: "talks-content-to-company" } }),
+    // AI Video Editor Workshop (live, $147) metrics
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "ai-video-editor-workshop", lastSeenAt: { gte: todayStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "ai-video-editor-workshop", lastSeenAt: { gte: weekStart } },
+      _count: true,
+    }).then(r => r.length),
+    prisma.pagePresence.groupBy({
+      by: ["visitorId"],
+      where: { page: "ai-video-editor-workshop" },
+      _count: true,
+    }).then(r => r.length),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop" } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-workshop-register-" }, clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-workshop-register-" }, clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: { startsWith: "aive-workshop-register-" } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop-registered", viewedAt: { gte: todayStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop-registered", viewedAt: { gte: weekStart } } }),
+    prisma.blogView.count({ where: { slug: "ai-video-editor-workshop-registered" } }),
+    prisma.linkClick.count({ where: { linkId: "aive-community-upsell", clickedAt: { gte: todayStart } } }),
+    prisma.linkClick.count({ where: { linkId: "aive-community-upsell", clickedAt: { gte: weekStart } } }),
+    prisma.linkClick.count({ where: { linkId: "aive-community-upsell" } }),
+    prisma.pagePresence.groupBy({
+      by: ["country"],
+      where: { page: "ai-video-editor-workshop", country: { not: null } },
+      _count: { visitorId: true },
+      orderBy: { _count: { visitorId: "desc" } },
+      take: 10,
+    }),
     // Job clicks
     prisma.jobClick.count(),
     prisma.jobClick.count({ where: { clickedAt: { gte: todayStart } } }),
@@ -645,6 +698,32 @@ async function getAnalytics() {
       viewsToday: ctcViewsToday,
       viewsWeek: ctcViewsWeek,
       viewsAllTime: ctcViewsAllTime,
+    },
+    aiveWorkshop: {
+      uniqueToday: aiveUniqueToday,
+      uniqueWeek: aiveUniqueWeek,
+      uniqueAllTime: aiveUniqueAllTime,
+      viewsToday: aiveViewsToday,
+      viewsWeek: aiveViewsWeek,
+      viewsAllTime: aiveViewsAllTime,
+      ctaToday: aiveCtaToday,
+      ctaWeek: aiveCtaWeek,
+      ctaAllTime: aiveCtaAllTime,
+      registrationsToday: aiveRegToday,
+      registrationsWeek: aiveRegWeek,
+      registrationsAllTime: aiveRegAllTime,
+      upsellToday: aiveUpsellToday,
+      upsellWeek: aiveUpsellWeek,
+      upsellAllTime: aiveUpsellAllTime,
+      ctaRate: aiveUniqueAllTime > 0 ? Math.round((aiveCtaAllTime / aiveUniqueAllTime) * 100) : 0,
+      conversionRate: aiveUniqueAllTime > 0 ? Math.round((aiveRegAllTime / aiveUniqueAllTime) * 1000) / 10 : 0,
+      byCountry: aiveByCountry
+        .filter((c) => c.country)
+        .map((c) => ({
+          country: c.country as string,
+          countryName: getCountryName(c.country as string),
+          visitors: c._count.visitorId,
+        })),
     },
   };
 }
@@ -1213,6 +1292,140 @@ export default async function AnalyticsPage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* AI Video Editor Workshop (live, $147) */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-xl text-[var(--foreground)]">
+            AI Video Editor Workshop
+          </h2>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--cta-bg)] text-white">
+            LIVE OCT 24 · $147
+          </span>
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-[var(--gray-100)] text-[var(--gray-600)]">
+            /ai-video-editor-workshop
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Unique Visitors</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.uniqueToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.uniqueWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.uniqueAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Page Views</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.viewsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.viewsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.viewsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Register Clicks</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.ctaToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.ctaWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.ctaAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4">
+            <p className="text-sm font-medium text-[var(--gray-600)] mb-3">Paid Registrations</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.registrationsToday}</p>
+                <p className="text-xs text-[var(--gray-600)]">Today</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.registrationsWeek}</p>
+                <p className="text-xs text-[var(--gray-600)]">Week</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-[var(--foreground)]">{analytics.aiveWorkshop.registrationsAllTime}</p>
+                <p className="text-xs text-[var(--gray-600)]">All Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Click Rate</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">Register clicks / unique visitors</p>
+            </div>
+            <p className="text-3xl font-bold text-[var(--foreground)]">
+              {analytics.aiveWorkshop.ctaRate}%
+            </p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Disgustingly Paid upsell clicks</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">today {analytics.aiveWorkshop.upsellToday} · week {analytics.aiveWorkshop.upsellWeek} · members list in /admin/community-members</p>
+            </div>
+            <p className="text-3xl font-bold text-[var(--foreground)]">
+              {analytics.aiveWorkshop.upsellAllTime}
+            </p>
+          </div>
+          <div className="bg-[var(--cta-bg)]/10 border border-[var(--accent)]/40 rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--foreground)]">Paid Conversion</p>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">Thank-you page views / unique visitors</p>
+            </div>
+            <p className="text-3xl font-bold text-[var(--foreground)]">
+              {analytics.aiveWorkshop.conversionRate}%
+            </p>
+          </div>
+          {analytics.aiveWorkshop.byCountry.length > 0 && (
+            <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--card-border)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)]">Visitors by Country</h3>
+              </div>
+              <div className="divide-y divide-[var(--card-border)] max-h-48 overflow-y-auto">
+                {analytics.aiveWorkshop.byCountry.map((country, index) => (
+                  <div key={country.country} className="px-4 py-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[var(--gray-100)] flex items-center justify-center text-xs text-[var(--gray-600)]">
+                        {index + 1}
+                      </span>
+                      <span className="truncate text-sm text-[var(--foreground)]">{country.countryName}</span>
+                    </div>
+                    <span className="flex-shrink-0 ml-2 text-sm font-semibold text-[var(--foreground)]">{country.visitors}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

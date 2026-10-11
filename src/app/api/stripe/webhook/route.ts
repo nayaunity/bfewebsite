@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, STRIPE_COMMUNITY } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { Resend } from "resend";
+import { buildCommunityWelcomeDraft } from "@/lib/community-welcome";
+import { buildWorkshopWelcomeDraft } from "@/lib/workshop-welcome";
+import { logError } from "@/lib/error-logger";
 import { activateSubscription, tierFromPriceId } from "@/lib/subscription";
 import Stripe from "stripe";
 
@@ -64,9 +68,81 @@ export async function POST(request: NextRequest) {
   try {
     switch (event.type) {
       case "checkout.session.completed": {
-        // Auto-apply sunset: reject any new subscription activations
+        const session = event.data.object as Stripe.Checkout.Session;
+
+        // Disgustingly Paid membership (Skool community billed via Stripe).
+        // Send the "your invite is coming" email. Access itself is granted
+        // by Naya from /admin/community-members via a free Skool invite.
+        if (session.metadata?.product === STRIPE_COMMUNITY.product) {
+          const to = session.customer_details?.email;
+          if (to && process.env.RESEND_API_KEY) {
+            try {
+              const draft = buildCommunityWelcomeDraft(session.customer_details?.name);
+              const resend = new Resend(process.env.RESEND_API_KEY);
+              await resend.emails.send({
+                from: "Naya <naya@theblackfemaleengineer.com>",
+                to,
+                replyTo: "theblackfemaleengineer@gmail.com",
+                subject: draft.subject,
+                text: draft.text,
+                html: draft.html,
+              });
+            } catch (err) {
+              await logError({
+                endpoint: "/api/stripe/webhook",
+                method: "POST",
+                status: 500,
+                error: "community welcome email failed",
+                detail: err instanceof Error ? err.message : String(err),
+              }).catch(() => {});
+            }
+          }
+          break;
+        }
+
+        // AI Video Editor Workshop seat: send the confirmation with the bonus
+        // link right away (the page promises "instant" access).
+        if (session.metadata?.product === "ai-video-editor-workshop") {
+          const to = session.customer_details?.email;
+          const bonusUrl = process.env.AIVE_WORKSHOP_BONUS_URL;
+          if (!bonusUrl) {
+            await logError({
+              endpoint: "/api/stripe/webhook",
+              method: "POST",
+              status: 500,
+              error: "AIVE_WORKSHOP_BONUS_URL not set; workshop welcome email skipped",
+              detail: `session ${session.id} email ${to ?? "unknown"}`,
+            }).catch(() => {});
+          } else if (to && process.env.RESEND_API_KEY) {
+            try {
+              const draft = buildWorkshopWelcomeDraft(session.customer_details?.name, bonusUrl);
+              const resend = new Resend(process.env.RESEND_API_KEY);
+              await resend.emails.send({
+                from: "Naya <naya@theblackfemaleengineer.com>",
+                to,
+                replyTo: "theblackfemaleengineer@gmail.com",
+                subject: draft.subject,
+                text: draft.text,
+                html: draft.html,
+              });
+            } catch (err) {
+              await logError({
+                endpoint: "/api/stripe/webhook",
+                method: "POST",
+                status: 500,
+                error: "workshop welcome email failed",
+                detail: err instanceof Error ? err.message : String(err),
+              }).catch(() => {});
+            }
+          }
+          break;
+        }
+
+        // Every other one-time checkout needs no DB work.
+        // Auto-apply sunset: reject any new subscription activations.
         console.warn("[webhook] checkout.session.completed received post-sunset — ignoring", {
-          sessionId: (event.data.object as Stripe.Checkout.Session).id,
+          sessionId: session.id,
+          product: session.metadata?.product,
         });
         break;
       }
@@ -79,6 +155,7 @@ export async function POST(request: NextRequest) {
         if (!subscriptionId) break;
 
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        if (subscription.metadata?.product === STRIPE_COMMUNITY.product) break;
         const customerId =
           typeof subscription.customer === "string"
             ? subscription.customer
@@ -106,6 +183,7 @@ export async function POST(request: NextRequest) {
 
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
+        if (subscription.metadata?.product === STRIPE_COMMUNITY.product) break;
         const customerId =
           typeof subscription.customer === "string"
             ? subscription.customer
@@ -206,6 +284,7 @@ export async function POST(request: NextRequest) {
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
+        if (subscription.metadata?.product === STRIPE_COMMUNITY.product) break;
         const user = await prisma.user.findFirst({
           where: { stripeSubscriptionId: subscription.id },
           select: { id: true },

@@ -20,3 +20,16 @@ export const STRIPE_COURSE_PRICES = {
   groupCoaching: process.env.STRIPE_BTA_GROUP_PRICE_ID!,
   privateCoaching: process.env.STRIPE_BTA_COACHING_PRICE_ID!,
 };
+
+// One-time live workshops. Sold through the main BFE Stripe account.
+export const STRIPE_WORKSHOP_PRICES = {
+  aiVideoEditor: process.env.STRIPE_AIVE_WORKSHOP_PRICE_ID!,
+};
+
+// Disgustingly Paid (Skool community) sold as a Stripe subscription.
+// Skool never bills the member; access is granted via a free Skool invite.
+export const STRIPE_COMMUNITY = {
+  product: "disgustingly-paid",
+  monthlyPriceId: process.env.STRIPE_DP_MONTHLY_PRICE_ID!,
+  introCouponId: process.env.STRIPE_DP_INTRO_COUPON_ID!,
+};
