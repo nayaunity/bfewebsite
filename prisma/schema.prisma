@@ -955,3 +955,28 @@ model StripeWebhookEvent {
   @@index([processedAt])
   @@index([type])
 }
+
+// A Stripe Checkout Session that expired without payment (checkout.session.expired).
+// Written by the webhook for the AI Video Editor offers so /admin/analytics can show
+// who stopped at checkout, whether they got as far as entering an email, and the
+// 30-day recovery link Stripe issues for the session. Stripe only includes the
+// email when the buyer ticked the promotional-consent box on the checkout page.
+model AbandonedCheckout {
+  id                String    @id // checkout session id (cs_...)
+  product           String
+  source            String?
+  mode              String
+  amountCents       Int?
+  email             String?
+  name              String?
+  promoConsent      String? // opt_in | opt_out | null (box not shown or untouched)
+  recoveryUrl       String?
+  recoveryExpiresAt DateTime?
+  startedAt         DateTime // session.created
+  expiredAt         DateTime  @default(now())
+  recoveredAt       DateTime? // set when a session created from recoveryUrl is paid
+  recoveredBy       String? // the paid session id
+
+  @@index([product])
+  @@index([expiredAt])
+}

@@ -339,40 +339,12 @@ export default function AIVideoEditorWorkshopPage() {
             <div className="mt-10 md:mt-14">
               <DemoVideo />
               <p className="mt-4 text-center text-sm text-[var(--gray-600)]">
-                My AI Video Editor Bot in Grok Bot: a folder of clips and voice
-                memos in, a finished Reel out. This is the plugin, ready to
-                configure around your footage and rules.
+                A folder of clips in. A finished Reel out.
               </p>
             </div>
 
             <div className="max-w-3xl mx-auto text-center">
               <p className="mt-10 md:mt-14 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
-                Holding an audience&apos;s attention now takes:
-              </p>
-              <ul className="mt-5 flex flex-wrap justify-center gap-2 md:gap-2.5 max-w-3xl mx-auto">
-                {[
-                  "A cut every few seconds",
-                  "Text on screen",
-                  "Sound effects",
-                  "Pop-ups",
-                  "Zooms",
-                ].map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-2 text-sm md:text-base font-medium text-[var(--foreground)]"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
-                It is too much for one person who also has to film the thing.
-              </p>
-              <p className="mt-4 text-lg md:text-xl text-[var(--foreground)] font-medium leading-relaxed max-w-2xl mx-auto">
-                What if you could give AI the content you love and have it edit
-                your videos in that exact same style?
-              </p>
-              <p className="mt-8 text-lg md:text-xl text-[var(--gray-600)] leading-relaxed max-w-2xl mx-auto">
                 Get my ready-to-use AI editing team for Grok Bot. Give it your
                 footage, voiceovers, and editing rules, then review the video
                 and ask for changes.

@@ -11,6 +11,14 @@ import Stripe from "stripe";
 
 export const runtime = "nodejs";
 
+// Offers sold on /ai-video-editor-workshop. Expired (unpaid) checkout sessions
+// for these are logged to AbandonedCheckout for /admin/analytics.
+const AIVE_PRODUCTS = new Set([
+  "ai-video-editor-workshop",
+  STRIPE_PLUGIN.product,
+  STRIPE_COMMUNITY.product,
+]);
+
 async function resolveUserId(
   metadataUserId: string | undefined,
   customerId: string | null | undefined,
@@ -68,8 +76,45 @@ export async function POST(request: NextRequest) {
 
   try {
     switch (event.type) {
+      case "checkout.session.expired": {
+        // Abandoned checkout. Stripe includes customer_details.email only when
+        // the buyer ticked the promotional-consent box before leaving.
+        const session = event.data.object as Stripe.Checkout.Session;
+        const product = session.metadata?.product ?? "";
+        if (!AIVE_PRODUCTS.has(product)) break;
+        const recovery = session.after_expiration?.recovery;
+        await prisma.abandonedCheckout.upsert({
+          where: { id: session.id },
+          update: {},
+          create: {
+            id: session.id,
+            product,
+            source: session.metadata?.source ?? null,
+            mode: session.mode,
+            amountCents: session.amount_total ?? null,
+            email: session.customer_details?.email ?? session.customer_email ?? null,
+            name: session.customer_details?.name ?? null,
+            promoConsent: session.consent?.promotions ?? null,
+            recoveryUrl: recovery?.url ?? null,
+            recoveryExpiresAt: recovery?.expires_at ? new Date(recovery.expires_at * 1000) : null,
+            startedAt: new Date(session.created * 1000),
+          },
+        });
+        break;
+      }
+
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        // Paid through a recovery link: mark the abandoned session recovered.
+        if (session.recovered_from) {
+          await prisma.abandonedCheckout
+            .updateMany({
+              where: { id: session.recovered_from },
+              data: { recoveredAt: new Date(), recoveredBy: session.id },
+            })
+            .catch((err) => console.error("[webhook] could not mark recovery:", err));
+        }
 
         // Disgustingly Paid membership (Skool community billed via Stripe).
         // Send the "your invite is coming" email. Access itself is granted

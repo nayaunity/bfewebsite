@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_WORKSHOP_PRICES } from "@/lib/stripe";
+import { stripe, STRIPE_WORKSHOP_PRICES, checkoutRecoveryParams } from "@/lib/stripe";
 
 type WorkshopKey = keyof typeof STRIPE_WORKSHOP_PRICES;
 
@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
       customer_creation: "always",
+      // Abandoned-checkout recovery (see plugin-checkout for details).
+      ...checkoutRecoveryParams(),
       success_url: `${request.nextUrl.origin}${config.successPath}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${request.nextUrl.origin}${config.cancelPath}`,
       metadata: { product: config.slug, workshop },

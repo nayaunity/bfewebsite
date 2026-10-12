@@ -42,3 +42,22 @@ export const STRIPE_PLUGIN = {
   product: "ai-video-editor-plugin",
   priceId: process.env.STRIPE_AIVE_PLUGIN_PRICE_ID!,
 };
+
+/**
+ * Abandoned-checkout recovery params shared by the AI Video Editor checkout
+ * routes. Recovery itself always works: when a session expires unpaid, Stripe
+ * fires checkout.session.expired with a 30-day recovery URL.
+ *
+ * The promotional-consent checkbox is what makes Stripe include the buyer's
+ * email in that event. Stripe refuses it until the Checkout terms are
+ * accepted in the Dashboard (Settings > Checkout), so it is gated behind
+ * STRIPE_PROMO_CONSENT=on. Without it, every checkout would fail to start.
+ */
+export function checkoutRecoveryParams() {
+  return {
+    after_expiration: { recovery: { enabled: true, allow_promotion_codes: true } },
+    ...(process.env.STRIPE_PROMO_CONSENT === "on"
+      ? { consent_collection: { promotions: "auto" as const } }
+      : {}),
+  };
+}
