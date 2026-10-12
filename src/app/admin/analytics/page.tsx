@@ -566,6 +566,16 @@ async function getAnalytics() {
     }),
   ]);
 
+  // Abandoned Stripe checkouts for the AI Video Editor offers, written by the
+  // webhook on checkout.session.expired. Newest first, last 60.
+  const aiveAbandonedRows = await prisma.abandonedCheckout.findMany({
+    orderBy: { expiredAt: "desc" },
+    take: 60,
+  });
+  const aiveAbandonedAllTime = await prisma.abandonedCheckout.count();
+  const aiveAbandonedWithEmail = await prisma.abandonedCheckout.count({ where: { email: { not: null } } });
+  const aiveAbandonedRecovered = await prisma.abandonedCheckout.count({ where: { recoveredAt: { not: null } } });
+
   return {
     site: {
       totalVisitors: totalUniqueVisitors,
@@ -755,6 +765,23 @@ async function getAnalytics() {
       memberJoinedToday: aiveMemberJoinedToday,
       memberJoinedWeek: aiveMemberJoinedWeek,
       memberJoinedAllTime: aiveMemberJoinedAllTime,
+      abandonedAllTime: aiveAbandonedAllTime,
+      abandonedWithEmail: aiveAbandonedWithEmail,
+      abandonedRecovered: aiveAbandonedRecovered,
+      abandoned: aiveAbandonedRows.map((r) => ({
+        id: r.id,
+        product: r.product,
+        source: r.source,
+        amount: r.amountCents != null ? `$${(r.amountCents / 100).toFixed(r.amountCents % 100 === 0 ? 0 : 2)}` : "",
+        email: r.email,
+        name: r.name,
+        promoConsent: r.promoConsent,
+        recoveryUrl: r.recoveryUrl,
+        recoveryLive: r.recoveryExpiresAt ? r.recoveryExpiresAt.getTime() > Date.now() : false,
+        startedAt: r.startedAt.toISOString(),
+        expiredAt: r.expiredAt.toISOString(),
+        recovered: r.recoveredAt != null,
+      })),
       ctaRate:
         aiveUniqueAllTime > 0
           ? Math.round(((aiveCtaAllTime + aivePluginCtaAllTime + aiveMemberCtaAllTime) / aiveUniqueAllTime) * 100)
@@ -1496,6 +1523,73 @@ export default async function AnalyticsPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Abandoned checkouts: Stripe sessions that expired unpaid */}
+        <div className="mt-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--card-border)] flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h3 className="font-semibold text-sm text-[var(--foreground)]">Abandoned checkouts</h3>
+              <p className="text-xs text-[var(--gray-600)] mt-0.5">
+                Stripe sessions that expired unpaid (24h after start). Email appears only when the buyer ticked the promo-consent box. Recovery links work for 30 days.
+              </p>
+            </div>
+            <div className="flex gap-4 text-xs text-[var(--gray-600)]">
+              <span><strong className="text-[var(--foreground)]">{analytics.aiveWorkshop.abandonedAllTime}</strong> abandoned</span>
+              <span><strong className="text-[var(--foreground)]">{analytics.aiveWorkshop.abandonedWithEmail}</strong> with email</span>
+              <span><strong className="text-[var(--foreground)]">{analytics.aiveWorkshop.abandonedRecovered}</strong> recovered</span>
+            </div>
+          </div>
+          {analytics.aiveWorkshop.abandoned.length === 0 ? (
+            <p className="px-4 py-6 text-sm text-[var(--gray-600)]">No expired sessions recorded yet. Sessions expire 24 hours after a buyer opens checkout.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-[var(--gray-50)] text-xs text-[var(--gray-600)]">
+                  <tr>
+                    <th className="text-left px-4 py-2 font-medium">Started</th>
+                    <th className="text-left px-4 py-2 font-medium">Offer</th>
+                    <th className="text-left px-4 py-2 font-medium">Buyer</th>
+                    <th className="text-left px-4 py-2 font-medium">Promo consent</th>
+                    <th className="text-left px-4 py-2 font-medium">Recovery</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--card-border)]">
+                  {analytics.aiveWorkshop.abandoned.map((row) => (
+                    <tr key={row.id} className={row.recovered ? "bg-[var(--accent-green-bg)]" : ""}>
+                      <td className="px-4 py-2 whitespace-nowrap text-[var(--gray-600)]">
+                        {new Date(row.startedAt).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap text-[var(--foreground)]">
+                        {row.product.replace("ai-video-editor-", "")} {row.amount && <span className="text-[var(--gray-600)]">{row.amount}</span>}
+                        {row.source && <span className="block text-xs text-[var(--gray-600)]">{row.source.replace("ai-video-editor-", "")}</span>}
+                      </td>
+                      <td className="px-4 py-2 text-[var(--foreground)]">
+                        {row.email ? (
+                          <>
+                            {row.email}
+                            {row.name && <span className="block text-xs text-[var(--gray-600)]">{row.name}</span>}
+                          </>
+                        ) : (
+                          <span className="text-[var(--gray-400)]">no email captured</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap text-[var(--gray-600)]">{row.promoConsent ?? "not shown"}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        {row.recovered ? (
+                          <span className="text-xs font-medium text-[var(--accent)]">Paid via recovery</span>
+                        ) : row.recoveryUrl && row.recoveryLive ? (
+                          <a href={row.recoveryUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[var(--accent)] underline">Recovery link</a>
+                        ) : (
+                          <span className="text-xs text-[var(--gray-400)]">expired</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

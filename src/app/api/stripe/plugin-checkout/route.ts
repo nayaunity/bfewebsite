@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_PLUGIN } from "@/lib/stripe";
+import { stripe, STRIPE_PLUGIN, checkoutRecoveryParams } from "@/lib/stripe";
 
 const PAGE = "/ai-video-editor-workshop";
 
@@ -27,6 +27,11 @@ export async function POST(request: NextRequest) {
       line_items: [{ price: STRIPE_PLUGIN.priceId, quantity: 1 }],
       allow_promotion_codes: true,
       customer_creation: "always",
+      // Abandoned-checkout recovery: when the session expires unpaid, Stripe
+      // sends checkout.session.expired with a 30-day recovery URL (and the
+      // buyer's email if they ticked the promo-consent box). The webhook logs
+      // it to AbandonedCheckout for /admin/analytics.
+      ...checkoutRecoveryParams(),
       success_url: `${origin}${PAGE}/thank-you?offer=plugin&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${PAGE}#choose-your-option`,
       metadata: { product: STRIPE_PLUGIN.product },

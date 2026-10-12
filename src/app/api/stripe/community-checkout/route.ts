@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_COMMUNITY, STRIPE_PLUGIN } from "@/lib/stripe";
+import { stripe, STRIPE_COMMUNITY, STRIPE_PLUGIN, checkoutRecoveryParams } from "@/lib/stripe";
 
 const PAGE = "/ai-video-editor-workshop";
 const THANK_YOU = `${PAGE}/thank-you`;
@@ -84,6 +84,8 @@ export async function POST(request: NextRequest) {
         : customerEmail
           ? { customer_email: customerEmail }
           : {}),
+      // Abandoned-checkout recovery (see plugin-checkout for details).
+      ...checkoutRecoveryParams(),
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
