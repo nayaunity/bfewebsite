@@ -43,6 +43,7 @@ export default function ResourcesPage() {
         { name: "Personal Branding", description: "Build your reputation and attract opportunities", tag: "Growth", href: "/resources/personal-branding" },
         { name: "Salary Negotiation Guide", description: "Get paid what you're worth", tag: "Essential", href: "/resources/salary-negotiation" },
         { name: "Gaining Experience Without Experience", description: "Build your portfolio through projects, open source, and more", tag: "Beginner", href: "/resources/gaining-experience" },
+        { name: "Non-Negotiable Systems Planner", description: "A printable planner for locking in the daily systems that drive your money, career, and lifestyle", tag: "New", href: "/downloads/non-negotiable-systems-planner.pdf" },
       ],
     },
   ];
@@ -103,6 +104,8 @@ export default function ResourcesPage() {
                   <Link
                     key={itemIndex}
                     href={item.href || "#"}
+                    target={item.href?.endsWith(".pdf") ? "_blank" : undefined}
+                    rel={item.href?.endsWith(".pdf") ? "noopener noreferrer" : undefined}
                     className="bg-[var(--card-bg)] p-6 rounded-2xl border border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-start justify-between mb-3">
