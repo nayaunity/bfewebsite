@@ -27,6 +27,7 @@ export default function ResourcesPage() {
       title: "AI & Skills",
       description: "Learn to use AI to build, earn, and grow.",
       items: [
+        { name: "The Content Engineering Blueprint", description: "How I use AI, automation, and engineering principles to build a $1M/year media company", tag: "New", href: "/resources/content-engineering-blueprint" },
         { name: "The $60K/Month Blueprint", description: "The business model, systems, and AI leverage behind building a $60K/month business", tag: "New", href: "/blog/60-k-business-breakdown" },
         { name: "The 3-Hour Workday Ebook", description: "A step-by-step guide to using AI to reclaim your time with a 5-phase system", tag: "Featured", href: "/resources/3-hour-workday" },
         { name: "Claude Code 101", description: "Your beginner's guide to building with AI in the terminal", tag: "Beginner", href: "/resources/claude-code-101" },
