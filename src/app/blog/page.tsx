@@ -3,9 +3,11 @@ import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { PagePresenceTracker } from "@/components/PagePresenceTracker";
-import { getAllPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
+import { getAllPostsMeta, getFeaturedPosts, getAllCategories, getPostsCount } from "@/lib/blog";
 
 export const revalidate = 300; // Revalidate every 5 minutes
+
+const POSTS_PER_PAGE = 12;
 
 export const metadata = {
   title: "Blog | The Black Female Engineer",
@@ -25,13 +27,21 @@ export const metadata = {
   },
 };
 
-export default async function BlogPage() {
-  const [allPosts, featuredPosts, blogCategories] = await Promise.all([
-    getAllPosts(),
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1);
+
+  const [recentPosts, featuredPosts, blogCategories, totalPosts] = await Promise.all([
+    getAllPostsMeta({ limit: POSTS_PER_PAGE, offset: (currentPage - 1) * POSTS_PER_PAGE }),
     getFeaturedPosts(),
     getAllCategories(),
+    getPostsCount(),
   ]);
-  const recentPosts = allPosts.slice(0, 10);
+  const totalPages = Math.max(1, Math.ceil(totalPosts / POSTS_PER_PAGE));
 
   return (
     <>
@@ -69,7 +79,7 @@ export default async function BlogPage() {
         </section>
 
         {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
+        {featuredPosts.length > 0 && currentPage === 1 && (
           <section className="bg-[var(--gray-50)] py-16 md:py-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="font-serif text-2xl md:text-3xl mb-8">Featured</h2>
@@ -181,6 +191,36 @@ export default async function BlogPage() {
                     )}
                   </Link>
                 ))}
+              </div>
+            )}
+
+            {totalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <Link
+                  href={currentPage > 1 ? `/blog?page=${currentPage - 1}` : "#"}
+                  aria-disabled={currentPage <= 1}
+                  className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+                    currentPage <= 1
+                      ? "bg-[var(--gray-100)] text-[var(--gray-400)] pointer-events-none"
+                      : "bg-[var(--gray-100)] text-[var(--foreground)] hover:bg-[var(--gray-200)]"
+                  }`}
+                >
+                  Previous
+                </Link>
+                <span className="text-sm text-[var(--gray-600)]">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Link
+                  href={currentPage < totalPages ? `/blog?page=${currentPage + 1}` : "#"}
+                  aria-disabled={currentPage >= totalPages}
+                  className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+                    currentPage >= totalPages
+                      ? "bg-[var(--gray-100)] text-[var(--gray-400)] pointer-events-none"
+                      : "bg-[var(--cta-bg)] text-white hover:bg-[var(--accent-hover)]"
+                  }`}
+                >
+                  Next
+                </Link>
               </div>
             )}
           </div>

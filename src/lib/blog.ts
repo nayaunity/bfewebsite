@@ -139,6 +139,13 @@ export async function getAllPostsMeta(options?: { limit?: number; offset?: numbe
 }
 
 /**
+ * Total count of published blog posts, for pagination
+ */
+export async function getPostsCount(): Promise<number> {
+  return prisma.blogPost.count();
+}
+
+/**
  * Get featured posts
  */
 export async function getFeaturedPosts(): Promise<BlogPost[]> {
